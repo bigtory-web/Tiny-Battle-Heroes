@@ -22,3 +22,7 @@
 ## [개발] 애니 시트 연결: squire·sprout·pup·mudgolem·slinger 추가
 - 한 것: ANIM_IDS에 5명 추가(총 13명). 그림 img/p/<id>_anim.png.
 - 결과: 실제 전투 모습은 직접 못 봄. squire 칸 5에서 몸이 4px 올라가고 발 가운데가 칸마다 31.5~35.5로 달라 흔들려 보일 수 있음, slinger 칸 5~7은 앞으로 2px(이미지 세션 안내).
+
+## [개발] 애니 시트 연결: candle·batling·frog·piper·mossguard 추가 (1등급 17명 완료)
+- 한 것: ANIM_IDS에 5명 추가(총 18명: 기사 포함 1등급 17명 중 전원). 그림 img/p/<id>_anim.png.
+- 결과: 실제 전투 모습은 직접 못 봄. frog 연잎·지팡이 끝, candle 오른쪽 불꽃 끝이 칸 경계에서 조금 잘렸을 수 있음(이미지 세션 안내).
