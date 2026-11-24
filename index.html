@@ -194,7 +194,7 @@ img.lic.padic{object-fit:contain}
 .slot.on{touch-action:none;cursor:grab}
 .slot.on,.foe{width:var(--u,72px);height:var(--u,72px);border:0;border-radius:0;background:none;box-shadow:none;align-items:flex-end}
 .foe.boss{width:calc(var(--u,72px) * 4 / 3);height:calc(var(--u,72px) * 4 / 3);box-shadow:none;filter:drop-shadow(0 0 8px var(--gold))}
-.slot.on::after,.foe::after{content:'';position:absolute;left:var(--fl,18%);right:var(--fr,18%);bottom:calc(var(--fg,0%) - 2px);height:8px;border-radius:50%;background:rgba(0,0,0,.3);z-index:-1} /* 발밑은 옅은 그림자만. 폭·높이는 그림의 발 자리에 맞춰요(--fl/--fr/--fg, footCss()) */
+.slot.on::after,.foe::after{content:'';position:absolute;left:calc(var(--fl,18%) - 8%);right:calc(var(--fr,18%) - 8%);bottom:calc(var(--fg,0%) - 5px);height:10px;border-radius:50%;background:rgba(0,0,0,.3);z-index:-1} /* 발밑은 옅은 그림자만. 폭·높이는 그림의 발 자리에 맞춰요(--fl/--fr/--fg, footCss()) */
 .slot.on .av.pic,.foe .av.pic{border-radius:0;background-size:contain;background-position:50% 100%}
 /* 등급 외곽선 (코스트 1 흰색 · 2 파랑 · 3 보라) */
 .slot.on .av.pic,.foe .av.pic,.rpic{--gcs:color-mix(in srgb,var(--gc,#fff) 70%,transparent);filter:drop-shadow(1px 0 0 var(--gcs)) drop-shadow(-1px 0 0 var(--gcs)) drop-shadow(0 1px 0 var(--gcs)) drop-shadow(0 -1px 0 var(--gcs))} /* 등급 외곽선: 가장 얇게, 70% 진하기 */
@@ -742,7 +742,7 @@ html,body{overflow:hidden;background:#0b0c14}
 .evstn{color:#ffd34d;margin-right:2px}
 /* 편성 화면 성급 별: 머리 위, 눈에 띄게 */
 .field .slot.on{position:relative;overflow:visible}
-.fst{position:absolute;left:50%;top:-14px;transform:translateX(-50%);display:flex;gap:2px;pointer-events:none;z-index:4;font-style:normal;filter:drop-shadow(1px 0 0 #17141d) drop-shadow(-1px 0 0 #17141d) drop-shadow(0 1px 0 #17141d) drop-shadow(0 -1px 0 #17141d)}
+.fst{position:absolute;left:50%;top:calc(var(--ht,0%) - 12px);transform:translateX(-50%);display:flex;gap:2px;pointer-events:none;z-index:4;font-style:normal;filter:drop-shadow(1px 0 0 #17141d) drop-shadow(-1px 0 0 #17141d) drop-shadow(0 1px 0 #17141d) drop-shadow(0 -1px 0 #17141d)}
 .foe.merc .fst{top:-32px}
 .fst b{width:11px;height:11px;background:#ffd34d;clip-path:polygon(50% 0,63% 36%,100% 38%,70% 60%,80% 100%,50% 76%,20% 100%,30% 60%,0 38%,37% 36%)}
 .fst b.nw,.hst b.nw{animation:starnw .9s steps(6) 1}
@@ -1724,7 +1724,7 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .hinfo .hi-rel .hi-av img{width:100%;height:100%;image-rendering:pixelated}
 .hinfo .hi-reld .cdb{float:right}
 .hinfo .hi-b,.hinfo .hi-b.go{border-radius:0;border:0;box-shadow:inset 0 0 0 2px #17141d}
-#mlGet,#llSpin,#bagOverOk,#goRestart{border-radius:0!important;border:0!important;box-shadow:inset 0 0 0 2px #17141d!important}
+#mlGet,#bagOverOk,#goRestart{border-radius:0!important;border:0!important;box-shadow:inset 0 0 0 2px #17141d!important}
 .evdock{position:absolute;top:58px;right:8px;z-index:30;display:flex;flex-direction:column;align-items:flex-end;gap:3px;font:400 11px var(--display);color:#f3e6c4}
 .evdock[hidden]{display:none}
 .evdock button{border:0;border-radius:0;box-shadow:inset 0 0 0 2px #17141d;background:#3b3546;color:#f3e6c4;font:inherit;padding:4px 7px;cursor:pointer;white-space:nowrap}
@@ -2298,7 +2298,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
             <button class="go" id="fightBtn">전투</button>
           </div>
           <div class="gover ll ml" id="mobLoot" hidden><div class="gobox"><button class="spX popx" data-xfor="#mlGet" type="button" title="닫기">✕</button><b>전리품</b><div class="mlrow" id="mlRow"></div><button class="go" id="mlGet" type="button">받기</button></div></div>
-<div class="gover ll" id="lossLoot" hidden><div class="gobox"><button class="spX llx" id="llX" type="button" title="닫기">✕</button><b>전리품</b><button class="go" id="llSpin" type="button">돌리기</button></div></div>
           <div class="gover" id="bagOver" hidden><div class="gobox"><button class="spX popx" data-xfor="#bagOverOk" type="button" title="닫기">✕</button><b>백팩이 넘쳤어요</b><div class="gost">영웅을 팔아야 전투를 시작할 수 있어요.</div><button class="go" id="bagOverOk" type="button">확인</button></div></div><div class="gover" id="gameOver" hidden><div class="gobox"><b>패배</b><div class="gost" id="goStage"></div><button class="go" id="goRestart" type="button">처음부터</button></div></div>
           <section class="shopPop" id="tab-shop" hidden>
             <div class="spHead"><span class="sptic"></span><b>상점</b><span id="shopReroll" style="margin-left:auto"></span><button class="spX" id="shopX" type="button" title="닫기">✕</button></div>
@@ -2700,14 +2699,14 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
       if (inner && hid && hero(hid).mob !== 'chest') fbars.push({ x: px, y: py, ally: side === 'A', mob: !!hero(hid).mob, star: side === 'A' && U(key) ? U(key).star : 0 });
       return '<div class="unit"' + (side === 'A' && key ? ' data-uid="' + key + '"' : '') + ' style="left:' + (100 * px / W) + '%;top:' + (100 * (py + OFF + FOOT) / H) + '%;z-index:' + Math.round(py) + '">' + inner + '</div>'; }
     function foeHtml(u){ if (!u) return ''; var h = hero(u.id); if (h.mob === 'chest'){ var ckf = chestImgKey(chestGrade(), 1); return foeHtml0(u, h).replace(IMGSRC.chest || 'img/p/chest.png', IMGSRC[ckf] || IMGSRC.chest || ''); } return foeHtml0(u, h); }
-    function foeHtml0(u, h){ return '<div class="foe' + (u.boss ? ' boss' : '') + (u.merc ? ' merc' : '') + (h.mob ? ' mob' : '') + (MOBSZ[h.mob] ? ' mobsz' + (MOBSZ[h.mob] > 1 ? '2' : '') : '') + (h.mob === 'chest' ? ' chestbig' + chestFlashCls() : '') + '" data-foe="' + u.slot + '" style="--el:' + ELC[h.el] + footCss(h.id) + '" title="' + h.name + '">' + avO(h.id) + (h.mob ? '' : fieldStars(u.star)) + bnBubble(u.bonus) + mobBub(u) + (h.mob === 'chest' ? chestBub() : '') + '</div>'; } // 레벨 표시는 뺐어요
+    function foeHtml0(u, h){ return '<div class="foe' + (u.boss ? ' boss' : '') + (u.merc ? ' merc' : '') + (h.mob ? ' mob' : '') + (MOBSZ[h.mob] ? ' mobsz' + (MOBSZ[h.mob] > 1 ? '2' : '') : '') + (h.mob === 'chest' ? ' chestbig' + chestFlashCls() : '') + '" data-foe="' + u.slot + '" style="--el:' + ELC[h.el] + footCss(h.id) + '" title="' + h.name + '">' + avO(h.id) + (h.mob ? '' : fieldStars(u.star, 0, h.id)) + bnBubble(u.bonus) + mobBub(u) + (h.mob === 'chest' ? chestBub() : '') + '</div>'; } // 레벨 표시는 뺐어요
     var bySlot = []; st.team.forEach(function(u){ bySlot[u.slot] = u; });
 
     function slotHtml(i){
       var u = S.team[i] && U(S.team[i]);
       if (!u) return ''; // 빈 자리는 아무것도 그리지 않아요
       var h = hero(u.id);
-      return '<button class="slot on" data-slot="' + i + '" data-uid="' + u.uid + '" style="--el:' + ELC[h.el] + ';--gcol:' + HG(u.id).col + footCss(u.id) + '" title="' + h.name + '">' + avO(u.id) + fieldStars(u.star) + '</button>'; // 편성 화면에서는 머리 위에 성급 별 (전투 중 그림에는 없음)
+      return '<button class="slot on" data-slot="' + i + '" data-uid="' + u.uid + '" style="--el:' + ELC[h.el] + ';--gcol:' + HG(u.id).col + footCss(u.id) + '" title="' + h.name + '">' + avO(u.id) + fieldStars(u.star, 0, u.id) + '</button>'; // 편성 화면에서는 머리 위에 성급 별 (전투 중 그림에는 없음)
     }
     setTimeout(function(){ drawFieldBars(fbars); }, 0);
     function padPos(i){ var p = POS.A[i], u = S.team[i], cp = u && S.pos && S.pos[u]; return cp ? [cp.x, cp.y] : [p[0], p[1]]; }
@@ -3020,7 +3019,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     return true;
   }
   function uPow(u){ return E.unitPower ? E.unitPower(D, u, lvOf(u.id)) : 0; }
-  function fieldStars(n, pw){ n = Math.max(1, Math.min(3, n || 1)); var s = ''; for (var i = 0; i < n; i++) s += '<b></b>'; return '<i class="fst">' + s + (pw ? '<em>' + pw.toLocaleString() + '</em>' : '') + '</i>'; }
+  function fieldStars(n, pw, id){ n = Math.max(1, Math.min(3, n || 1)); var s = ''; for (var i = 0; i < n; i++) s += '<b></b>'; return '<i class="fst"' + (id && IMGS[id] ? ' style="--ht:' + (imgTopFrac(IMGS[id]) * 100).toFixed(1) + '%"' : '') + '>' + s + (pw ? '<em>' + pw.toLocaleString() + '</em>' : '') + '</i>'; }
   function fitSkRows(){ var a = $('skA'), e = document.querySelector('.erow'), pa = document.querySelector('#field .tpow:not(.e)'), pe = document.querySelector('#field .tpow.e');
     [[a, pa, 'L'], [e, pe, 'R']].forEach(function(x){ var row = x[0], pw = x[1]; if (!row) return; row.style.transform = ''; if (!pw || bt) return;
       var r = row.getBoundingClientRect(), q = pw.getBoundingClientRect(), gap = 8, avail = x[2] === 'L' ? q.left - gap - r.left : r.right - (q.right + gap);
@@ -3188,7 +3187,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   /* 팝업 층: 전장(#arena)에 붙은 하나의 층. 팝업은 popAdd로 넣으면 전장 가운데에 와요 (full: 배경 덮개가 있는 팝업) */
   function popAdd(el, full){ var L = $('popl'); if (!L){ L = document.createElement('div'); L.id = 'popl'; L.className = 'popl'; document.querySelector('.camp3 > .mid').appendChild(L); } /* 전장이 큰 팝업을 자르지 않게 가운데 열에 붙여요 */
     if (!el || (el.parentNode && el.parentNode.parentNode === L)) return el; var w = document.createElement('div'); w.className = 'popw'; L.appendChild(w); w.appendChild(el); el.classList.add(full ? 'pov' : 'pcard'); return el; }
-  (function(){ ['roul', 'chestPop', 'res', 'mobLoot', 'lossLoot', 'bagOver', 'gameOver', 'evWin'].forEach(function(id){ if ($(id)) popAdd($(id), true); }); if ($('pendBox')) popAdd($('pendBox'), false); })();
+  (function(){ ['roul', 'chestPop', 'res', 'mobLoot', 'bagOver', 'gameOver', 'evWin'].forEach(function(id){ if ($(id)) popAdd($(id), true); }); if ($('pendBox')) popAdd($('pendBox'), false); })();
   function showInfo(html, side){ var p = $('hinfo'); if (shopOpen()) setShop(false); /* 창은 한 번에 하나 */ p.innerHTML = (html.indexOf('data-hix') < 0 ? '<button class="hi-x" data-hix="1" type="button" title="닫기">✕</button>' : '') + html; /* 모든 상세 창에 닫기 ✕ */ p.className = 'hinfo ' + side; p.hidden = false; }
   function hideInfo(){ $('hinfo').hidden = true; }
   (function(){ var sc = document.createElement('div'); sc.id = 'shopScrim'; sc.className = 'shopscrim'; $('tab-shop').parentNode.insertBefore(sc, $('tab-shop'));
@@ -3379,7 +3378,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   function startBattle(){ if (S.evOffer && S.evOffer.kind === 'merchant'){ S.evOffer = null; setShop(false); }
     if (!teamSpec().length || S.stage >= E.stageCount(D)) return;
     setShop(false); // 전투가 시작되면 상점 팝업은 닫아요
-    $('lossLoot').hidden = true; llTeam = null;
     goldStart = S.gold; skipNow = false; march = null; winAfter = null; curStage = S.stage; curEv = S.event || null; curBell = S.bell || 0; curGrades = {}; curPlv = plv(); teamSpec().forEach(function(sp){ curGrades[sp.slot] = sp.star; });
     setTimeout(function(){ renderEvent(); renderBell(); }, 0); // 전투 중엔 배너·종 숨기기(상인은 그대로)
     var st = E.stageTeam(D, curStage, curEv, curBell, curPlv); curFoeMul = {}; st.team.forEach(function(x){ curFoeMul[x.slot] = x.mul || {}; });
@@ -3699,7 +3697,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     var kb = knocks[u.uid]; if (kb && kb.t > 0){ if (!stop) kb.t -= el; var kk = Math.max(0, kb.t) / .15; x -= kb.dx * kk * kk; } // 처음엔 빠르게, 끝에 살짝 느리게
     if (stop && hs.flash > 0){ var sh = hs.flash >= .8 ? 2 : 1; x += (Math.random() < .5 ? -sh : sh); foot += Math.random() < .3 ? 1 : 0; } // ±1~2px 흔들림
     ctx.globalAlpha = u.alive ? (u.stealth > 0 ? .4 : 1) : .25;
-    var fb = footBox(sid); ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.beginPath(); if (fb) ctx.ellipse(x + (dir < 0 ? -1 : 1) * ((fb.l + fb.r) / 2 - .5) * S, foot - fb.g * S, Math.max(6, (fb.r - fb.l) * S / 2), 8, 0, 0, 6.29); else ctx.ellipse(x, foot, S * .34, 8, 0, 0, 6.29); ctx.fill(); /* 발 그림자: 그림의 발 너비·자리에 맞춰요 */
+    var fb = footBox(sid); ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.beginPath(); if (fb) ctx.ellipse(x + (dir < 0 ? -1 : 1) * ((fb.l + fb.r) / 2 - .5) * S, foot - fb.g * S - 1, Math.max(S * .25, (fb.r - fb.l) * S / 2 + 8), 6, 0, 0, 6.29); else ctx.ellipse(x, foot, S * .34, 8, 0, 0, 6.29); ctx.fill(); /* 발 그림자: 그림의 발 너비·자리에 맞춰요 */
 
     if (u.shield > 1 && u.alive){ ctx.strokeStyle = 'rgba(127,184,255,.8)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(x, foot - S * .45, S * .42, S * .55, 0, 0, 6.29); ctx.stroke(); }
     ctx.save(); ctx.translate(Math.round(x), Math.round(foot)); if (dir < 0) ctx.scale(-1, 1);
@@ -3920,7 +3918,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     var tn = [].filter.call(it.childNodes, function(n){ return n.nodeType === 3; }).pop(); var t0 = performance.now();
     it.classList.add('gup'); it.insertAdjacentHTML('beforeend', '<em class="gplus">+' + (to - from).toLocaleString() + '</em>');
     (function up(now){ var k = Math.min(1, (now - t0) / 800); if (tn) tn.textContent = g(from + (to - from) * (1 - Math.pow(1 - k, 3))).replace(' G', ''); if (k < 1) requestAnimationFrame(up); else { it.classList.remove('gup'); var p = it.querySelector('.gplus'); if (p) p.remove(); } })(t0); setTimeout(function(){ it.classList.remove('gup'); renderHud(); }, 900); }
-  function closeBattle(){ tpw = null; if (!S.offer && !S.pending && $('roul').hidden && $('lossLoot').hidden) applyAdv(true); closeInspect(); lossWalk = null; lifeShown = null; $('enrageTag').hidden = true; dpsLast = bt ? { A: bt.A, E: bt.E, skills: bt.skills, enemySkills: bt.enemySkills, status: bt.status } : dpsLast; setTimeout(renderDps, 0); /* 지난 판 기록은 다음 전투 시작까지 */ setTimeout(function(){ renderEvent(); renderBell(); }, 0); cancelAnimationFrame(raf); bt = null; cv.hidden = true; $('skipBtn').disabled = true; $('res').hidden = true; $('field').style.visibility = ''; $('tab-camp').classList.remove('busy'); renderAll(); }
+  function closeBattle(){ tpw = null; if (!S.offer && !S.pending && $('roul').hidden) applyAdv(true); closeInspect(); lossWalk = null; lifeShown = null; $('enrageTag').hidden = true; dpsLast = bt ? { A: bt.A, E: bt.E, skills: bt.skills, enemySkills: bt.enemySkills, status: bt.status } : dpsLast; setTimeout(renderDps, 0); /* 지난 판 기록은 다음 전투 시작까지 */ setTimeout(function(){ renderEvent(); renderBell(); }, 0); cancelAnimationFrame(raf); bt = null; cv.hidden = true; $('skipBtn').disabled = true; $('res').hidden = true; $('field').style.visibility = ''; $('tab-camp').classList.remove('busy'); renderAll(); }
   // ───── 플레이어 체력: 진 판 연출과 패배 ─────
   var lossInfo = null, lossWalk = null, chestPop = null, chestInfo = null;
   function runLoss(info){
@@ -3938,12 +3936,12 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
         lifeShown = Math.max(S.life, (lifeShown != null ? lifeShown : S.life) - o.d); lifeHitUntil = Date.now() + 420; renderHud(); } });
     if (all){ lossWalk.end += el; if (lossWalk.end > .45){ var info = lossWalk.info; lossWalk = null; lifeShown = null; endLoss(info, false); } } }
   function endLoss(info, quick){
-    renderHud(); var llSt = E.stageTeam(D, curStage, curEv, curBell, curPlv);
+    renderHud();
     var it = [{ ic: goldImg(), n: '+' + (info.cons || 0).toLocaleString(), c: 'g', gold: 1 }, { ic: heartIcon('rpi'), n: '−' + info.dmg, c: 'r' }];
     if (info.xp) it.push({ ic: HUDOK.level ? '<img class="rpxp" src="img/p/hud_level.png" alt="">' : '<span class="rpe">\u2B50</span>', n: '+' + info.xp, c: 'b' }); // 파란 별 = 경험치
     var dead = S.life <= 0, endOpt = dead ? { sub: '최종 스테이지 ' + E.stageName(D, Math.min(curStage, E.stageCount(D) - 1)), ok: '처음으로' } : null;
-    resPop(false, '패배', it, function(){ if (S.life > 0) showLossLoot(llSt); closeBattle(); if (S.life <= 0){ lossBannerOff(); $('goRestart').click(); return; } /* 생명 0: 바로 새 런 */
-      if (D.life.loseCampfire && $('lossLoot').hidden){ var ce = E.rollEvent(D, S.stage, Math.random, plv(), { forceKind: 'campfire', noFork: true }); if (ce && ce.ids){ ce.lose = true; S.event = ce; save(); scrollPend = true; renderAll(); stageScroll(); } } }, endOpt); // 진 판 뒤 모닥불 (받으면 같은 판 재도전) // 체력이 0이면 확인 뒤 바로 패배
+    resPop(false, '패배', it, function(){ closeBattle(); if (S.life <= 0){ lossBannerOff(); $('goRestart').click(); return; } /* 생명 0: 바로 새 런 */
+      if (D.life.loseCampfire){ var ce = E.rollEvent(D, S.stage, Math.random, plv(), { forceKind: 'campfire', noFork: true }); if (ce && ce.ids){ ce.lose = true; S.event = ce; save(); scrollPend = true; renderAll(); stageScroll(); } } }, endOpt); // 진 판 뒤 모닥불 (받으면 같은 판 재도전) // 체력이 0이면 확인 뒤 바로 패배
     if (info.cons > 0) setTimeout(function(){ oeCoins(document.querySelector('#resPop .rit.gold') || $('field'), document.querySelector('#hud .goldit'), 5); goldCount(info.g0, S.gold); }, 450); } // 받은 금화가 HUD로
   function goldImg(){ return HUDOK.gold ? '<img src="img/p/hud_gold.png" alt="">' : '<span class="rpe">🪙</span>'; }
   // 결과 팝업: 가운데 문장 + 큰 제목(잎 장식) + 구분선 + 보상 칸(아이콘 아래 숫자) + 확인
@@ -3973,15 +3971,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
       '<div class="rpits">' + items.map(function(x, i){ return '<span class="rit' + (x.gold ? ' gold' : '') + (x.miss ? ' miss' : '') + '" style="animation-delay:' + (.25 + i * .08) + 's"' + (x.tip || '') + '>' + x.ic + '<em class="' + (x.c || '') + '">' + (x.n == null ? '' : x.n) + '</em></span>'; }).join('') + '</div>' +
       '<button class="rpok" type="button">' + (opt.ok || '확인') + '</button><button class="spX popx" data-xfor="#resPop .rpok" type="button" title="닫기">✕</button></div>';
     o.hidden = false; o.querySelector('.rpok').onclick = function(){ o.hidden = true; o.innerHTML = ''; if (onOk) onOk(); }; }
-  // 진 판 전리품 룰렛: 그 판 클리어 골드의 절반(E.lossLootPrice)을 내고 돌려요. 후보는 E.lossLootPool (골드 주머니 없음)
-  var llTeam = null;
-  function showLossLoot(st){ if (!E.lossLootPrice || !E.lossLootPool) return; var p = E.lossLootPrice(D, S.stage); if (!p) return;
-    llTeam = st; var b = $('llSpin'); b.textContent = '돌리기 · ' + p.toLocaleString() + ' G'; b.disabled = S.gold < p; $('lossLoot').hidden = false; }
-  $('llX').addEventListener('click', function(){ $('lossLoot').hidden = true; llTeam = null; applyAdv(); });
-  $('llSpin').addEventListener('click', function(){ if (!llTeam) return; var p = E.lossLootPrice(D, S.stage); if (S.gold < p) return;
-    var pool = E.lossLootPool(D, llTeam, Math.random); $('lossLoot').hidden = true; llTeam = null; if (!pool.length){ toast('돌릴 전리품이 없어요'); return; }
-    S.gold -= p; S.offerBonus = bonusMap(llTeam && llTeam.team); offerIds = S.offerIds = pool; S.offer = pool[E.lootPick(D, pool, plv(), Math.random)]; S.offerPlv = null; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = [];
-    save(); renderAll(); setTimeout(function(){ startRoulette(offerIds, S.offer); }, 150); });
   function showGameOver(){ lossBannerOff(); $('goStage').textContent = (S.stage < E.stageCount(D) ? E.stageName(D, S.stage) : '마지막 스테이지') + '까지 왔어요'; $('gameOver').hidden = false; }
   // 처음부터: 시작 영웅 1명만 남기고 판을 새로 시작해요. 설정(S.modules)과 화면 설정(S.ui)은 그대로
   $('goRestart').addEventListener('click', function(){ var keep = { modules: S.modules || {}, ui: S.ui };
