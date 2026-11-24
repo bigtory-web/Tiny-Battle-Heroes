@@ -789,6 +789,7 @@ html,body{overflow:hidden;background:#0b0c14}
 .sfaces{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px}
 .sfaces .sfa{width:24px;height:24px;display:block;overflow:hidden;background:#17141d;box-shadow:0 0 0 1px #3f6b33}
 .sfaces .sfa .av{width:100%;height:100%;font-size:16px;line-height:24px;text-align:center}
+.sfaces .sfa .av.pic{background-size:cover;background-position:50% 50%}
 .tip .synn{position:static;display:inline-block;margin-right:5px;vertical-align:1px} .synn.z{color:#a99f90!important;box-shadow:0 0 0 2px #4a4358!important}
 .skc .stkn:empty{display:none} .skc .stkn.max{color:#fff;background:#b8452f}
 /* 오른쪽 버튼 줄: 전장 위쪽 끝과 같은 높이에서 시작해 전장 아래쪽 끝까지 (JS가 맞춰요) */
@@ -1234,7 +1235,8 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .bagcol .bagin{background:#5a3a22;box-shadow:inset 0 0 0 3px #2b1a0e,inset 0 0 0 5px #8a5a32,inset 0 0 0 6px #2b1a0e;padding:8px 4px;align-items:center}
 .bagcol .coltit{color:#f3d9a8!important;text-shadow:0 1px 0 #2b1a0e}
 .bagcol .chip{background:#3b2514!important;box-shadow:inset 0 0 0 2px #2b1a0e,inset 0 0 0 3px var(--gcol,#a8784a)!important;border-radius:0!important;overflow:hidden}
-.bagcol .chip .av.pic{background-size:170%!important;background-position:50% 40%!important} /* 2026-11-25: 유물 툴팁 얼굴과 같은 공통 자르기로 시험. 되돌리기: 170%→var(--fs,190%), 50% 40%→var(--fp,50% 22%) (영웅마다 FACE 값) */
+.bagcol .chip .av.pic{background-size:cover!important;background-position:50% 50%!important} /* 2026-11-25 사용자: 백팩은 전신 (상세 창 머리 칸처럼 cover) */
+.bagcol .chip > .hst{top:max(0px,calc(var(--ht,0%) - 10px));bottom:auto}
 .bagcol .chip .cgr{display:none}
 .bagcol .chip.bagempty{display:flex;align-items:center;justify-content:center;font:400 22px var(--display);font-style:normal;color:#a8784a;background:#4a2f1a!important;box-shadow:inset 0 0 0 2px #2b1a0e,inset 0 0 0 3px #6e4626!important;cursor:default}
 
@@ -2248,7 +2250,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
 .dps .dpsb{max-height:300px!important;padding:5px 6px 6px!important}
 .dps .dr{padding:4px;margin-bottom:4px;gap:8px;background:#1d1a24;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 3px #3b3546}
 .dps .dav{width:36px!important;height:36px!important;box-shadow:inset 0 0 0 2px #17141d} /* 영웅·유물 아이콘 같은 크기 */
-.dps .dav .av.pic{background-size:var(--fs,190%)!important;background-position:var(--fp,50% 22%)!important} /* 백팩 칸처럼 얼굴 쪽만 */
+.dps .dav .av.pic{background-size:cover!important;background-position:50% 50%!important} /* 백팩 칸처럼 전신 */
 .dps.e .dav .av{transform:scaleX(-1)} /* 상대는 보는 방향 반대 */
 .dps .rav img,.dps .rav .uic{width:28px!important;height:28px!important}
 .dps .dn b{font:400 15px var(--display);color:#fff}
@@ -2501,8 +2503,8 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   function lvOf(id){ return E.heroLevel ? E.heroLevel(D, plv()) : (S.levels[id] || D.startLevel || 1); } // 내 영웅 레벨은 모두 플레이어 레벨에서
   function gmul(gr){ var m = E.gradeMul(D, gr || 1); return { hp: m, atk: m }; }
   function GR(n){ var G = (D.heroGrades || {})[n] || {}; return { n: n, name: G.name || '', col: G.color || D.gradeColor[n] || '#fff' }; }
-  function starsIn(n){ n = Math.max(0, Math.min(3, n || 0)); if (!n) return ''; var s = ''; for (var i = 0; i < n; i++) s += '<b></b>'; return '<i class="hst">' + s + '</i>'; }
-  function heroFr(id, star){ return '<span class="hic hicf" style="--hg:' + HG(id).col + '">' + av(id) + starsIn(star) + '</span>'; }
+  function starsIn(n, id){ n = Math.max(0, Math.min(3, n || 0)); if (!n) return ''; var s = ''; for (var i = 0; i < n; i++) s += '<b></b>'; return '<i class="hst"' + (id && IMGS[id] ? ' style="--ht:' + (imgTopFrac(IMGS[id]) * 100).toFixed(1) + '%"' : '') + '>' + s + '</i>'; }
+  function heroFr(id, star){ return '<span class="hic hicf" style="--hg:' + HG(id).col + '">' + av(id) + starsIn(star, id) + '</span>'; }
   function cap(){ return E.costCap(D, Math.max(S.best || 0, S.stage)); }
   function usedCost(){ return 0; }
   function roster(){ return S.units.map(function(u){ return { uid: u.uid, id: u.id, level: lvOf(u.id), star: u.star }; }); }
@@ -2722,7 +2724,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     var list = bagUnits().slice().sort(function(a, b){ return (E.heroGrade(D, b.id) - E.heroGrade(D, a.id)) || ((b.star || 1) - (a.star || 1)) || (powerU(b) - powerU(a)); });
     var BM = bagMax();
     $('roster').innerHTML = list.map(function(u, li){ var h = hero(u.id), g = HG(u.id);
-      return '<button class="chip' + (li >= BM ? ' over' : '') + '" data-uid="' + u.uid + '" data-id="' + u.id + '" title="' + h.name + '" style="--el:' + ELC[h.el] + ';--gcol:' + g.col + '">' + av(u.id) + starsIn(u.star) + '</button>';
+      return '<button class="chip' + (li >= BM ? ' over' : '') + '" data-uid="' + u.uid + '" data-id="' + u.id + '" title="' + h.name + '" style="--el:' + ELC[h.el] + ';--gcol:' + g.col + '">' + av(u.id) + starsIn(u.star, u.id) + '</button>';
     }).join('') + (function(){ var e = ''; for (var i = list.length; i < bagMax(); i++) e += '<i class="chip bagempty"></i>'; return e; })();
     var used = usedCost(), c = cap();
     var over = false; /* 출전 코스트 제도는 없어요. 출전 제한은 전장 칸 수(PK().field)뿐 */ $('fightBtn').disabled = done || teamSpec().length === 0 || !!S.pending || !!S.offer || !!S.padPend || over; $('fightBtn').textContent = '전투 시작'; /* 늘 원래 글자, 못 누르면 회색만 (예전: 캠페인 완료·발판 깔기·전리품을 먼저 정해 주세요·백팩에서 버릴 것을 골라 주세요) */
