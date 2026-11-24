@@ -3566,7 +3566,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     shots = shots.filter(function(s){ if (s.wait > 0){ s.wait -= el; return true; } s.t += el * 5; if (s.t >= 1){ if (s.land) s.land(); return false; }
       var dx = s.to[0] - s.from[0], dy0 = s.to[1] - s.from[1], x = s.from[0] + dx * s.t, y = s.from[1] + dy0 * s.t - Math.sin(s.t * Math.PI) * 20, im = s.kind && SHOT_IMGS[s.kind];
       if (!im){ ctx.fillStyle = s.c; ctx.beginPath(); ctx.arc(x, y, 4, 0, 6.29); ctx.fill(); return true; } /* 그림이 없으면 진영 색 동그라미 */
-      var fl = dx < 0, ang = Math.atan2(dy0 - Math.cos(s.t * Math.PI) * Math.PI * 20, fl ? -dx : dx), fw = im.width > im.height * 1.5 ? im.width / 2 : im.width, fr = fw < im.width ? Math.floor(performance.now() / 80) % 2 : 0, sc = s.big ? 3 : 2, src = s.kind === 'orb' ? tintShot(im, s.c) : im;
+      var fl = dx < 0, ang = Math.atan2(dy0 - Math.cos(s.t * Math.PI) * Math.PI * 20, fl ? -dx : dx), fw = im.width > im.height * 1.5 ? im.width / 2 : im.width, fr = fw < im.width ? Math.floor(performance.now() / 80) % 2 : 0, sc = s.big ? 1.5 : 1, src = s.kind === 'orb' ? tintShot(im, s.c) : im;
       ctx.save(); ctx.translate(Math.round(x), Math.round(y)); if (fl) ctx.scale(-1, 1); ctx.rotate(ang); ctx.imageSmoothingEnabled = false; ctx.drawImage(src, fr * fw, 0, fw, im.height, -fw * sc / 2, -im.height * sc / 2, fw * sc, im.height * sc); ctx.restore(); return true; });
     bolts = bolts.filter(function(o){ o.t -= el; if (o.t <= 0) return false; var k = o.t / .28, top = o.y - 150, x0 = Math.round(o.x), y0 = Math.round(o.y - 20), seg = 6, xs = [];
       for (var i = 0; i <= seg; i++) xs.push(x0 + (i === seg ? 0 : Math.round(Math.sin(o.seed * 50 + i * 2.3) * 9)));
