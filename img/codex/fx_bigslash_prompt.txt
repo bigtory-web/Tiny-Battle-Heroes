@@ -1,0 +1,17 @@
+Look at the image img/gemini/ref/rain_x8.png (a pixel art character from our game). Use ONLY its pixel art style: a thick dark brown 1px outline, flat 2 to 3 step shading, hard square pixels, no anti-aliasing, no blur, no gradients. Generate ONE new image with your image generation tool and save it as img/codex/fx_bigslash_sheet.png.
+
+The image is an ANIMATION SPRITE SHEET of a battle visual effect (there is NO character in it, only the effect): a BIG X-SHAPED DOUBLE SWORD SLASH that hits an enemy. 4 columns x 2 rows = 8 animation frames, read left to right, top to bottom. Each frame sits in its own equal-size cell, the effect centered in the cell with a wide empty margin so nothing touches the cell edge. Flat solid pure magenta background color FF00FF, nothing else: no grid lines, no borders, no text, no numbers, no shadows. Every frame is drawn as chunky pixel art with large clearly visible square pixel blocks (as if a 64x64 pixel image was enlarged 4 times), the SAME pixel block size in all frames.
+
+Colors: bright white core, pale yellow and light orange edges, each slash with a thin dark brown outline. Do not use pure magenta or hot pink.
+
+Frames:
+1. A short thin white diagonal line appears at the top left, going toward the bottom right (the start of the first slash).
+2. The first diagonal slash is longer and thicker, a curved crescent stroke from top left to bottom right, bright white.
+3. The first slash is at full size, large and thick, with a few small spark pixels flying off its tail.
+4. The second diagonal slash starts at the top right going toward the bottom left, crossing the first slash, the first slash still visible.
+5. The X is complete: both big crescent slashes crossing in the middle, brightest frame, a big white spark burst at the crossing point.
+6. The X begins to fade, slashes thinner, spark pixels flying outward from the center.
+7. The slashes are thin and pale, only a few spark pixels and short streaks left around the center.
+8. Almost gone: just 4 to 6 tiny spark pixels scattered around the center.
+
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated (do not resize or edit it). Do not modify or create any other file.
