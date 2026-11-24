@@ -1,0 +1,13 @@
+Look at the image img/gemini/ref/rain_x8.png (a pixel art character from our game, about 64x64 pixels). Use its pixel art feeling: hard square pixels, no anti-aliasing, no blur, no gradients. Generate ONE new image with your image generation tool and save it as img/codex/fx_bubble_sheet.png.
+
+The image is an ANIMATION SPRITE SHEET of a battle visual effect (there is NO character in it, only the effect): a transparent SOAP-BUBBLE SHIELD that wraps around one character. 4 columns x 2 rows = 8 animation frames, read left to right, top to bottom. Each frame sits in its own equal-size cell, the effect centered in the cell with a small empty margin so nothing touches the cell edge. Flat solid pure magenta background color FF00FF, nothing else: no grid lines, no borders, no text, no numbers, no shadows. Every frame is drawn as pixel art as if an 80x80 pixel image was enlarged, with the SAME pixel block size in all frames. The bubble must be big enough to wrap a whole 64x64-pixel character, so the round bubble is about 70 pixels wide inside its 80x80-pixel cell.
+
+IMPORTANT: the INSIDE of the bubble must be completely EMPTY: leave it flat magenta FF00FF (it stays transparent in the game so the character inside stays visible). Draw ONLY: a thin 1-pixel-wide round ring in medium sky blue, a few bright white curved reflection highlights on the ring and just inside the ring, and tiny white sparkle pixels. Do NOT use a dark outline, do NOT use brown, do NOT fill the inside, no shading inside. Colors: sky blue, light cyan, white only. Do not use magenta or hot pink on the bubble.
+
+Frames 1 to 4 (the bubble holding steady, a loop): the same round bubble ring in all four frames, with a bright white curved highlight arc on the upper left and a smaller highlight arc on the lower right. From frame to frame the highlights slide a little along the ring and the ring wobbles by one pixel, so it looks alive. Same size in all four.
+Frame 5: the bubble starts to break: the same ring with a few short bright white crack lines across the ring, slightly bigger than before.
+Frame 6: the ring has split into about 6 curved pieces that move outward from the center, with small gaps between them.
+Frame 7: the pieces are smaller and farther apart, plus a few tiny droplet pixels flying outward.
+Frame 8: almost gone: only 5 to 8 tiny white and light blue sparkle pixels scattered around where the bubble was.
+
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated (do not resize or edit it). Do not modify or create any other file.

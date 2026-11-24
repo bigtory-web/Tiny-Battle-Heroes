@@ -1,0 +1,202 @@
+{
+ "frames": [
+  {
+   "filename": "bubble hold 0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 72,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 72,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 72,
+    "h": 72
+   },
+   "duration": 150
+  },
+  {
+   "filename": "bubble hold 1",
+   "frame": {
+    "x": 72,
+    "y": 0,
+    "w": 72,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 72,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 72,
+    "h": 72
+   },
+   "duration": 150
+  },
+  {
+   "filename": "bubble hold 2",
+   "frame": {
+    "x": 144,
+    "y": 0,
+    "w": 72,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 72,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 72,
+    "h": 72
+   },
+   "duration": 150
+  },
+  {
+   "filename": "bubble hold 3",
+   "frame": {
+    "x": 216,
+    "y": 0,
+    "w": 72,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 72,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 72,
+    "h": 72
+   },
+   "duration": 150
+  },
+  {
+   "filename": "bubble break 0",
+   "frame": {
+    "x": 0,
+    "y": 72,
+    "w": 72,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 72,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 72,
+    "h": 72
+   },
+   "duration": 60
+  },
+  {
+   "filename": "bubble break 1",
+   "frame": {
+    "x": 72,
+    "y": 72,
+    "w": 72,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 72,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 72,
+    "h": 72
+   },
+   "duration": 60
+  },
+  {
+   "filename": "bubble break 2",
+   "frame": {
+    "x": 144,
+    "y": 72,
+    "w": 72,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 72,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 72,
+    "h": 72
+   },
+   "duration": 60
+  },
+  {
+   "filename": "bubble break 3",
+   "frame": {
+    "x": 216,
+    "y": 72,
+    "w": 72,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 72,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 72,
+    "h": 72
+   },
+   "duration": 60
+  }
+ ],
+ "meta": {
+  "app": "image-session",
+  "image": "fx_bubble.png",
+  "size": {
+   "w": 288,
+   "h": 144
+  },
+  "frameTags": [
+   {
+    "name": "hold",
+    "from": 0,
+    "to": 3,
+    "direction": "pingpong"
+   },
+   {
+    "name": "break",
+    "from": 4,
+    "to": 7,
+    "direction": "forward"
+   }
+  ]
+ }
+}
