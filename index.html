@@ -1948,6 +1948,8 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .underbar .evdock .edtab{width:100%;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:4px 0 3px;background:#3b3546;box-shadow:inset 0 0 0 2px #17141d}
 .underbar .evdock .edtab.on{background:#5d5470;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 3px #ffd34d}
 .underbar .evdock .edtab .uem{font-size:20px;line-height:1}
+.underbar .evdock .edtab img.uic{width:24px;height:24px}
+.underbar .evdock .edtab img.uic{width:24px;height:24px}
 .underbar .evdock .edbody{position:absolute;right:calc(100% + 8px);bottom:0}
 /* 4) HUD 왼쪽 위 백팩 아이콘 뺌 */
 #hud .hudbag{display:none!important}
@@ -2304,7 +2306,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
             <div class="spRight"><div class="srow" id="stock"></div><button class="go" id="shopBuy" hidden>구매</button></div></div>
           </section>
         </div>
-        <div class="underbar" id="underBar"><div class="ugrp"><button class="abtn shopb" data-go="shop" type="button" title="상점"><img class="uic" src="img/p/ui_shop.png" alt="" onerror="this.outerHTML='🛒'"><i class="dot" id="shopDot" hidden></i><b class="ulbl">상점</b></button><button class="abtn on" id="dpsBtn" type="button" title="DPS 보기/숨기기"><img class="uic" src="img/p/ui_dps.png" alt="" onerror="this.outerHTML='<span class=&quot;uem&quot;>📊</span>'"><b class="ulbl">DPS</b></button><button class="abtn" data-go="hero" type="button" title="도감"><img class="uic" src="img/p/ui_book.png" alt="" onerror="this.outerHTML='📖'"><i class="dot" id="heroDot" hidden></i><b class="ulbl">도감</b></button><button class="abtn idleChip" id="idleBtn" type="button" title="방치 보상 받기" hidden><span>💰</span><b id="idleAmt">0 G</b></button></div><div class="ugrp utest"><button class="abtn" id="autoBtn" type="button" title="자동 편성"><span class="uem">🪄</span><b class="ulbl">자동</b></button><button class="abtn" id="resetBtn" type="button" title="처음부터"><span class="uem">🔄</span><b class="ulbl">처음부터</b></button><button class="abtn" data-go="tool" type="button" title="도구"><img class="uic" src="img/p/ui_tool.png" alt="" onerror="this.outerHTML='⚙️'"><b class="ulbl">도구</b></button></div></div>
+        <div class="underbar" id="underBar"><div class="ugrp"><button class="abtn shopb" data-go="shop" type="button" title="상점"><img class="uic" src="img/p/ui_shop.png" alt="" onerror="this.outerHTML='🛒'"><i class="dot" id="shopDot" hidden></i><b class="ulbl">상점</b></button><button class="abtn on" id="dpsBtn" type="button" title="DPS 보기/숨기기"><img class="uic" src="img/p/ui_dps.png" alt="" onerror="this.outerHTML='<span class=&quot;uem&quot;>📊</span>'"><b class="ulbl">DPS</b></button><button class="abtn" data-go="hero" type="button" title="도감"><img class="uic" src="img/p/ui_book.png" alt="" onerror="this.outerHTML='📖'"><i class="dot" id="heroDot" hidden></i><b class="ulbl">도감</b></button><button class="abtn idleChip" id="idleBtn" type="button" title="방치 보상 받기" hidden><span>💰</span><b id="idleAmt">0 G</b></button></div><div class="ugrp utest"><button class="abtn" id="autoBtn" type="button" title="자동 편성"><img class="uic" src="img/p/ui_auto.png" alt="" onerror="this.outerHTML='<span class=&quot;uem&quot;>🪄</span>'"><b class="ulbl">자동</b></button><button class="abtn" id="resetBtn" type="button" title="처음부터"><img class="uic" src="img/p/ui_reset.png" alt="" onerror="this.outerHTML='<span class=&quot;uem&quot;>🔄</span>'"><b class="ulbl">처음부터</b></button><button class="abtn" data-go="tool" type="button" title="도구"><img class="uic" src="img/p/ui_tool.png" alt="" onerror="this.outerHTML='⚙️'"><b class="ulbl">도구</b></button></div></div>
       </div>
       <aside class="rcol" id="rcol"></aside>
     </div>
@@ -4151,7 +4153,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   function edBusy(){ return !!bt || !!S.offer || !!S.pending || oeBusy || altBusy || !$('roul').hidden; }
   function renderDock(){ var dk = $('evDock'); if (!dk) return; var on = !(S.ui && S.ui.evDock === false), fold = !!(S.ui && S.ui.evDockFold), busy = edBusy(), fe = (S.ui && S.ui.forceEvery) || 0;
     $('edToggle').textContent = on ? '켜짐' : '꺼짐'; $('edToggle').classList.toggle('off', !on);
-    dk.hidden = !on || !!bt; if (dk.hidden) return; dk.classList.toggle('fold', fold); $('edTab').innerHTML = '<span class="uem">🎪</span><b class="ulbl">이벤트</b>'; $('edTab').classList.toggle('on', !fold);
+    dk.hidden = !on || !!bt; if (dk.hidden) return; dk.classList.toggle('fold', fold); $('edTab').innerHTML = '<img class="uic" src="img/p/ui_event.png" alt="" onerror="this.outerHTML=\'<span class=&quot;uem&quot;>🎪</span>\'"><b class="ulbl">이벤트</b>'; $('edTab').classList.toggle('on', !fold);
     $('edFe').textContent = fe ? fe + '판마다' : '간격 평소'; $('edFeDown').disabled = fe <= 0; $('edFeUp').disabled = fe >= 10;
     var cur = S.event && S.event.kind;
     $('edList').innerHTML = edKinds().map(function(k){ return '<button type="button" data-edk="' + k + '"' + (busy ? ' disabled' : '') + ' class="' + (k === cur ? 'cur' : '') + '">' + evIcon(k) + '<span>' + ((typeof EVK_NM !== 'undefined' && EVK_NM[k]) || ED_NM[k] || k) + '</span></button>'; }).join(''); }
