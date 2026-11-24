@@ -725,8 +725,8 @@ html,body{overflow:hidden;background:#0b0c14}
 .cfspr{display:block;width:var(--u,72px);height:var(--u,72px);background:url(img/p/ev_campfire.png) 0 0/300% 100% no-repeat;image-rendering:pixelated;animation:cffl .54s steps(3) infinite}
 @keyframes cffl{to{background-position:150% 0}}
 .cfire .cfimg{width:calc(var(--u,72px) * .6);height:calc(var(--u,72px) * .6);image-rendering:pixelated;display:block} .cfire .emo{font-size:calc(var(--u,72px) * .45);line-height:1;display:block}
-.fairy .fairyimg{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;animation:fairyf 1.6s ease-in-out infinite} .fairy .fairyimg.emo{display:flex;align-items:flex-end;justify-content:center;font-size:44px}
-@keyframes fairyf{50%{transform:translateY(-6px)}}
+.fairy .fairyimg{transform:scaleX(-1);width:100%;height:100%;object-fit:contain;image-rendering:pixelated;animation:fairyf 1.6s ease-in-out infinite} .fairy .fairyimg.emo{display:flex;align-items:flex-end;justify-content:center;font-size:44px}
+@keyframes fairyf{0%,100%{transform:scaleX(-1)}50%{transform:scaleX(-1) translateY(-6px)}} /* 요정은 좌우 반전(우리 쪽을 봄), 떠다니는 움직임과 같이 */
 .cfslot{width:var(--u,72px);height:var(--u,72px);display:flex;align-items:flex-end;justify-content:center}
 .cfslot .av{width:100%;height:100%;display:block;border-radius:0;background-size:contain!important;background-position:50% 100%!important;background-repeat:no-repeat;image-rendering:pixelated}
 .cfslot.flip .av{transform:scaleX(-1)}
@@ -1343,6 +1343,7 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .rbox .rstage .rpic.loot{filter:none!important}
 .rbox .rtags{background:none!important;box-shadow:none!important;padding:0!important}
 .rbox .rsk{width:56px!important;height:56px!important}
+.rbox .rsk{box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 5px var(--rg,#5d5470)!important} /* 우하단 아이콘(영웅 궁극기·유물)에 등급 색 테두리 */
 .rbox .rsk .ulti{width:48px!important;height:48px!important;font-size:30px;line-height:48px;text-align:center}
 .rbox .rstage .rname{left:50%!important;right:auto!important;transform:translateX(-50%);bottom:8px!important;padding:3px 12px 4px;background:rgba(23,20,29,.88);box-shadow:inset 0 0 0 2px #17141d;white-space:nowrap;max-width:70%;overflow:hidden;text-overflow:ellipsis}
 .rbox .rbtns{gap:10px!important;margin-top:8px!important}
@@ -2849,8 +2850,8 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     rpAnim.id = p.type === 'h' && ANIM_IDS.indexOf(p.id) >= 0 ? p.id : null; /* 프레임 시트 영웅은 룰렛 큰 그림도 대기 1~4 반복 */
     $('rTags').innerHTML = p.type === 'h' ? tagHtml(hero(p.id)) : '';
     var rsk = $('rSk'), hu = p.type === 'h' ? hero(p.id) : null; delete rsk.dataset.tipsk; delete rsk.dataset.tiplv;
-    if (hu && hu.ult){ rsk.innerHTML = ultIcon(hu, 28); rsk.dataset.tipt = ultName(hu); rsk.dataset.tiptx = ultDescFull(hu, hu.ult, 1); rsk.hidden = false; }
-    else if (p.type === 's'){ var ds = E.skillById(D, p.id); rsk.innerHTML = SKIMG[ds.id] ? '<img class="ulti" src="img/p/skill_' + ds.id + '.png" alt="">' : '<span class="ulti">' + ds.icon + '</span>'; delete rsk.dataset.tipt; delete rsk.dataset.tiptx; rsk.dataset.tipsk = p.id; rsk.dataset.tiplv = 1; rsk.innerHTML += synN(ds); rsk.hidden = false; } // 유물 결과도 우하단에 아이콘
+    if (hu && hu.ult){ rsk.innerHTML = ultIcon(hu, 28); rsk.dataset.tipt = ultName(hu); rsk.dataset.tiptx = ultDescFull(hu, hu.ult, 1); rsk.style.setProperty('--rg', HG(p.id).col); rsk.hidden = false; }
+    else if (p.type === 's'){ var ds = E.skillById(D, p.id); rsk.innerHTML = SKIMG[ds.id] ? '<img class="ulti" src="img/p/skill_' + ds.id + '.png" alt="">' : '<span class="ulti">' + ds.icon + '</span>'; delete rsk.dataset.tipt; delete rsk.dataset.tiptx; rsk.dataset.tipsk = p.id; rsk.dataset.tiplv = 1; rsk.innerHTML += synN(ds); rsk.style.setProperty('--rg', skG(p.id, 1).col); rsk.hidden = false; } // 유물 결과도 우하단에 아이콘
     else { rsk.innerHTML = ''; delete rsk.dataset.tipt; delete rsk.dataset.tiptx; rsk.hidden = true; if (tipEl === rsk) hideTip(); } if (p.type === 'h') $('rTags').style.setProperty('--tg', HG(p.id).col); // 꼬리표 묶음 테두리 = 영웅 등급색
     if (p.type === 's'){ pic.dataset.tipsk = p.id; pic.dataset.tiplv = 1; } else { delete pic.dataset.tipsk; if (tipEl === pic) hideTip(); }
     if (p.type === 'p'){ pic.dataset.tipt = padName(p.id); pic.dataset.tiptx = '이 칸에 선 영웅은 ' + D.elements.names[p.id] + ' 진영이 더해진다.'; } else { delete pic.dataset.tipt; delete pic.dataset.tiptx; } // 큰 스킬 아이콘도 툴팁 // 종족·직업·진영 꼬리표
