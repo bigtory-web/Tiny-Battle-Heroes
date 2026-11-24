@@ -730,6 +730,7 @@ html,body{overflow:hidden;background:#0b0c14}
 .cfslot{width:var(--u,72px);height:var(--u,72px);display:flex;align-items:flex-end;justify-content:center}
 .cfslot .av{width:100%;height:100%;display:block;border-radius:0;background-size:contain!important;background-position:50% 100%!important;background-repeat:no-repeat;image-rendering:pixelated}
 .cfslot.flip .av{transform:scaleX(-1)}
+.foe.cfhero.fwd .av{transform:none} /* 모닥불 영웅: 원래 그림이 향하는 쪽(오른쪽)을 보는 자리 */
 .evorig{color:#8f8679;margin:0 4px 0 3px;text-decoration:line-through;text-decoration-thickness:2px}
 .evit .go .mni{width:14px;height:14px;vertical-align:-2px;image-rendering:pixelated}
 .evit .go.mana:not(:disabled){background:#7b52d6!important;color:#f6efff!important}
@@ -2435,6 +2436,8 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   // ───── 초상화 이미지: 불러온 것만 쓰고, 없으면 이모지 ─────
   var IMGS = {};
   var RIP = new Image(); RIP.onload = function(){ RIP.ok = true; }; RIP.src = 'img/p/rip.png';
+  var RIPS = {};
+  function ripSide(side){ if (RIPS[side]) return RIPS[side]; var w = RIP.width, h = RIP.height, c = document.createElement('canvas'), s = document.createElement('canvas'); c.width = w + 2; c.height = h + 2; s.width = w; s.height = h; var sx = s.getContext('2d'); sx.drawImage(RIP, 0, 0); sx.globalCompositeOperation = 'source-in'; sx.fillStyle = side === 'A' ? '#5fc85a' : '#e0554f'; sx.fillRect(0, 0, w, h); var x = c.getContext('2d'); x.imageSmoothingEnabled = false; [[0, 1], [2, 1], [1, 0], [1, 2]].forEach(function(o){ x.drawImage(s, o[0], o[1]); }); x.drawImage(RIP, 1, 1); return RIPS[side] = c; } /* 무덤 외곽선 색: 우리 초록 / 상대 빨강 */
   var graves = {}; // uid → { t: 쓰러진 뒤 지난 시간 }
   // 픽셀 그림(img/p) 먼저, 없으면 예전 그림(img/s)
   var IMGSRC = {}, PIX = {};
@@ -3500,7 +3503,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     wind: function(o, k){ for (var i = 0; i < 4; i++){ var x = o.x - 34 + k * 70 + i * 4, y = o.y - 8 - i * 10; ctx.fillStyle = '#17141d'; ctx.fillRect(Math.round(x) - 1, Math.round(y) - 1, 26, 5); ctx.fillStyle = i % 2 ? '#ffffff' : o.c; ctx.fillRect(Math.round(x), Math.round(y), 24, 3); } },
     mark: function(o, k){ var y = o.y - 52 - Math.round(Math.sin(k * 12) * 2); ctx.lineWidth = 3; ctx.strokeStyle = '#17141d'; ctx.beginPath(); ctx.arc(o.x, y, 11, 0, 6.29); ctx.stroke(); ctx.strokeStyle = '#ff4a3a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(o.x, y, 10, 0, 6.29); ctx.stroke(); uxLine(o.x - 15, y, o.x + 15, y, 2, '#ff4a3a'); uxLine(o.x, y - 15, o.x, y + 15, 2, '#ff4a3a'); ctx.fillStyle = '#ff4a3a'; ctx.fillRect(Math.round(o.x) - 2, Math.round(y) - 2, 4, 4); },
     stone: function(o, k){ for (var i = 0; i < 8; i++){ var a = i / 8 * 6.283 + (o.seed || 0), x = o.x + Math.cos(a) * 26 * k, y = o.y - 16 + Math.sin(a) * 14 * k - 20 * k + 70 * k * k * (i % 2 ? 1 : .6), s = 6; ctx.fillStyle = '#17141d'; ctx.fillRect(Math.round(x) - 1, Math.round(y) - 1, s + 2, s + 2); ctx.fillStyle = i % 2 ? '#a8a2b0' : '#6e6878'; ctx.fillRect(Math.round(x), Math.round(y), s, s); } },
-    pillar: function(o, k){ var h = 80 * Math.min(1, k * 2.5), a = 1 - k; ctx.globalAlpha = Math.max(0, a); ctx.fillStyle = 'rgba(255,246,214,.55)'; ctx.fillRect(Math.round(o.x - 12), Math.round(o.y - h), 24, h); ctx.fillStyle = '#fff6d6'; ctx.fillRect(Math.round(o.x - 5), Math.round(o.y - h), 10, h); for (var i = 0; i < 5; i++){ ctx.fillStyle = '#ffffff'; ctx.fillRect(Math.round(o.x - 14 + i * 7 + Math.sin(k * 8 + i) * 3), Math.round(o.y - 10 - k * 60 - i * 8), 3, 6); } },
+    pillar: function(o, k){ var h = 80 * Math.min(1, k * 2.5), a = 1 - k; ctx.globalAlpha = Math.max(0, a) * .8; ctx.fillStyle = 'rgba(255,246,214,.22)'; ctx.fillRect(Math.round(o.x - 10), Math.round(o.y - h), 20, h); ctx.fillStyle = 'rgba(255,246,214,.55)'; ctx.fillRect(Math.round(o.x - 3), Math.round(o.y - h), 6, h); for (var i = 0; i < 5; i++){ ctx.fillStyle = '#ffffff'; ctx.fillRect(Math.round(o.x - 14 + i * 7 + Math.sin(k * 8 + i) * 3), Math.round(o.y - 10 - k * 60 - i * 8), 3, 6); } },
     beam: function(o, k){ var w = Math.max(2, Math.round(10 * (1 - k))); uxLine(o.x, o.y, o.x2, o.y, w, o.c); ctx.fillStyle = '#fff'; ctx.fillRect(Math.round(Math.min(o.x, o.x2)), Math.round(o.y) - 1, Math.round(Math.abs(o.x2 - o.x)), 2); },
     zig: function(o, k){ var n = 5, px = o.x, py = o.y - 18; for (var i = 1; i <= n; i++){ var tx = o.x + (o.x2 - o.x) * i / n, ty = o.y - 18 + (o.y2 - o.y) * i / n + (i === n ? 0 : (i % 2 ? -9 : 9)); uxLine(px, py, tx, ty, 3, i % 2 ? '#fff3b0' : o.c); px = tx; py = ty; } }
   };
@@ -3689,7 +3692,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     dy = k < .7 ? -(1 - k / .7) * 18 : -Math.sin((k - .7) / .3 * Math.PI) * 4; // 떨어짐 → 살짝 튐
     if (!RIP.ok){ ctx.font = '22px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText('🪦', u.x, foot + dy); return; }
     ctx.save(); ctx.imageSmoothingEnabled = false; ctx.globalAlpha = Math.min(1, .3 + k);
-    ctx.drawImage(RIP, Math.round(posOf(u)[0] - S / 2), Math.round(foot - S + S * .04 + dy), S, S); ctx.restore();
+    var rk = S / RIP.width; ctx.drawImage(ripSide(u.side), Math.round(posOf(u)[0] - S / 2 - rk), Math.round(foot - S + S * .04 + dy - rk), Math.round(S + 2 * rk), Math.round(S + 2 * rk)); ctx.restore();
   }
   // ───── 스프라이트 이펙트 (fx.js · img/fx, pixelfx MIT) ─────
   var HAS_FX = typeof FX !== 'undefined'; if (HAS_FX) FX.preload();
@@ -4556,7 +4559,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   function campHtml(){ var ids = S.event.ids || [], fx = 506, fy = 184; // 모닥불은 적 중반열 가운데 칸(3번)
     var fire = '<div class="unit cfire" style="left:' + (100 * fx / W) + '%;top:' + (100 * (fy + OFF + FOOT) / H) + '%;z-index:' + fy + '">' + (CFIMG.ev_campfire ? '<span class="cfspr"></span>' : '<span class="cfimg emo">🔥</span>') + '</div>';
     return fire + ids.map(function(id, i){ if ((S.event.got || []).indexOf(id) >= 0) return ''; var p = CF_POS[i] || CF_POS[0];
-      return '<div class="unit cfh" style="left:' + (100 * p[0] / W) + '%;top:' + (100 * (p[1] + OFF + FOOT) / H) + '%;z-index:' + p[1] + '"><div class="cfslot' + (p[2] ? '' : ' flip') + '" title="' + hero(id).name + '">' + av(id) + '</div>' + bnBubble((S.event.bonus || [])[i]) + '</div>'; }).join(''); }
+      return '<div class="unit cfh" style="left:' + (100 * p[0] / W) + '%;top:' + (100 * (p[1] + OFF + FOOT) / H) + '%;z-index:' + p[1] + '"><div class="foe cfhero' + (p[2] ? ' fwd' : '') + '" style="--el:' + ELC[hero(id).el] + footCss(id) + '" title="' + hero(id).name + '">' + avO(id) + '</div>' + bnBubble((S.event.bonus || [])[i]) + '</div>'; }).join(''); } /* 모닥불 영웅도 전장 캐릭터(.foe + avO)와 같은 크기·외곽선·그림자·대기 애니 (2026-11-25) */
   function startCampfire(){ if (!isCamp() || S.offer || S.pending) return;
     var got0 = S.event.got || [], ids = S.event.ids.filter(function(id){ return got0.indexOf(id) < 0; }); offerIds = S.offerIds = ids.map(function(id){ return 'h:' + id; }); S.offerBonus = {}; ids.forEach(function(id){ var b = (S.event.bonus || [])[S.event.ids.indexOf(id)]; if (b && !S.offerBonus[id]) S.offerBonus[id] = b; }); S.offer = offerIds[E.lootPick(D, offerIds, plv(), Math.random)];
     S.offerMode = 'camp'; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; save(); renderAll(); startRoulette(offerIds, S.offer); }
