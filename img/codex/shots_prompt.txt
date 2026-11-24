@@ -1,0 +1,15 @@
+Look at the image img/gemini/ref/rain_x8.png (a pixel art character from our game). Use ONLY its pixel art style: a thick dark brown 1px outline, flat 2 to 3 step shading, hard square pixels, no anti-aliasing, no blur, no gradients. Generate ONE new image with your image generation tool and save it as img/codex/shots_sheet.png.
+
+The image is a sprite sheet of 9 tiny projectile sprites for a pixel art game, in a 3 columns x 3 rows grid (reading order, left to right, top to bottom). Flat solid pure magenta background color FF00FF with nothing else in it. No grid lines, no borders, no text, no numbers, no shadows. Each sprite is centered in its own cell with a wide empty margin around it, drawn as chunky pixel art where every pixel block is large and clearly visible (as if a 16x16 pixel sprite was enlarged 16 times). Every sprite flies toward the RIGHT (head or tip on the right, tail on the left). Do not use pure magenta or hot pink on any sprite.
+
+1. ARROW: a wooden arrow, a pale steel arrowhead on the right, white and light feathers on the left end, straight horizontal.
+2. STONE: a small round grey stone, 3 steps of grey shading, a light highlight on the upper left.
+3. FIREBALL frame A: a round orange and yellow fireball with a short flame tail trailing to the left.
+4. FIREBALL frame B: the same fireball, the flame tail shaped a little differently (for a flickering animation), same size and position.
+5. ICE SHARD: a pointed ice crystal, tip toward the right, pale blue and white.
+6. LIGHTNING BALL frame A: a bright yellow and white energy ball with two short zigzag lightning sparks sticking out.
+7. LIGHTNING BALL frame B: the same ball, the sparks in different directions (flicker), same size and position.
+8. MAGIC ORB: a round glowing orb drawn ONLY in white and light grey tones (no colour at all, because the game tints it later), a bright white highlight, a darker grey rim, still with the dark outline.
+9. MUSIC NOTE: a single eighth note (a round note head with a stem and a flag), cream white with the dark outline, flying right.
+
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item, and keep the image exactly as generated (do not resize or edit it). Do not modify or create any other file.
