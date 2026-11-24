@@ -441,7 +441,7 @@
     var enemyLeft = E.reduce(function (s, x) { return s + x.hp; }, 0) / E.reduce(function (s, x) { return s + x.maxHp; }, 0);
     return { result: result, win: result === 'win', time: Math.round(t * 10) / 10, hpLeft: hpLeft, enemyLeft: enemyLeft,
       units: A.concat(E).map(function (x) { return { side: x.side, id: x.id, name: x.name, slot: x.slot, level: x.level, alive: x.alive, ultLv: x.ultLv, pasLv: x.pasLv, escaped: !!x.escaped, mob: x.h.mob || null, merc: !!x.merc, boss: !!x.boss,
-        dealt: Math.round(x.stats.dealt), taken: Math.round(x.stats.taken), healed: Math.round(x.stats.healed), ults: x.stats.ults, shield: Math.round(x.stats.shield) }; }),
+        maxHp: Math.round(x.maxHp), hp: Math.round(Math.max(0, x.hp)), /* 2026-11-24: 위로금 피해 비율(dmgFrac)이 읽어요 */ dealt: Math.round(x.stats.dealt), taken: Math.round(x.stats.taken), healed: Math.round(x.stats.healed), ults: x.stats.ults, shield: Math.round(x.stats.shield) }; }),
       relics: allSkills.map(function (sk) { return { side: sk.side, id: sk.def.id, dealt: Math.round(sk.stats.dealt), healed: Math.round(sk.stats.healed), shield: Math.round(sk.stats.shield), casts: sk.stats.casts }; }), status: status,
       log: rec ? log : null };
     }
@@ -820,8 +820,8 @@
     // 체력이 0이 되면 판 전체를 처음(1-1)으로: 영웅·스킬·골드·마나스톤·경험치를 모두 잃어요
     function resetRun() { runs.push({ best: best, time: time - runStart }); runStart = time;
       units.length = 0; levels = {}; startHero();
-      skills.length = 0; pads = {}; gold = 0; mana = 0; xp = 0; plv = 1; stage = 0; best = 0; tries = 0; streak = 0; life = LF.max; stood = false; lastHp = 0; shop = rollShop(data, rnd, 1, skills); shopH = rollShopHeroes(data, rnd, 1, 0); }
-    var lastHp = 0, bells = { rung: 0, lost: 0 }, fails = []; // fails[n] = 스테이지 n에서 진 횟수
+      skills.length = 0; pads = {}; gold = 0; mana = 0; xp = 0; plv = 1; stage = 0; best = 0; tries = 0; streak = 0; bellPaidN = 0; life = LF.max; stood = false; lastHp = 0; shop = rollShop(data, rnd, 1, skills); shopH = rollShopHeroes(data, rnd, 1, 0); }
+    var lastHp = 0, bells = { rung: 0, lost: 0 }, fails = [], bellPaidN = 0; // bellPaidN: 이 판에서 골드를 이미 받은 종 횟수 // fails[n] = 스테이지 n에서 진 횟수
     var events = { goblin: { seen: 0, caught: 0, missed: 0 }, merchant: { seen: 0, bought: 0 }, merc: { seen: 0, hired: 0 }, campfire: { seen: 0 }, chest: { seen: 0, tiers: 0, gold: 0 } };
     startHero(); // 첫 영웅 (모닥불이면 3명 중 룰렛으로 1명)
     // 이벤트 스테이지(모닥불·방랑상인·보물상자)는 스테이지 수를 쓰지 않아요: 시작 모닥불 뒤 첫 전투가 1-1이고, 판 중 이벤트는 n과 n+1 사이(n.5)예요
@@ -851,7 +851,7 @@
       var ev = rollEvent(data, stage, rnd, plv, { battleOnly: !arrived, team: units.map(function (x) { return x.id; }) }); if (ev && ev.kind === 'fork') ev = ev.options[Math.floor(rnd() * ev.options.length)]; arrived = false; // 봇: 갈림길은 아무거나
       var team = autoFormation(data, roster(), costCap(data, best), data.player ? perk(data, plv).field : 0), st = stageTeam(data, stage, ev, bellN, plv);
       if (ev && ev.kind === 'merchant' && merchantNoBattle(data)) bellN = 0;
-      bellN = Math.min(bellN, bellMax(data, stage, ev)); bells.rung += bellN; var bellPaid = ev && ev.kind === 'chest' ? 0 : bellN * bellGold(data, stage); gold += bellPaid;
+      bellN = Math.min(bellN, bellMax(data, stage, ev)); bells.rung += bellN; var bellPaid = ev && ev.kind === 'chest' ? 0 : Math.max(0, bellN - bellPaidN) * bellGold(data, stage); gold += bellPaid; bellPaidN = Math.max(bellPaidN, bellN); // 같은 판에서 이미 받은 종 골드는 다시 안 줘요(2026-11-24)
       if (ev) { events[ev.kind] = events[ev.kind] || { seen: 0 }; events[ev.kind].seen++; }
       if (ev && ev.kind === 'merchant' && merchantNoBattle(data)) { // 방랑상인 판: 싸우지 않고 특별 상점만 열고 넘어가요
         rollMerchant(data, stage, rnd, plv, skills).forEach(function (it) {
@@ -878,15 +878,16 @@
           if (host) { transcend(data, units, host.uid, wk.uid); recruits.transcend = (recruits.transcend || 0) + 1; } });
         continue; }
       if (ev && ev.kind === 'oddeven') { events.oddeven.passed = (events.oddeven.passed || 0) + 1; continue; } // 봇: 내기는 안 하고 지나가요(기대값 0)
-      if (ev && ev.kind === 'fairy') { if (ev.ids.length) { var fid = ev.ids[Math.floor(rnd() * ev.ids.length)]; if (canTake(data, skills, fid, data.player ? perk(data, plv).skillSlots : 0)) takeSkill(data, skills, fid); } continue; } // 요정: 룰렛으로 유물 1개
+      if (ev && ev.kind === 'fairy') { if (ev.ids.length) { var fid = ev.ids[lootPick(data, ev.ids, plv, rnd)]; if (canTake(data, skills, fid, data.player ? perk(data, plv).skillSlots : 0)) takeSkill(data, skills, fid); } continue; } // 요정: 룰렛으로 유물 1개
       if (ev && ev.kind === 'campfire') { var ci = lootPick(data, ev.ids, plv, rnd); gainHero(ev.ids[ci], team); giveBonus(ev.bonus && ev.bonus[ci]); continue; } // 모닥불: 싸우지 않고 1명 얻고, 같은 스테이지 전투로 가요
+      var plvAt = plv; // 클리어 골드·전리품은 화면처럼 전투 시작 때 레벨로 (2026-11-24)
       var res = battle(data, padTeam(team, pads), st.team, { seed: seed + attempts * 31, modules: opts.modules, skills: skills, enemySkills: st.skills, curse: st.curse });
       attempts++; tries++; time += res.time; battleTime += res.time;
       if (data.player) { var gx = data.player.xpPerKill * res.units.filter(function (x) { return x.side === 'E' && !x.alive && !x.escaped; }).length; if (!res.win) gx = Math.max(gx, data.player.xpLoseMin || 0); xp += gx; var plv0 = plv; plv = playerLevel(data, xp).level; if (LF && LF.perLevel) life += (plv - plv0) * LF.perLevel;
         for (var lp = plv0; lp < plv && data.player.levelPick; lp++) { var LK = levelPickKind(data, lp + 1, units, skills); // 레벨마다 하나만, 번갈아
           if (LK === 'relic') { var rid = levelPickRoll(data, rnd, 'relic', units, skills); if (rid) { takeSkill(data, skills, rid); recruits.lvRelic = (recruits.lvRelic || 0) + 1; } } else if (LK === 'skill') { var sid2 = levelPickRoll(data, rnd, 'skill', units, skills); if (sid2 != null && skillUp(data, units, sid2)) recruits.lvSkill = (recruits.lvSkill || 0) + 1; } } }
       if (res.win) { shop = rollShop(data, rnd, plv, skills, units.map(function (x) { return x.id; })); shopH = rollShopHeroes(data, rnd, plv, stage + 1); rerolls = 0; // 판을 깨야 상점이 새로 채워져요
-        var reward = stageReward(data, stage, bellN, ev, plv); lastHp = res.hpLeft;
+        var reward = stageReward(data, stage, bellN, ev, plvAt); lastHp = res.hpLeft;
         gold += reward;
         // 특수 몹 보상
         if (ev && ev.kind === 'goblin') { if (res.units.some(function (x) { return x.mob === 'goblin' && !x.alive && !x.escaped; })) { gold += Math.round(reward * data.events.goblin.goldMul); events.goblin.caught++; } else events.goblin.missed++; }
@@ -897,10 +898,10 @@
           else if (it.type === 'h' && gainHero(it.id, team)) { gold -= it.price; spent += it.price; events.merchant.bought++; } }); }
         // 전리품: 영웅·스킬·골드 칸 중 하나 무작위
         // 전리품 1개: 나온 걸 받거나, 버리고 다시 돌려요. 봇은 골드 주머니(꽝)가 나오면 돈이 될 때 버리고 다시 돌려요
-        var pool = lootPool(data, st, rnd, plv), cur = lootPick(data, pool, plv, rnd), rr = 0;
+        var pool = lootPool(data, st, rnd, plvAt), cur = lootPick(data, pool, plvAt, rnd), rr = 0;
         while (lootParse(pool[cur]).type === 'g' && pool.some(function (k2) { return lootParse(k2).type !== 'g'; }) && rr < rerollMax(data, plv) && gold >= lootRerollPrice(data, rr, stage - 1)) {
           var rp2 = lootRerollPrice(data, rr, stage - 1); gold -= rp2; spent += rp2; rr++; recruits.reroll = (recruits.reroll || 0) + 1;
-          pool.splice(cur, 1); cur = lootPick(data, pool, plv, rnd); }
+          pool.splice(cur, 1); cur = lootPick(data, pool, plvAt, rnd); }
         var pk = lootParse(pool[cur]), got = null, kind;
         if (pk.type === 'g') { gold += pk.amt; recruits.gold = (recruits.gold || 0) + 1; }
         else if (pk.type === 'm') { mana += pk.amt; manaGot += pk.amt; }
@@ -909,7 +910,7 @@
         if (got) { kind = gainHero(got, team) ? 'new' : 'dropped'; var gb = st.team.filter(function (x) { return x.id === got && x.bonus; })[0]; giveBonus(gb && gb.bonus); }
         log.push({ stage: stage, name: st.name, wall: st.wall, boss: st.boss, tries: tries, time: time, teamLv: team.map(function (x) { return x.level; }), plv: plv, field: team.length, battle: res.time, hpLeft: res.hpLeft, got: got, kind: kind, owned: units.length, maxStar: units.reduce(function (m, u) { return Math.max(m, u.star); }, 1), maxGrade: units.reduce(function (m, u) { return Math.max(m, heroGrade(data, u.id)); }, 1) });
         if (LF) { streak = 0; if (st.boss && LF.recoverOnBoss) life = Math.max(life, LF.max); } // 장 보스를 깨면 체력이 다 차요
-        stage++; tries = 0; best = Math.max(best, stage); arrived = true;
+        stage++; tries = 0; bellPaidN = 0; best = Math.max(best, stage); arrived = true;
         shopping();
         continue;
       }
@@ -918,7 +919,7 @@
         streak++; var kills = res.units.filter(function (x) { return x.side === 'E' && !x.alive && !x.escaped && !x.mob; }).length;
         var lg = lossGold(data, stage, kills, streak, dmgFrac(res.units)); gold += lg; lossGoldSum += lg;
         life -= lossDamage(data, res.units); if (life <= 0 && LF.lastStand && !stood) { life = 1; stood = true; } if (life <= 0) { resetRun(); continue; }
-        if (LF.loseCampfire) { var lcf = rollCampfire(data, rnd, plv); if (lcf.length) { gainHero(lcf[Math.floor(rnd() * lcf.length)], team); recruits.loseCampfire = (recruits.loseCampfire || 0) + 1; } } // 진 뒤 모닥불: 영웅 1명
+        if (LF.loseCampfire) { var lcf = rollCampfire(data, rnd, plv); if (lcf.length) { gainHero(lcf[lootPick(data, lcf, plv, rnd)], team); recruits.loseCampfire = (recruits.loseCampfire || 0) + 1; } } // 진 뒤 모닥불: 영웅 1명
         var llp = lossLootPrice(data, stage); if (llp && gold >= llp) { var lpool = lossLootPool(data, st, rnd); if (lpool.length) { gold -= llp; spent += llp; lossSpins++;
           var lk = lootParse(lpool[Math.floor(rnd() * lpool.length)]);
           if (lk.type === 'm') { mana += lk.amt; manaGot += lk.amt; } else if (lk.type === 's') { if (canTake(data, skills, lk.id, data.player ? perk(data, plv).skillSlots : 0)) takeSkill(data, skills, lk.id); } else { gainHero(lk.id, team); var lb = st.team.filter(function (x) { return x.id === lk.id && x.bonus; })[0]; giveBonus(lb && lb.bonus); } } } } // 진 판 전리품 영웅도 덤을 줘요
@@ -970,7 +971,7 @@
   // 승산 미리 보기: 지금 편성으로 n판을 몰래 돌려 본 결과. { win: 승률 0~1, hpLeft: 이긴 판의 평균 남은 체력 비율, label: '유리'|'팽팽'|'불리' }
   function forecast(data, team, st, skills, opts) { opts = opts || {}; var n = opts.n || 12, w = 0, hp = 0;
     if (!team.length) return { win: 0, hpLeft: 0, label: '불리' };
-    for (var i = 1; i <= n; i++) { var res = battle(data, padTeam(team, pads), st.team, { seed: i * 9973, modules: opts.modules, skills: skills, enemySkills: st.skills }); if (res.win) { w++; hp += res.hpLeft; } }
+    for (var i = 1; i <= n; i++) { var res = battle(data, padTeam(team, opts.pads || {}), st.team, { seed: i * 9973, modules: opts.modules, skills: skills, enemySkills: st.skills }); if (res.win) { w++; hp += res.hpLeft; } }
     var p = w / n; return { win: p, hpLeft: w ? hp / w : 0, label: p >= 0.7 ? '유리' : p >= 0.35 ? '팽팽' : '불리' }; }
   // 속성 상성: 공격자 속성 a가 방어자 속성 d에게 'adv'(유리) | 'dis'(불리) | null. 배율은 modules.element
   function elemAdv(data, a, d) { var b = data.elements.beats; return b[a] === d ? 'adv' : (b[d] === a && a !== 'light' && a !== 'dark') ? 'dis' : null; }
