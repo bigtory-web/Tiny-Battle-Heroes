@@ -1,4 +1,5 @@
-<title>빅토리 개발일지</title>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>빅토리 스튜디오</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;600;700&family=Press+Start+2P&display=swap">
@@ -17,7 +18,7 @@
   --bg:#15171a; --panel:#1d2024; --fg:#e7e7e0; --muted:#a3a89f; --line:#30353a;
   --accent:#d6a0c6; --moss:#a3c784; --dirt:#d39a72; --code:#262a2f; color-scheme:dark}
 body{background:var(--bg);color:var(--fg);font:16px/1.75 var(--sans);word-break:keep-all}
-.wrap{max-width:720px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
 a{color:var(--accent)}
 a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 header.site{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
@@ -54,7 +55,7 @@ a.card:hover{border-color:var(--accent)}
 .card.big{grid-template-columns:minmax(0,288px) minmax(0,1fr)}
 #prog{position:fixed;left:0;top:env(safe-area-inset-top,0px);height:3px;width:100%;background:var(--accent);transform-origin:0 50%;transform:scaleX(0);z-index:20}
 .chip{display:inline-block;font-size:13px;font-weight:600;color:var(--moss);text-decoration:none;padding:1px 8px;border:1px solid var(--line);border-radius:99px;vertical-align:middle}
-/* 오른쪽 번호 내비: 본문(720px) 옆에 자리가 있을 때만 */
+/* 오른쪽 번호 내비: 본문(1040px) 옆에 자리가 있을 때만 */
 #side{position:fixed;top:50%;right:max(16px,env(safe-area-inset-right,0px));transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;z-index:15}
 #side .t{display:none}
 #side button{display:flex;align-items:center;gap:8px;padding:0;border:0;background:none;color:var(--muted);font:500 14px/1.5 var(--sans);text-align:left;cursor:pointer}
@@ -66,15 +67,15 @@ a.card:hover{border-color:var(--accent)}
 #side button[aria-current] b{background:var(--accent);border-color:var(--accent);color:var(--panel)}
 #side[hidden]{display:none}
 /* 넓은 화면: 본문 오른쪽에 붙는 목차 상자. 이름은 두 줄까지 */
-@media (min-width:1300px){
-  #side{top:96px;transform:none;right:auto;left:calc(50% + 384px);width:210px;padding:16px 18px;gap:8px;background:var(--panel);border:1.5px solid var(--fg)}
+@media (min-width:1620px){
+  #side{top:96px;transform:none;right:auto;left:calc(50% + 544px);width:210px;padding:16px 18px;gap:8px;background:var(--panel);border:1.5px solid var(--fg)}
   #side .t{display:block;margin:0 0 4px;font-weight:700;font-size:14px;color:var(--fg)}
   #side button{align-items:flex-start;gap:4px}
   #side b,#side button[aria-current] b{display:inline;width:auto;height:auto;min-width:1.5em;border:0;background:none;color:inherit;font-size:14px;font-weight:inherit}
   #side b::after{content:"."}
   #side span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 }
-@media (max-width:860px){#side{display:none}}
+@media (max-width:1180px){#side{display:none}}
 .notes.brief p,.notes.brief img{display:none}
 .notes.brief li{padding:8px 0}
 button.btn{background:none;cursor:pointer;font-family:var(--pixel);font-size:9px;letter-spacing:.08em;padding:7px 10px}
@@ -139,6 +140,48 @@ code{background:var(--code);padding:1px 5px;border-radius:3px;font-size:.9em}
 .pn a,.pn span{padding:14px 16px;border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--fg);font-size:15px;min-width:0}
 .pn small{display:block;color:var(--muted);font-size:12px}
 .pn .r{text-align:right}
+/* 바이브코딩 공부 항목: 누르면 펼쳐짐. 주장(▪) 아래 왜?/왜?/그래서? */
+.term{border-top:1px solid var(--line)}
+.term summary,.term .sum{cursor:pointer;list-style:none;display:grid;grid-template-columns:7.5em minmax(0,1fr);gap:12px;padding:12px 0}
+.term .sum{cursor:default}
+.term summary::-webkit-details-marker{display:none}
+.term summary b::before{content:"▸ ";color:var(--moss)}
+.term[open] summary b::before{content:"▾ "}
+.term summary span,.term .sum span{color:var(--muted);font-size:15px}
+.term .tb{margin:0 0 28px;font-size:15px}
+.term .tb h3{margin:24px 0 8px;font-size:17px}
+.term ul.ln{list-style:none;margin:0 0 10px;padding:0}
+.term ul.ln li{padding-left:1.1em;text-indent:-1.1em;margin:2px 0}
+.term ul.ln li::before{content:"▪ ";color:var(--moss)}
+.term .claim{margin:0 0 18px}
+.term .claim > ul.ln{font-weight:600}
+.term .why{color:var(--muted);margin-left:1.6em;border-left:3px solid var(--line);padding-left:14px}
+.term .slot b::before{content:"▼ ";font-size:11px}
+.term .deep{margin:2px 0 8px 1.6em;border-left:3px solid var(--line);padding-left:14px}
+.term .slot{margin:6px 0}
+.term .slot b{display:block;color:var(--accent);font-size:14px}
+.term .slot ul.ln{margin:0}
+@media (max-width:480px){.term summary,.term .sum{grid-template-columns:1fr;gap:0}}
+.term td ul.ln{margin:0}
+.term .mine{display:grid;gap:10px}
+.term .mine .note{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:4px;padding:12px 16px}
+.term .mine .note ul.ln{margin:0}
+.term .flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:4px 0 8px;font-size:13px}
+.term .flow .fl{color:var(--muted);min-width:5.5em}
+.term .flow b,.term .flow a,.term .flow > span:not(.fl){padding:2px 8px;border:1px solid var(--line);border-radius:3px}
+.term .flow b{background:var(--accent);border-color:var(--accent);color:var(--panel)}
+.term .flow a{text-decoration:none;color:var(--fg)}
+.term .flow a:hover{border-color:var(--accent)}
+.term .flow > span:not(.fl){color:var(--muted);opacity:.7}
+.term .flow i{font-style:normal;color:var(--muted)}
+.term .flow i.h{color:var(--accent);font-weight:700}
+.term .flow i.l{opacity:.5}
+.term .tips{display:grid;gap:12px;margin:0 0 10px}
+.term .tip .code{display:flex;gap:8px;align-items:stretch}
+.term .tip pre{flex:1;margin:0;padding:10px 12px;background:var(--code);border-radius:4px;white-space:pre-wrap;font:14px/1.6 var(--sans)}
+.term .tip .cp{flex:none;padding:0 12px;border:1px solid var(--line);background:var(--panel);color:var(--fg);font:600 13px var(--sans);cursor:pointer}
+.term .tip .cp:hover{border-color:var(--accent)}
+.term .tip ul.ln{margin:4px 0 0;color:var(--muted)}
 footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
 @media (max-width:480px){.pn{grid-template-columns:1fr}.pn .r{text-align:left}}
 </style>
@@ -147,8 +190,8 @@ footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--line);font-si
 <nav id="side" aria-label="이 페이지 안에서 이동" hidden></nav>
 <div class="wrap">
   <header class="site">
-    <a href="#about" class="brand"><img src="img/bear.png" alt="">빅토리 <span class="px">Bigtory</span></a>
-    <nav class="tabs" aria-label="메뉴"><a href="#about" data-tab="about">소개</a><a href="#game" data-tab="game">게임소개</a><a href="#devlog" data-tab="devlog">개발일지</a></nav>
+    <a href="#about" class="brand"><img src="img/bear.png" alt="">빅토리 스튜디오 <span class="px">Bigtory</span></a>
+    <nav class="tabs" aria-label="메뉴"><a href="#about" data-tab="about">소개</a><a href="#game" data-tab="game">게임소개</a><a href="#devlog" data-tab="devlog">개발일지</a><a href="#vibe" data-tab="vibe">바이브코딩</a></nav>
   </header>
   <main id="view"></main>
   <footer>숫자는 프로젝트 폴더의 백업 파일, <code>기획결정기록.md</code>, <code>게임_현재상태.md</code>에서 셌다.</footer>
@@ -506,7 +549,7 @@ function about(){
   <p class="px eyebrow">About Bigtory</p>
   <h1>빅토리를 소개합니다.</h1>
   <p class="lede">9년 차 시스템·밸런스 기획자가 혼자 게임을 만드는 곳이다.</p>
-  ${field([['knight'],['bear'],['archmage'],['ranger']], '빅토리 게임의 영웅들')}
+  <img src="img/title_keyart.png" alt="타이니 배틀 히어로즈 타이틀 화면: 하늘에 제목, 땅에 게임 영웅들이 모여 있다" style="display:block;width:100%;image-rendering:pixelated;border-radius:4px">
 
   <p class="px eyebrow">Who</p>
   <p class="statement">문제를 구체화하고, 해결 기준을 시스템과 밸런스로 설계합니다.</p>
@@ -617,12 +660,266 @@ function post(i){
   }));
 }
 
-const PAGES = { about:['소개',about], game:['게임소개',game], devlog:['개발일지',devlog] };
+// 공부 일지: 항목마다 무엇인지(주장 ▪ + 왜? / 왜? / 그래서?), 잘 쓰려면(표), 나의 경험.
+// 문장은 한 줄에 하나. 내용 없는 칸은 키째 빼면 화면에서도 빠진다. 아직 안 쓴 항목은 soon:true.
+const STUDY = [
+{ name:'LLM', one:'다음 말을 한 조각씩 이어 쓰는 AI', open:true,
+  what:[
+    { lines:['앞에 놓인 글을 보고 가장 자연스러운 다음 말을 골라 이어 가는 AI다.','답을 통째로 만들지 않고 한 조각씩 덧붙인다.','오늘 날씨가 뒤에 좋다를 붙이고, 다시 처음부터 읽고 다음 조각을 고른다.','휴대폰 키보드의 다음 단어 추천을 계속 누르는 것과 비슷하다.'],
+      q1:'왜 다음 말을 고를 수 있나?', why:['방대한 글을 학습하면서 어떤 말 뒤에 어떤 말이 오는지 패턴을 익혔다.'],
+      q2:'왜 패턴으로 익혔나?', why2:['컴퓨터는 말의 뜻을 모르고 숫자 계산만 한다.','언어는 너무 복잡해서 사람이 문법과 의미를 규칙으로 다 적어 줄 수 없었다.','대신 실제 글을 엄청나게 보여 주고, 이 말 뒤에는 보통 이 말이 온다는 확률을 스스로 익히게 했다.','다음 말 맞히기는 아무 글에나 정답이 들어 있어서 사람이 채점할 필요가 없었다.','덕분에 인터넷의 글 전체를 교재로 쓸 수 있었다.'],
+      q3:'그래서 무엇을 알려 줘야 하나?', so:['많이 본 것은 잘하고, 본 적 없는 것은 모른다.','내 게임의 규칙과 용어, 학습 이후에 생긴 정보는 직접 문서로 알려 줘야 한다.','원하는 결과를 예시로 하나 보여 주면 그 패턴을 따라 한다.','긴 설명보다 예시 하나가 잘 통할 때가 많다.'] },
+    { lines:['회사와 모델마다 성능, 비용, 속도가 다르다.','회사들은 모델을 크기별로 나눠 내놓는다.'],
+      q1:'왜 모델마다 다른가?', why:['모델이 클수록 답 한 조각을 만들 때마다 계산을 많이 한다.','똑똑한 대신 비싸고 느리다.','무엇을 학습시켰는지도 회사마다 달라서 잘하는 분야가 갈린다.'],
+      q2:'왜 클수록 계산이 많나?', why2:['모델이 크다는 건 학습으로 맞춰 둔 숫자가 많다는 뜻이다.','답 한 조각마다 그 숫자를 거의 다 거쳐 계산해서, 숫자가 많을수록 계산이 늘어난다.'],
+      q3:'그래서 모델을 어떻게 고르나?', so:['높은 모델만 쓰면 사용 한도가 일찍 바닥난다.','수십 번 반복하는 수정에서는 기다리는 시간이 쌓인다.','오타 고치기나 파일 정리는 작은 모델로도 결과가 같다.','깊이 생각할 일은 큰 모델에, 많고 단순한 일은 작은 모델에 맡긴다.'] },
+    { lines:['답하기 전에 생각하는 추론 모델도 원리는 같다.'],
+      q1:'왜 추론 모델도 같은가?', why:['생각하는 과정도 다음 말을 한 조각씩 이어 써서 만든다.'],
+      q3:'그래서 생각 깊이는 언제 높이나?', so:['생각하는 글도 토큰이라, 오래 생각할수록 느리고 사용량이 늘어난다.','생각 깊이는 기획처럼 따져 볼 게 많은 일에만 높인다.'] },
+    { lines:['틀린 말도 맞는 말처럼 자신 있게 한다.'],
+      q1:'왜 틀린 말을 자신 있게 하나?', why:['답을 고를 때 사실인지 확인하는 단계가 없다.','모르는 내용이어도 멈추지 않고 자연스러운 답을 끝까지 만들어 낸다.'],
+      q2:'왜 확인 단계가 없나?', why2:['다음에 올 말을 맞히도록 배웠지, 맞는 말을 하도록 배운 게 아니다.','사실 여부는 학습 목표에 없었다.'],
+      q3:'그래서 어떻게 확인하나?', so:['내가 모르는 분야의 답은 공식 문서나 다른 모델로 한 번 더 확인한다.','검수는 만든 모델과 다른 모델에 맡긴다.','같은 모델은 틀리는 지점도 비슷해서 자기 실수를 잘 못 찾는다.'] },
+    { lines:['대화가 끝나면 나눈 내용을 기억하지 못한다.'],
+      q1:'왜 대화를 기억하지 못하나?', why:['대화에서 알게 된 것은 모델에 저장되지 않는다.','대화 중에는 지금까지 나눈 글을 매번 처음부터 다시 읽을 뿐인데, 그게 기억하는 것처럼 보인다.'],
+      q2:'왜 모델에 저장하지 않나?', why2:['모델 하나를 수많은 사람이 같이 쓴다.','대화마다 모델이 배우면 내 이야기가 남의 답에 섞여 나올 수 있다.','누가 일부러 틀린 내용을 가르쳐 모델을 망칠 수도 있다.','새로 학습시키는 일 자체도 큰 장비로 오래 걸려서 대화마다 할 수 없다.','도서관 책에 메모를 못 하게 하는 것과 같다.'],
+      q3:'그래서 무엇을 남기나?', so:['정한 것과 규칙은 파일에 남긴다.','CLAUDE.md와 메모리가 책 옆에 두는 내 노트다.'] },
+    { lines:['더 좋은 모델을 써도 틀리고 잊는 성질은 남는다.','모르면 모른다고 말하게 다듬어서 틀리는 횟수는 줄었지만, 없어지지는 않는다.'],
+      q1:'왜 좋은 모델도 틀리고 잊나?', why:['모델이 좋아져도 다음 말을 고르는 원리는 그대로다.'],
+      q2:'왜 원리는 그대로인가?', why2:['모델이 좋아지는 방법은 원리를 바꾸는 게 아니라, 같은 원리 위에서 더 많이 학습시키고 더 크게 키우고 다듬는 것이다.'],
+      q3:'그래서 무엇부터 갖추나?', so:['모델 등급을 올리기 전에 근거 문서와 기록, 검수부터 갖춘다.'] },
+  ],
+  use:[
+    ['본 적 없는 건 모른다, 예시는 잘 따라 한다','우리 게임만의 규칙과 기준은 문서로 준다. 그림은 말로 설명하기보다 기준 그림 하나를 같이 준다.'],
+    ['틀린 말도 자신 있게 한다','AI가 낸 수치는 바로 반영하지 않고 봇 시뮬레이션으로 확인한다. 게임 전체 검수는 다른 모델에 맡긴다.'],
+    ['대화가 끝나면 잊는다','결정과 되돌린 기획은 파일에 남기고, 버전은 git으로 관리한다.'],
+    ['모델마다 비용과 속도가 다르다','기획은 큰 모델에 생각 깊이를 높게, UI와 페이지 반복 수정은 가볍고 빠른 모델로, 검수는 다른 모델로 맡긴다.'],
+  ],
+  useNote:['토큰에 큰돈을 쓴다고 꼭 비효율은 아니다.','쓴 돈보다 얻는 게 크면 효율적이다.','회사는 사람의 시간이 토큰보다 비싸고, 개인은 정해진 한도 안에서 써야 해서 기준이 다르다.'],
+  cmds:[
+    ['/model','모델을 바꾼다. 뒤에 아무것도 안 붙이면 고르는 창이 뜬다.','반복 수정은 가벼운 모델로, 설계는 큰 모델로 바꿀 때 쓴다.'],
+    ['/effort','생각 깊이를 정한다. low부터 max까지, 또는 auto로 고른다.','기획처럼 따져 볼 게 많을 때 올리고, 단순 작업에는 내린다.'],
+    ['/fast','빠른 모드를 켜고 끈다.','속도가 중요한 작업일 때 쓴다.'],
+  ],
+  cmdNote:['지금 쓰는 모델들은 생각을 끌 수 없고, 깊이만 조절한다.','데스크톱 앱에서는 모델과 생각 깊이를 앱 화면에서 바꾸는 쪽이 확실하다.'],
+  tips:[["확인된 것과 추측을 나눠서 답해 줘. 추측이면 근거도 같이 적어 줘.","틀린 말도 맞는 말처럼 자신 있게 하니, 어느 쪽인지 스스로 표시하게 한다."],["이 답에서 틀렸을 가능성이 있는 부분부터 짚어 줘.","확인하는 단계가 없으니, 확인할 곳을 먼저 찾게 해서 검토 시간을 줄인다."],["이 작업에 가벼운 모델로 충분한지, 큰 모델이 필요한지 이유와 함께 알려 줘.","모델마다 비용과 속도가 다르니, 일에 맞는 모델을 고르는 근거를 받는다."]],
+  mine:[
+    ['AI가 git을 쓰면 로컬에서 확인하기 어렵다고 해서 그대로 믿었다.','index 파일을 391개까지 복사해 가며 버전을 관리했다.','확인해 보니 사실이 아니었다.'],
+    ['공격 자세 그림을 만들 때 영웅마다 키가 제각각으로 나왔다.','확정된 36칸 그림을 28배로 키운 기준 그림을 같이 주자 키가 맞춰졌다(EP.03).'],
+    ['게임 전체 검수를 다른 모델(Fable)에 맡겼다.','지는 쪽이 이기는 쪽보다 더 받는 경제 구멍을 찾았다(EP.05).'],
+    ['게임 개발 세션 6개 중 검수만 Fable이고, 나머지 다섯은 같은 모델과 같은 생각 깊이를 쓴다.','역할별로 나누면 나아지는지는 아직 재 보지 않았다.'],
+  ] },
+{ name:'토큰', one:'LLM이 글을 읽고 쓰는 단위',
+  what:[
+    { lines:['LLM이 글을 읽고 쓰는 단위다.','글자 하나도, 단어 하나도 아닌 그 사이 크기의 조각이다.'],
+      q1:'왜 조각으로 자르나?', why:['컴퓨터는 숫자만 다룬다.','글을 조각으로 잘라 조각마다 번호를 붙여 계산한다.'],
+      q2:'왜 글자나 단어가 아니라 조각인가?', why2:['글자로 자르면 조각이 너무 많아 계산이 길어진다.','단어로 자르면 단어 종류가 끝없이 많아진다.','자주 나오는 덩어리는 한 조각으로, 드문 말은 잘게 자르는 중간 방식을 쓴다.'],
+      q3:'그래서 무엇이 달라지나?', so:['자주 쓰이는 말일수록 적은 토큰으로 처리된다.'] },
+    { lines:['읽고 쓴 토큰 수가 곧 비용이고 사용량이다.'],
+      q1:'왜 토큰 수가 비용인가?', why:['답을 한 조각 만들 때마다 계산을 한 번씩 한다.','내가 보낸 글도 토큰으로 바꿔 전부 읽는다.','채팅으로 보낸 요청도, 자동으로 들어가는 CLAUDE.md도 모두 읽는 글이다.'],
+      q3:'그래서 무엇을 줄이나?', so:['답을 길게 받을수록, 많이 읽힐수록 사용량이 는다.','필요 없는 파일과 긴 설명은 읽히지 않는다.'] },
+    { lines:['대화가 길어질수록 같은 질문도 비싸진다.'],
+      q1:'왜 길수록 비싸지나?', why:['답할 때마다 지금까지의 대화를 처음부터 다시 읽는다.','대화가 길면 짧은 질문 하나에도 앞의 글 전체가 토큰으로 계산된다.'],
+      q2:'왜 매번 다시 읽나?', why2:['모델은 대화를 저장하지 않는다.','기억하는 것처럼 보이려면 앞의 글을 매번 함께 넣어 줘야 한다.'],
+      q3:'그래서 언제 새 대화를 여나?', so:['주제가 바뀌면 새 대화를 연다.','정한 내용은 파일로 남기고, 새 대화에서는 그 파일만 읽힌다.'] },
+    { lines:['한 번에 읽을 수 있는 양도 토큰으로 정해져 있다.'],
+      q1:'왜 한계가 있나?', why:['모델이 한 번에 계산할 수 있는 길이에 한계가 있다.'],
+      q3:'그래서 넘치면 어떻게 되나?', so:['오래된 대화부터 요약된다.','큰 파일은 통째로 주지 않고 필요한 부분만 읽힌다.'] },
+    { lines:['같은 글도 모델과 언어에 따라 토큰 수가 다르다.'],
+      q1:'왜 언어마다 다른가?', why:['모델마다 글을 자르는 방식이 다르다.','학습한 글에 영어가 많아서, 영어는 큰 덩어리로, 한국어는 더 잘게 잘리는 편이다.'],
+      q3:'그래서 무엇을 알아 두나?', so:['같은 내용이면 한국어가 토큰을 더 쓰는 경우가 많다.'] },
+    { lines:['이미지도 토큰이 된다.'],
+      q1:'왜 이미지도 토큰인가?', why:['이미지도 작은 조각으로 잘라 숫자로 바꿔 읽는다.','그림이 클수록 조각이 많아진다.'],
+      q3:'그래서 스크린샷은 어떻게 주나?', so:['필요한 부분만 잘라서 준다.'] },
+    { lines:['클리어는 대화를 비우고, 컴팩트는 대화를 요약해서 이어 간다.'],
+      q1:'왜 둘 다 토큰을 줄이나?', why:['다음 질문부터 다시 읽을 앞의 글이 줄어든다.','클리어는 아무것도 들고 가지 않고, 컴팩트는 요약본만 들고 간다.'],
+      q2:'요약하려면 전체를 읽는데 왜 줄어드나?', why2:['전체는 요약할 때 한 번만 읽는다.','그 뒤로는 짧은 요약본만 읽어서, 대화가 길게 이어질수록 아끼는 양이 커진다.'],
+      q3:'그래서 언제 무엇을 쓰나?', so:['앞의 대화가 필요 없는 새 작업이면 클리어를 쓴다.','같은 작업을 이어 가야 하면 컴팩트를 쓴다.','요약에서 세부 숫자나 문장이 빠질 수 있으니, 중요한 건 미리 파일에 남긴다.'] },
+    { lines:['토큰 절약 플러그인은 덜 읽히거나 덜 쓰게 만든다.'],
+      q1:'왜 그렇게 하면 줄어드나?', why:['토큰은 읽은 양과 쓴 양만큼 쓰인다.','둘 중 하나만 줄여도 사용량이 준다.'],
+      q2:'어떤 방식으로 줄이나?', why2:['파일을 통째로 읽히지 않고 필요한 부분만 찾아 읽게 한다.','명령 실행 결과처럼 긴 출력을 잘라서 넘긴다.','길어진 대화를 요약한다.','짧게 답하라는 지시를 넣는다.','찾아보는 일은 작은 모델에 맡기고 결과만 받는다.','자르고 찾는 일은 일반 프로그램이 해서 토큰을 쓰지 않는다.'],
+      q3:'그래서 무엇을 조심하나?', so:['덜 읽히면 필요한 내용까지 빠질 수 있다.','너무 짧게 답하게 하면 설명이 부족해진다.','절약한 만큼 결과가 나빠지지 않았는지 같은 일로 비교해 본다.'] },
+  ],
+  use:[
+    ['읽힌 만큼 쓴다','세션에 프로젝트 폴더 전체를 읽히지 않는다. 일에 필요한 파일만 지정해 준다.'],
+    ['대화가 길수록 비싸진다','역할별로 세션을 나눈다. 하루 작업이 끝나면 개발일지에 남기고, 다음 날은 새 대화로 시작한다.'],
+    ['세션끼리 주고받는 말도 토큰이다','세션 간 알림은 끝났을 때 한 번만 짧게 보낸다.'],
+    ['이미지는 크다','화면 확인용 스크린샷은 문제 부분만 잘라 준다.'],
+  ],
+  cmds:[
+    ['/context','지금 문맥이 얼마나 찼는지 보여 준다.','답이 앞 내용을 놓치는 것 같을 때 먼저 확인한다.'],
+    ['/usage','사용량과 요금제 한도를 보여 준다. /cost도 같다.','한도가 얼마나 남았는지 궁금할 때 쓴다.'],
+    ['/compact','대화를 요약하고 요약본으로 이어 간다. 뒤에 무엇을 중심으로 요약할지 적을 수 있다.','같은 작업을 이어 가는데 대화가 너무 길어졌을 때 쓴다.'],
+    ['/clear','대화를 비우고 새로 시작한다. 메모리와 CLAUDE.md는 남는다.','앞의 대화가 필요 없는 새 작업을 시작할 때 쓴다.'],
+    ['/btw','대화 기록에 남지 않는 곁가지 질문을 한다.','본 대화를 길게 만들지 않고 잠깐 물어볼 때 쓴다.'],
+    ['/rewind','특정 지점으로 대화를 되돌리거나, 그 지점부터 요약한다.','엉뚱한 방향으로 길게 간 대화를 잘라 낼 때 쓴다.'],
+  ],
+  cmdNote:['문맥이 한계에 가까워지면 자동으로 컴팩트가 실행된다.','자동 컴팩트 뒤에도 CLAUDE.md와 메모리는 다시 들어간다.'],
+  tips:[["파일 전체를 읽지 말고 상점 화면 부분만 읽고 고쳐 줘.","읽힌 만큼 토큰을 쓰니, 필요한 부분만 읽게 한다."],["지금까지 정한 내용을 파일로 정리해 줘. 새 대화에서는 이 파일만 읽고 이어 갈 거야.","대화가 길수록 매번 다시 읽어 비싸지니, 정리한 파일 하나로 새로 시작한다."],["결과는 바뀐 부분만 짧게 보고해 줘.","쓴 글도 토큰이니, 답의 길이를 줄인다."]],
+  mine:[
+    ['세션끼리 시작해요를 주고받다가 토큰이 빨리 닳았다.','끝났을 때 한 번만 짧게 알리기로 바꿨다(EP.01).'],
+    ['이 공부 대화도 길어져서 자동 컴팩트로 한 번 요약됐다.','요약 뒤에는 앞에서 쓴 문장을 그대로 기억하지 못해, 파일과 페이지에 남긴 것을 다시 읽었다.'],
+    ['지금 세션에는 ponytail이라는 플러그인이 켜져 있다.','가장 작은 변경으로 끝내고 답을 짧게 하라는 지시가 들어 있다.','토큰을 아끼는 프롬프트 플러그인의 예다.','켰을 때와 껐을 때 사용량 차이는 재 보지 않았다.'],
+    ['한국어가 토큰을 더 쓰는지도 아직 직접 재 보지 않았다.'],
+  ] },
+{ name:'결과 변동성', one:'같은 질문에도 답이 매번 다르다',
+  what:[
+    { lines:['같은 질문에도 답이 매번 조금씩 다르다.'],
+      q1:'왜 매번 다른가?', why:['다음 말을 고를 때 가장 그럴듯한 말 하나만 고르지 않는다.','그럴듯한 후보 몇 개 중에서 확률에 따라 뽑는다.'],
+      q2:'왜 일부러 섞어 뽑나?', why2:['늘 가장 그럴듯한 말만 고르면 답이 딱딱해지고 같은 말을 되풀이하기 쉽다.','조금 섞어야 자연스럽고 다양한 답이 나온다.'],
+      q3:'그래서 답을 어떻게 받아들이나?', so:['한 번 받은 답을 정답으로 여기지 않는다.'] },
+    { lines:['앞에서 한 조각이 달라지면 뒤가 통째로 달라진다.'],
+      q1:'왜 뒤까지 달라지나?', why:['답은 한 조각씩 이어 쓰고, 다음 조각은 앞의 글을 보고 고른다.','첫 단어가 달라지면 그 뒤의 흐름 전체가 갈린다.'],
+      q3:'그래서 무엇을 나누나?', so:['긴 답일수록 매번 더 많이 달라진다.','중요한 결과는 짧은 단위로 나눠서 받는다.'] },
+    { lines:['같은 질문이라도 함께 들어간 글이 다르면 답이 달라진다.'],
+      q1:'왜 질문이 같은데 다른가?', why:['모델은 질문만이 아니라 앞의 대화와 문서까지 전부 보고 답한다.'],
+      q3:'그래서 무엇을 고정하나?', so:['매번 같아야 하는 것은 규칙 문서로 적어 같이 넣는다.','CLAUDE.md는 답을 하나로 만들지는 않지만, 규칙에 맞는 답이 나올 확률을 높인다.'] },
+    { lines:['변동성이 쓸모 있을 때도 있다.'],
+      q1:'언제 쓸모 있나?', why:['같은 질문으로 서로 다른 안을 여러 개 받을 수 있다.'],
+      q3:'그래서 언제 살리고 언제 줄이나?', so:['아이디어나 시안처럼 여러 개를 비교할 일은 여러 번 뽑는다.','숫자나 규칙처럼 하나로 정해야 하는 일은 변동성을 줄인다.'] },
+    { lines:['계산처럼 정답이 하나인 일은 LLM에게 직접 맡기지 않는다.'],
+      q1:'왜 계산을 맡기지 않나?', why:['계산도 다음 말 고르기로 하니, 틀리거나 매번 다를 수 있다.'],
+      q3:'그래서 누가 계산하나?', so:['계산은 코드나 시뮬레이션이 한다.','LLM은 그 코드를 짜게 한다.'] },
+  ],
+  use:[
+    ['매번 답이 다르다','밸런스 수치는 LLM의 답이 아니라 봇 시뮬레이션 결과로 정한다.'],
+    ['여러 안을 뽑을 수 있다','아이콘, 이름, 기획안은 시안을 여러 개 받아 비교한다.'],
+    ['함께 넣은 글이 다르면 답이 다르다','화면 규칙, 직업 기준표처럼 매번 같아야 하는 건 문서로 고정한다.'],
+    ['길수록 많이 흔들린다','그림은 한 장을 먼저 승인하고 나머지를 한다.'],
+  ],
+  cmds:[
+    ['/rewind','특정 지점으로 대화를 되돌린다.','답이 마음에 안 들어 그 지점부터 다시 받고 싶을 때 쓴다.'],
+    ['/branch','지금 대화를 갈라 다른 방향을 시도한다. 원래 대화는 남는다.','같은 질문으로 다른 안을 따로 받아 비교하고 싶을 때 쓴다.'],
+  ],
+  tips:[["이 기획안을 서로 다른 방향으로 여러 개 만들어 줘. 비교해서 고를게.","매번 답이 다른 성질을 거꾸로 살려, 여러 안을 받아 고른다."],["수치는 직접 계산하지 말고, 계산하는 스크립트를 돌린 결과로 알려 줘.","계산도 확률로 하니, 정답이 하나인 일은 프로그램에 맡긴다."],["한 장만 먼저 만들어 보여 줘. 확인하면 나머지를 할게.","길수록 많이 흔들리니, 작은 단위로 확인하고 넘어간다."]],
+  mine:[
+    ['공격 자세 그림을 요청했더니 영웅마다 키가 제각각으로 나왔다.','기준 그림을 같이 주자 키가 맞춰졌다(EP.03).'],
+    ['그림 여러 장을 한꺼번에 바꿨다가, 마음에 안 들면 전부 다시 해야 했다.','지금은 한 장을 먼저 보고 괜찮으면 나머지를 한다(EP.01).'],
+    ['종 버튼 그림은 용 얼굴, 청록 얼굴 등 시안을 여러 개 받아 비교해서 골랐다(EP.04).'],
+    ['승률은 LLM의 판단이 아니라 봇으로 판마다 500번씩 돌려 쟀다(EP.03).'],
+  ] },
+{ name:'프롬프트', one:'LLM에게 주는 글 전체',
+  what:[
+    { lines:['프롬프트는 LLM에게 주는 글 전체다.'],
+      q1:'무엇이 프롬프트인가?', why:['채팅으로 보내는 요청도 프롬프트다.','CLAUDE.md처럼 자동으로 들어가는 문서도 프롬프트다.','스킬과 플러그인이 넣는 지시문도 프롬프트다.'],
+      q2:'왜 전부 프롬프트인가?', why2:['모델은 들어온 글을 구분하지 않고 한꺼번에 읽어 다음 말을 고른다.','누가 썼든 모델에게는 모두 읽을 글이다.'],
+      q3:'그래서 무엇을 알아 두나?', so:['내가 쓰지 않은 글도 결과에 영향을 준다.','플러그인을 켜면 그 지시문도 같이 읽힌다.'] },
+    { lines:['프롬프트는 답을 정하지 못하고, 확률을 움직인다.'],
+      q1:'왜 정하지 못하나?', why:['모델은 여전히 후보 중에서 확률로 고른다.','프롬프트는 어떤 후보가 뽑힐 확률을 올리거나 내릴 뿐이다.'],
+      q3:'그래서 꼭 지켜야 하는 건 어떻게 하나?', so:['결과를 따로 확인한다.','절대 어기면 안 되는 규칙은 훅처럼 프로그램으로 검사한다.'] },
+    { lines:['많이 적을수록 좋은 건 아니다.'],
+      q1:'왜 많이 적으면 안 되나?', why:['적은 글은 매번 토큰으로 읽힌다.'],
+      q2:'그럼 언제 적나?', why2:['같은 말을 두 번 했을 때 적는다.','AI가 짐작할 수 없는 내 판단일 때 적는다.','틀리면 비용이 클 때 적는다.','AI가 기본으로 못 할 때 적는다.'],
+      q3:'그래서 무엇을 빼나?', so:['AI가 기본으로 잘하는 일은 적지 않는다.'] },
+    { lines:['규칙이 많으면 무엇이 중요한지 흐려진다.'],
+      q1:'왜 흐려지나?', why:['모델은 규칙마다 중요도를 따로 매기지 않고, 들어온 글 전체를 보고 다음 말을 고른다.','규칙이 많을수록 규칙 하나가 결과에 주는 영향이 작아진다.'],
+      q3:'그래서 중요한 건 어떻게 표시하나?', so:['무조건, 반드시처럼 강도를 말로 적는다.','덜 중요한 규칙은 빼거나 스킬로 옮긴다.'] },
+    { lines:['서로 부딪히는 규칙이 있으면 매번 다르게 따른다.'],
+      q1:'왜 매번 다른가?', why:['두 규칙 중 어느 쪽을 따를지도 확률로 정해진다.','그날 함께 들어간 글에 따라 이쪽을 따르기도 하고 저쪽을 따르기도 한다.'],
+      q3:'그래서 어떻게 막나?', so:['예외는 규칙 안에 같이 적는다.','규칙을 바꾸면 예전 규칙은 지우고 새 규칙만 남긴다.','가끔 규칙 파일 전체를 읽고 겹치거나 부딪히는 곳을 정리한다.'] },
+    { lines:['모두가 지킬 규칙은 하나에, 역할별 규칙은 따로 둔다.'],
+      q1:'왜 나누나?', why:['한 파일에 모든 규칙을 두면 모든 세션이 매번 전부 읽는다.','쓰지 않는 규칙에도 토큰을 쓰고, 그만큼 필요한 규칙이 묻힌다.'],
+      q2:'그럼 다 쪼개면 되나?', why2:['너무 쪼개면 필요한 세션에 규칙이 빠진다.','여러 역할에 걸친 규칙은 공통에 남긴다.'],
+      q3:'그래서 어떻게 나누나?', so:['공통 규칙은 CLAUDE.md에 둔다.','역할별 규칙은 그 역할이 쓰는 문서나 스킬로 옮긴다.'] },
+    { lines:['설명보다 예시 하나가 잘 통한다.'],
+      q1:'왜 예시가 잘 통하나?', why:['LLM은 패턴을 따라 이어 쓴다.','예시는 따라 할 패턴을 그대로 보여 준다.'],
+      q3:'그래서 무엇을 주나?', so:['원하는 결과와 비슷한 예시를 같이 준다.','글은 잘 쓴 문단을, 그림은 기준 그림을 준다.'] },
+    { lines:['목표와 함께 어디서 멈출지를 준다.'],
+      q1:'왜 멈출 곳이 필요한가?', why:['고쳐 줘만 주면 어디까지 고칠지 모른다.','멈출 지점을 알아야 엉뚱한 곳까지 바꾸지 않는다.'],
+      q3:'그래서 어떻게 말하나?', so:['무엇을 바꾸고 무엇은 그대로 둘지 같이 말한다.','상점 버튼만 사각형으로 바꾸고 다른 화면은 그대로 두라고 말하는 식이다.'] },
+    { lines:['프롬프트는 결과를 보고 고친다.'],
+      q1:'왜 처음부터 다 정하지 않나?', why:['어떤 규칙이 지켜지고 어떤 규칙이 무시될지는 써 봐야 안다.','미리 다 적으면 필요 없는 규칙까지 매번 읽힌다.'],
+      q3:'그래서 무엇을 보고 고치나?', so:['같은 지적을 두 번 하면 규칙으로 올린다.','적어 둔 규칙이 자꾸 무시되면 강도를 높이거나 훅으로 검사한다.','쓰지 않는 규칙은 그 세션의 문서에서 뺀다.','규칙끼리 부딪히면 예외를 적거나 하나를 지운다.'] },
+  ],
+  use:[
+    ['들어간 글은 모두 프롬프트다','늘 지킬 게임 규칙은 CLAUDE.md에 둔다. 그날의 지시는 채팅으로 준다.'],
+    ['확률만 올린다','화면 규칙을 적어 두어도 결과는 스크린샷으로 확인한다.'],
+    ['규칙이 많으면 흐려진다','꼭 지킬 규칙에는 무조건을 붙인다. 예외는 같은 줄에 적는다.'],
+    ['역할마다 필요한 규칙이 다르다','화면 규칙은 UI와 페이지 세션이 읽는 문서로 따로 뺀다.'],
+    ['예시가 잘 통한다','그림은 기준 그림을, 기획서는 이전 기획서를 예로 준다.'],
+  ],
+  cmds:[
+    ['/init','프로젝트를 읽고 CLAUDE.md 초안을 만든다.','새 프로젝트를 시작해서 규칙 문서가 아직 없을 때 쓴다.'],
+    ['/plan','실행하기 전에 계획부터 세우게 한다.','큰 작업을 맡기기 전에 방향을 먼저 맞출 때 쓴다.'],
+  ],
+  tips:[["상점 버튼만 사각형으로 바꿔 줘. 다른 화면과 기능은 그대로 둬.","멈출 곳을 같이 줘야 엉뚱한 곳까지 바꾸지 않는다."],["같은 지적을 두 번 했으니 이 규칙을 CLAUDE.md에 추가해 줘. 기존 규칙과 부딪히는지 먼저 확인해 줘.","반복된 지적만 규칙으로 올리고, 부딪히는 규칙이 생기지 않게 한다."],["CLAUDE.md 전체를 읽고 겹치거나 부딪히는 규칙을 찾아 줘. 고치지는 말고 목록만 보여 줘.","규칙이 쌓이면 흐려지고 부딪히니, 가끔 정리할 곳을 찾는다."]],
+  mine:[
+    ['방치형 RPG의 화면 규칙은 같은 지적이 반복돼서 CLAUDE.md에 적었다.','버튼은 무조건 사각형, 도감 필터 칩은 예외처럼 강도와 예외를 같은 줄에 적었다.'],
+    ['지금은 세션 6개가 CLAUDE.md 하나를 같이 읽는다.','화면 규칙을 따로 떼어 낼지는 아직 정하지 않았다.'],
+    ['이력서 폴더는 스펙요약.md만 근거로 쓰게 했다.','경력을 지어내지 못하게 막기 위해서였다.'],
+    ['이 공부 일지의 왜?, 그래서? 형식을 메모리에 적어 두자, 다음 답부터 그 형식으로 나왔다.'],
+    ['페이지에 쓴 문장이 대화를 본 사람만 이해할 수 있게 쓰인 적이 있다.','프롬프트도 같아서, 내 머릿속 맥락은 적어 주지 않으면 AI가 모른다.'],
+  ] },
+{ name:'문맥 관리', one:'한 번에 볼 범위에 무엇을 넣고 뺄지', useTitle:'문맥 관리를 잘 하려면',
+  what:[{"lines":["문맥은 LLM이 한 번에 보는 글 전체다."],"q1":"무엇이 문맥에 들어가나?","why":["기본 지시와 CLAUDE.md, 메모리가 맨 앞에 들어간다.","지금까지 나눈 대화가 그 뒤를 잇는다.","읽은 파일 내용과 명령 실행 결과도 모두 들어간다."],"q3":"그래서 무엇을 알아 두나?","so":["파일 하나를 읽히면 그 내용 전체가 문맥을 차지한다.","내가 보낸 말보다 도구가 가져온 글이 훨씬 클 때가 많다."]},{"lines":["문맥이 길어지면 답의 질이 떨어진다."],"q1":"왜 떨어지나?","why":["볼 글이 많을수록 지금 필요한 내용을 찾기 어려워진다.","글이 길어질수록 한 부분에 가는 주의가 줄어, 다 읽고도 흘려듣게 된다."],"q2":"그럼 어디를 가장 흘려듣나?","why2":["긴 글의 맨 앞과 맨 끝은 비교적 잘 보고, 가운데를 놓치기 쉽다는 연구 결과가 있다.","오래 이어진 대화라면 중간쯤에 말로 정한 규칙이 가장 묻히기 쉽다."],"q3":"그래서 어떻게 하나?","so":["한 세션에는 한 가지 일만 맡긴다.","꼭 지킬 규칙은 대화 중간에 말로 두지 말고 CLAUDE.md에 적는다.","길어지면 컴팩트하거나 새로 연다."]},{"lines":["문맥이 넘치면 앞부분이 요약된다."],"q1":"왜 요약되나?","why":["한 번에 볼 수 있는 양에 한계가 있다.","한계에 가까워지면 오래된 대화부터 요약해 자리를 만든다."],"q3":"그래서 무엇을 남기나?","so":["요약에서 세부 숫자와 문장이 빠질 수 있다.","꼭 필요한 결정은 대화가 아니라 파일에 적는다.","CLAUDE.md와 메모리는 요약 뒤에도 다시 들어간다."]},{"lines":["서브에이전트는 문맥을 따로 쓴다."],"q1":"왜 문맥이 아껴지나?","why":["서브에이전트는 자기 문맥에서 파일을 읽고 찾아본다.","메인 대화에는 결과 요약만 돌아온다."],"q3":"그래서 언제 맡기나?","so":["많이 읽어야 하지만 결론만 필요한 일을 맡긴다.","웹 페이지 읽기나 문서 찾아보기 같은 일이다."]},{"lines":["필요한 것만 골라 넣는 것이 문맥 관리다."],"q1":"왜 골라 넣나?","why":["넘치면 중요한 것을 흘려듣는다."],"q2":"골라 넣으면 빠진 건 어떻게 되나?","why2":["모르는 내용이어도 멈추지 않고 지어낼 수 있다.","처음에는 꼭 필요한 것만 넣고, 나머지는 찾는 길을 알려 준다.","필요해진 순간에 필요한 파일만 읽게 하면 넘치지 않는다."],"q3":"그래서 어떻게 고르나?","so":["근거가 부족하면 지어내지 말고 물어보라고 규칙으로 적는다.","파일은 통째로 주지 말고 필요한 부분만 지정한다.","늘 필요한 건 CLAUDE.md에, 가끔 필요한 건 스킬에 둔다."]}],
+  use:[["읽힌 글이 모두 문맥이다","기획 세션에는 data.js 전체 대신 바꿀 부분만 지정한다."],["길어지면 흘려듣는다","기획, UI, 이미지처럼 세션을 역할별로 나눈다."],["넘치면 요약된다","되돌린 기획은 기획결정기록.md에 남긴다."],["빠진 건 지어낸다","기획 요청을 받으면 기획결정기록.md를 먼저 찾아보게 한다."],["서브에이전트는 문맥을 따로 쓴다","게임 전체 검수처럼 많이 읽는 일은 따로 맡기고 결과만 받는다."]],
+  cmds:[["/context","지금 문맥이 얼마나 찼고 무엇이 차지하는지 보여 준다.","답이 앞 내용을 놓치는 것 같을 때 먼저 확인한다."],["/compact","대화를 요약하고 요약본으로 이어 간다. 뒤에 무엇을 중심으로 요약할지 적을 수 있다.","같은 작업을 이어 가야 하는데 대화가 길어졌을 때 쓴다."]],
+  tips:[["근거가 부족하면 지어내지 말고 나한테 물어봐.","골라 넣으면 빠진 내용을 지어낼 수 있으니, 모를 때 할 일을 정해 준다."],["이 조사는 서브에이전트로 맡기고 결론만 알려 줘.","많이 읽는 일을 따로 맡겨서 메인 대화의 문맥을 깨끗하게 둔다."],["/compact 이번 세션에서 정한 화면 규칙 중심으로 요약해.","요약에서 세부가 빠질 수 있으니, 남길 내용을 직접 지정한다."]],
+  mine:[["이 공부 대화는 길어져서 자동으로 한 번 요약됐다.","요약 뒤에도 메모리에 적어 둔 형식 규칙은 그대로 지켜졌다."],["명령어 목록은 서브에이전트에게 공식 문서를 찾아보게 하고, 결과 표만 받았다.","문서 여러 쪽을 메인 대화에 넣지 않았다."],["게임 개발은 세션 6개로 나눴다.","같은 CLAUDE.md를 읽지만, 대화는 세션마다 따로다."],["이력서 폴더 CLAUDE.md에는 근거가 부족하면 사용자에게 질문하라고 적혀 있다."]] },
+{ name:'메모리', one:'대화가 끝나도 남는 기억', soon:true },
+{ name:'스킬', one:'필요할 때만 불러오는 작업 지시서', soon:true },
+];
+
+// 항목끼리 이어지는 흐름. 각 항목 맨 위에 자기가 속한 흐름을 보여 준다.
+// w: 칸 사이 연결 비중. h 높음(⇒), m 중간(→), l 낮음(⇢).
+const FLOWS = [
+  { name:'기억 흐름', nodes:['LLM','토큰','문맥 관리','메모리'], w:['h','h','m'] },
+  { name:'확률 흐름', nodes:['LLM','결과 변동성','프롬프트','스킬','훅','검증'], w:['h','h','h','l','m'] },
+];
+const ARROW = { h:['⇒','연결 높음'], m:['→','연결 중간'], l:['⇢','연결 낮음'] };
+
+// 받침에 따라 은/는, 을/를을 고른다. 한글이 아니면(LLM 등) 받침 있는 쪽.
+const jo = (w, withB, noB) => { const c = w.charCodeAt(w.length - 1); return w + (c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28 === 0 ? noB : withB); };
+
+function vibe(){
+  const ready = n => STUDY.some(s => s.name === n && !s.soon);
+  const flow = t => FLOWS.filter(f => f.nodes.includes(t.name)).map(f => `<div class="flow"><span class="fl">${f.name}</span>${f.nodes.map(n =>
+    n === t.name ? `<b>${esc(n)}</b>` : ready(n) ? `<a href="#vibe" data-go="${esc(n)}">${esc(n)}</a>` : `<span>${esc(n)}</span>`).reduce((acc, x, k) => acc + (k ? `<i class="${f.w[k - 1]}" title="${ARROW[f.w[k - 1]][1]}">${ARROW[f.w[k - 1]][0]}</i>` : '') + x, '')}</div>`).join('');
+  // 마침표로 끝나는 문장마다 한 줄, 앞에 ▪.
+  const ul = a => `<ul class="ln">${a.flatMap(x => x.split(/(?<=\.)\s+/)).map(x => `<li>${esc(x)}</li>`).join('')}</ul>`;
+  const slot = (label, a) => a ? `<div class="slot"><b>${label}</b>${ul(a)}</div>` : '';
+  const item = t => t.soon
+    ? `<div class="term soon"><div class="sum"><b>${esc(t.name)}</b><span>${esc(t.one)} · 준비 중</span></div></div>`
+    : `<details class="term" data-name="${esc(t.name)}"${t.open ? ' open' : ''}><summary><b>${esc(t.name)}</b><span>${esc(t.one)}</span></summary><div class="tb">
+      ${flow(t)}
+      <h3>${esc(jo(t.name, '은', '는'))} 무엇인지</h3>
+      ${t.what.map(c => `<div class="claim">${ul(c.lines)}<div class="why">${slot(c.q1, c.why)}${c.why2 ? `<div class="deep">${slot(c.q2, c.why2)}</div>` : ''}${slot(c.q3, c.so)}</div></div>`).join('')}
+      <h3>${esc(t.useTitle || jo(t.name, '을', '를') + ' 잘 쓰려면')}</h3>
+      <div class="tbl"><table><tr><th>${esc(t.name)}의 성질</th><th>게임 개발에 적용</th></tr>${t.use.map(([a, b]) => `<tr><td>${esc(a)}</td><td>${ul([b])}</td></tr>`).join('')}</table></div>
+      ${t.useNote ? ul(t.useNote) : ''}
+      ${t.cmds ? `<h3>명령어</h3>
+      <div class="tbl"><table><tr><th>명령어</th><th>하는 일</th><th>언제 쓰나</th></tr>${t.cmds.map(([c, d, w]) => `<tr><td><code>${esc(c)}</code></td><td>${ul([d])}</td><td>${ul([w])}</td></tr>`).join('')}</table></div>
+      ${t.cmdNote ? ul(t.cmdNote) : ''}` : ''}
+      ${t.tips ? `<h3>추천 프롬프트</h3>
+      <div class="tips">${t.tips.map(([p, why]) => `<div class="tip"><div class="code"><pre>${esc(p)}</pre><button type="button" class="cp">복사</button></div>${ul([why])}</div>`).join('')}</div>` : ''}
+      <h3>나의 경험</h3>
+      <div class="mine">${t.mine.map(s => `<div class="note">${ul(s)}</div>`).join('')}</div>
+    </div></details>`;
+  view.innerHTML = `
+  <p class="px eyebrow">Vibe Coding</p>
+  <h1>바이브코딩</h1>
+  <p class="lede">AI와 함께 만들며 배운 것을 적는다. 뜻만 외우지 않고, 왜 그런지와 그래서 내 작업에서 어떻게 쓰는지까지 본다.</p>
+  <h2>1부. LLM에게 무엇을 넣나</h2>
+  ${STUDY.map(item).join('')}`;
+  view.querySelectorAll('.tip .cp').forEach(b => b.onclick = async () => {
+    try { await navigator.clipboard.writeText(b.previousElementSibling.textContent); b.textContent = '복사됨'; }
+    catch { b.textContent = '직접 선택해 주세요'; }
+    setTimeout(() => b.textContent = '복사', 1500);
+  });
+  // 흐름에서 다른 항목을 누르면 그 항목을 펼치고 그리로 이동한다.
+  view.querySelectorAll('[data-go]').forEach(a => a.onclick = e => {
+    e.preventDefault();
+    const d = [...view.querySelectorAll('details.term')].find(x => x.dataset.name === a.dataset.go);
+    if (d) { d.open = true; d.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+}
+
+const PAGES = { about:['소개',about], game:['게임소개',game], devlog:['개발일지',devlog], vibe:['바이브코딩',vibe] };
 function route(){
   const h = location.hash.slice(1), i = POSTS.findIndex(p => p.id === h && !p.soon);
   const tab = i >= 0 ? 'devlog' : (PAGES[h] ? h : 'about');
   sideNav([]);
-  if (i >= 0) post(i); else { PAGES[tab][1](); document.title = `${PAGES[tab][0]} · 빅토리`; }
+  if (i >= 0) post(i); else { PAGES[tab][1](); document.title = `${PAGES[tab][0]} · 빅토리 스튜디오`; }
   document.querySelectorAll('[data-tab]').forEach(a => a.dataset.tab === tab ? a.setAttribute('aria-current','page') : a.removeAttribute('aria-current'));
   scrollTo(0,0);
 }
@@ -632,3 +929,5 @@ const onScroll = () => { const max = document.documentElement.scrollHeight - inn
 addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); addEventListener('hashchange', onScroll);
 route();
 </script>
+
+</body></html>
