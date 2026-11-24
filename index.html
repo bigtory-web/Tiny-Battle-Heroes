@@ -2314,6 +2314,13 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
   background:linear-gradient(#b5aec0,#b5aec0) 10px 4px/8px 2px no-repeat,repeating-linear-gradient(135deg,rgba(255,255,255,.06) 0 2px,transparent 2px 8px),linear-gradient(#8f879b 0 30%,#7c7488 30% 64%,#6a6272 64% 100%)!important;
   box-shadow:inset 0 0 0 2px #17141d,inset 0 3px 0 -1px #a59eb0,inset 3px 0 0 -1px #5a5266,inset -3px 0 0 -1px #5a5266,inset 0 -5px 0 -2px #5a5266,inset 0 -7px 0 -2px #4a4452!important;
   color:#ece6f2!important;text-shadow:-1px 0 #3a3442,1px 0 #3a3442,0 -1px #3a3442,0 1px #3a3442!important}
+/* ───── 나머지 색 버튼(파랑·빨강·초록·회색)에도 같은 픽셀 입체 (2026-11-25 사용자: "다른버튼들도") ─────
+   버튼이 원래 쓰던 색 변수(--bb 면, --bh 밝은 줄, --bl 어두운 단)로 명암 3단·아래 단·좌우 줄을 만들어서 색마다 따로 안 정해도 돼요. 비활성은 색 변수가 회색으로 바뀌어서 같은 구조의 회색이 돼요. X(닫기) 버튼은 작은 아이콘이라 제외.
+   되돌리는 방법: 이 블록을 지우면 돼요. */
+.hinfo .hi-b,.hinfo .hi-b.go,.hinfo .hi-b.alt,.rbox .rbtns .again,#rAgain,#rNo,.evbtns [data-evleave],.rbtns .rlink,#backBtn,#rExit,#shopReroll .spRe,#arena.evstage #fightBtn{
+  background:linear-gradient(var(--bh),var(--bh)) 10px 4px/8px 2px no-repeat,repeating-linear-gradient(135deg,rgba(255,255,255,.07) 0 2px,transparent 2px 8px),linear-gradient(color-mix(in srgb,var(--bb) 72%,#fff) 0 30%,var(--bb) 30% 64%,color-mix(in srgb,var(--bb) 80%,var(--bl)) 64% 100%)!important;
+  box-shadow:inset 0 0 0 2px #17141d,inset 0 3px 0 -1px var(--bh),inset 3px 0 0 -1px color-mix(in srgb,var(--bb) 78%,var(--bl)),inset -3px 0 0 -1px color-mix(in srgb,var(--bb) 78%,var(--bl)),inset 0 -5px 0 -2px color-mix(in srgb,var(--bb) 55%,var(--bl)),inset 0 -7px 0 -2px var(--bl)!important}
+.hinfo .hi-b:active:not(:disabled),.hinfo .hi-b.go:active:not(:disabled),.hinfo .hi-b.alt:active:not(:disabled),.rbox .rbtns .again:active:not(:disabled),#rAgain:active:not(:disabled),#rNo:active:not(:disabled),.evbtns [data-evleave]:active:not(:disabled),.rbtns .rlink:active:not(:disabled),#backBtn:active:not(:disabled),#rExit:active:not(:disabled),#shopReroll .spRe:active:not(:disabled),#arena.evstage #fightBtn:active:not(:disabled){transform:translateY(2px)!important;box-shadow:inset 0 0 0 2px #17141d,inset 0 2px 0 -1px var(--bh),inset 3px 0 0 -1px color-mix(in srgb,var(--bb) 78%,var(--bl)),inset -3px 0 0 -1px color-mix(in srgb,var(--bb) 78%,var(--bl)),inset 0 -3px 0 -2px color-mix(in srgb,var(--bb) 55%,var(--bl)),inset 0 -4px 0 -2px var(--bl)!important}
 </style>
 </head>
 <body>
