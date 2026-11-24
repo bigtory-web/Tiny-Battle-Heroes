@@ -1,3 +1,4 @@
+// 사용: img/tools 에서 node fx_bubble_draw.js (결과는 ./fxout/). 보호막 방울 8프레임을 코드로 그린다. png_helper.js는 PNG 읽기·쓰기 도구.
 const {dec,enc}=require('./png_helper.js');const fs=require('fs');
 const F=72,C=(F-1)/2,R=34;const WHITE=[255,255,255];
 function frame(k){
