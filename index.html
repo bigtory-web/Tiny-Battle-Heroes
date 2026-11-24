@@ -2371,6 +2371,9 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
 .nightmsg b{font:400 34px/1 var(--display);letter-spacing:2px;color:#c9b8ff;text-shadow:-2px 0 #17141d,2px 0 #17141d,0 -2px #17141d,0 2px #17141d,0 4px 0 #3a1f66,0 0 16px rgba(150,110,255,.8)}
 .nightmsg span{font:400 18px/1 var(--display);color:#ff8a80;padding:3px 10px;background:rgba(23,20,29,.8);text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d}
 @keyframes nightmsg{0%{transform:translate(-50%,-50%) scale(.5);opacity:0}12%{transform:translate(-50%,-50%) scale(1.15);opacity:1}22%{transform:translate(-50%,-50%) scale(1)}78%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-56%) scale(1);opacity:0}}
+/* 그림 깨짐 고침: 외곽선 그림은 정수배로 미리 키웠으니 화면 크기로는 부드럽게. 전투 캔버스는 720→화면 크기로 줄 때 최근접이면 줄이 빠져서 부드럽게 (2026-11-25) */
+.av.pic.olb{image-rendering:auto!important}
+.arena canvas,#cv,#field canvas.fbar{image-rendering:auto!important}
 </style>
 </head>
 <body>
@@ -2950,6 +2953,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
   function showOffer(key){
     var p = LP(key), box = $('roul'), pic = box.querySelector('.rpic');
     box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); rayFx(key); $('rUp').hidden = !upOK(key);
+    pic.style.imageRendering = p.type === 'h' && IMGS[p.id] ? 'auto' : '';
     if (p.type === 'h'){ var id = p.id; pic.innerHTML = IMGS[id] ? '' : AV[id]; pic.style.backgroundImage = IMGS[id] ? 'url(' + outlinedURL(id, gc(id)) + ')' : 'none'; pic.style.setProperty('--gc', gc(id)); if (IMGS[id]){ pic.style.setProperty('--o1', 'url(' + outlinedURL(id, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(id, '#ffffff') + ')'); } /* 결과가 뜨면 외곽선 파랑↔흰색 */ pic.classList.remove('loot'); }
     else { pic.style.backgroundImage = 'none'; pic.innerHTML = lootIcon(key); pic.classList.add('loot'); }
     rpAnim.id = p.type === 'h' && ANIM_IDS.indexOf(p.id) >= 0 ? p.id : null; /* 프레임 시트 영웅은 룰렛 큰 그림도 대기 1~4 반복 */
@@ -3744,6 +3748,10 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
   // 전투 유닛: 원 없이 서 있는 전신 그림. 발밑 타원 = 진영 색, 아래에 체력·에너지 막대
   // 그림 모양 그대로 한 가지 색으로 칠한 실루엣 (등급 외곽선용, 영웅마다 한 번만 만들어 둬요)
   var SIL = {};
+  /* 그림 깨짐 고침(2026-11-25): 64px 그림을 1.35배 같은 소수 배율로 최근접(pixelated)으로 늘리면 점 크기가 들쭉날쭉해져 깨져 보임. 먼저 정수배(N)로 최근접 확대해 두고, 화면 크기로는 부드럽게(sharp-bilinear) 줄여 그림 */
+  var UPC = {};
+  function UPS(key, N){ var k = key + '@' + N; if (UPC[k]) return UPC[k]; var im = IMGS[key], c = document.createElement('canvas'); c.width = im.width * N; c.height = im.height * N; var x = c.getContext('2d'); x.imageSmoothingEnabled = false; x.drawImage(im, 0, 0, c.width, c.height); return UPC[k] = c; }
+  function silU(key, col, N){ var k = key + col + '@' + N; if (SIL[k]) return SIL[k]; var src = UPS(key, N), c = document.createElement('canvas'); c.width = src.width; c.height = src.height; var x = c.getContext('2d'); x.drawImage(src, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = col; x.fillRect(0, 0, c.width, c.height); return SIL[k] = c; }
   var OUTL = {};
   /* 편성 화면(전투 시작 전) 캐릭터: 프레임 시트 영웅은 대기 1~4칸을 0.18초마다 바꿔 그려요. 외곽선은 avO와 같은 색으로 프레임마다 다시 구움 */
   setInterval(function(){ var k = 1 + Math.floor(performance.now() / 180) % 4; document.querySelectorAll('#field .av.pic.olb[data-oid]').forEach(function(e){ if (e.dataset.fk === '' + k) return; var id = e.dataset.oid, f = id + '_a' + k; if (!IMGS[f]) return; e.dataset.fk = k; e.style.backgroundImage = 'url(' + outlinedURL(f, gc(id) + 'b3') + ')'; }); }, 60);
@@ -3752,7 +3760,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
     pic.style.backgroundImage = 'url(' + outlinedURL(f, gc(id)) + ')'; pic.style.setProperty('--o1', 'url(' + outlinedURL(f, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(f, '#ffffff') + ')'); } /* 같은 외곽선 색(등급·파랑·흰색)으로 프레임마다 다시 그려 연출 유지 */
   setInterval(rpAnimTick, 90);
   function outlinedURL(id, col){ var k = id + col; if (OUTL[k]) return OUTL[k]; var im = IMGS[id], w = im.width, hh = im.height, c = document.createElement('canvas'); c.width = w + 2; c.height = hh + 2; var x = c.getContext('2d'); x.imageSmoothingEnabled = false;
-    var s = silhouette(id, col); [[0, 1], [2, 1], [1, 0], [1, 2]].forEach(function(o){ x.drawImage(s, o[0], o[1]); }); x.drawImage(im, 1, 1); return (OUTL[k] = c.toDataURL()); }
+    var s = silhouette(id, col); [[0, 1], [2, 1], [1, 0], [1, 2]].forEach(function(o){ x.drawImage(s, o[0], o[1]); }); x.drawImage(im, 1, 1); var N = Math.max(1, Math.ceil(100 / w)); if (N > 1){ var c2 = document.createElement('canvas'); c2.width = c.width * N; c2.height = c.height * N; var x2 = c2.getContext('2d'); x2.imageSmoothingEnabled = false; x2.drawImage(c, 0, 0, c2.width, c2.height); c = c2; } return (OUTL[k] = c.toDataURL()); }
   // 발 그림자 자리: 그림 맨 아래 3줄(발)의 좌우 끝(l,r = 그림 폭 비율)과 발 밑 빈 줄 높이(g = 그림 높이 비율)
   var FOOTBOX = {};
   function footBox(id){ var im = IMGS[id]; if (!im) return null; if (FOOTBOX[id] !== undefined) return FOOTBOX[id];
@@ -3866,16 +3874,16 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
     var hasSh = u.shield > 1 && u.alive; if (u._hadSh && !hasSh && u.alive) u._brk = .24; u._hadSh = hasSh; if (u._brk > 0) u._brk -= el; if (!u.alive) u._brk = 0;
     ctx.save(); ctx.translate(Math.round(x), Math.round(foot)); if (dir < 0) ctx.scale(-1, 1);
     if (u.energy >= 99.9 && u.alive){ ctx.shadowColor = '#ffd34d'; ctx.shadowBlur = 18; }
-    if (im){ var sil = silhouette(sid, gc(u.id)), o = 1, ga0 = ctx.globalAlpha; // 등급 외곽선: 가장 얇게(1 논리 px), 옅게
-      ctx.imageSmoothingEnabled = false; var sx = Math.round(-S / 2), sy = Math.round(-S + S * .04);
-      if (inspect && inspect.uid === u.uid){ var ps = silhouette(sid, Math.floor(performance.now() / 350) % 2 ? '#fff3b0' : '#ffd34d'); [[2, 0], [-2, 0], [0, 2], [0, -2]].forEach(function(d){ ctx.drawImage(ps, sx + d[0], sy + d[1], S, S); }); } /* 전투 중에도 고른 캐릭터(아군·적)에 금색 선택 라인, 0.7초 깜빡임 (편성 화면 .picked와 같은 모양) */
+    if (im){ var UN = Math.max(1, Math.ceil(S / im.width)), imU = UPS(sid, UN), sil = silU(sid, gc(u.id), UN), o = 1, ga0 = ctx.globalAlpha; // 등급 외곽선: 가장 얇게(1 논리 px), 옅게
+      ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high'; var sx = Math.round(-S / 2), sy = Math.round(-S + S * .04);
+      if (inspect && inspect.uid === u.uid){ var ps = silU(sid, Math.floor(performance.now() / 350) % 2 ? '#fff3b0' : '#ffd34d', UN); [[2, 0], [-2, 0], [0, 2], [0, -2]].forEach(function(d){ ctx.drawImage(ps, sx + d[0], sy + d[1], S, S); }); } /* 전투 중에도 고른 캐릭터(아군·적)에 금색 선택 라인, 0.7초 깜빡임 (편성 화면 .picked와 같은 모양) */
       ctx.globalAlpha = ga0 * .65; [[o, 0], [-o, 0], [0, o], [0, -o]].forEach(function(d){ ctx.drawImage(sil, sx + d[0], sy + d[1], S, S); }); ctx.globalAlpha = ga0;
-      ctx.drawImage(im, sx, sy, S, S);
-      if (u._cfl > 0){ ctx.globalAlpha = ga0 * Math.min(1, u._cfl / .25); ctx.drawImage(silhouette(sid, '#ffffff'), sx, sy, S, S); ctx.globalAlpha = ga0; } /* 상자 그림이 바뀌는 순간 반짝 */
-      if (u.chill > 0){ ctx.globalAlpha = ga0 * .45; ctx.drawImage(silhouette(sid, '#6fc3ff'), sx, sy, S, S); ctx.globalAlpha = ga0; } // 얼음 둔화: 파란 틴트
-      if (u.stone > 0){ ctx.globalAlpha = ga0 * .8; ctx.drawImage(silhouette(sid, '#8d8a92'), sx, sy, S, S); ctx.globalAlpha = ga0; } // 돌: 회색
-      if (u._rev > 0){ ctx.globalAlpha = ga0 * Math.min(1, u._rev / .4); ctx.drawImage(silhouette(sid, '#fff6d6'), sx, sy, S, S); ctx.globalAlpha = ga0; } // 되살아남: 흰 번쩍
-      if (stop && hs.flash > 0){ ctx.shadowBlur = 0; ctx.globalAlpha = ga0 * hs.flash * Math.min(1, 1.6 * hs.t / hs.max); ctx.drawImage(silhouette(sid, '#ffffff'), sx, sy, S, S); ctx.globalAlpha = ga0; } }
+      ctx.drawImage(imU, sx, sy, S, S);
+      if (u._cfl > 0){ ctx.globalAlpha = ga0 * Math.min(1, u._cfl / .25); ctx.drawImage(silU(sid, '#ffffff', UN), sx, sy, S, S); ctx.globalAlpha = ga0; } /* 상자 그림이 바뀌는 순간 반짝 */
+      if (u.chill > 0){ ctx.globalAlpha = ga0 * .45; ctx.drawImage(silU(sid, '#6fc3ff', UN), sx, sy, S, S); ctx.globalAlpha = ga0; } // 얼음 둔화: 파란 틴트
+      if (u.stone > 0){ ctx.globalAlpha = ga0 * .8; ctx.drawImage(silU(sid, '#8d8a92', UN), sx, sy, S, S); ctx.globalAlpha = ga0; } // 돌: 회색
+      if (u._rev > 0){ ctx.globalAlpha = ga0 * Math.min(1, u._rev / .4); ctx.drawImage(silU(sid, '#fff6d6', UN), sx, sy, S, S); ctx.globalAlpha = ga0; } // 되살아남: 흰 번쩍
+      if (stop && hs.flash > 0){ ctx.shadowBlur = 0; ctx.globalAlpha = ga0 * hs.flash * Math.min(1, 1.6 * hs.t / hs.max); ctx.drawImage(silU(sid, '#ffffff', UN), sx, sy, S, S); ctx.globalAlpha = ga0; } }
     else { ctx.font = (u.boss ? 44 : 34) + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText(AV[u.id], 0, -4); }
     ctx.restore();
     if ((hasSh || u._brk > 0) && BUBIMG.complete && BUBIMG.naturalWidth) drawBubble(x, foot, S, u);
