@@ -4351,8 +4351,8 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
       return '<button class="stile mhero' + (on ? ' sel' : '') + '" style="--gcol:' + HG(it.id).col + '" data-sel="hero:' + i + '" type="button"><span class="ic">' + heroFr(it.id) + '</span>' + priceTag(it.price, S.gold >= it.price) + '</button>'; });
     var cells = tiles.slice(); for (var ci = cells.length; ci < 6; ci++){ var lv = shopLockLv(ci); cells.push(lv ? '<span class="stile lockd"><em>🔒 Lv' + lv + '</em></span>' : '<span class="stile empty"></span>'); }
     $('stock').innerHTML = (hrow.length ? '<div class="srow2 h"><span class="rowic">' + (HUDOK.gold ? '<img class="mni" src="img/p/hud_gold.png" alt="">' : '🪙') + '</span>' + hrow.join('') + '</div>' : '') + '<div class="srow2 g six"><span class="rowic"></span>' + cells.join('') + '</div>'; /* 2행×3열 */
-    var rMax = D.shop.refreshMax || Infinity, rLeft = Math.max(0, rMax - (S.shop.rerolls || 0)), rOff = !rLeft || S.gold < rp;
-    $('shopReroll').innerHTML = '<button class="spRe' + (rOff ? ' no' : '') + '" data-reroll="1" type="button"' + (rOff ? ' disabled' : '') + ' title="리셋 · 열린 칸을 모두 새로 뽑아요"><img class="uic" src="img/p/ui_reroll.png" alt="" onerror="this.outerHTML=&quot;🎲&quot;">' + rp.toLocaleString() + 'G' + (isFinite(rMax) ? ' (' + rLeft + ')' : '') + '</button>'; /* 2026-11-23: 상점 오른쪽 위 주사위 버튼으로 되돌림 */
+    var rMax = D.shop.refreshMax || Infinity, rLeft = Math.max(0, rMax - (S.shop.rerolls || 0)), rOff = !rLeft || S.gold < rp, rDis = rOff || battleOn();
+    $('shopReroll').innerHTML = '<button class="spRe' + (rOff ? ' no' : '') + '" data-reroll="1" type="button"' + (rDis ? ' disabled' : '') + ' title="리셋 · 열린 칸을 모두 새로 뽑아요"><img class="uic" src="img/p/ui_reroll.png" alt="" onerror="this.outerHTML=&quot;🎲&quot;">' + rp.toLocaleString() + 'G' + (isFinite(rMax) ? ' (' + rLeft + ')' : '') + '</button>'; /* 2026-11-23: 상점 오른쪽 위 주사위 버튼으로 되돌림 */
     $('shopReroll').hidden = !D.shop.refresh; // 새로고침 없음(refresh 0)
     $('shopDot').hidden = !anyBuy;
     renderShopInfo();
@@ -4415,7 +4415,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
     shopSel = { t: v[0], i: +v[1] }; sellArm = null; renderShop();
   });
   $('shopX').addEventListener('click', function(){ setShop(false); });
-  $('shopReroll').addEventListener('click', function(e){ var b = e.target.closest('[data-reroll]'); if (!b || b.disabled || merchOffer()) return; e.stopPropagation(); var rp = E.refreshPrice(D, S.shop.rerolls || 0);
+  $('shopReroll').addEventListener('click', function(e){ var b = e.target.closest('[data-reroll]'); if (!b || b.disabled || merchOffer() || battleOn()) return; e.stopPropagation(); var rp = E.refreshPrice(D, S.shop.rerolls || 0);
     if (S.gold < rp || (S.shop.rerolls || 0) >= (D.shop.refreshMax || Infinity)) return; S.gold -= rp; S.shop = { stock: newStock(), rerolls: (S.shop.rerolls || 0) + 1, sold: [], ng: lastNg }; shopSel = null; save(); renderAll(); });
   $('shopBuy').addEventListener('click', function(){
     if (!shopSel || battleOn()) return;
