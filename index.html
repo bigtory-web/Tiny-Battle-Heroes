@@ -2185,7 +2185,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
 .rbox .rstrip.reel::before{left:0;background:linear-gradient(90deg,rgba(23,20,29,.75),rgba(23,20,29,0))}
 .rbox .rstrip.reel::after{right:0;background:linear-gradient(270deg,rgba(23,20,29,.75),rgba(23,20,29,0))}
 /* 보물상자 2차 */
-#field .foe.chestbig .av{transform:scaleX(-1) scale(2.2857)!important}
+#field .foe.chestbig .av{transform:scaleX(-1) scale(1.25)!important}
 #field .foe.chestbig .cbub{bottom:auto}
 .cbub .cmax{position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%);padding:2px 7px;white-space:nowrap;font:400 12px var(--display);font-style:normal;color:#fff3dc;background:#d8443e;box-shadow:inset 0 0 0 2px #17141d;text-shadow:0 1px 0 #17141d}
 .chestpop .rname .cphp{position:relative;display:block;width:220px;height:14px;margin:0 auto;background:#3b3546;box-shadow:0 0 0 2px #17141d}
@@ -2321,6 +2321,10 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
   background:linear-gradient(var(--bh),var(--bh)) 10px 4px/8px 2px no-repeat,repeating-linear-gradient(135deg,rgba(255,255,255,.07) 0 2px,transparent 2px 8px),linear-gradient(color-mix(in srgb,var(--bb) 72%,#fff) 0 30%,var(--bb) 30% 64%,color-mix(in srgb,var(--bb) 80%,var(--bl)) 64% 100%)!important;
   box-shadow:inset 0 0 0 2px #17141d,inset 0 3px 0 -1px var(--bh),inset 3px 0 0 -1px color-mix(in srgb,var(--bb) 78%,var(--bl)),inset -3px 0 0 -1px color-mix(in srgb,var(--bb) 78%,var(--bl)),inset 0 -5px 0 -2px color-mix(in srgb,var(--bb) 55%,var(--bl)),inset 0 -7px 0 -2px var(--bl)!important}
 .hinfo .hi-b:active:not(:disabled),.hinfo .hi-b.go:active:not(:disabled),.hinfo .hi-b.alt:active:not(:disabled),.rbox .rbtns .again:active:not(:disabled),#rAgain:active:not(:disabled),#rNo:active:not(:disabled),.evbtns [data-evleave]:active:not(:disabled),.rbtns .rlink:active:not(:disabled),#backBtn:active:not(:disabled),#rExit:active:not(:disabled),#shopReroll .spRe:active:not(:disabled),#arena.evstage #fightBtn:active:not(:disabled){transform:translateY(2px)!important;box-shadow:inset 0 0 0 2px #17141d,inset 0 2px 0 -1px var(--bh),inset 3px 0 0 -1px color-mix(in srgb,var(--bb) 78%,var(--bl)),inset -3px 0 0 -1px color-mix(in srgb,var(--bb) 78%,var(--bl)),inset 0 -3px 0 -2px color-mix(in srgb,var(--bb) 55%,var(--bl)),inset 0 -4px 0 -2px var(--bl)!important}
+/* 2026-11-25 보물상자 보상 말풍선: 바탕을 어두운 보라로(보상 아이콘·글자가 잘 보이게), 상자 위로 더 띄움 */
+#field .foe .cbub{background:#2a2533;box-shadow:0 0 0 2px #17141d,inset 0 0 0 1px #5d5470}
+#field .foe .cbub .mbi em,#field .foe .cbub .mbi em{color:#f3e6c4!important}
+#field .foe .cbub .mbi em b,#field .foe .cbub .mbi b{color:#ffd34d!important}
 </style>
 </head>
 <body>
@@ -3782,7 +3786,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
     if (k < bk.pts.length){ if (bk.k !== k){ bk.k = k; bk.cur = bk.pts[k]; if (HAS_FX) FX.play('poof', bk.cur[0], bk.cur[1] + OFF + 26, { scale: .6 }); } return; }
     var lp = bk.cur; delete blinks[u.uid]; if (HAS_FX){ if (lp) FX.play('poof', lp[0], lp[1] + OFF + 26, { scale: .6 }); fxAt('poof', u, { scale: .6 }); } } // 다 베면 제자리로: 양쪽에 순간이동 이펙트
   var CHSTG = []; [1, 2, 3].forEach(function(g){ [1, 2, 3].forEach(function(s){ CHSTG.push('chest_g' + g + '_s' + s); }); }); CHSTG.forEach(function(k){ var im = new Image(); im.onload = function(){ IMGS[k] = im; IMGSRC[k] = im.src; PIX[k] = true; if (S && !bt) renderForm(); }; im.src = 'img/p/' + k + '.png'; }); /* chest_g등급_s상태 */
-  var CHEST_K = 1.5; /* 상자 크기 배율(영웅 칸 기준). 2026-11-25 사용자: 보물상자가 너무 커서 작게 (144/63 = 2.29 -> 1.5, 36칸 그림이 약 144px -> 약 95px) */ /* 보물상자 화면 배율 (영웅 대비, 정수). 4면 4·5·6칸 폭을 거의 덮지만 높이가 커요 */
+  var CHEST_K = 1.25; /* 상자 크기 배율(영웅 칸 기준). 2026-11-25 사용자: 보물상자가 너무 커서 작게 (144/63 = 2.29 -> 1.5 -> 1.25, 36칸 그림이 약 144px -> 약 80px) */ /* 보물상자 화면 배율 (영웅 대비, 정수). 4면 4·5·6칸 폭을 거의 덮지만 높이가 커요 */
   var CPGOLD = new Image(); CPGOLD.src = 'img/p/hud_gold.png';
   function chestStage(hr){ return hr > 2 / 3 ? 1 : hr > 1 / 3 ? 2 : 3; } /* 남은 체력 66%·33%에서 그림이 바뀌어요 */
   function imgTopFrac(im){ if (!im) return 0; if (im._topf != null) return im._topf; try { var c = document.createElement('canvas'); c.width = im.width; c.height = im.height; var x = c.getContext('2d'); x.drawImage(im, 0, 0); var d = x.getImageData(0, 0, c.width, c.height).data, t = 0; outer: for (var yy = 0; yy < c.height; yy++) for (var xx = 0; xx < c.width; xx++) if (d[(yy * c.width + xx) * 4 + 3] > 10){ t = yy; break outer; } im._topf = t / c.height; } catch (e){ im._topf = 0; } return im._topf; } /* 그림 위쪽 투명한 줄 비율 */
@@ -3913,7 +3917,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
   function mobDropList(u){ var d = u && u.drop; return d ? [].concat(d).filter(Boolean) : []; }
   var chestLastG = null; function chestFlashCls(){ var g = chestGrade(S.bell || 0), f = chestLastG != null && g !== chestLastG; chestLastG = g; return f ? ' cflash' : ''; }
   function chestMaxText(TR){ var g = 0, s = 0; TR.forEach(function(R){ g += R.gold || 0; s += R.scroll || 0; }); return '최대 ' + g.toLocaleString() + 'G' + (s ? ' + 📜' + s : ''); }
-  function chestBub(){ var tf = imgTopFrac(IMGS[chestImgKey(chestGrade(), 1)]), TR = chestTiers(S.stage, S.bell || 0); return '<i class="mbub cbub" style="bottom:calc(' + (CHEST_K * 100 * (1 - tf)).toFixed(1) + '% + 10px)"><b class="cmax">' + chestMaxText(TR) + '</b>' + TR.slice().reverse().map(function(R){ return '<span class="mbi">' + (R.scroll ? '<span>\u{1F4DC}</span>' : lootIcon('g:' + R.gold)) + '<em>' + Math.round(R.at * 100) + '% <b>' + (R.gold ? '+' + R.gold : '') + '</b></em></span>'; }).join('') + '</i>'; }
+  function chestBub(){ var tf = imgTopFrac(IMGS[chestImgKey(chestGrade(), 1)]), TR = chestTiers(S.stage, S.bell || 0); return '<i class="mbub cbub" style="bottom:calc(' + (CHEST_K * 100 * (1 - tf)).toFixed(1) + '% + 26px)"><b class="cmax">' + chestMaxText(TR) + '</b>' + TR.slice().reverse().map(function(R){ return '<span class="mbi">' + (R.scroll ? '<span>\u{1F4DC}</span>' : lootIcon('g:' + R.gold)) + '<em>' + Math.round(R.at * 100) + '% <b>' + (R.gold ? '+' + R.gold : '') + '</b></em></span>'; }).join('') + '</i>'; }
   function mobBub(u){ var L = mobDropList(u); if (!L.length) return ''; return '<i class="mbub">' + L.map(function(k){ return '<span class="mbi">' + lootIcon(k) + '</span>'; }).join('') + '</i>'; }
   // 전투 중 캔버스용 전리품 그림
   var LOOTIMG = {};
