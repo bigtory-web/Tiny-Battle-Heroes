@@ -48,3 +48,7 @@
 ## [UI] DPS 버튼 아이콘 연결
 - 한 것: img/p/ui_dps.png(24x24)가 와서 📊 임시 아이콘이 자동으로 바뀜. 코드 변경 없음, 플레이 링크에 그림만 같이 배포.
 - 결과: 로컬에서 다른 버튼 아이콘과 같은 22x22로 그려지는 것 확인. 크기가 커 보이는지는 사용자 눈으로 확인 필요.
+
+## [UI] 안 쓰는 화면 함수 28개 지움 + DPS 창 제목 줄 접힘 기능 제거
+- 한 것: 사용자 "지워도돼 3번"에 따라 페이블 검수가 짚은 안 쓰는 화면 함수 28개(gradeTag, powerOf, enemyPower, miniHtml, canUp, openForm, tileURL, padStyle, teamPowHtml, skLines, elFxLine, mobDrops, settleAlliesOld, victoryMarch, drawStageBar, drawOrder, starPx, lootImg, synTag, drawSkills, stageWipe, walkIn, costText, manaTag, rowHtml, altCands, altDropAt, merchOrig)를 index.html에서 지움. 지우기 전에 전 파일에서 이름이 정의 한 번뿐인 것을 다시 확인, 하나 지울 때마다 스크립트 문법 검사. 백업은 개발 중 /tmp에만 있고 git에도 이전 커밋이 있음. 또 사용자 "DPS 버튼으로만 제어할게. 창 안에 접히는 건 제거"에 따라 DPS 창 제목 줄을 누르면 접히던 기능과 저장된 접힘 상태 처리를 뺌(제목 줄은 이제 글자 판).
+- 결과: 로컬에서 상점·도감·도구 이동, 전투, DPS 창 표시, 제목 누르기 무반응 확인, JS 오류 없음. 이벤트 판(제단·상인 등)과 휴대폰 화면은 못 봄. 아직 안 지운 것: 꺼진 기능 남은 코드(승산 표시 본문·#wfc, 상점 mine/reroll 갈래, lossLoot, 전투하는 상인), 안 쓰는 설정(data.js)·엔진 forecast는 기획 몫.

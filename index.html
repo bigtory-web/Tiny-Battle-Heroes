@@ -2250,7 +2250,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
 /* ───── DPS 창 2차 디자인 (2026-11-25) ───── */
 .dps,.dps.rel{width:244px!important} /* 유물 4번째 칸 오른쪽 끝(약 248px)까지 */
 .dps{background:#2a2533!important;box-shadow:inset 0 0 0 3px #17141d,inset 0 0 0 5px #5d5470!important;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d}
-.dps .dpsh{background:#3b3546!important;box-shadow:inset 0 -3px 0 #17141d;padding:7px 10px!important;font:400 14px var(--display)!important;color:#fff}
+.dps .dpsh{background:#3b3546!important;box-shadow:inset 0 -3px 0 #17141d;padding:7px 10px!important;font:400 14px var(--display)!important;color:#fff;cursor:default}
 .dps .dpsh em{display:none!important} /* 위쪽 화살표 뺌 */
 .dps .dpsb{max-height:300px!important;padding:5px 6px 6px!important}
 .dps .dr{padding:4px;margin-bottom:4px;gap:8px;background:#1d1a24;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 3px #3b3546}
@@ -2293,7 +2293,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
       <aside class="lbag" id="lbag"><div class="ubagbox"><div class="bagcol bagdrawer open ubag" id="bagDrawer"><div class="bagin"><div class="roster" id="roster"></div></div></div></div></aside>
       <div class="mid">
         <div class="hud" id="hud"><span class="it hudbag" title="백팩"><img class="hi" src="img/p/hud_bag.png" alt=""></span><span class="hudits" id="hudItems"></span><span class="hudbtns"><button class="hbtn" id="spdBtn" type="button" title="배속"><span class="spem">⏩</span>X1.5</button><button class="hbtn" id="skipBtn" type="button" title="건너뛰기" disabled><span class="spem">⏭️</span>스킵</button></span><span class="hudits" id="hudStg"></span></div>
-        <div class="arena" id="arena"><div class="dps a" id="dpsA" hidden><button class="dpsh" type="button" data-dps="A"><b>우리 DPS</b><em>▾</em></button><div class="dpsb"></div></div><div class="dps e" id="dpsE" hidden><button class="dpsh" type="button" data-dps="E"><em>▾</em><b>상대 DPS</b></button><div class="dpsb"></div></div><div class="evban" id="evBan" hidden></div><div class="evmerch" id="evMerch" hidden></div><div class="hinfo left" id="hinfo" hidden></div>
+        <div class="arena" id="arena"><div class="dps a" id="dpsA" hidden><div class="dpsh" data-dps="A"><b>우리 DPS</b></div><div class="dpsb"></div></div><div class="dps e" id="dpsE" hidden><div class="dpsh" data-dps="E"><b>상대 DPS</b></div><div class="dpsb"></div></div><div class="evban" id="evBan" hidden></div><div class="evmerch" id="evMerch" hidden></div><div class="hinfo left" id="hinfo" hidden></div>
           <div class="evdock" id="evDock" hidden><button class="edtab" id="edTab" type="button">이벤트</button><div class="edbody"><div class="edfe" title="0이면 평소 확률, N이면 스테이지 N개마다 이벤트 스테이지가 꼭 나와요"><button id="edFeDown" type="button">−</button><b id="edFe">간격 0</b><button id="edFeUp" type="button">+</button></div><div class="edlist" id="edList"></div></div></div><div class="field" id="field"></div>
           <canvas id="cv" width="720" height="400" aria-label="전투 화면" hidden></canvas>
           <div class="vsbar" id="vsBar" hidden><div class="tbar a" id="tbA"></div><b class="vsb" id="vsB">VS</b><div class="tbar e" id="tbE"></div></div><div class="skbar a" id="skA"></div>
@@ -2512,7 +2512,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   function GR(n){ var G = (D.heroGrades || {})[n] || {}; return { n: n, name: G.name || '', col: G.color || D.gradeColor[n] || '#fff' }; }
   function starsIn(n){ n = Math.max(0, Math.min(3, n || 0)); if (!n) return ''; var s = ''; for (var i = 0; i < n; i++) s += '<b></b>'; return '<i class="hst">' + s + '</i>'; }
   function heroFr(id, star){ return '<span class="hic hicf" style="--hg:' + HG(id).col + '">' + av(id) + starsIn(star) + '</span>'; }
-  function gradeTag(n){ var g = GR(n); return '<span class="hgr" style="color:' + g.col + '">' + g.name + '</span>'; }
   function cap(){ return E.costCap(D, Math.max(S.best || 0, S.stage)); }
   function usedCost(){ return 0; }
   function roster(){ return S.units.map(function(u){ return { uid: u.uid, id: u.id, level: lvOf(u.id), star: u.star }; }); }
@@ -2525,10 +2524,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     if (pp){ sp.x = pp.x; sp.y = pp.y; } return sp; }).filter(Boolean); }
   function pow(h, lv, mul){ var gr = 1 + D.growth.perLevel * (lv - 1), m = mul || {}; return Math.sqrt(h.hp * gr * (m.hp || 1) * h.atk * gr * (m.atk || 1) / h.interval); }
   function powerU(u){ return Math.round(pow(hero(u.id), lvOf(u.id), gmul(u.star))); }
-  function powerOf(id){ return Math.round(pow(hero(id), lvOf(id), gmul(bestGrade(id)))); }
   function myPower(){ return S.team.filter(Boolean).reduce(function(s, uid){ var u = U(uid); return s + (u ? powerU(u) : 0); }, 0); }
-  function enemyPower(st){ return Math.round(st.team.reduce(function(s, u){ return s + pow(hero(u.id), u.level, u.mul); }, 0)); }
-  function miniHtml(st){ return st.team.map(function(u){ var h = hero(u.id); return '<div class="mini' + (u.boss ? ' boss' : '') + '"><div class="av" style="--el:' + ELC[h.el] + '">' + AV[h.id] + '</div>' + h.name + ' ' + u.level + '</div>'; }).join(''); }
 
   // ───── 탭 ─────
   var TITLES = { camp: '캠페인', hero: '도감', shop: '상점', tool: '검증 도구' };
@@ -2570,7 +2566,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
 
   // ───── 도감: 영웅 · 스킬 전체 (가진 것은 밝게, 못 만난 영웅은 실루엣) ─────
   var cdxTab = 'hero', filter = 'all', cdxSel = null;
-  function canUp(id){ var lv = S.levels[id]; return lv < D.levelCost.maxLevel && S.gold >= E.levelCost(D, lv); }
   function renderFilters(){
     function btn(v, t, col){ return '<button data-f="' + v + '"' + (col ? ' style="--tc:' + col + '"' : '') + (v === filter ? ' class="on"' : '') + '>' + t + '</button>'; }
     function row(kind, map, col){ return '<div class="frow">' + Object.keys(map || {}).map(function(k){ return btn(kind + ':' + k, map[k], typeof col === 'function' ? col(k) : col); }).join('') + '</div>'; }
@@ -2629,7 +2624,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   });
 
   // ───── 편성 화면 ─────
-  function openForm(){ showTab('camp'); renderForm(); }
   // 편성 전장의 그림 크기 = 전장 폭 × 108/480 (전투 캔버스와 같은 배율)
   // 캐릭터 크기 배율 (도구 화면에서 조절, 100% = 79 논리 px = 36px 그림 × 2.2)
   function uScale(){ return (S.ui && S.ui.unitScale) || 0.8; } // 기본 캐릭터 크기 80%
@@ -2671,8 +2665,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     else if (String(nOpen).indexOf('alt') > 0) [0, 1, 2, 3, 4, 5, 6, 7, 8].forEach(function(i){ var p = hexCells().E[i]; if (p) hex(p[0], p[1] + OFF + FOOT, LF[LN[i]] || 'rgba(255,240,205,.06)', 'rgba(255,236,190,.35)'); }); /* 제단: 적 쪽 9칸 (건물·단상이 위에 그려져요) */
     else if (String(nOpen).indexOf('ev') > 0) hexCells().E.forEach(function(p, i){ hex(p[0], p[1] + OFF + FOOT, LF[LN[i]] ? LF[LN[i]].replace(/[\d.]+\)$/, function(a){ return (parseFloat(a) * .6).toFixed(3) + ')'; }) : 'rgba(255,240,205,.06)', 'rgba(255,236,190,.35)'); });
     return (HEXURL[nOpen] = cv5.toDataURL()); }
-  function tileURL(){ if (TILEURL) return TILEURL; var cv4 = document.createElement('canvas'); cv4.width = 124; cv4.height = 30;
-    drawDais(cv4.getContext('2d'), 62, 11, 116, { rim: '#8a7652', top: '#4f4130', top2: '#5a4a37', side: '#33291f', hi: '#a8946a' }); return (TILEURL = cv4.toDataURL()); }
   function mixC(a, b, k){ var p = function(s, i){ return parseInt(s.slice(1 + i * 2, 3 + i * 2), 16); }; var o = '#'; for (var i = 0; i < 3; i++){ var v = Math.round(p(a, i) * (1 - k) + p(b, i) * k); o += (v < 16 ? '0' : '') + v.toString(16); } return o; }
   function padURL(el){ if (PADURL[el]) return PADURL[el]; var col = ELC[el] || '#9a9a9a', cv3 = document.createElement('canvas'); cv3.width = 124; cv3.height = 30;
     return (PADURL[el] = hexDaisURL({ rim: col, top: mixC(col, '#17141d', .55), top2: mixC(col, '#17141d', .35), side: mixC(col, '#17141d', .78), hi: mixC(col, '#ffffff', .45) })); }
@@ -2727,7 +2719,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     }
     setTimeout(function(){ drawFieldBars(fbars); }, 0);
     function padPos(i){ var p = POS.A[i], u = S.team[i], cp = u && S.pos && S.pos[u]; return cp ? [cp.x, cp.y] : [p[0], p[1]]; }
-    function padStyle(i){ var q = padPos(i); return 'left:' + (100 * q[0] / W) + '%;top:' + (100 * (q[1] + OFF + FOOT) / H) + '%'; }
     var vsHtml = noFight() || isLvPick() || isFork() ? '' : '<b class="vsmark" style="left:50%;top:' + (100 * (74 + OFF + FOOT) / H) + '%"><img class="vsv" src="img/p/ui_vs_v.png" alt=""><img class="vss" src="img/p/ui_vs_s.png" alt="V S"></b>'; /* 배치 화면(전투 판)만, 전투가 시작되면 tilesHtml째 빠져요 */
     var tilesHtml = bt ? '' : vsHtml + '<i class="hexg" style="background-image:url(' + hexURL(PK().field + (isLvPick() ? 'lv1' + lvKind() : isFork() ? 'fork' : isAltar() ? 'alt' : 'ev')) + ')"></i>' + (scrollPend || noFight() ? '' : st.team.filter(function(u){ return u.boss && FP[u.slot]; }).map(function(u){ var q = FP[u.slot]; return '<i class="pad dais" style="left:' + (100 * q[0] / W) + '%;top:' + (100 * (q[1] + OFF + FOOT) / H) + '%;background-image:url(' + DAISURL + ')" data-tipt="보스 단상" data-tiptx="' + daisDesc() + '"></i>'; }).join(''));
     function cellStyle(k){ var q = k.split(','); return 'left:' + (100 * q[0] / W) + '%;top:' + (100 * (+q[1] + OFF + FOOT) / H) + '%'; }
@@ -3041,9 +3032,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     [[a, pa, 'L'], [e, pe, 'R']].forEach(function(x){ var row = x[0], pw = x[1]; if (!row) return; row.style.transform = ''; if (!pw || bt) return;
       var r = row.getBoundingClientRect(), q = pw.getBoundingClientRect(), gap = 8, avail = x[2] === 'L' ? q.left - gap - r.left : r.right - (q.right + gap);
       if (r.width > avail && avail > 0) row.style.transform = 'scale(' + Math.max(.5, avail / r.width).toFixed(3) + ')'; }); }
-  function teamPowHtml(){ if (!E.unitPower) return ''; var t = 0; S.team.forEach(function(uid){ var u = uid && U(uid); if (u) t += uPow(u); }); var et = 0, est = null; if (S.stage < E.stageCount(D) && !noFight()){ est = E.stageTeam(D, S.stage, S.event, S.bell || 0, plv()); est.team.forEach(function(x){ if (hero(x.id).mob) return; var m = x.mul || {}; et += E.unitPower(D, { id: x.id, star: 1 }, x.level) * Math.sqrt((m.hp || 1) * (m.atk || 1)); }); }
-    if (E.relicPowerMul){ t = Math.round(t * E.relicPowerMul(D, S.skills)); if (est) et = Math.round(et * E.relicPowerMul(D, est.skills)); } // 합계에만 유물 배율
-    return (t ? '<div class="tpow" title="아군 전투력 합계"><span class="pwi">⚔</span><b>' + t.toLocaleString() + '</b></div>' : '') + (et ? '<div class="tpow e" title="적 전투력 합계 (내 전투력보다 낮으면 초록, 비슷하면 노랑, 높으면 빨강)" style="--ec:' + (!t ? '#ff6b5a' : et < t * .9 ? '#6fe36f' : et <= t * 1.1 ? '#ffd34d' : '#ff6b5a') + '"><span class="pwi">⚔</span><b>' + Math.round(et).toLocaleString() + '</b></div>' : ''); }
   // 성급이 올랐을 때: 한 번 퍼지는 픽셀 링 + 새로 생긴 별(마지막 별)이 크게 반짝 (반복 없음)
   function suFind(uid){ var el = document.querySelector('#field .slot.on[data-uid="' + uid + '"]') || document.querySelector('#roster .chip[data-uid="' + uid + '"]'); return el ? { el: el, host: el.closest('.unit') || el } : null; }
   function starUpFx(uid, ghost, gr){ setTimeout(function(){ starUpFx2(uid, ghost, gr); }, 0); } // 합성 뒤 다시 그리기가 끝난 다음에 시작
@@ -3146,7 +3134,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     var PS = (D.passives || {})[P.kind] || { name: P.kind };
     if (!EL.pas) return ''; // 일반 등급은 스킬2가 없어요: 없는 효과는 보여 주지 않아요
     return skRow(skFrame(pasIcon(P.kind), HG(id).col), PS.name, EL.pas, short ? '' : pasDesc(id, EL.pas)); }
-  function skLines(id){ var h = hero(id), EL = E.effectLevels(D, id); return '<div class="hi-sk"><b>' + ultName(h) + '</b></div>' + pasLine(id); }
   function trRows(unit){ var GE = D.gradeEffects || {}; return E.unitSkills(D, unit).map(function(s){ var sh = hero(s.from), U2 = sh.ult; if (!U2) return '';
       return skRow(skFrame(ultIconEl(sh), HG(s.from).col), ultName(sh) + (s.main ? '' : ' <small class="trtag">초월</small>'), s.lv, ultDescFull(sh, U2, 1 + (GE.ultPer || 0) * (s.lv - 1)), ultNum(U2)); }).join(''); }
   function elFxText(el){ var F = (D.elementFx || {})[el]; if (!F) return '';
@@ -3166,8 +3153,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   // 영웅 스킬 설명 = 스킬 종류 설명 + 속성 효과 + 등급 효과
   function ultDescFull(hh, U, k){ if (!U) return ''; if (U.desc) return U.desc; var e = elSkillText(hh.el, U.kind); return (ULTD[U.kind] ? ULTD[U.kind](U) : '') + (e ? ' ' + e : '') + ultLvNote(k); }
   function ultIconEl(hh){ return ultIcon(hh, 24) + '<i class="eldot" style="background:' + ELC[hh.el] + '" title="' + (((D.elements || {}).names || {})[hh.el] || '') + '"></i>'; }
-  function elFxLine(h){ var t = elFxText(h.el); if (!t) return ''; var nm = ((D.elements || {}).names || {})[h.el] || h.el;
-    return '<div class="hi-elfx"><b style="color:' + ELC[h.el] + '">[' + nm + ']</b> ' + t + '</div>'; }
   function dropIc(k){ var p = LP(k), at = p.type === 's' ? ' data-tipsk="' + p.id + '" data-tiplv="1"' : p.type === 'p' ? padTipAttr(p.id) : ' title="' + lootName(k) + (p.type === 'g' ? ' ' + p.amt.toLocaleString() + 'G' : '') + '"'; return '<span class="mdrop ' + p.type + '" style="--el:' + lootColor(k) + '"' + at + '>' + lootIcon(k) + '</span>'; }
   var RNG_NM = { melee: '1칸', mid: '2칸', long: '3칸', far: '4칸' };
   // o: { lv, hp, maxHp, atk, def, interval, drops(전리품 키), dropHtml(도감용), dead }
@@ -3176,7 +3161,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     return '<div class="hi-top"><span class="hi-av hic mobav" style="--hg:' + HG(id).col + '">' + av(id) + '</span><div><b>' + h.name + (o.lv ? ' <em class="hlv">Lv ' + o.lv + '</em>' : '') + '</b>' + (o.dead ? '<div class="hi-tag"><span class="hi-dead">쓰러짐</span></div>' : '') + '<div class="hi-tags">' + tagHtml(h) + '</div></div></div>' +
       '<div class="hi-st4"><span>체력<b>' + Math.round(o.hp).toLocaleString() + '</b></span><span>공격<b>' + Math.round(o.atk) + '</b></span><span>방어<b>' + Math.round(o.def) + '</b></span><span>공속<b>' + (+(1 / (o.interval || h.interval)).toFixed(2)) + '</b></span><span>사거리<b>' + (RNG_NM[h.range] || '-') + '</b></span></div>' +
       (dd ? '<div class="hi-ult mlootrow"><b class="mlh">전리품</b><div class="mdrops">' + dd + '</div></div>' : ''); }
-  function mobDrops(ev){ return ev && ev.kind === 'mobs' ? ev.drops || [] : []; }
   function infoHtml(id, lv, st, mul, foe, noStar, unit){
     var EL = E.effectLevels(D, id), GE = D.gradeEffects || {};
     var h = hero(id), hT = h, pe0 = unit && padOf(unit.uid); if (pe0 && pe0 !== h.el) hT = Object.assign({}, h, { el2: pe0 });
@@ -3247,13 +3231,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     if (S.pads) Object.keys(S.pads).forEach(function(k){ if (k.indexOf(',') < 0 || C.some(function(c){ return ckey(c) === k; })) return; var q = k.split(','), free = {}; Object.keys(S.pads).forEach(function(k2){ free[k2] = 1; }); var c3 = nearCell(C, +q[0], +q[1], free); if (c3) S.pads[ckey(c3)] = S.pads[k]; delete S.pads[k]; });
     S.team.forEach(function(uid, slot){ if (!uid || !U(uid) || np[uid]) return; var q = POS.A[slot] || POS.A[0], c = nearCell(C, q[0], q[1], used); if (c){ used[ckey(c)] = 1; np[uid] = { x: c[0], y: c[1] }; } });
     S.pos = np; } // 내 쪽 육각 칸 아무 데나 (한 칸에 1명)
-  function settleAlliesOld(){ var AR = D.battle.arena, need = AR.spacing || 62;
-    var L = S.team.map(function(uid, slot){ if (!uid || !U(uid)) return null; var p = (S.pos || {})[uid] || { x: POS.A[slot][0], y: POS.A[slot][1] }; return { uid: uid, x: p.x, y: p.y }; }).filter(Boolean);
-    function clampAll(){ L.forEach(function(p){ p.x = Math.max(36, Math.min(AR.w - 36, p.x)); p.y = Math.max(AR.yMin, Math.min(AR.yMax, p.y)); }); }
-    for (var it = 0; it < 30; it++){ clampAll(); for (var i = 0; i < L.length; i++) for (var j = i + 1; j < L.length; j++){ var a = L[i], b = L[j], dx = a.x - b.x, dy = a.y - b.y, d = Math.sqrt(dx * dx + dy * dy); if (d >= need) continue;
-      var nx = d > 0.01 ? dx / d : 0, ny = d > 0.01 ? dy / d : (i % 2 ? 1 : -1), push = (need - d) / 2 + .5; a.x += nx * push; a.y += ny * push; b.x -= nx * push; b.y -= ny * push; } }
-    clampAll();
-    if (!L.length) return; S.pos = S.pos || {}; L.forEach(function(p){ S.pos[p.uid] = { x: Math.round(p.x), y: Math.round(p.y) }; }); }
   var newinT = 0;
   var _renderForm = renderForm; renderForm = function(){ if (!bt) settleAllies(); if (!isAltar()){ altA = null; altM = null; } _renderForm(); $('arena').classList.toggle('evstage', !bt && (isCamp() || isMerch() || isAltar() || isFairy() || isOddEven()) && !isLvPick() && !isFork()); evLeaveSync(); $('field').classList.toggle('altpick', isAltar() && !isLvPick() && altA != null); altMarks(); if (!bt && S.mobPend && !S.offer && $('roul').hidden) showMobLoot(); vsBarForm(); fitSkRows(); if (gainFxUid != null){ var gu = gainFxUid; gainFxUid = null; starUpFx(gu); } if (newHeroUid != null && !newinT) newinT = setTimeout(function(){ newinT = 0; if (newHeroUid == null || scrollPend) return; var ne0 = $('field').querySelector('.unit[data-uid="' + newHeroUid + '"]'); newHeroUid = null; if (ne0){ ne0.classList.add('newin'); setTimeout(function(){ ne0.classList.remove('newin'); }, 700); } }, 0); /* 연달아 다시 그리는 게 끝난 뒤 (판 넘김이면 stageScroll이 처리) */ /* 새 영웅: 전장에 섰으면 그 칸에서만 등장, 백팩이면 연출 없음 */ if (skTgt && !bt) markFieldTargets(); if (sel) applySel(); queueForecast(); renderBagBtn(); };
   function bagOpen(){ return !(S.ui && S.ui.bagOpen === false); } // 기본은 펼침
@@ -3395,10 +3372,8 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   function posOf(u){ var bk = blinks[u.uid]; if (bk && bk.cur && u.alive) return [bk.cur[0], bk.cur[1] + OFF]; var x = u.x, y = u.y;
     if (march){ if (u.side === 'A' && u.alive){ var go = gatherOff(u), e = march.e || 0; x = u.x + (GATHER[0] + go[0] - u.x) * e; y = u.y + (GATHER[1] + go[1] - u.y) * e; } else x -= march.sx; }
     return [x, y + OFF]; }
-  function victoryMarch(cb){ march = { t: 0, dur: .8, sx: 0, walk: 0, cb: cb, fired: false }; }
   // ───── DPS 미터: 유닛별 누적 피해·초당 피해(막대는 팀 최고 대비). 팀 스킬은 한 줄로 따로 ─────
   var skDmg = { A: 0, E: 0 };
-  function dpsClosed(side){ return !!(S.ui && S.ui['dpsClosed' + side]); }
   var dpsLast = null, DPSW = {};
   function dpsFmt(n){ n = Math.round(n || 0); return n >= 10000 ? (n / 1000).toFixed(n >= 100000 ? 0 : 1) + 'k' : n.toLocaleString(); }
   (function(){ ['A', 'E'].forEach(function(side){ var h = $('dps' + side).querySelector('.dpsh'), m = document.createElement('button'); m.type = 'button'; m.className = 'dpsm'; m.innerHTML = '<i>캐릭터</i><i>유물</i>'; h.parentNode.insertBefore(m, h.nextSibling); m.addEventListener('click', function(){ S.ui = S.ui || {}; S.ui['dpsRel' + side] = !S.ui['dpsRel' + side]; save(); renderDps(); }); }); })(); /* 캐릭터/유물 전환: 같은 창 안에서 바뀜 */
@@ -3408,9 +3383,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
       return '<div class="dr drel"><span class="dav rav" style="--sg:' + skG(d.id).col + '">' + skIconHtml(d) + '</span><div class="dm"><div class="dn"><b>' + (v.join(' ') || '–') + '</b><em class="dult">' + (st.casts ? '×' + st.casts : '상시') + '</em></div><i class="dbar rbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i></div></div>'; }).join(''); }
   function renderDps(){ var B = bt || dpsLast; ['A', 'E'].forEach(function(side){ var box = $('dps' + side); if (!box) return; if (!B){ box.hidden = true; return; } box.hidden = false;
     var off = !!(S.ui && S.ui.dpsOff); box.classList.toggle('off', off); if (off) return;
-    var cl = dpsClosed(side); box.classList.toggle('closed', cl); box.querySelector('.dpsh em').textContent = cl ? (side === 'A' ? '▸' : '◂') : '▾';
     var rel = !!(S.ui && S.ui['dpsRel' + side]); box.querySelectorAll('.dpsm i').forEach(function(i, k){ i.classList.toggle('on', !!k === rel); });
-    if (cl) return;
     if (rel){ box.querySelector('.dpsb').innerHTML = dpsRelHtml((side === 'A' ? B.skills : B.enemySkills) || []); return; }
     var list = (side === 'A' ? B.A : B.E).filter(function(u){ return !u.h.mob || u.stats.dealt > 0; }).slice().sort(function(x, y){ return y.stats.dealt - x.stats.dealt; });
     var mx = Math.max(1, list.reduce(function(m, u){ return Math.max(m, u.stats.dealt); }, 0));
@@ -3420,7 +3393,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
       return '<div class="dr' + (u.alive ? '' : ' dead') + '"><span class="dav">' + heroFr(u.id, 0) + '</span><div class="dm"><div class="dn"><b>' + dpsFmt(s.dealt) + '</b><em class="dult">궁 ' + (s.ults || 0) + '</em></div><i class="dbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i>' + (sub.length ? '<small class="d2">' + sub.join(' ') + '</small>' : '') + '</div></div>'; }).join(''); }); }
   $('dpsBtn').addEventListener('click', function(){ S.ui = S.ui || {}; S.ui.dpsOff = !S.ui.dpsOff; save(); dpsBtnSync(); renderDps(); }); /* DPS 창 켜고 끄는 길은 이 버튼 하나 (상점 아래) */
   function dpsBtnSync(){ $('dpsBtn').classList.toggle('on', !(S.ui && S.ui.dpsOff)); } dpsBtnSync();
-  document.querySelectorAll('.dpsh[data-dps]').forEach(function(h){ h.addEventListener('click', function(){ var side = h.dataset.dps; S.ui = S.ui || {}; S.ui['dpsClosed' + side] = !dpsClosed(side); save(); renderDps(); }); });
   function stepMarch(el){ if (!march) return; march.t += el; var k = Math.min(1, march.t / march.dur), e = k * k * (3 - 2 * k);
     march.sx = W * e; march.e = e; march.walk = 0;
     if (bt) bt.A.forEach(function(u){ if (u.alive){ u.moving = true; u.face = 1; } });
@@ -3622,20 +3594,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   }
   var BOSSIMG = new Image(), BOSSOK = false; BOSSIMG.onload = function(){ BOSSOK = true; }; BOSSIMG.src = 'img/p/ui_boss.png';
   function stageBarHtml(n){ return '<div class="stg">' + stageWindow(n).map(function(x){ return '<span class="' + (x.cur ? 'cur' : x.done ? 'done' : '') + (x.boss ? ' boss' : '') + '">' + (x.boss ? '<img class="uic" src="img/p/ui_boss.png" alt="" style="width:16px;height:16px" onerror="this.outerHTML=&quot;👑&quot;">' : x.label) + '</span>'; }).join('') + '</div>'; }
-  function drawStageBar(n){
-    var L = stageWindow(n), bw = 26, gap = 5, x0 = W / 2 - (L.length * (bw + gap) - gap) / 2, y = 21;
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    L.forEach(function(x, i){
-      var cx = x0 + i * (bw + gap) + bw / 2, w2 = x.cur ? bw + 6 : bw, h2 = x.cur ? 28 : 22;
-      ctx.fillStyle = x.cur ? '#ffd34d' : x.boss ? 'rgba(140,40,40,.85)' : x.done ? 'rgba(40,60,40,.8)' : 'rgba(0,0,0,.55)';
-      if (x.cur){ ctx.shadowColor = '#ffd34d'; ctx.shadowBlur = 10; }
-      rr(cx - w2 / 2, y - h2 / 2, w2, h2, 7); ctx.fill(); ctx.shadowBlur = 0;
-      ctx.fillStyle = x.cur ? '#2a1d05' : x.done ? '#9fd89a' : '#fff';
-      ctx.font = (x.boss ? '13px "Apple Color Emoji","Segoe UI Emoji",sans-serif' : '400 ' + (x.cur ? 17 : 13) + 'px "Black Han Sans", sans-serif'); if ('letterSpacing' in ctx) ctx.letterSpacing = '1px';
-      if (x.boss && BOSSOK){ var sm = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.drawImage(BOSSIMG, Math.round(cx - 8), Math.round(y - 8), 16, 16); ctx.imageSmoothingEnabled = sm; }
-      else ctx.fillText(x.boss ? '👑' : x.label, cx, y + 1);
-    });
-  }
   // 상단 공격 순서: 상대가 먼저 노리는 순서대로 (엔진의 공격 대상 규칙과 같은 순서). 1번에 과녁 표시
   function targetOrder(list){
     var tg = S.modules.targeting || D.modules.targeting.pick;
@@ -3654,18 +3612,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     if (im){ var sw = im.width / 1.5; ctx.drawImage(im, (im.width - sw) / 2, im.height * 0.04, sw, sw, -r, -r, r * 2, r * 2); }
     else { ctx.font = Math.round(r * 1.2) + 'px "Apple Color Emoji","Segoe UI Emoji",sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(AV[u.id], 0, 1); }
     ctx.restore();
-  }
-  function drawOrder(list, side){
-    var order = targetOrder(list), r = 12, gap = 30, y = 24;
-    order.forEach(function(u, i){
-      var x = side === 'A' ? 22 + i * gap : W - 22 - i * gap;
-      ctx.globalAlpha = u.alive ? 1 : .3;
-      drawFace(u, x, y, r, side === 'E');
-      ctx.lineWidth = 2; ctx.strokeStyle = ELC[u.el]; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.29); ctx.stroke();
-      if (u.alive){ ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fillRect(x - r, y + r + 2, r * 2, 3); ctx.fillStyle = side === 'A' ? '#7ee08a' : '#ff6b6b'; ctx.fillRect(x - r, y + r + 2, r * 2 * u.hp / u.maxHp, 3); }
-      if (i === 0 && u.alive){ ctx.strokeStyle = '#ffd34d'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, r + 4, 0, 6.29); ctx.stroke(); }
-      ctx.globalAlpha = 1;
-    });
   }
   // 전투 유닛: 원 없이 서 있는 전신 그림. 발밑 타원 = 진영 색, 아래에 체력·에너지 막대
   // 그림 모양 그대로 한 가지 색으로 칠한 실루엣 (등급 외곽선용, 영웅마다 한 번만 만들어 둬요)
@@ -3722,7 +3668,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   var knocks = {}; // uid → { dx, t } : 돌풍에 밀린 유닛을 0.15초 동안 휙 미끄러지게 그려요
   // 체력·에너지 막대: 전투와 편성 화면이 같이 써요
   // 5×5 픽셀 별 (성급 표시, 은은한 금색)
-  function starPx(ctx, x, y){ ctx.fillStyle = "#17141d"; ctx.fillRect(x - 1, y, 7, 6); ctx.fillStyle = "#e9c46a"; ctx.fillRect(x + 2, y, 1, 1); ctx.fillRect(x, y + 1, 5, 2); ctx.fillRect(x + 1, y + 3, 3, 1); ctx.fillRect(x, y + 4, 2, 1); ctx.fillRect(x + 3, y + 4, 2, 1); }
   function drawBars(ctx, x, y, o){
     var bw = 44, bx = Math.round(x - bw / 2), by = Math.round(y + 30), rows = 2, fh = 2 + 4 + 2 + (rows - 1) * 4;
     ctx.fillStyle = "#17141d"; ctx.fillRect(bx - 2, by - 2, bw + 4, fh);
@@ -3887,7 +3832,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   function mobBub(u){ var L = mobDropList(u); if (!L.length) return ''; return '<i class="mbub">' + L.map(function(k){ return '<span class="mbi">' + lootIcon(k) + '</span>'; }).join('') + '</i>'; }
   // 전투 중 캔버스용 전리품 그림
   var LOOTIMG = {};
-  function lootImg(k){ if (LOOTIMG[k] !== undefined) return LOOTIMG[k]; var p = LP(k), src = p.type === 'g' ? 'img/p/hud_gold.png' : p.type === 's' ? 'img/p/skill_' + p.id + '.png' : p.type === 'p' ? padURL(p.id) : null; if (!src){ LOOTIMG[k] = null; return null; } var im = new Image(); im.src = src; LOOTIMG[k] = im; return im; }
   // 몹이 쓰러지면 든 전리품이 HUD 쪽으로 날아가요 (지급은 전투가 끝날 때)
   function mobLootFly(u){ var L = (curEv && curEv.kind === 'mobs' && curEv.drops) ? [].concat(curEv.drops[u.slot] || []) : []; if (!L.length) return; var r = cv.getBoundingClientRect(), p = posOf(u), sx = r.left + p[0] / W * r.width, sy = r.top + (p[1] + OFF - 50) / H * r.height;
     L.forEach(function(k, i){ var pp = LP(k), to = pp.type === 'g' ? document.querySelector('#hud .goldit') : pp.type === 's' ? $('skA') : $('vsBar'); if (!to) return; var b = to.getBoundingClientRect(), c = document.createElement('i'); c.className = 'oecoin mfly'; c.innerHTML = lootIcon(k);
@@ -3914,7 +3858,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     var n = team.filter(function(h){ return heroVals(h, k).some(function(v){ return vs.indexOf(v) >= 0; }); }).length;
     return { k: k, vs: vs, star: star, lab: star ? '최다 속성' : vs.map(function(x){ return NM[x]; }).join('·'), now: vs.map(function(x){ return NM[x]; }).join('·'), n: n, only: !!d.only, off: !!d.only && n === 0, per: d.per };
   }
-  function synTag(d){ var y = synInfo(d); return y ? '<span class="syt syk-' + y.k + '">[아군]</span>' : ''; }
   function synLine(d, side){ var y = synInfo(d, side); if (!y) return '';
     var NM = y.k === 'race' ? D.races : y.k === 'job' ? D.jobs : D.elements.names, team = synTeam(side);
     var cnt = function(v){ return team.filter(function(h2){ return heroVals(h2, y.k).indexOf(v) >= 0; }).length; };
@@ -3992,26 +3935,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   document.addEventListener('pointerover', function(e){ if (e.pointerType !== 'mouse') return; var el = e.target.closest('[data-tipsk],[data-tiptx]'); if (el) showTip(el); });
   document.addEventListener('pointerout', function(e){ if (e.pointerType !== 'mouse') return; var el = e.target.closest('[data-tipsk],[data-tiptx]'); if (el && !el.contains(e.relatedTarget)) hideTip(); });
   document.addEventListener('pointerdown', function(e){ var el = e.target.closest('[data-tipsk],[data-tiptx]'); if (el){ if (tipEl === el && e.pointerType !== 'mouse') hideTip(); else showTip(el); } else if (tipEl) hideTip(); });
-  function drawSkills(el){
-    var L = bt.skills; if (!L.length) return;
-    var sz = 54, gap = 6, x0 = W / 2 - (L.length * (sz + gap) - gap) / 2, y = 44; // 타이머 아래 하늘 쪽
-    L.forEach(function(sk, i){
-      var x = x0 + i * (sz + gap), k = 1 - Math.max(0, sk.timer) / sk.def.cd;
-      ctx.fillStyle = 'rgba(0,0,0,.65)'; rr(x, y, sz, sz, 8); ctx.fill();
-      ctx.fillStyle = 'rgba(255,211,77,.35)'; ctx.fillRect(x + 2, y + 2 + (sz - 4) * (1 - k), sz - 4, (sz - 4) * k);
-      ctx.font = '18px "Apple Color Emoji","Segoe UI Emoji",sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; var si = SKIMG[sk.def.id]; if (si){ ctx.imageSmoothingEnabled = false; ctx.drawImage(si, x + 3, y + 3, 48, 48); } else ctx.fillText(sk.def.icon, x + sz / 2, y + sz / 2 + 1);
-      if (skillFlash[sk.def.id] > 0){ skillFlash[sk.def.id] -= el; ctx.strokeStyle = '#ffd34d'; ctx.lineWidth = 3; rr(x - 2, y - 2, sz + 4, sz + 4, 9); ctx.stroke(); }
-      ctx.fillStyle = '#fff'; ctx.font = '400 9px "Gothic A1", sans-serif'; if ('letterSpacing' in ctx) ctx.letterSpacing = '0px'; 
-    });
-  }
   // 화면 전환: 픽셀 막대가 내려와 덮었다가(0.25초) 다시 걷혀요(0.25초)
-  function stageWipe(mid, end){
-    var a = $('arena'), w = document.createElement('div'); w.className = 'wipe';
-    for (var i = 0; i < 12; i++) w.insertAdjacentHTML('beforeend', '<i style="animation-delay:' + (i % 2 ? 40 : 0) + 'ms"></i>');
-    a.appendChild(w);
-    setTimeout(function(){ mid && mid(); w.classList.add('out'); }, 270);
-    setTimeout(function(){ w.remove(); end && end(); }, 560);
-  }
   // HUD 골드 숫자가 차오르고 '+N G'가 떠올라요
   function goldCount(from, to){ if (to <= from) return; var it = document.querySelector('#hud .goldit'); if (!it) return;
     var tn = [].filter.call(it.childNodes, function(n){ return n.nodeType === 3; }).pop(); var t0 = performance.now();
@@ -4175,11 +4099,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     var key = S.stage + '|' + (S.skills || []).map(function(s){ return s.id; }).join(), m = relicMap(), old = relSnap, on = {}, off = {}; relSnap = { key: key, m: m }; if (!old || old.key !== key) return; /* 유물이 바뀐 게 아니라 배치가 바뀐 때만 */
     Object.keys(m).forEach(function(id){ var a = old.m[id] || [], b = m[id]; b.forEach(function(u){ if (a.indexOf(u) < 0) (on[u] = on[u] || []).push(id); }); a.forEach(function(u){ if (b.indexOf(u) < 0) (off[u] = off[u] || []).push(id); }); });
     if (Object.keys(on).length || Object.keys(off).length) relPop(on, off); };
-  function walkIn(){ var fd = $('field'), fw = fd.clientWidth, fh = fd.clientHeight;
-    fd.querySelectorAll('.unit[data-uid]').forEach(function(el){ var u = U(el.dataset.uid), go = u ? gatherOff(u) : [0, 0];
-      var lx = parseFloat(el.style.left) / 100 * fw, ly = parseFloat(el.style.top) / 100 * fh, cx = (GATHER[0] + go[0]) / W * fw, cy = (GATHER[1] + go[1] + OFF) / H * fh;
-      el.style.setProperty('--fx', Math.round(cx - lx) + 'px'); el.style.setProperty('--fy', Math.round(cy - ly) + 'px'); });
-    fd.classList.remove('walkin'); void fd.offsetWidth; fd.classList.add('walkin'); setTimeout(function(){ fd.classList.remove('walkin'); }, 900); }
   function showEvWin(){
     var w = $('evWin'), o = S.evOffer; if (!o || S.offer || S.pending || !$('roul').hidden){ w.hidden = true; return; }
     var html = '';
@@ -4307,8 +4226,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   function lackText(c){ return S.gold < (c.gold || 0) ? '골드가 모자라요' : (S.mana || 0) < (c.mana || 0) ? manaName() + '이 모자라요' : ''; }
   // 가격 칸: 골드 물건은 금화 + 숫자, 마나스톤 물건은 보석 + 숫자(보라색 줄)
   function costTag(c, blocked){ return c.mana ? '<span class="pr mana' + ((S.mana || 0) >= c.mana && !blocked ? '' : ' no') + '">' + manaIcon('mni') + c.mana + '</span>' : priceTag(c.gold, S.gold >= c.gold && !blocked); }
-  function costText(c){ return c.mana ? manaIcon('mni') + c.mana : g(c.gold); }
-  function manaTag(n, ok){ return n ? '<span class="pm' + (ok ? '' : ' no') + '">' + manaIcon('mni') + n + '</span>' : ''; }
   function priceTag(p, ok){ return '<span class="pr' + (ok ? '' : ' no') + '">' + (HUDOK.gold ? '<img src="img/p/hud_gold.png" alt="">' : '🪙') + g(p).replace(' G', '') + '</span>'; }
   function newHeroes(){ return E.rollShopHeroes ? E.rollShopHeroes(D, Math.random, plv(), S.stage || 0) : []; }
   function restock(){ S.shop = { stock: newStock(), rerolls: 0, sold: [], ng: lastNg, heroes: newHeroes(), hsold: [] }; } // 상점 두 줄을 새로 (판을 깼을 때만)
@@ -4331,9 +4248,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
       return '<button class="stile sk' + gCls(id, myLv(id) || undefined) + ((synInfo(d) || {}).off ? ' synoff' : '') + (d.tag ? ' syn' : '') + (sold ? ' sold' : '') + (on ? ' sel' : '') + (myLv(id) && !skMaxed(id) ? ' up' : '') + '"' + gAttr(id, myLv(id) || undefined) + ' data-sel="stock:' + i + '"><span class="ic">' + skIcon(d) + '</span>' + synN(d) + (sold ? '<span class="pr">품절</span>' : skMaxed(id) ? '<span class="pr">최고 등급</span>' : costTag(c, !E.canTake(D, mine, id, PK().skillSlots))) + '</button>';
     });
     var rp = E.refreshPrice(D, S.shop.rerolls), ron = shopSel && shopSel.t === 'reroll';
-    function rowHtml(k){ var t = tiles.filter(function(x, i){ return rowOf[i] === k; }); if (!t.length) return '';
-      while (t.length < RMAX[k]) t.push('<span class="stile empty"></span>'); // 빈 자리도 칸 크기 그대로
-      return '<div class="srow2 ' + k + (RMAX[k] > 3 ? ' c' + RMAX[k] : '') + '"><span class="rowic">' + (k === 'm' ? manaIcon('mni') : (HUDOK.gold ? '<img class="mni" src="img/p/hud_gold.png" alt="">' : '🪙')) + '</span>' + t.join('') + '</div>'; }
     var HS = D.shop.heroes ? S.shop.heroes || [] : [], hrow = HS.map(function(it, i){ if ((S.shop.hsold || []).indexOf(i) >= 0) return '<span class="stile empty"></span>'; var on = shopSel && shopSel.t === 'hero' && shopSel.i === i; if (S.gold >= it.price) anyBuy = true;
       return '<button class="stile mhero' + (on ? ' sel' : '') + '" style="--gcol:' + HG(it.id).col + '" data-sel="hero:' + i + '" type="button"><span class="ic">' + heroFr(it.id) + '</span>' + priceTag(it.price, S.gold >= it.price) + '</button>'; });
     var cells = tiles.slice(); for (var ci = cells.length; ci < 6; ci++){ var lv = shopLockLv(ci); cells.push(lv ? '<span class="stile lockd"><em>🔒 Lv' + lv + '</em></span>' : '<span class="stile empty"></span>'); }
@@ -4558,7 +4472,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   function altDone(){ var n = (D.transcend || {}).perAltar; return !!(n && S.event && (S.event.trCount || 0) >= n); } /* 이 제단에서 할 만큼 했으면 true */
   function altCellImg(k){ return ALTCELL[k] || (ALTCELL[k] = k === 'A' ? hexDaisURL({ rim: '#ffd34d', top: '#5a4720', top2: '#7a6228', side: '#3a2e14', hi: '#fff3b0' }) : hexDaisURL({ rim: '#fff3b0', top: '#3b3546', top2: '#4a4358', side: '#2a2533', hi: '#ffffff' })); }
   function altCell(pos, k){ return '<i class="altcell" style="left:' + (100 * pos[0] / W) + '%;top:' + (100 * (pos[1] + OFF + FOOT) / H) + '%;background-image:url(' + altCellImg(k) + ')"></i>'; }
-  function altCands(){ var a = U(altA); if (!a) return []; return S.units.filter(function(m){ return m.uid !== a.uid && !hero(m.id).mob && trKind(a, m); }); }
   function altUnit(cls, u, pos, attr){ return '<div class="unit cfh ' + cls + '"' + (attr || '') + ' style="left:' + (100 * pos[0] / W) + '%;top:' + (100 * (pos[1] + OFF + FOOT) / H) + '%;z-index:' + pos[1] + '"><div class="cfslot flip" style="--hg:' + HG(u.id).col + '">' + av(u.id) + starsIn(u.star) + '</div></div>'; }
   function altarPickHtml(){ var ALT_POS = altPos(), a = U(altA), m = altM != null && U(altM), q = function(s){ return String(s || '').replace(/"/g, '&quot;'); };
     var E3 = hexCells().E, b1 = E3[2], b2 = E3[5], bx = (b1[0] + b2[0]) / 2, by = E3[0][1] + OFF + FOOT - 27, bw = Math.abs(b2[0] - b1[0]) + 76;
@@ -4580,8 +4493,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     if (e.target.closest('#field .altgo')){ altarGo(); return; }
   }, true);
   /* 끌어다 놓기: 놓은 곳이 앞 칸(A)·뒤 칸(M) 근처면 그 칸으로 */
-  function altDropAt(cx, cy){ if (!isAltar() || isLvPick() || altBusy || altDone()) return null; var fr = $('field').getBoundingClientRect(), x = (cx - fr.left) / fr.width * W, y = (cy - fr.top) / fr.height * H - OFF, P = altPos(), best = null, bd = 60 * 60;
-    ['A', 'M'].forEach(function(k){ var p = P[k]; if (!p) return; var dx = x - p[0], dy = y - (p[1] - 10), d = dx * dx + dy * dy; if (d < bd){ bd = d; best = k; } }); return best; }
   function altPut(k, uid){ var u = U(uid); if (!u || hero(u.id).mob) return renderForm();
     if (k === 'A'){ if (uid === altM) altM = null; altA = uid; if (altM != null && !trKind(U(altA), U(altM))) altM = null; }
     else if (altA != null && uid !== altA && trKind(U(altA), u)) altM = uid; /* 재료가 될 수 없으면 그대로 (어둡게 보여요) */
@@ -4608,8 +4519,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   function leaveMerch(){ S.evOffer = null; setShop(false); finishMerch(); }
   function finishMerch(){ S.event = nextEvent(false); S.bell = 0; S.bellGold = 0; save(); evGo(); }
   // 원래 값(줄 그어 보여 줌): 스킬은 상점 값, 영웅은 heroPrice 식
-  function merchOrig(it){ if (it.type === 's'){ var bp = buyPrice(it.id); return it.cur === 'mana' ? bp.mana : bp.gold; }
-    var M = D.events.merchant; return Math.round(M.heroPrice * E.heroGrade(D, it.id) * Math.pow(D.shop.priceGrowth, S.stage)); }
   function isCamp(){ return !bt && !!S.event && S.event.kind === 'campfire' && !!S.event.ids && S.stage < E.stageCount(D); }
   var CFIMG = {}; ['ev_campfire', 'ui_talk', 'ev_fairy'].forEach(function(k){ var im = new Image(); im.onload = function(){ CFIMG[k] = true; if (S) renderForm(); }; im.src = 'img/p/' + k + '.png'; });
   function campImg(k, emo, cls){ return CFIMG[k] ? '<img class="' + cls + '" src="img/p/' + k + '.png" alt="">' : '<span class="' + cls + ' emo">' + emo + '</span>'; }
