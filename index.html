@@ -852,7 +852,7 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .hinfo .hi-av{width:50px;height:50px}
 .hinfo .hi-av.hic{background:#17141d;box-shadow:0 0 0 1px #17141d}
 .hinfo .hi-av.hic::after{box-shadow:inset 0 0 0 1px var(--hg,#5d5470)}
-.hinfo .hi-av.hic .av{width:48px;height:48px;margin:1px} /* 백팩 칸과 같은 틀: 그림 48x48, 등급색 1px 테두리가 그림을 덮지 않음 */
+.hinfo .hi-av.hic .av{width:48px;height:48px;margin:1px;background-size:170%;background-position:50% 40%} /* 백팩 칸과 같은 틀: 그림 48x48, 등급색 1px 테두리가 그림을 덮지 않음 */
 .hinfo b{font-size:16px}
 .hinfo .hi-tag{font-size:11px}
 .hinfo .hi-st4{margin:0;padding:8px 9px;gap:5px 10px;font-size:11px}
@@ -939,6 +939,7 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .evic{width:40px;height:40px;flex:none;display:flex;align-items:center;justify-content:center;font-size:22px;overflow:hidden;background:#17141d}
 .evic.big{width:56px;height:56px}
 .evic img,.evic .av{width:100%;height:100%;display:block;image-rendering:pixelated;background-size:cover;border-radius:0}
+.evic.big .av{background-size:170%;background-position:50% 40%}
 .evnm{flex:1;font:400 14px var(--display)} .evnm small{font:700 10px var(--body)}
 .evit .go{padding:8px 10px;min-width:96px;font-size:13px}
 .evleave{width:100%;margin-top:10px;padding:9px}
@@ -1100,7 +1101,7 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .cdxc{position:relative;width:78px;padding:5px 3px 4px;border:0;display:flex;flex-direction:column;align-items:center;gap:3px;background:#2a2533;color:#f3e6c4;cursor:pointer;
   box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px var(--el)}
 .cdxc .cdxp{width:48px;height:48px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#1d1a24;font-size:24px}
-.cdxc .cdxp .av{width:100%;height:100%;display:block;border-radius:0;background-size:cover;image-rendering:pixelated}
+.cdxc .cdxp .av{width:100%;height:100%;display:block;border-radius:0;background-size:170%;background-position:50% 40%;image-rendering:pixelated}
 .cdxc .cdxp.ic img{width:48px;height:48px;image-rendering:pixelated}
 .cdxc b{font:400 11px var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:72px}
 .cdxc em{position:absolute;top:3px;right:3px;font:400 9px var(--body);font-style:normal;background:#ffd34d;color:#2a1d05;padding:0 3px}
@@ -1246,7 +1247,7 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .bagcol .bagin{background:#5a3a22;box-shadow:inset 0 0 0 3px #2b1a0e,inset 0 0 0 5px #8a5a32,inset 0 0 0 6px #2b1a0e;padding:8px 4px;align-items:center}
 .bagcol .coltit{color:#f3d9a8!important;text-shadow:0 1px 0 #2b1a0e}
 .bagcol .chip{background:#17141d!important;box-shadow:inset 0 0 0 1px var(--gcol,#5d5470),0 0 0 1px #17141d!important;border-radius:0!important;overflow:hidden} /* 큰 캐릭터 아이콘 틀: 상세 창 머리 칸과 같게 (어두운 보라 바탕, 등급색 1px, 바깥 어두운 1px) */
-.bagcol .chip .av.pic{width:calc(100% - 2px)!important;height:calc(100% - 2px)!important;background-size:cover!important;background-position:50% 50%!important} /* 2026-11-25 사용자: 백팩은 전신 (상세 창 머리 칸처럼 cover) */
+.bagcol .chip .av.pic{width:calc(100% - 2px)!important;height:calc(100% - 2px)!important;background-size:170%!important;background-position:50% 40%!important} /* 2026-11-25 사용자: 큰 아이콘은 방랑상점 영웅 아이콘과 같은 상반신 자르기(공통 170%, 위 40%) */ /* 2026-11-25 사용자: 백팩은 전신 (상세 창 머리 칸처럼 cover) */
 .bagcol .chip > .hst{top:max(1px,calc(var(--ht,0%) - 10px));bottom:auto}
 .bagcol .chip .cgr{display:none}
 .bagcol .chip.bagempty{display:flex;align-items:center;justify-content:center;font:400 22px var(--display);font-style:normal;color:#a8784a;background:#4a2f1a!important;box-shadow:inset 0 0 0 2px #2b1a0e,inset 0 0 0 3px #6e4626!important;cursor:default}
@@ -2263,7 +2264,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
 .dps .dpsb{max-height:300px!important;padding:5px 6px 6px!important}
 .dps .dr{padding:4px;margin-bottom:4px;gap:8px;background:#1d1a24;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 3px #3b3546}
 .dps .dav{width:36px!important;height:36px!important;box-shadow:inset 0 0 0 2px #17141d} /* 영웅·유물 아이콘 같은 크기 */
-.dps .dav .av.pic{background-size:cover!important;background-position:50% 50%!important} /* 백팩 칸처럼 전신 */
+.dps .dav .av.pic{background-size:170%!important;background-position:50% 40%!important} /* 백팩 칸처럼 전신 */
 .dps.e .dav .av{transform:scaleX(-1)} /* 상대는 보는 방향 반대 */
 .dps .rav img,.dps .rav .uic{width:28px!important;height:28px!important}
 .dps .dn b{font:400 15px var(--display);color:#fff}
