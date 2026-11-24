@@ -2298,6 +2298,22 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
 #arena:not(.evstage) #fightBtn:disabled{color:#ece6f2!important;text-shadow:-1px 0 #3a3442,1px 0 #3a3442,0 -1px #3a3442,0 1px #3a3442!important;
   background:linear-gradient(#b5aec0,#b5aec0) 14px 6px/10px 2px no-repeat,linear-gradient(#b5aec0,#b5aec0) 28px 6px/2px 2px no-repeat,repeating-linear-gradient(135deg,rgba(255,255,255,.06) 0 2px,transparent 2px 8px),linear-gradient(#8f879b 0 30%,#7c7488 30% 64%,#6a6272 64% 100%)!important;
   box-shadow:inset 0 0 0 2px #17141d,inset 0 4px 0 -2px #a59eb0,inset 3px 0 0 -1px #5a5266,inset -3px 0 0 -1px #5a5266,inset 0 -7px 0 -2px #5a5266,inset 0 -10px 0 -2px #4a4452!important}
+/* 2026-11-25 이벤트 판: 행동 버튼(말 걸기 등) 자체를 전장 가운데에, 떠나기(아이콘)는 그 오른쪽 옆에 붙임 (사용자: "전투 시작 버튼 위치가 중앙이 아니야") */
+#arena.evstage .evacts,#arena.evstage #altGoBtn{left:calc(50% - 80px)!important}
+#arena.evstage #fightBtn{left:calc(50% + 88px)!important}
+#arena.evstage .lvwarn{left:auto!important;right:calc(50% - 132px)!important}
+/* ───── 다른 노랑 버튼(받기·구매·확인 등)에도 같은 평평하지 않은 픽셀 입체 (2026-11-25 사용자: "넓혀주세요") ─────
+   전투 시작 버튼과 같은 모양: 명암 3단, 위 밝은 줄, 아래 두꺼운 단, 좌우 어두운 세로 줄, 옅은 사선 줄무늬 + 하이라이트 점. 모서리 모양은 각 버튼이 원래 쓰던 것 그대로.
+   되돌리는 방법: 이 블록을 지우면 돼요. */
+button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx),#resPop .rpok,.rpok,.oebox .oebtns .go{
+  background:linear-gradient(#fff3b8,#fff3b8) 10px 4px/8px 2px no-repeat,linear-gradient(#fff3b8,#fff3b8) 22px 4px/2px 2px no-repeat,repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 2px,transparent 2px 8px),linear-gradient(#ffd45c 0 30%,#f2b53a 30% 64%,#dc9a22 64% 100%)!important;
+  box-shadow:inset 0 0 0 2px #3a2208,inset 0 3px 0 -1px #fff0b0,inset 3px 0 0 -1px #c98a1e,inset -3px 0 0 -1px #c98a1e,inset 0 -5px 0 -2px #b8761c,inset 0 -7px 0 -2px #8a5a0a!important;
+  color:#3a2208!important;text-shadow:0 1px 0 #ffe9a8!important}
+button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx):active:not(:disabled),#resPop .rpok:active:not(:disabled),.rpok:active:not(:disabled),.oebox .oebtns .go:active:not(:disabled){transform:translateY(2px)!important;box-shadow:inset 0 0 0 2px #3a2208,inset 0 2px 0 -1px #fff0b0,inset 3px 0 0 -1px #c98a1e,inset -3px 0 0 -1px #c98a1e,inset 0 -3px 0 -2px #b8761c,inset 0 -4px 0 -2px #8a5a0a!important}
+button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx):disabled,#resPop .rpok:disabled,.rpok:disabled,.oebox .oebtns .go:disabled{
+  background:linear-gradient(#b5aec0,#b5aec0) 10px 4px/8px 2px no-repeat,repeating-linear-gradient(135deg,rgba(255,255,255,.06) 0 2px,transparent 2px 8px),linear-gradient(#8f879b 0 30%,#7c7488 30% 64%,#6a6272 64% 100%)!important;
+  box-shadow:inset 0 0 0 2px #17141d,inset 0 3px 0 -1px #a59eb0,inset 3px 0 0 -1px #5a5266,inset -3px 0 0 -1px #5a5266,inset 0 -5px 0 -2px #5a5266,inset 0 -7px 0 -2px #4a4452!important;
+  color:#ece6f2!important;text-shadow:-1px 0 #3a3442,1px 0 #3a3442,0 -1px #3a3442,0 1px #3a3442!important}
 </style>
 </head>
 <body>
