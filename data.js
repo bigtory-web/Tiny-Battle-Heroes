@@ -317,8 +317,7 @@ var IDLE_DATA = {
   // consolation 위로금(2026-11-22): 진 판 골드 = 클리어 골드 × perDamage × 적에게 준 피해 비율(최소 min). 한 명도 못 잡아도 받아요. 연패할수록 × (1 + streakBonus × (연패 − 1)), streakMax연패까지
   //   지면 상점이 그대로 남으니, 이 골드로 남은 물건을 살 수 있어요
   life: { enabled: true, max: 10, perLevel: 1, lastStand: true, /* 2026-11-24: 플레이어 레벨업마다 하트 +1(최대 없음, 시작 max는 10). lastStand: 한 판(런)에 처음 0이 되면 죽지 않고 1로 남음 */ base: 1, perGrade: 1, bossExtra: 0, recoverOnBoss: true, consolation: { perDamage: 0.5, min: 0.1, minGold: 50, streakBonus: 0.5, streakMax: 3 }, loseCampfire: true, // loseCampfire(2026-11-22): 지면(체력이 남았을 때) 모닥불이 나와 영웅 1명을 룰렛으로 받고 같은 판에 다시 도전 // minGold: 지면 적어도 이만큼 (2026-11-24: 200 → 50. 진 판이 이긴 판(120G~)보다 많이 받던 문제. 50 = 상점 리셋 1번 값)
-    // lossLoot: 진 판에도 전리품 룰렛이 떠요. 돌리려면 골드 = 그 판 클리어 골드 × price. 후보는 적 영웅·적 스킬·마나스톤(골드 주머니는 빠져요). 안 돌리고 넘어가도 돼요
-    lossLoot: { enabled: false, price: 0.5 } }, // 2026-11-22 끔: 룰렛은 이긴 판만
+  },
 
   // ───── 마나스톤 (두 번째 재화) ─────
   // 전리품 룰렛에 가끔(loot.chance) 마나스톤 칸이 1개 끼어요(amount개). 상점에서 높은 등급 스킬을 살 때 들어요(skillCost: 사고 난 뒤의 스킬 등급 → 개수).

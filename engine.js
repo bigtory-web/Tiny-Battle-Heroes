@@ -519,8 +519,6 @@
     st.team.forEach(function (u, i) { var dead = !units || units.some(function (x) { return x.side === 'E' && x.slot === u.slot && !x.alive && !x.escaped; }); if (dead) out = out.concat(st.event.drops[i] || []); }); return out; }
   // 모닥불: 영웅 count명이 둘러앉아 있어요. 말풍선을 누르면 룰렛이 돌아 그중 1명이 동료가 돼요(전투 없음). 등급은 플레이어 레벨 확률(atStart면 레벨 1 확률)
   function rollCampfire(data, rnd, plv) { var CF = data.events.campfire, out = [], cn = data.player && data.player.campfire ? perk(data, plv).campfire : CF.count; for (var i = 0; i < cn; i++) out.push(pickHeroByGrade(data, rnd, plv || 1, out)); return out; }
-  // 이벤트 스테이지 이름: 스테이지 n 전에 들르면 앞 스테이지 이름 + '.5' (1-1과 1-2 사이 = 1-1.5). 맨 처음(시작 모닥불)은 '1-0.5'
-  function eventStageName(data, n) { if (n <= 0) return '1-0.5'; return stageName(data, n - 1) + '.5'; }
   function campfireAtStart(data) { var CF = data.events && data.events.campfire; return !!(CF && CF.atStart) && (data.events.off || []).indexOf('campfire') < 0; }
   function mercPrice(data, id, n) { return Math.round(data.events.merc.price * heroGrade(data, id) * Math.pow(data.shop.priceGrowth, n)); } // 등급이 높을수록 비싸요
   // 방랑상인 진열: [{ type: 's'|'h', id, gold, mana, price, cur: 'gold'|'mana' }]. 값은 원래 값 × discount, 최소 minPrice (재화는 하나만)
@@ -781,16 +779,6 @@
     for (;;) { var o = units.filter(function (x) { return canMerge(data, x, u); })[0]; if (!o) break;
       mergeUnits(data, units, o.uid, u.uid); u = o; n++; }
     return { unit: u, merged: n }; }
-  // 영입 한 명 처리: 가진 영웅이면 합성 조각, 아니면 새로 들어와요. 반환: 'merge' | 'star' | 'new'
-  function addHero(data, owned, id) {
-    var R = data.recruit, o = owned[id];
-    if (o) {
-      if (o.star >= R.maxStar) return 'max';
-      o.pieces++; if (o.pieces >= R.mergeCount - 1) { o.star++; o.pieces = 0; return 'star'; }
-      return 'merge';
-    }
-    owned[id] = { star: 1, pieces: 0 }; return 'new';
-  }
 
   // 봇 진행: 도전 → 이기면 적 중 1명 영입 → 지면 출전 영웅을 고르게 레벨업 → 돈이 없으면 방치 보상을 기다림
   function campaign(data, opts) {
@@ -816,7 +804,7 @@
       for (var h = 0; h < shopH.length; h++) if (gold >= shopH[h].price) { gold -= shopH[h].price; spent += shopH[h].price; gainHero(shopH[h].id, team); recruits.shopHero = (recruits.shopHero || 0) + 1; shopH.splice(h, 1); h--; n++; } // shortcut: 봇은 유물 다음 남은 골드로 영웅을 그냥 사요, 밸런스를 볼 때 고르는 기준을 넣어요
       return n; }
     var shopH = rollShopHeroes(data, rnd, 1, 0);
-    var LF = data.life && data.life.enabled ? data.life : null, life = LF ? LF.max : 0, stood = false, streak = 0, lossSpins = 0, runs = [], runStart = 0, lossGoldSum = 0;
+    var LF = data.life && data.life.enabled ? data.life : null, life = LF ? LF.max : 0, stood = false, streak = 0, runs = [], runStart = 0, lossGoldSum = 0;
     // 체력이 0이 되면 판 전체를 처음(1-1)으로: 영웅·스킬·골드·마나스톤·경험치를 모두 잃어요
     function resetRun() { runs.push({ best: best, time: time - runStart }); runStart = time;
       units.length = 0; levels = {}; startHero();
@@ -920,9 +908,7 @@
         var lg = lossGold(data, stage, kills, streak, dmgFrac(res.units)); gold += lg; lossGoldSum += lg;
         life -= lossDamage(data, res.units); if (life <= 0 && LF.lastStand && !stood) { life = 1; stood = true; } if (life <= 0) { resetRun(); continue; }
         if (LF.loseCampfire) { var lcf = rollCampfire(data, rnd, plv); if (lcf.length) { gainHero(lcf[lootPick(data, lcf, plv, rnd)], team); recruits.loseCampfire = (recruits.loseCampfire || 0) + 1; } } // 진 뒤 모닥불: 영웅 1명
-        var llp = lossLootPrice(data, stage); if (llp && gold >= llp) { var lpool = lossLootPool(data, st, rnd); if (lpool.length) { gold -= llp; spent += llp; lossSpins++;
-          var lk = lootParse(lpool[Math.floor(rnd() * lpool.length)]);
-          if (lk.type === 'm') { mana += lk.amt; manaGot += lk.amt; } else if (lk.type === 's') { if (canTake(data, skills, lk.id, data.player ? perk(data, plv).skillSlots : 0)) takeSkill(data, skills, lk.id); } else { gainHero(lk.id, team); var lb = st.team.filter(function (x) { return x.id === lk.id && x.bonus; })[0]; giveBonus(lb && lb.bonus); } } } } // 진 판 전리품 영웅도 덤을 줘요
+        } // 진 판 전리품 룰렛(lossLoot)은 2026-11-25에 지움
       else if (C.loseStepBack && stage > 0) stage = Math.max(0, stage - C.loseStepBack); // 지면 앞 스테이지로
       var bought = shopping();
       if (data.levelCost.enabled !== false) for (;;) { // 골드 레벨업 (꺼져 있으면 건너뛰어요)
@@ -946,7 +932,7 @@
         gold += perMin * wait / 60; time += wait; idleTime += wait;
       }
     }
-    return { cleared: stage, total: total, time: time, battleTime: battleTime, idleTime: idleTime, attempts: attempts, log: log, levels: levels, owned: units, units: units, recruits: recruits, skills: skills, spent: spent, sold: sold, stuck: stuck, xp: xp, plv: plv, events: events, bells: bells, fails: fails, gold: gold, runs: runs, life: life, lossGold: lossGoldSum, lossSpins: lossSpins, mana: { got: manaGot, spent: manaSpent, left: mana } };
+    return { cleared: stage, total: total, time: time, battleTime: battleTime, idleTime: idleTime, attempts: attempts, log: log, levels: levels, owned: units, units: units, recruits: recruits, skills: skills, spent: spent, sold: sold, stuck: stuck, xp: xp, plv: plv, events: events, bells: bells, fails: fails, gold: gold, runs: runs, life: life, lossGold: lossGoldSum, mana: { got: manaGot, spent: manaSpent, left: mana } };
   }
 
   // ───── 플레이어 체력 (life) ─────
@@ -963,18 +949,7 @@
   // 적 팀에 준 피해 비율: (최대 체력 − 남은 체력) 합 ÷ 최대 체력 합 (전투 결과 units)
   function dmgFrac(units) { var mx = 0, lost = 0; (units || []).forEach(function (u) { if (u.side !== 'E') return; mx += u.maxHp; lost += u.maxHp - Math.max(0, u.alive ? u.hp : 0); }); return mx ? lost / mx : 0; }
 
-  // 진 판 룰렛: 골드를 내면 한 번 돌릴 수 있어요. 후보는 그 판 적 영웅·적 스킬·마나스톤(가끔)이고 골드 주머니는 빠져요
-  function lossLootPrice(data, n) { var LL = data.life && data.life.lossLoot, C = data.campaign; return LL && LL.enabled ? Math.round(C.reward.base * Math.pow(C.reward.growth, n) * LL.price) : 0; }
-  function lossLootPool(data, st, rnd) { return lootPool(data, st, rnd).filter(function (k) { return lootParse(k).type !== 'g'; }); }
 
-  // ───── 전투 전 판단 돕기 (편성 화면용) ─────
-  // 승산 미리 보기: 지금 편성으로 n판을 몰래 돌려 본 결과. { win: 승률 0~1, hpLeft: 이긴 판의 평균 남은 체력 비율, label: '유리'|'팽팽'|'불리' }
-  function forecast(data, team, st, skills, opts) { opts = opts || {}; var n = opts.n || 12, w = 0, hp = 0;
-    if (!team.length) return { win: 0, hpLeft: 0, label: '불리' };
-    for (var i = 1; i <= n; i++) { var res = battle(data, padTeam(team, opts.pads || {}), st.team, { seed: i * 9973, modules: opts.modules, skills: skills, enemySkills: st.skills }); if (res.win) { w++; hp += res.hpLeft; } }
-    var p = w / n; return { win: p, hpLeft: w ? hp / w : 0, label: p >= 0.7 ? '유리' : p >= 0.35 ? '팽팽' : '불리' }; }
-  // 속성 상성: 공격자 속성 a가 방어자 속성 d에게 'adv'(유리) | 'dis'(불리) | null. 배율은 modules.element
-  function elemAdv(data, a, d) { var b = data.elements.beats; return b[a] === d ? 'adv' : (b[d] === a && a !== 'light' && a !== 'dark') ? 'dis' : null; }
 
   // 요소 하나만 바꿔 같은 시드로 캠페인을 돌려 비교
   function compare(data, key, a, b, opts) {
@@ -988,8 +963,8 @@
   }
 
   var api = { battle: battle, createBattle: createBattle, stageTeam: stageTeam, heroLevel: heroLevel, levelPickRoll: levelPickRoll, levelPickKind: levelPickKind, skillUp: skillUp, startExtras: startExtras, bellFx: bellFx, stageLevel: stageLevel, stageName: stageName, stageCount: stageCount, autoFormation: autoFormation,
-    campaign: campaign, compare: compare, forecast: forecast, elemAdv: elemAdv, lossDamage: lossDamage, lossGold: lossGold, dmgFrac: dmgFrac, lossLootPrice: lossLootPrice, lossLootPool: lossLootPool, levelCost: levelCost, heroById: heroById, makeRng: makeRng,
-    costCap: costCap, starMul: starMul, gradeMul: gradeMul, heroGrade: heroGrade, pickHeroByGrade: pickHeroByGrade, effectLevels: effectLevels, relicPowerMul: relicPowerMul, passiveValue: passiveValue, addHero: addHero, power: power, newUnit: newUnit, canMerge: canMerge, mergeUnits: mergeUnits, autoMerge: autoMerge, gainUnit: gainUnit,
-    skillById: skillById, heroSellPrice: heroSellPrice, relicTargets: relicTargets, heroBonus: heroBonus, isBoss: isBoss, critChance: critChance, lootPool: lootPool, lootPick: lootPick, chestGrade: chestGrade, chestTiers: chestTiers, mobLoot: mobLoot, oddEvenBet: oddEvenBet, oddEvenResult: oddEvenResult, padTeam: padTeam, lootParse: lootParse, lootRerollPrice: lootRerollPrice, rerollMax: rerollMax, rollEvent: rollEvent, rollCampfire: rollCampfire, campfireAtStart: campfireAtStart, stageReward: stageReward, bellMax: bellMax, bellGold: bellGold, rollMerchant: rollMerchant, isEventStage: isEventStage, eventStageName: eventStageName, unitSkills: unitSkills, canTranscend: canTranscend, transcend: transcend, unitBattleSpec: unitBattleSpec, unitPower: unitPower, skillPool: skillPool, merchantPrice: merchantPrice, merchantOff: merchantOff, merchantNoBattle: merchantNoBattle, chestReward: chestReward, rollScroll: rollScroll, mercPrice: mercPrice, skillPrice: skillPrice, skillManaPrice: skillManaPrice, skillBuyPrice: skillBuyPrice, skillGradeNow: skillGradeNow, skillMaxLevel: skillMaxLevel, refreshPrice: refreshPrice, rollShop: rollShop, rollShopHeroes: rollShopHeroes, canTake: canTake, takeSkill: takeSkill, playerLevel: playerLevel, perk: perk, skillSellPrice: skillSellPrice, sellSkill: sellSkill };
+    campaign: campaign, compare: compare, lossDamage: lossDamage, lossGold: lossGold, dmgFrac: dmgFrac, levelCost: levelCost, heroById: heroById, makeRng: makeRng,
+    costCap: costCap, starMul: starMul, gradeMul: gradeMul, heroGrade: heroGrade, pickHeroByGrade: pickHeroByGrade, effectLevels: effectLevels, relicPowerMul: relicPowerMul, passiveValue: passiveValue, power: power, newUnit: newUnit, canMerge: canMerge, mergeUnits: mergeUnits, autoMerge: autoMerge, gainUnit: gainUnit,
+    skillById: skillById, heroSellPrice: heroSellPrice, relicTargets: relicTargets, heroBonus: heroBonus, isBoss: isBoss, critChance: critChance, lootPool: lootPool, lootPick: lootPick, chestGrade: chestGrade, chestTiers: chestTiers, mobLoot: mobLoot, oddEvenBet: oddEvenBet, oddEvenResult: oddEvenResult, padTeam: padTeam, lootParse: lootParse, lootRerollPrice: lootRerollPrice, rerollMax: rerollMax, rollEvent: rollEvent, rollCampfire: rollCampfire, campfireAtStart: campfireAtStart, stageReward: stageReward, bellMax: bellMax, bellGold: bellGold, rollMerchant: rollMerchant, isEventStage: isEventStage, unitSkills: unitSkills, canTranscend: canTranscend, transcend: transcend, unitBattleSpec: unitBattleSpec, unitPower: unitPower, skillPool: skillPool, merchantPrice: merchantPrice, merchantOff: merchantOff, merchantNoBattle: merchantNoBattle, chestReward: chestReward, rollScroll: rollScroll, mercPrice: mercPrice, skillPrice: skillPrice, skillManaPrice: skillManaPrice, skillBuyPrice: skillBuyPrice, skillGradeNow: skillGradeNow, skillMaxLevel: skillMaxLevel, refreshPrice: refreshPrice, rollShop: rollShop, rollShopHeroes: rollShopHeroes, canTake: canTake, takeSkill: takeSkill, playerLevel: playerLevel, perk: perk, skillSellPrice: skillSellPrice, sellSkill: sellSkill };
   if (typeof module !== 'undefined') module.exports = api; else root.IdleEngine = api;
 })(this);
