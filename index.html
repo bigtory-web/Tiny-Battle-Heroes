@@ -2328,6 +2328,13 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
 @keyframes vsbob2{50%{transform:translateY(-2px)}}
 #field .vsmark img{animation:vsbob2 1.6s steps(2,jump-none) infinite!important} /* 2026-11-25 V·S 같이 1~2px 들썩 */
 #hinfo.hinfo{z-index:45!important} /* 상세 창은 이벤트 도크(40)보다 위 */
+#field .foe .cbub{flex-direction:column!important;align-items:center;gap:1px;padding:4px 9px!important;white-space:nowrap}
+#field .foe .cbub .cbig{font:400 20px/1 var(--display);color:#ffd34d;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d,0 2px #17141d}
+#field .foe .cbub .cbs{font:400 13px/1.1 var(--display);color:#f3e6c4;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d}
+@keyframes cpglow{0%,100%{opacity:.25;transform:translate(-50%,-50%) scale(.9)}50%{opacity:.95;transform:translate(-50%,-50%) scale(1.12)}}
+#chestPop .rstage{position:relative}
+#chestPop .rstage::before{content:'';position:absolute;left:50%;top:42%;width:150px;height:150px;margin:0;border-radius:50%;background:radial-gradient(circle,rgba(255,226,120,.75) 0,rgba(255,211,77,.35) 38%,rgba(255,211,77,0) 68%);pointer-events:none;animation:cpglow var(--cpd,1.9s) ease-in-out infinite} /* 은은하게, 구간을 넘을 때마다 빨라짐 */
+#chestPop .rstage .rpic{position:relative;z-index:1}
 </style>
 </head>
 <body>
@@ -2501,8 +2508,8 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
   var FACE = {bear:[0.571,0.643,63,0.88],wolf:[0.587,0.619,63],rain:[0.539,0.594,64],drum:[0.508,0.635,63],harpy:[0.556,0.619,63],imp:[0.54,0.651,63],boar:[0.542,0.617,60],squire:[0.516,0.605,62,1.12],sprout:[0.559,0.61,59],pup:[0.484,0.581,62],mudgolem:[0.403,0.61,77,0.75],slinger:[0.542,0.619,59,1.12],candle:[0.507,0.597,67],batling:[0.548,0.629,62],frog:[0.556,0.611,63],piper:[0.532,0.581,62],mossguard:[0.571,0.611,63],knight:[0.539,0.641,64],blades:[0.492,0.627,63],hawk:[0.508,0.585,65],song:[0.554,0.602,83,0.88],bat:[0.576,0.652,66],dancer:[0.548,0.629,62],spark:[0.5,0.629,62],ranger:[0.5,0.591,66],shield:[0.5,0.583,60],fox:[0.554,0.631,65],nun:[0.5,0.613,62],warlock:[0.564,0.618,55,1.12],turtle:[0.524,0.635,63],horn:[0.524,0.603,63],owl:[0.555,0.633,64],icefairy:[0.542,0.633,60],frost:[0.547,0.627,75],flame:[0.541,0.615,61],storm:[0.508,0.61,59],pegasus:[0.517,0.603,58],thorn:[0.492,0.608,60],shaman:[0.508,0.587,63],monk:[0.542,0.585,59],vine:[0.532,0.613,62],gargoyle:[0.532,0.611,63],assassin:[0.529,0.577,52,1.2],druid:[0.533,0.617,60],succubus:[0.542,0.625,60],cannon:[0.509,0.605,57],coral:[0.535,0.606,71],moonarcher:[0.525,0.619,59,1.1],minotaur:[0.426,0.59,61],shadow:[0.581,0.621,62],wyvern:[0.555,0.591,55],gate:[0.508,0.608,60],lion:[0.548,0.619,63,0.9],valkyrie:[0.579,0.627,63],tiger:[0.556,0.619,63],thunderbird:[0.533,0.598,61],necro:[0.508,0.59,61],dragon:[0.56,0.634,67,0.88],archmage:[0.525,0.598,61],worldtree:[0.538,0.538,65],demonlord:[0.569,0.638,65],phoenix:[0.531,0.631,65,0.88],seraph:[0.493,0.613,71,0.9],kraken:[0.533,0.618,76],windlord:[0.486,0.6,70,0.9]}; /* 얼굴 가운데 [x/폭, y/폭, 틀 폭] — img/tools/faces.ps1로 뽑음 */
   function faceCss(id){ var f = FACE[id]; if (!f) return ''; var z = 1.9 * f[2] / 64 * (f[3] || 1); /* 64 틀 기사 190% 기준, 틀이 크면 더 확대. f[3] = 머리가 커/작아 보이는 영웅만 따로 줄이고 키우는 배율 */ return ';--fs:' + (z * 100).toFixed(1) + '%;--fp:' + ((f[0] * z - .5) / (z - 1) * 100).toFixed(1) + '% ' + ((f[1] * z - .5) / (z - 1) * 100).toFixed(1) + '%'; }
   function av(id, gr){ return IMGS[id] ? '<span class="av pic' + (PIX[id] ? ' pix' : '') + '" style="background-image:url(' + IMGSRC[id] + ');--gc:' + gc(id, gr) + faceCss(id) + '"></span>' : '<span class="av">' + AV[id] + '</span>'; }
-  function avO(id){ var s = av(id), im = IMGS[id]; if (!im) return s; var w = im.width, h = im.height; /* 외곽선 그림은 위아래좌우 1px씩 커서 칸도 그만큼 키워 원래 그림 자리를 맞춰요 */
-    return s.replace('<span class="av pic', (ANIM_IDS.indexOf(id) >= 0 ? '<span data-oid="' + id + '" class="av pic' : '<span class="av pic')).replace('class="av pic', 'class="av pic olb').replace('background-image:url(' + IMGSRC[id] + ')', 'background-image:url(' + outlinedURL(id, gc(id) + 'b3') + ');position:relative;flex:none;align-self:flex-start;top:' + (-100 / h).toFixed(3) + '%;width:' + (100 * (w + 2) / w).toFixed(3) + '%;height:' + (100 * (h + 2) / h).toFixed(3) + '%'); }
+  function avO(id, key){ key = key || id; var s = av(id), im = IMGS[key]; if (!im) return s; var w = im.width, h = im.height; /* 외곽선 그림은 위아래좌우 1px씩 커서 칸도 그만큼 키워 원래 그림 자리를 맞춰요 */
+    return s.replace('<span class="av pic', (ANIM_IDS.indexOf(id) >= 0 ? '<span data-oid="' + id + '" class="av pic' : '<span class="av pic')).replace('class="av pic', 'class="av pic olb').replace('background-image:url(' + IMGSRC[id] + ')', 'background-image:url(' + outlinedURL(key, gc(id) + 'b3') + ');position:relative;flex:none;align-self:flex-start;top:' + (-100 / h).toFixed(3) + '%;width:' + (100 * (w + 2) / w).toFixed(3) + '%;height:' + (100 * (h + 2) / h).toFixed(3) + '%'); }
   function stars(n){ return ''; } // 성급 별은 그림 위에 보여 주지 않아요 (정보 창에만 ★)
 
   // ───── 상태 저장 ─────
@@ -2762,8 +2769,8 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
       var cp = side === 'A' && key && S.pos && S.pos[key]; if (cp){ px = cp.x; py = cp.y; }
       if (inner && hid && hero(hid).mob !== 'chest') fbars.push({ x: px, y: py, ally: side === 'A', mob: !!hero(hid).mob, id: hid, star: side === 'A' ? (U(key) ? U(key).star : 0) : (hero(hid).mob ? 0 : estar || 1) });
       return '<div class="unit"' + (side === 'A' && key ? ' data-uid="' + key + '"' : '') + ' style="left:' + (100 * px / W) + '%;top:' + (100 * (py + OFF + FOOT) / H) + '%;z-index:' + Math.round(py) + '">' + inner + '</div>'; }
-    function foeHtml(u){ if (!u) return ''; var h = hero(u.id); if (h.mob === 'chest'){ var ckf = chestImgKey(chestGrade(), 1); return foeHtml0(u, h).replace(IMGSRC.chest || 'img/p/chest.png', IMGSRC[ckf] || IMGSRC.chest || ''); } return foeHtml0(u, h); }
-    function foeHtml0(u, h){ return '<div class="foe' + (u.boss ? ' boss' : '') + (u.merc ? ' merc' : '') + (h.mob ? ' mob' : '') + (MOBSZ[h.mob] ? ' mobsz' + (MOBSZ[h.mob] > 1 ? '2' : '') : '') + (h.mob === 'chest' ? ' chestbig' + chestFlashCls() : '') + '" data-foe="' + u.slot + '" style="--el:' + ELC[h.el] + footCss(h.id) + '" title="' + h.name + '">' + avO(h.id) + '' + bnBubble(u.bonus) + mobBub(u) + (h.mob === 'chest' ? chestBub() : '') + '</div>'; } // 레벨 표시는 뺐어요
+    function foeHtml(u){ if (!u) return ''; var h = hero(u.id); if (h.mob === 'chest'){ return foeHtml0(u, h, chestImgKey(chestGrade(), 1)); } /* 전투 때 그림(등급)으로 미리 그려요: 예전 replace는 외곽선 그림 주소라 안 맞았음 */ return foeHtml0(u, h); }
+    function foeHtml0(u, h, key){ return '<div class="foe' + (u.boss ? ' boss' : '') + (u.merc ? ' merc' : '') + (h.mob ? ' mob' : '') + (MOBSZ[h.mob] ? ' mobsz' + (MOBSZ[h.mob] > 1 ? '2' : '') : '') + (h.mob === 'chest' ? ' chestbig' + chestFlashCls() : '') + '" data-foe="' + u.slot + '" style="--el:' + ELC[h.el] + footCss(h.id) + '" title="' + h.name + '">' + avO(h.id, key) + '' + bnBubble(u.bonus) + mobBub(u) + (h.mob === 'chest' ? chestBub() : '') + '</div>'; } // 레벨 표시는 뺐어요
     var bySlot = []; st.team.forEach(function(u){ bySlot[u.slot] = u; });
 
     function slotHtml(i){
@@ -3857,13 +3864,8 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
       ctx.fillStyle = '#17141d'; ctx.fillRect(cx0 - 3, cy0 - 3, cw + 6, bh + 6); ctx.fillStyle = '#3b3546'; ctx.fillRect(cx0, cy0, cw, bh);
       ctx.fillStyle = u._tflash > 0 ? '#fff' : '#e0554f'; ctx.fillRect(cx0, cy0, Math.round(cw * (1 - fr)), bh); ctx.fillStyle = 'rgba(255,157,151,.9)'; ctx.fillRect(cx0, cy0, Math.round(cw * (1 - fr)), 2); /* 남은 HP: 100% → 0% */
       TT.forEach(function(T){ if (T.at >= 1) return; var tx2 = cx0 + Math.round(cw * (1 - T.at)) - 1; ctx.fillStyle = '#17141d'; ctx.fillRect(tx2, cy0, 2, bh); }); /* 구간 눈금 (칸 수만큼) */
-      var bw2 = cw + 28, bh2 = 36, bx2 = cx0 - 14, by2 = cy0 - 12 - bh2;
-      ctx.fillStyle = '#17141d'; ctx.fillRect(bx2 - 3, by2 - 3, bw2 + 6, bh2 + 6); ctx.fillRect(Math.round(x) - 6, by2 + bh2, 12, 7); ctx.fillStyle = '#f3e6c4'; ctx.fillRect(bx2, by2, bw2, bh2); ctx.fillRect(Math.round(x) - 3, by2 + bh2, 6, 4);
+      var by2 = cy0 - 10, bh2 = 0; /* 구간별 보상 말풍선은 뺌(2026-11-25 사용자). 시작 때 최대 배지만 */
       ctx.save(); ctx.imageSmoothingEnabled = false; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-      u._ctr.forEach(function(R, i){ var ix = Math.round(cx0 + cw * (1 - R.at)), on = i < tn; ix = Math.max(bx2 + 12, Math.min(bx2 + bw2 - 12, ix)); ctx.globalAlpha = on ? 1 : .38;
-        if (R.scroll){ ctx.font = '15px "Apple Color Emoji","Segoe UI Emoji",sans-serif'; ctx.fillText('\u{1F4DC}', ix, by2 + 19); } else if (CPGOLD.complete && CPGOLD.naturalWidth) ctx.drawImage(CPGOLD, ix - 8, by2 + 4, 16, 16);
-        ctx.font = '400 10px "Black Han Sans", sans-serif'; ctx.fillStyle = on ? '#7a5a10' : '#17141d'; ctx.fillText(R.gold ? '+' + R.gold : '', ix, by2 + bh2 - 4);
-        if (on){ ctx.fillStyle = '#ffd34d'; ctx.fillRect(ix - 8, by2 + bh2 - 2, 16, 2); } });
       var bt0 = bt && bt.time || 0; if (bt0 < .3){ var sc = 1 - bt0 / .3, mt = chestMaxText(u._ctr); ctx.globalAlpha = 1; ctx.font = '400 11px "Black Han Sans", sans-serif'; var mw = ctx.measureText(mt).width + 12, mh = 16; ctx.save(); ctx.translate(Math.round(x), by2 - 4); ctx.scale(sc, sc); ctx.fillStyle = '#17141d'; ctx.fillRect(-mw / 2 - 2, -mh - 2, mw + 4, mh + 4); ctx.fillStyle = '#d8443e'; ctx.fillRect(-mw / 2, -mh, mw, mh); ctx.fillStyle = '#fff3dc'; ctx.textBaseline = 'middle'; ctx.fillText(mt, 0, -mh / 2 + 1); ctx.restore(); } /* 최대 배지: 전투 시작하면 쏙 */
       ctx.restore(); }
     if (u.h.mob === 'goblin' && D.events){ var fl = D.events.goblin.flee, left = Math.max(0, 1 - (u.age || 0) / fl), tw = 40, tx = Math.round(x - tw / 2), ty = Math.round(foot - S - 6);
@@ -3921,7 +3923,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
   function mobDropList(u){ var d = u && u.drop; return d ? [].concat(d).filter(Boolean) : []; }
   var chestLastG = null; function chestFlashCls(){ var g = chestGrade(S.bell || 0), f = chestLastG != null && g !== chestLastG; chestLastG = g; return f ? ' cflash' : ''; }
   function chestMaxText(TR){ var g = 0, s = 0; TR.forEach(function(R){ g += R.gold || 0; s += R.scroll || 0; }); return '최대 ' + g.toLocaleString() + 'G' + (s ? ' + 📜' + s : ''); }
-  function chestBub(){ var tf = imgTopFrac(IMGS[chestImgKey(chestGrade(), 1)]), TR = chestTiers(S.stage, S.bell || 0); return '<i class="mbub cbub" style="bottom:calc(' + (CHEST_K * 100 * (1 - tf)).toFixed(1) + '% + 26px)"><b class="cmax">' + chestMaxText(TR) + '</b>' + TR.slice().reverse().map(function(R){ return '<span class="mbi">' + (R.scroll ? '<span>\u{1F4DC}</span>' : lootIcon('g:' + R.gold)) + '<em>' + Math.round(R.at * 100) + '% <b>' + (R.gold ? '+' + R.gold : '') + '</b></em></span>'; }).join('') + '</i>'; }
+  function chestBub(){ var tf = imgTopFrac(IMGS[chestImgKey(chestGrade(), 1)]), TR = chestTiers(S.stage, S.bell || 0), g = 0, sc = 0; TR.forEach(function(R){ g += R.gold || 0; sc += R.scroll || 0; }); return '<i class="mbub cbub" style="bottom:calc(' + (CHEST_K * 100 * (1 - tf)).toFixed(1) + '% + 26px)"><b class="cbig">최대 !</b><b class="cbs">' + g.toLocaleString() + 'G' + (sc ? ' ' + sc + '유물' : '') + '</b></i>'; } /* 구간별 보상 대신 합계만 크게 (2026-11-25 사용자) */
   function mobBub(u){ var L = mobDropList(u); if (!L.length) return ''; return '<i class="mbub">' + L.map(function(k){ return '<span class="mbi">' + lootIcon(k) + '</span>'; }).join('') + '</i>'; }
   // 전투 중 캔버스용 전리품 그림
   var LOOTIMG = {};
@@ -4068,10 +4070,10 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
     var pic = o.querySelector('.rpic'), strip = o.querySelector('.rstrip'), btn = $('cpGet'), box = o.querySelector('.rbox');
     var cpG = (E.chestGrade && E.chestGrade(D, curPlv)) || 1; pic.style.backgroundImage = 'url(img/p/' + chestImgKey(cpG, 1) + '.png)'; o.querySelector('.rname').innerHTML = '<span class="cphp"><i class="cphpf"></i>' + TR.filter(function(R){ return R.at < 1; }).map(function(R){ return '<s style="left:' + ((1 - R.at) * 100).toFixed(2) + '%"></s>'; }).join('') + '</span>';
     strip.innerHTML = items.map(function(){ return '<span class="cps"></span>'; }).join('') || '<span class="cps none">없음</span>'; btn.hidden = true; o.hidden = false;
-    var i = 0, fill = o.querySelector('.cphpf'), seq = TR.slice(0, ci.tier).map(function(R, t){ return { to: 1 - R.at, n: tierItems[t] }; }).concat([{ to: 1 - ci.frac, n: 0 }]), left = 0, onDone = null;
+    var i = 0, fill = o.querySelector('.cphpf'), seq = TR.slice(0, ci.tier).map(function(R, t){ return { to: 1 - R.at, n: tierItems[t], t: 1 }; }).concat([{ to: 1 - ci.frac, n: 0 }]), left = 0, onDone = null, tc = 0; pic.parentNode.style.setProperty('--cpd', '1.9s');
     fill.style.transition = 'none'; fill.style.width = '100%';
     function step(){ if (o.hidden) return; var s = seq.shift(); if (!s){ btn.hidden = false; return; } void fill.offsetWidth; fill.style.transition = 'width .4s linear'; fill.style.width = (Math.max(0, s.to) * 100).toFixed(1) + '%';
-      setTimeout(function(){ if (o.hidden) return; pic.style.backgroundImage = 'url(img/p/' + chestImgKey(cpG, chestStage(Math.max(0, s.to))) + '.png)'; left = s.n; if (left) spit(); else step(); }, 420); } /* HP가 눈금까지 줄면 그 구간 보상을 핑 */
+      setTimeout(function(){ if (o.hidden) return; pic.style.backgroundImage = 'url(img/p/' + chestImgKey(cpG, chestStage(Math.max(0, s.to))) + '.png)'; if (s.t){ tc++; pic.parentNode.style.setProperty('--cpd', Math.max(.3, 1.9 - .4 * tc).toFixed(2) + 's'); } left = s.n; if (left) spit(); else step(); }, 420); } /* HP가 눈금까지 줄면 그 구간 보상을 핑 */
     function spit(){ if (o.hidden) return; if (left <= 0 || i >= items.length){ step(); return; } left--; var it = items[i], slot = strip.children[i]; i++;
       pic.classList.remove('cpshake'); void pic.offsetWidth; pic.classList.add('cpshake');
       var k = box.getBoundingClientRect().width / (box.offsetWidth || 1), br = box.getBoundingClientRect(), pr = pic.getBoundingClientRect(), sr = slot.getBoundingClientRect(), fl = document.createElement('span'); fl.className = 'cpfly'; fl.innerHTML = it.ic; box.appendChild(fl);
