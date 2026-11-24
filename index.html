@@ -1248,7 +1248,9 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .bagcol .coltit{color:#f3d9a8!important;text-shadow:0 1px 0 #2b1a0e}
 .bagcol .chip{background:#17141d!important;box-shadow:inset 0 0 0 1px var(--gcol,#5d5470),0 0 0 1px #17141d!important;border-radius:0!important;overflow:hidden} /* 큰 캐릭터 아이콘 틀: 상세 창 머리 칸과 같게 (어두운 보라 바탕, 등급색 1px, 바깥 어두운 1px) */
 .bagcol .chip .av.pic{width:calc(100% - 2px)!important;height:calc(100% - 2px)!important;background-size:170%!important;background-position:50% 40%!important} /* 2026-11-25 사용자: 큰 아이콘은 방랑상점 영웅 아이콘과 같은 상반신 자르기(공통 170%, 위 40%) */ /* 2026-11-25 사용자: 백팩은 전신 (상세 창 머리 칸처럼 cover) */
-.bagcol .chip > .hst{top:max(1px,calc(var(--ht,0%) - 10px));bottom:auto}
+.bagcol .chip > .hst{top:max(1px,calc(var(--ht,0%) - 8px));bottom:auto}
+.bagcol .chip{clip-path:none!important} /* 모서리 깎기(clip-path)가 바깥 테두리를 잘라서 뺌: 상세 창 머리 칸과 같은 사각 */
+.bagcol .chip.picked{outline:none!important;animation:none!important;box-shadow:inset 0 0 0 1px var(--gcol,#5d5470),0 0 0 1px #17141d,0 0 0 3px #ffd34d!important} /* 고른 칸: 등급색 안쪽 1px 위에 어두운 1px + 금색 2px 한 겹만 */
 .bagcol .chip .cgr{display:none}
 .bagcol .chip.bagempty{display:flex;align-items:center;justify-content:center;font:400 22px var(--display);font-style:normal;color:#a8784a;background:#4a2f1a!important;box-shadow:inset 0 0 0 2px #2b1a0e,inset 0 0 0 3px #6e4626!important;cursor:default}
 
@@ -1294,7 +1296,7 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .hicf{display:block;width:100%;height:100%;overflow:hidden}
 .hicf > .av{width:100%;height:100%;display:block;border-radius:0}
 .hst{position:absolute;left:0;right:0;top:max(3px,calc(var(--ht,0%) - 10px));z-index:3;display:flex;justify-content:center;gap:1px;pointer-events:none;font-style:normal}
-.hst b{display:block;font:400 10px/9px var(--display);color:#ffd34d;text-shadow:1px 0 0 #17141d,-1px 0 0 #17141d,0 1px 0 #17141d,0 -1px 0 #17141d}
+.hst b{display:block;font:400 8px/7px var(--display);color:#ffd34d;text-shadow:1px 0 0 #17141d,-1px 0 0 #17141d,0 1px 0 #17141d,0 -1px 0 #17141d}
 .hst b::before{content:"★"}
 .chip > .hst{bottom:auto}
 .rgrade{display:none!important} /* 등급 글자 대신 테두리 색으로 */
@@ -3707,8 +3709,8 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   var knocks = {}; // uid → { dx, t } : 돌풍에 밀린 유닛을 0.15초 동안 휙 미끄러지게 그려요
   // 체력·에너지 막대: 전투와 편성 화면이 같이 써요
   // 5×5 픽셀 별 (성급 표시, 은은한 금색)
-  function drawGradeStar(c, cx, cy, n){ var R = 8.5, r = 3.8; c.save(); c.beginPath(); for (var i = 0; i < 10; i++){ var a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r : R; c.lineTo(cx + Math.cos(a) * rr, cy + 0.5 + Math.sin(a) * rr); } c.closePath(); c.lineJoin = 'round'; c.lineWidth = 3; c.strokeStyle = '#17141d'; c.stroke(); c.fillStyle = '#ffd34d'; c.fill();
-    c.font = '400 10px "Black Han Sans", sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#3a2208'; c.fillText('' + n, cx, cy + 1.5); c.restore(); } /* 성급: HP 막대 왼쪽 앞에 별 하나 + 별 안에 숫자 (2026-11-25 사용자) */
+  function drawGradeStar(c, cx, cy, n){ var R = 6.5, r = 2.9; c.save(); c.beginPath(); for (var i = 0; i < 10; i++){ var a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r : R; c.lineTo(cx + Math.cos(a) * rr, cy + 0.5 + Math.sin(a) * rr); } c.closePath(); c.lineJoin = 'round'; c.lineWidth = 2.2; c.strokeStyle = '#17141d'; c.stroke(); c.fillStyle = '#ffd34d'; c.fill();
+    c.font = '400 8px "Black Han Sans", sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#3a2208'; c.fillText('' + n, cx, cy + 1.2); c.restore(); } /* 성급: HP 막대 왼쪽 앞에 별 하나 + 별 안에 숫자 (2026-11-25 사용자) */
   function drawBars(ctx, x, y, o){
     var bw = 44, bx = Math.round(x - bw / 2), by = Math.round(y + 30), rows = 2, fh = 2 + 4 + 2 + (rows - 1) * 4;
     ctx.fillStyle = "#17141d"; ctx.fillRect(bx - 2, by - 2, bw + 4, fh);
@@ -3722,7 +3724,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     if (o.trig){ var tn = o.trig.kind === "start" ? 1 : Math.max(1, o.trig.n || 1), sw = Math.floor((bw - (tn - 1) * 2) / tn), ek = Math.min(1, (o.energy || 0) / 100) * tn, full = (o.energy || 0) >= 99.9; // 발동 타입: n칸 눈금, 칸 안은 연속으로 차요 (start형은 쓰면 회색)
       for (var ti = 0; ti < tn; ti++){ var tx = bx + ti * (sw + 2), fw = Math.round(sw * Math.max(0, Math.min(1, ek - ti))); ctx.fillStyle = o.tdone ? "#6b6478" : "#4a4358"; ctx.fillRect(tx, by + 6, sw, 2); if (!o.tdone && fw > 0){ ctx.fillStyle = full ? "#ffe08a" : "#f2b53a"; ctx.fillRect(tx, by + 6, fw, 2); } } }
     else { ctx.fillStyle = o.energy >= 99.9 ? "#ffe08a" : "#f2b53a"; ctx.fillRect(bx, by + 6, Math.round(bw * Math.min(1, (o.energy || 0) / 100) / 2) * 2, 2); }
-    if (o.star) drawGradeStar(ctx, bx - 11, by + 4, o.star);
+    if (o.star) drawGradeStar(ctx, bx - 9, by + 4, o.star);
     return { bw: bw, bx: bx, by: by, rows: rows, fh: fh };
   }
   // 피격 연출: 맞은 유닛은 dur초 동안 모션을 고정하고 살짝 흔들며 흰 실루엣으로 번쩍여요 (flash 0~1 = 세기)
