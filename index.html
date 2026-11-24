@@ -2346,6 +2346,13 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
 .tbar .thp .sh{box-shadow:inset 0 2px 0 #d6ecff,inset 0 -4px 0 #4b82b8}
 .chestpop .rname .cphp{box-shadow:0 0 0 2px #17141d,0 3px 0 #17141d,inset 0 2px 0 #2a2533}
 .chestpop .rname .cphpf{box-shadow:inset 0 2px 0 #ff9d97,inset 0 -4px 0 #8a1f26}
+/* 룰렛 뒤 빛줄기: 등급에 맞춤 (2026-11-25 사용자). 1등급 = 없음 */
+.rbox .rfx .rays{opacity:0!important}
+.rbox.rl2 .rfx .rays{opacity:.14!important;animation:spinr 14s linear infinite!important}
+.rbox.rl3 .rfx .rays{opacity:.26!important;animation:spinr 9s linear infinite!important}
+.rbox.rl4 .rfx .rays{opacity:.42!important;animation:spinr 5s linear infinite!important}
+/* 태그(수인·마법사·숲 등) 글씨 흐림 고침: 본문 글꼴은 보통(400)만 불러오는데 700(굵게)을 써서 브라우저가 억지로 굵게 번지게 그렸음 -> 굵은 제목 글꼴(400)로 (2026-11-25 사용자) */
+.htag,.rtags .htag{font-family:var(--display)!important;font-weight:400!important;letter-spacing:.03em;-webkit-font-smoothing:auto}
 </style>
 </head>
 <body>
@@ -2473,7 +2480,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
   window.addEventListener('resize', function(){ setTimeout(fitBag, 30); }); setTimeout(fitBag, 60); setTimeout(fitBag, 600);
   var STAGE_FIT = 0.85; /* 2026-11-24: 게임 판을 창보다 작게 (사용자: 전체 화면 크기는 좀 줄여 줘) */
   function fitStage(){ var app = document.querySelector('.app'); if (!app) return; var sw = window.innerWidth, sh = window.innerHeight, k = Math.min(sw / 960, sh / 511) * STAGE_FIT; if (!sw || !sh) return;
-    app.style.transform = 'scale(' + k + ')'; app.style.left = Math.max(0, (sw - 960 * k) / 2) + 'px'; app.style.top = Math.max(0, (sh - 511 * k) / 2) + 'px';
+    app.style.transform = 'scale(' + k + ')'; app.style.left = Math.round(Math.max(0, (sw - 960 * k) / 2)) + 'px'; app.style.top = Math.round(Math.max(0, (sh - 511 * k) / 2)) + 'px'; /* 소수점 위치는 글씨를 번지게 해서 정수로 */
     var rh = document.getElementById('rotateHint'); if (rh) rh.hidden = !(sh > sw); }
   window.addEventListener('resize', fitStage); fitStage();
   var $ = function(id){ return document.getElementById(id); };
@@ -2921,9 +2928,10 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
       bz.insertAdjacentHTML('beforeend', '<i style="--dx:' + Math.round(Math.cos(a) * d) + 'px;--dy:' + Math.round(Math.sin(a) * d) + 'px;--dl:' + (Math.random() * .15).toFixed(2) + 's"></i>'); }
     if (gr === 3){ var r = $('roul'); r.classList.remove('flash'); void r.offsetWidth; r.classList.add('flash'); }
   }
+  function rayFx(key){ var rb = $('roul').querySelector('.rbox'), t = lootTier(key); rb.classList.remove('rl1', 'rl2', 'rl3', 'rl4'); rb.classList.add('rl' + t); rb.style.setProperty('--gcol', GR(t).col); } /* 뒤 빛줄기: 1등급 없음, 2등급 이상은 등급색, 높을수록 진하고 빠르게. 도는 중 칸이 바뀌면 같이 바뀜 */
   function showOffer(key){
     var p = LP(key), box = $('roul'), pic = box.querySelector('.rpic');
-    box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); $('rUp').hidden = !upOK(key);
+    box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); rayFx(key); $('rUp').hidden = !upOK(key);
     if (p.type === 'h'){ var id = p.id; pic.innerHTML = IMGS[id] ? '' : AV[id]; pic.style.backgroundImage = IMGS[id] ? 'url(' + outlinedURL(id, gc(id)) + ')' : 'none'; pic.style.setProperty('--gc', gc(id)); if (IMGS[id]){ pic.style.setProperty('--o1', 'url(' + outlinedURL(id, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(id, '#ffffff') + ')'); } /* 결과가 뜨면 외곽선 파랑↔흰색 */ pic.classList.remove('loot'); }
     else { pic.style.backgroundImage = 'none'; pic.innerHTML = lootIcon(key); pic.classList.add('loot'); }
     rpAnim.id = p.type === 'h' && ANIM_IDS.indexOf(p.id) >= 0 ? p.id : null; /* 프레임 시트 영웅은 룰렛 큰 그림도 대기 1~4 반복 */
