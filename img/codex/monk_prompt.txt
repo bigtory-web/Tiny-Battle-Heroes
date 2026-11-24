@@ -1,0 +1,37 @@
+Look at the image img/gemini/ref/monk_x8.png (the reference character, a pixel art character on a white background). Generate ONE new image with your image generation tool and save it as img/codex/monk_sheet.png. The image request is below; follow it exactly.
+
+첨부한 픽셀 아트 캐릭터(게임 그림을 8배 확대한 것)로 스프라이트 시트 1장을 만들어 줘.
+캐릭터: spiky golden-yellow hair, orange and white martial-arts outfit with white gloves, fists ready. (첨부 그림이 디자인 기준이다. 새로 디자인하지 말 것.)
+
+[배열]
+- 4칸 x 2줄 = 8프레임. 칸마다 256x256 픽셀(64 격자 x 4배), 전체 1024x512.
+- 칸 사이 여백, 테두리, 격자선, 글자, 번호 없음.
+- 배경은 단색 #FF00FF 마젠타(그라데이션·그림자 없음).
+
+[윗줄: 대기 4프레임, 반복 재생]
+1. 기본 자세: 첨부 그림과 같게.
+2. 들숨: 상체와 어깨만 1픽셀 위로.
+3. 2와 같은 높이, 무기(또는 손에 든 것)만 1~2픽셀 위로.
+4. 상체가 1과 같은 높이로 돌아옴.
+
+[아랫줄: 공격 4프레임]
+5. 준비: 주먹을 뒤로 당김.
+6. 본동작: 주먹을 앞으로 힘껏 내지름.
+7. 마무리: 팔을 앞으로 뻗은 채 멈춤.
+8. 복귀: 주먹을 기본 자세로.
+
+[연속성 규칙: 가장 중요]
+- 프레임 1은 첨부 그림과 디자인, 비율, 크기, 색을 최대한 같게.
+- 8프레임 모두 얼굴이 똑같이 보이게(눈 위치·표정 그대로). 얼굴을 가리지 말 것.
+- 8프레임 모두 같은 무기·소품(첨부 그림의 것). 모양을 바꾸지 말 것.
+- 발은 8프레임 모두 칸 안 같은 픽셀 위치. 발을 내딛거나 옮기지 말 것.
+- 1~4프레임은 몸 전체 위치가 같아야 한다(좌우로 밀리지 않게).
+- 키, 머리 크기, 몸 너비를 바꾸지 말 것.
+- 첨부 그림에 있는 색만 쓰고, 짙은 1픽셀 외곽선 유지. 안티에일리어싱·흐림 없음.
+- 캐릭터는 첨부 그림처럼 오른쪽을 본다.
+
+[하지 말 것]
+- 첨부 그림에 없는 궤적, 빛, 불꽃, 먼지, 잔상, 날아가는 화살·돌 같은 효과 넣지 않기(그림에 원래 있는 불꽃·촛불은 그대로 둠). 캐릭터만.
+
+
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item, and keep the image exactly as generated (do not resize or edit it). Do not modify or create any other file.

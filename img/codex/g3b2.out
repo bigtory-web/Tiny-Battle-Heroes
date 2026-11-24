@@ -1,0 +1,6 @@
+thorn: exists, skipped
+monk: ok
+gargoyle: ok
+sed: -e expression #1, char 8: unterminated `s' command
+vine: FAILED (see img/codex/vine_codex.log)
+shaman: ok
