@@ -369,12 +369,6 @@ html,body{overflow:hidden;background:#0b0c14}
 .btncol .idleChip{margin:0;border-radius:12px;padding:0;gap:1px;flex-direction:column;justify-content:center;border:1px solid #4e8a4e;background:#25402a;font-size:11px}
 .btncol .idleChip b{font:400 12px var(--display);color:var(--gold)}
 /* 승산 표시: 유리(초록) · 팽팽(노랑) · 불리(빨강). 숫자는 보여 주지 않아요 */
-.btncol .wfc{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:5px;height:20px;font:400 12px var(--display);color:#f3e6c4;background:rgba(23,20,29,.6);box-shadow:inset 0 0 0 2px #17141d}
-.btncol .wfc[hidden]{display:none}
-.btncol .wfc:not([hidden]) + .go{margin-top:4px}
-.wfc i,.bnext i.wdot{display:inline-block;width:8px;height:8px;box-shadow:0 0 0 2px #17141d;background:var(--wc,#888)}
-.bnext i.wdot{margin-left:5px;vertical-align:0}
-.wfc.w-g,.wdot.w-g{--wc:#5fcf6a} .wfc.w-y,.wdot.w-y{--wc:#ffd34d} .wfc.w-r,.wdot.w-r{--wc:#ff6b6b}
 .btncol .go{margin-top:auto;font-size:15px;padding:12px 4px;line-height:1.2}
 .mid{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:6px}
 .arena{flex:none;width:100%;aspect-ratio:720/400;display:block}
@@ -1821,8 +1815,6 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .abar #fightBtn{width:132px;height:44px!important;margin:0!important;padding:0;border:0;border-radius:0;flex:none;background:#f2b53a;color:#3a2208;font:400 18px var(--display);letter-spacing:.1em;text-shadow:0 1px 0 #ffd98a;box-shadow:inset 0 0 0 3px #5a3a0c,inset 0 6px 0 -3px #ffe08a,inset 0 -8px 0 -3px #9a6416;cursor:pointer}
 .abar #fightBtn:disabled{filter:grayscale(.6) brightness(.85);cursor:default}
 .abar #fightBtn:not(:disabled):active{transform:translateY(2px)}
-.abar .wfc{display:flex;align-items:center;gap:5px;height:24px;padding:0 8px;font:400 12px var(--display);color:#f3e6c4;background:rgba(23,20,29,.7);box-shadow:inset 0 0 0 2px #17141d}
-.abar .wfc[hidden]{display:none}
 .underbar{position:relative;z-index:8;align-items:flex-start;padding-top:0;overflow:visible}
 .underbar .ubagbox{margin-top:5px}
 .underbar .ugrp{gap:2px;margin-top:-10px;align-items:flex-start}
@@ -1833,7 +1825,6 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .underbar .ugrp .abtn.on:active{transform:translateY(-3px)}
 .underbar .ugrp .idleChip{width:auto;padding:0 10px}
 .abar{justify-content:center;bottom:18px}
-.abar .wfc{position:absolute;left:50%;bottom:50px;transform:translateX(-50%)}
 #hud #spdBtn{gap:5px;min-width:64px}
 #hud .sptri{display:block;width:0;height:0;border-style:solid;border-width:5px 0 5px 7px;border-color:transparent transparent transparent currentColor;filter:drop-shadow(0 1px 0 #17141d)}
 #hud #spdBtn{min-width:72px}
@@ -2302,7 +2293,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
           <div class="enrage" id="enrageTag" hidden>광폭화</div>
           <div class="abar" id="abar">
             <button class="abtn" id="bagBtn" type="button" title="백팩 열기·닫기"><img class="uic" src="img/p/hud_bag.png" alt="" onerror="this.outerHTML='🎒'"></button>
-            <div class="wfc" id="wfc" hidden title="지금 편성으로 미리 돌려 본 승산"><i></i><b></b></div>
             <button class="go" id="fightBtn">전투</button>
           </div>
           <div class="gover ll ml" id="mobLoot" hidden><div class="gobox"><button class="spX popx" data-xfor="#mlGet" type="button" title="닫기">✕</button><b>전리품</b><div class="mlrow" id="mlRow"></div><button class="go" id="mlGet" type="button">받기</button></div></div>
@@ -3232,27 +3222,10 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     S.team.forEach(function(uid, slot){ if (!uid || !U(uid) || np[uid]) return; var q = POS.A[slot] || POS.A[0], c = nearCell(C, q[0], q[1], used); if (c){ used[ckey(c)] = 1; np[uid] = { x: c[0], y: c[1] }; } });
     S.pos = np; } // 내 쪽 육각 칸 아무 데나 (한 칸에 1명)
   var newinT = 0;
-  var _renderForm = renderForm; renderForm = function(){ if (!bt) settleAllies(); if (!isAltar()){ altA = null; altM = null; } _renderForm(); $('arena').classList.toggle('evstage', !bt && (isCamp() || isMerch() || isAltar() || isFairy() || isOddEven()) && !isLvPick() && !isFork()); evLeaveSync(); $('field').classList.toggle('altpick', isAltar() && !isLvPick() && altA != null); altMarks(); if (!bt && S.mobPend && !S.offer && $('roul').hidden) showMobLoot(); vsBarForm(); fitSkRows(); if (gainFxUid != null){ var gu = gainFxUid; gainFxUid = null; starUpFx(gu); } if (newHeroUid != null && !newinT) newinT = setTimeout(function(){ newinT = 0; if (newHeroUid == null || scrollPend) return; var ne0 = $('field').querySelector('.unit[data-uid="' + newHeroUid + '"]'); newHeroUid = null; if (ne0){ ne0.classList.add('newin'); setTimeout(function(){ ne0.classList.remove('newin'); }, 700); } }, 0); /* 연달아 다시 그리는 게 끝난 뒤 (판 넘김이면 stageScroll이 처리) */ /* 새 영웅: 전장에 섰으면 그 칸에서만 등장, 백팩이면 연출 없음 */ if (skTgt && !bt) markFieldTargets(); if (sel) applySel(); queueForecast(); renderBagBtn(); };
+  var _renderForm = renderForm; renderForm = function(){ if (!bt) settleAllies(); if (!isAltar()){ altA = null; altM = null; } _renderForm(); $('arena').classList.toggle('evstage', !bt && (isCamp() || isMerch() || isAltar() || isFairy() || isOddEven()) && !isLvPick() && !isFork()); evLeaveSync(); $('field').classList.toggle('altpick', isAltar() && !isLvPick() && altA != null); altMarks(); if (!bt && S.mobPend && !S.offer && $('roul').hidden) showMobLoot(); vsBarForm(); fitSkRows(); if (gainFxUid != null){ var gu = gainFxUid; gainFxUid = null; starUpFx(gu); } if (newHeroUid != null && !newinT) newinT = setTimeout(function(){ newinT = 0; if (newHeroUid == null || scrollPend) return; var ne0 = $('field').querySelector('.unit[data-uid="' + newHeroUid + '"]'); newHeroUid = null; if (ne0){ ne0.classList.add('newin'); setTimeout(function(){ ne0.classList.remove('newin'); }, 700); } }, 0); /* 연달아 다시 그리는 게 끝난 뒤 (판 넘김이면 stageScroll이 처리) */ /* 새 영웅: 전장에 섰으면 그 칸에서만 등장, 백팩이면 연출 없음 */ if (skTgt && !bt) markFieldTargets(); if (sel) applySel(); setTimeout(renderBell, 200); renderBagBtn(); };
   function bagOpen(){ return !(S.ui && S.ui.bagOpen === false); } // 기본은 펼침
   function renderBagBtn(){ var b = $('bagBtn'); if (!b) return; var bn = bagCount(), bm = bagMax(), bc = b.querySelector('.bagcnt'); if (!bc){ b.insertAdjacentHTML('beforeend', '<i class="bagcnt"></i>'); bc = b.querySelector('.bagcnt'); } bc.hidden = bn <= bm; bc.textContent = bn + '/' + bm; /* 넘쳤을 때만 빨간 칸 수 */ b.classList.toggle('on', bagOpen()); $('bagDrawer').classList.toggle('open', bagOpen()); $('arena').classList.toggle('bagon', bagOpen()); }
   $('bagBtn').addEventListener('click', function(){ S.ui = S.ui || {}; S.ui.bagOpen = !bagOpen(); save(); renderBagBtn(); });
-  // ───── 승산 미리보기: E.forecast로 지금 편성을 몰래 8판 돌려 봐요 (한 판 약 10ms) ─────
-  var fcT = 0, fcKey = '', fcNow = null, fcNext = null;
-  var FCC = { '유리': 'w-g', '팽팽': 'w-y', '불리': 'w-r' };
-  function queueForecast(){ clearTimeout(fcT); fcT = setTimeout(runForecast, 200); }
-  function runForecast(){
-    var box = $('wfc'); if (!box || !E.forecast) return;
-    box.hidden = true; fcNow = fcNext = null; fcKey = ''; renderBell(); return; // 승산(유리/불리) 표시는 없앴어요 (사용자 요청)
-    var team = teamSpec(), done = S.stage >= E.stageCount(D);
-    if (bt || done || !team.length || noFight() || (S.event && S.event.kind === 'chest') || (S.bell || 0) > 0){ box.hidden = true; fcNow = fcNext = null; fcKey = ''; renderBell(); return; }
-    var b = S.bell || 0, mx = bellMax(), key = JSON.stringify([team, S.stage, S.event, b, mx, plv(), S.skills, S.modules]);
-    if (key !== fcKey){ fcKey = key;
-      var o = { n: 8, modules: S.modules };
-      fcNow = E.forecast(D, team, E.stageTeam(D, S.stage, S.event, b, plv()), S.skills, o);
-      fcNext = b < mx ? E.forecast(D, team, E.stageTeam(D, S.stage, S.event, b + 1, plv()), S.skills, o) : null; }
-    box.className = 'wfc ' + (FCC[fcNow.label] || ''); box.querySelector('b').textContent = fcNow.label; box.hidden = false;
-    renderBell();
-  }
   function clearSel(){ sel = null; applySel(); }
   var relSel = null, relSellArm = null; /* 유물 상세 창: { id, lv, side } */
   function relInfoHtml(){ var r = relSel, d = E.skillById(D, r.id), gg = skG(r.id, r.lv), mine = r.side === 'A' && !bt && S.skills.filter(function(x){ return x.id === r.id; })[0];
@@ -3404,7 +3377,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     if (!teamSpec().length || S.stage >= E.stageCount(D)) return;
     setShop(false); // 전투가 시작되면 상점 팝업은 닫아요
     $('lossLoot').hidden = true; llTeam = null;
-    clearTimeout(fcT); $('wfc').hidden = true; // 전투 중에는 승산 표시를 숨겨요
     goldStart = S.gold; skipNow = false; march = null; winAfter = null; curStage = S.stage; curEv = S.event || null; curBell = S.bell || 0; curGrades = {}; curPlv = plv(); teamSpec().forEach(function(sp){ curGrades[sp.slot] = sp.star; });
     setTimeout(function(){ renderEvent(); renderBell(); }, 0); // 전투 중엔 배너·종 숨기기(상인은 그대로)
     var st = E.stageTeam(D, curStage, curEv, curBell, curPlv); curFoeMul = {}; st.team.forEach(function(x){ curFoeMul[x.slot] = x.mul || {}; });
