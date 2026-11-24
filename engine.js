@@ -720,7 +720,8 @@
   function power(data, id, lv, star) { var h = heroById(data, id), g = 1 + data.growth.perLevel * (lv - 1), s = starMul(data, star); return Math.sqrt(h.hp * g * s * h.atk * g * s / h.interval); }
   // 클리어 골드: 종을 울린 만큼 늘어요
   // 종 한 번에 바로 받는 골드
-  function bellGold(data, n) { var C = data.campaign; return data.bell && data.bell.instant ? Math.round(C.reward.base * Math.pow(C.reward.growth, n) * data.bell.instant) : 0; }
+  function bellGold(data, n, from, to, plv) { var B = data.bell, I = B && B.instant, base = stageReward(data, n, 0, null, plv), s = 0; if (!I) return 0; from = from || 0; to = to == null ? from + 1 : to; // from번 다음부터 to번까지 울린 골드 합. 2026-11-25: k번째 = 클리어 골드 × instant[k-1]
+    for (var k = from; k < to; k++) s += Math.round(base * (typeof I === 'number' ? I : I[Math.min(k, I.length - 1)])); return s; }
   function stageReward(data, n, bell, ev, plv) { var C = data.campaign, CG = plv && perk(data, plv).clearGold; bell = Math.max(0, Math.min(bell || 0, bellMax(data, n, ev))); return Math.round((CG || C.reward.base * Math.pow(C.reward.growth, n)) * (1 + (data.bell ? data.bell.gold * (bell || 0) : 0))); }
   function costCap(data, cleared) { var c = data.recruit.costCap; if (c.enabled === false) return 999; return Math.min(c.max, c.start + Math.floor(cleared / c.every)); }
 
@@ -839,7 +840,7 @@
       var ev = rollEvent(data, stage, rnd, plv, { battleOnly: !arrived, team: units.map(function (x) { return x.id; }) }); if (ev && ev.kind === 'fork') ev = ev.options[Math.floor(rnd() * ev.options.length)]; arrived = false; // 봇: 갈림길은 아무거나
       var team = autoFormation(data, roster(), costCap(data, best), data.player ? perk(data, plv).field : 0), st = stageTeam(data, stage, ev, bellN, plv);
       if (ev && ev.kind === 'merchant' && merchantNoBattle(data)) bellN = 0;
-      bellN = Math.min(bellN, bellMax(data, stage, ev)); bells.rung += bellN; var bellPaid = ev && ev.kind === 'chest' ? 0 : Math.max(0, bellN - bellPaidN) * bellGold(data, stage); gold += bellPaid; bellPaidN = Math.max(bellPaidN, bellN); // 같은 판에서 이미 받은 종 골드는 다시 안 줘요(2026-11-24)
+      bellN = Math.min(bellN, bellMax(data, stage, ev)); bells.rung += bellN; var bellPaid = ev && ev.kind === 'chest' ? 0 : (bellN > bellPaidN ? bellGold(data, stage, bellPaidN, bellN, plv) : 0); gold += bellPaid; bellPaidN = Math.max(bellPaidN, bellN); // 같은 판에서 이미 받은 종 골드는 다시 안 줘요(2026-11-24)
       if (ev) { events[ev.kind] = events[ev.kind] || { seen: 0 }; events[ev.kind].seen++; }
       if (ev && ev.kind === 'merchant' && merchantNoBattle(data)) { // 방랑상인 판: 싸우지 않고 특별 상점만 열고 넘어가요
         rollMerchant(data, stage, rnd, plv, skills).forEach(function (it) {

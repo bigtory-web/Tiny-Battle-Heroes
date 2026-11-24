@@ -4631,7 +4631,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
     b.hidden = (!bt && noFight()) || bStg >= E.stageCount(D) || !!(bEv && (bEv.kind === 'mobs' || bEv.kind === 'oddeven')); b.className = 'bell b' + n + (mx ? '' : ' lock') + (bt ? ' inbt' : ''); b.disabled = !mx;
     b.querySelector('.bic').innerHTML = im ? '<img src="img/p/ui_foe' + Math.max(1, n) + '.png" alt="">' : '🔔';
     b.querySelector('.bdots').innerHTML = [1, 2, 3].slice(0, mx).map(function(i){ return '<i' + (i <= n ? ' class="on"' : '') + '></i>'; }).join('');
-    var bg1 = E.bellGold ? E.bellGold(D, S.stage) : 0, nx = b.querySelector('.bnext');
+    var bg1 = E.bellGold ? E.bellGold(D, S.stage, n, n + 1, plv()) : 0, nx = b.querySelector('.bnext');
     // 다음 1번 울릴 때 생기는 효과만 한 줄로 (다 울렸으면 숨김)
     var chestEv = S.event && S.event.kind === 'chest'; if (chestEv || n + 1 <= (S.bellPaid || 0)) bg1 = 0; /* 이 판에서 이미 골드를 받은 단계까지는 0 */
     var BF = B.fx || {}, fxBox = $('bellFx'), stB = (n && !b.hidden) ? E.stageTeam(D, bStg, bEv, n, bt ? curPlv : plv()) : null, got = (stB && stB.bellFx) || [];
@@ -4652,7 +4652,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
   function newFoeSlots(old, now){ var pool = old.map(function(o){ return o.key; }); return now.filter(function(o){ var i = pool.indexOf(o.key); if (i >= 0){ pool.splice(i, 1); return false; } return true; }).map(function(o){ return o.slot; }); }
   function setBell(n){ if (bt || !D.bell) return; var mx = bellMax(); n = Math.max(0, Math.min(n, mx)); var before = Math.min(S.bell || 0, mx), old = foeSlots(), g0 = S.gold;
     var paidTo = Math.max(before, S.bellPaid || 0); /* 2026-11-24: 같은 판에서 지고 다시 울리면 이미 받은 횟수만큼은 골드 없음 */
-    var gain = n > paidTo && E.bellGold && !(S.event && S.event.kind === 'chest') ? E.bellGold(D, S.stage) * (n - paidTo) : 0; if (gain){ S.gold += gain; S.bellGold = (S.bellGold || 0) + gain; S.bellPaid = n; }
+    var gain = n > paidTo && E.bellGold && !(S.event && S.event.kind === 'chest') ? E.bellGold(D, S.stage, paidTo, n, plv()) : 0; if (gain){ S.gold += gain; S.bellGold = (S.bellGold || 0) + gain; S.bellPaid = n; }
     S.bell = n; save(); renderAll();
     if (gain){ var bb = $('bellBtn'); if (HAS_FX) FX.playOn(bb, 'coin', { size: 200, scale: 1, cy: 30, z: 60 }); goldCount(g0, S.gold); }
     if (n > before){

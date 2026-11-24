@@ -334,14 +334,14 @@ var IDLE_DATA = {
 
   startLevel: 1,
   // ───── 위험 종 ─────
-  // 전투 전에 종을 울려(0~max번) 판을 키워요. 한 번 울릴 때마다 적 enemy명 추가, 그 자리에서 바로 골드 = 클리어 보상 × instant 획득.
+  // 전투 전에 종을 울려(0~max번) 판을 키워요. 한 번 울릴 때마다 적 enemy명 추가, 그 자리에서 바로 골드 = 클리어 골드(레벨별) × instant[몇 번째] 획득.
   // 지면 종으로 받은 골드는 그대로 둬요(2026-11-23). 대신 같은 판에 다시 도전할 때는 이미 받은 횟수만큼 골드가 없어요(2026-11-24, bellPaid). gold·lootGold는 0이면 꺼짐
   // 늘어난 적도 전리품 후보에 들어가요. 적은 세지지 않아요. 종은 어느 판이든 max번까지 울릴 수 있고, 적은 5명을 넘어 최대 5+max명까지 늘어요
   // skill: 종 1번마다 적 스킬 +N개(2026-11-18). 있던 스킬은 그대로 두고 뒤에 붙어요(최대 skills.slots)
   // 2026-11-21: 종 효과가 무작위로 바뀌었어요. k번째로 울리면 tiers[k-1]에서 하나가 나와요(같은 판·같은 레벨이면 늘 같은 효과). enemy·skill은 이제 안 써요(0)
   //   rage 적 공격력 +v · tough 적 체력 +v · haste 적 공격 속도 +v · relic 적 유물 +1 · star 적 1명 별 +1 · elite 한 등급 위 영웅 1명 추가 · endure 적 전체 첫 쓰러짐 1번 버팀
   //   (more·energy·curse도 엔진에 남아 있어요. tiers에 넣으면 다시 써요)
-  bell: { max: 3, enemy: 0, skill: 0, instant: 0.6, gold: 0, lootGold: 0,
+  bell: { max: 3, enemy: 0, skill: 0, instant: [0.2, 0.3, 0.5], /* 2026-11-25: k번째 종 = 클리어 골드 × instant[k-1] (3번이면 클리어 골드만큼). 예전 0.6 × 120 = 72G 고정 */ gold: 0, lootGold: 0,
     tiers: [['more'], ['relic'], ['star']], // 2026-11-23: 순서 고정 — 1번 적 추가 · 2번 적 유물 · 3번 무작위 적 별 +1. 예전 [['rage','tough','haste'],['relic','star'],['elite','endure']]
     fx: {
       rage:   { name: '분노', icon: '💢', v: 0.15, desc: '적 전체의 공격력이 15% 오른다.' },
