@@ -2366,6 +2366,11 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
 #field[data-sf="9"] .foe[data-foe="9"] .av.pic.olb{filter:drop-shadow(2px 0 0 #ffd34d) drop-shadow(-2px 0 0 #ffd34d) drop-shadow(0 2px 0 #ffd34d) drop-shadow(0 -2px 0 #ffd34d) drop-shadow(0 0 6px rgba(255,211,77,.7));animation:pkav .7s steps(2) infinite}
 #field[data-sf="10"] .foe[data-foe="10"] .av.pic.olb{filter:drop-shadow(2px 0 0 #ffd34d) drop-shadow(-2px 0 0 #ffd34d) drop-shadow(0 2px 0 #ffd34d) drop-shadow(0 -2px 0 #ffd34d) drop-shadow(0 0 6px rgba(255,211,77,.7));animation:pkav .7s steps(2) infinite}
 #field[data-sf="11"] .foe[data-foe="11"] .av.pic.olb{filter:drop-shadow(2px 0 0 #ffd34d) drop-shadow(-2px 0 0 #ffd34d) drop-shadow(0 2px 0 #ffd34d) drop-shadow(0 -2px 0 #ffd34d) drop-shadow(0 0 6px rgba(255,211,77,.7));animation:pkav .7s steps(2) infinite}
+/* 밤의 분노 안내 (VS 충돌 연출과 비슷하게 잠깐 크게) */
+.nightmsg{position:absolute;left:50%;top:50%;z-index:900;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;white-space:nowrap;animation:nightmsg 2.8s ease-out both}
+.nightmsg b{font:400 34px/1 var(--display);letter-spacing:2px;color:#c9b8ff;text-shadow:-2px 0 #17141d,2px 0 #17141d,0 -2px #17141d,0 2px #17141d,0 4px 0 #3a1f66,0 0 16px rgba(150,110,255,.8)}
+.nightmsg span{font:400 18px/1 var(--display);color:#ff8a80;padding:3px 10px;background:rgba(23,20,29,.8);text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d}
+@keyframes nightmsg{0%{transform:translate(-50%,-50%) scale(.5);opacity:0}12%{transform:translate(-50%,-50%) scale(1.15);opacity:1}22%{transform:translate(-50%,-50%) scale(1)}78%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-56%) scale(1);opacity:0}}
 </style>
 </head>
 <body>
@@ -2391,7 +2396,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
           <div class="vsbar" id="vsBar" hidden><div class="tbar a" id="tbA"></div><b class="vsb" id="vsB">VS</b><div class="tbar e" id="tbE"></div></div><div class="skbar a" id="skA"></div>
           <div class="erow"><div class="skbar e" id="skE"></div><div class="lootprev" id="lootPrev"></div></div><button class="talkBtn" id="talkBtn" type="button" title="말 걸기"><span class="tic"></span></button><div class="evacts" id="evActs" hidden><button class="evact" id="evTalk" type="button"><span class="eai"></span><b>말 걸기</b></button><button class="evact" id="evBet" type="button" hidden><span class="eai"><img class="timg" src="img/p/hud_gold.png" alt=""><span class="oedots"><i></i><i></i><i></i></span></span><b>돈 넣기</b></button></div><button class="altGoBtn" id="altGoBtn" type="button" title="초월" disabled><span class="cbox"><img class="trico" src="img/p/ui_transcend.png" alt="" onerror="this.outerHTML='<i class=altspr></i>'"></span><b>초월</b></button><button class="bell" id="bellBtn" type="button"><span class="cbox"><span class="bic"></span><span class="bdots"></span></span><span class="bnext" hidden></span></button>
           <div class="bres" id="res" hidden></div>
-          <div class="enrage" id="enrageTag" hidden>광폭화</div>
+          <div class="enrage" id="enrageTag" hidden>밤의 분노</div>
           <div class="abar" id="abar">
             <button class="abtn" id="bagBtn" type="button" title="백팩 열기·닫기"><img class="uic" src="img/p/hud_bag.png" alt="" onerror="this.outerHTML='🎒'"></button>
             <button class="go" id="fightBtn">전투</button>
@@ -3446,6 +3451,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
       var tail = Math.min(L * tt, 56); for (var s = tail; s > 0; s -= 6){ px(hx - ux * s + 1, hy - uy * s + 1, '#17141d'); px(hx - ux * s, hy - uy * s, s > 36 ? a.dim : a.c); } // 꼬리 (끝은 흐리게)
       for (var k = 0; k <= 3; k++){ var bx = hx - ux * k * 4, by = hy - uy * k * 4; [[-uy, ux], [uy, -ux]].forEach(function(p){ px(bx + p[0] * k * 4 + 1, by + p[1] * k * 4 + 1, '#17141d'); px(bx + p[0] * k * 4, by + p[1] * k * 4, k ? a.c : '#fff'); }); } // 화살촉
       ctx.restore(); return true; }); }
+  function nightNotice(){ var EN = D.battle.enrage, a = $('arena'), o = document.createElement('div'); o.className = 'nightmsg'; o.innerHTML = '<b>밤의 분노가 찾아옵니다…</b><span>모든 피해가 1초마다 +' + Math.round((EN.perSec || 0) * 100) + '%</span>'; a.appendChild(o); setTimeout(function(){ o.remove(); }, 2800); } /* 밤이 되는 순간 전장 가운데 안내(전투는 안 멈춤). 숫자는 D.battle.enrage.perSec */
   var nightA = 0; /* 광폭화 밤 분위기 진하기 0~1 (서서히 바뀜) */
   var blinks = {}; // uid → { t, f, pts:[[x,y,face]], t0, k, cur } 순간이동 연출 (back 스킬)
   function posOf(u){ var bk = blinks[u.uid]; if (bk && bk.cur && u.alive) return [bk.cur[0], bk.cur[1] + OFF]; var x = u.x, y = u.y;
@@ -3678,7 +3684,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
     ctx.imageSmoothingEnabled = false; if (BG.complete && BG.naturalWidth){ // 배경 240×107을 정확히 3배(720×321)로 OFF 위치에. 위쪽 0~OFF는 하늘색
       var bgK = W / BG.naturalWidth; /* 배경 배율 = 화면 폭 ÷ 그림 폭 (240폭이면 3배, 720폭이면 1배) */
       var bgY = OFF + 321 - BG.naturalHeight * bgK; /* 아래 맞춤: 107줄이면 OFF부터, 134줄이면 맨 위(0)까지 덮어요 */ if (bgY > 0){ ctx.fillStyle = "#b8a0a6"; ctx.fillRect(0, 0, W, bgY + 1); } var bsx = march ? Math.round(march.sx) : 0; ctx.drawImage(BG, -bsx, bgY, BG.naturalWidth * bgK, BG.naturalHeight * bgK); if (bsx) ctx.drawImage(BG, W - bsx, bgY, BG.naturalWidth * bgK, BG.naturalHeight * bgK); }
-    var EN2 = D.battle.enrage, night = !!(EN2 && bt && !bt.result && (bt.time || 0) > EN2.at); nightA += ((night ? 1 : 0) - nightA) * Math.min(1, el * 1.5); if (nightA > .01){ ctx.fillStyle = "rgba(10,14,44," + (.55 * nightA).toFixed(3) + ")"; ctx.fillRect(0, 0, W, H); } /* 광폭화: 배경만 어두운 밤 (캐릭터는 이 뒤에 그려서 그대로) */
+    var EN2 = D.battle.enrage, night = !!(EN2 && bt && !bt.result && (bt.time || 0) > EN2.at); nightA += ((night ? 1 : 0) - nightA) * Math.min(1, el * 1.5); if (nightA > .01){ ctx.fillStyle = "rgba(10,14,44," + (.55 * nightA).toFixed(3) + ")"; ctx.fillRect(0, 0, W, H); } /* 광폭화: 배경만 어두운 밤 (캐릭터는 이 뒤에 그려서 그대로) */ var dk = EN2 && EN2.dusk != null && bt && !bt.result ? Math.max(0, Math.min(1, ((bt.time || 0) - EN2.dusk) / Math.max(1, EN2.at - EN2.dusk))) : 0, da = dk * (1 - nightA); if (da > .01){ var dg = ctx.createLinearGradient(0, 0, 0, H); dg.addColorStop(0, 'rgba(110,60,150,' + (.30 * da).toFixed(3) + ')'); dg.addColorStop(1, 'rgba(255,140,60,' + (.34 * da).toFixed(3) + ')'); ctx.fillStyle = dg; ctx.fillRect(0, 0, W, H); } /* 해 질 녘: dusk초부터 at초까지 노을빛(보라→주황)으로 서서히, 밤이 되면 밤 색으로 이어짐 */ if (night && bt && !bt._nightMsg){ bt._nightMsg = 1; nightNotice(); }
     // 스테이지 줄은 HUD 오른쪽에 있어요
     if (flash > 0){ flash -= el; ctx.fillStyle = 'rgba(255,255,255,' + Math.max(0, flash) + ')'; ctx.fillRect(0, 0, W, H); }
     updSkillBars(); // 스킬 막대는 전장 위 DOM(왼쪽 위 내 스킬, 오른쪽 위 적 스킬)
