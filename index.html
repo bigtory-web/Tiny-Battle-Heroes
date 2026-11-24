@@ -194,7 +194,7 @@ img.lic.padic{object-fit:contain}
 .slot.on{touch-action:none;cursor:grab}
 .slot.on,.foe{width:var(--u,72px);height:var(--u,72px);border:0;border-radius:0;background:none;box-shadow:none;align-items:flex-end}
 .foe.boss{width:calc(var(--u,72px) * 4 / 3);height:calc(var(--u,72px) * 4 / 3);box-shadow:none;filter:drop-shadow(0 0 8px var(--gold))}
-.slot.on::after,.foe::after{content:'';position:absolute;left:18%;right:18%;bottom:-2px;height:8px;border-radius:50%;background:rgba(0,0,0,.3);z-index:-1} /* 발밑은 옅은 그림자만 */
+.slot.on::after,.foe::after{content:'';position:absolute;left:var(--fl,18%);right:var(--fr,18%);bottom:calc(var(--fg,0%) - 2px);height:8px;border-radius:50%;background:rgba(0,0,0,.3);z-index:-1} /* 발밑은 옅은 그림자만. 폭·높이는 그림의 발 자리에 맞춰요(--fl/--fr/--fg, footCss()) */
 .slot.on .av.pic,.foe .av.pic{border-radius:0;background-size:contain;background-position:50% 100%}
 /* 등급 외곽선 (코스트 1 흰색 · 2 파랑 · 3 보라) */
 .slot.on .av.pic,.foe .av.pic,.rpic{--gcs:color-mix(in srgb,var(--gc,#fff) 70%,transparent);filter:drop-shadow(1px 0 0 var(--gcs)) drop-shadow(-1px 0 0 var(--gcs)) drop-shadow(0 1px 0 var(--gcs)) drop-shadow(0 -1px 0 var(--gcs))} /* 등급 외곽선: 가장 얇게, 70% 진하기 */
@@ -2689,14 +2689,14 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
       if (inner && hid && hero(hid).mob !== 'chest') fbars.push({ x: px, y: py, ally: side === 'A', mob: !!hero(hid).mob, star: side === 'A' && U(key) ? U(key).star : 0 });
       return '<div class="unit"' + (side === 'A' && key ? ' data-uid="' + key + '"' : '') + ' style="left:' + (100 * px / W) + '%;top:' + (100 * (py + OFF + FOOT) / H) + '%;z-index:' + Math.round(py) + '">' + inner + '</div>'; }
     function foeHtml(u){ if (!u) return ''; var h = hero(u.id); if (h.mob === 'chest'){ var ckf = chestImgKey(chestGrade(), 1); return foeHtml0(u, h).replace(IMGSRC.chest || 'img/p/chest.png', IMGSRC[ckf] || IMGSRC.chest || ''); } return foeHtml0(u, h); }
-    function foeHtml0(u, h){ return '<div class="foe' + (u.boss ? ' boss' : '') + (u.merc ? ' merc' : '') + (h.mob ? ' mob' : '') + (MOBSZ[h.mob] ? ' mobsz' + (MOBSZ[h.mob] > 1 ? '2' : '') : '') + (h.mob === 'chest' ? ' chestbig' + chestFlashCls() : '') + '" data-foe="' + u.slot + '" style="--el:' + ELC[h.el] + '" title="' + h.name + '">' + avO(h.id) + (h.mob ? '' : fieldStars(u.star)) + bnBubble(u.bonus) + mobBub(u) + (h.mob === 'chest' ? chestBub() : '') + '</div>'; } // 레벨 표시는 뺐어요
+    function foeHtml0(u, h){ return '<div class="foe' + (u.boss ? ' boss' : '') + (u.merc ? ' merc' : '') + (h.mob ? ' mob' : '') + (MOBSZ[h.mob] ? ' mobsz' + (MOBSZ[h.mob] > 1 ? '2' : '') : '') + (h.mob === 'chest' ? ' chestbig' + chestFlashCls() : '') + '" data-foe="' + u.slot + '" style="--el:' + ELC[h.el] + footCss(h.id) + '" title="' + h.name + '">' + avO(h.id) + (h.mob ? '' : fieldStars(u.star)) + bnBubble(u.bonus) + mobBub(u) + (h.mob === 'chest' ? chestBub() : '') + '</div>'; } // 레벨 표시는 뺐어요
     var bySlot = []; st.team.forEach(function(u){ bySlot[u.slot] = u; });
 
     function slotHtml(i){
       var u = S.team[i] && U(S.team[i]);
       if (!u) return ''; // 빈 자리는 아무것도 그리지 않아요
       var h = hero(u.id);
-      return '<button class="slot on" data-slot="' + i + '" data-uid="' + u.uid + '" style="--el:' + ELC[h.el] + ';--gcol:' + HG(u.id).col + '" title="' + h.name + '">' + avO(u.id) + fieldStars(u.star) + '</button>'; // 편성 화면에서는 머리 위에 성급 별 (전투 중 그림에는 없음)
+      return '<button class="slot on" data-slot="' + i + '" data-uid="' + u.uid + '" style="--el:' + ELC[h.el] + ';--gcol:' + HG(u.id).col + footCss(u.id) + '" title="' + h.name + '">' + avO(u.id) + fieldStars(u.star) + '</button>'; // 편성 화면에서는 머리 위에 성급 별 (전투 중 그림에는 없음)
     }
     setTimeout(function(){ drawFieldBars(fbars); }, 0);
     function padPos(i){ var p = POS.A[i], u = S.team[i], cp = u && S.pos && S.pos[u]; return cp ? [cp.x, cp.y] : [p[0], p[1]]; }
@@ -3649,6 +3649,18 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   var OUTL = {};
   function outlinedURL(id, col){ var k = id + col; if (OUTL[k]) return OUTL[k]; var im = IMGS[id], w = im.width, hh = im.height, c = document.createElement('canvas'); c.width = w + 2; c.height = hh + 2; var x = c.getContext('2d'); x.imageSmoothingEnabled = false;
     var s = silhouette(id, col); [[0, 1], [2, 1], [1, 0], [1, 2]].forEach(function(o){ x.drawImage(s, o[0], o[1]); }); x.drawImage(im, 1, 1); return (OUTL[k] = c.toDataURL()); }
+  // 발 그림자 자리: 그림 맨 아래 3줄(발)의 좌우 끝(l,r = 그림 폭 비율)과 발 밑 빈 줄 높이(g = 그림 높이 비율)
+  var FOOTBOX = {};
+  function footBox(id){ var im = IMGS[id]; if (!im) return null; if (FOOTBOX[id] !== undefined) return FOOTBOX[id];
+    var w = im.width, h = im.height, c = document.createElement('canvas'); c.width = w; c.height = h; var x = c.getContext('2d'); x.drawImage(im, 0, 0);
+    var d = x.getImageData(0, 0, w, h).data, row = h - 1, a = function(px, py){ return d[(py * w + px) * 4 + 3] > 40; };
+    function any(py){ for (var i = 0; i < w; i++) if (a(i, py)) return true; return false; }
+    while (row > 0 && !any(row)) row--;
+    var x0 = w, x1 = -1; for (var py = row; py > row - 3 && py >= 0; py--) for (var i = 0; i < w; i++) if (a(i, py)){ if (i < x0) x0 = i; if (i > x1) x1 = i; }
+    return (FOOTBOX[id] = x1 < 0 ? null : { l: x0 / w, r: (x1 + 1) / w, g: (h - 1 - row) / h }); }
+  // 편성 화면(칸은 정사각, 그림은 contain·아래 맞춤)용 CSS 값 (%)
+  function footCss(id){ var f = footBox(id); if (!f) return ''; var im = IMGS[id], w = im.width, h = im.height, k = Math.min(1, w / h), m = Math.max(w, h);
+    return ';--fl:' + ((.5 + (f.l - .5) * k) * 100).toFixed(1) + '%;--fr:' + ((.5 - (f.r - .5) * k) * 100).toFixed(1) + '%;--fg:' + (f.g * h / m * 100).toFixed(1) + '%'; }
   function silhouette(id, color){ var k = id + color; if (SIL[k]) return SIL[k]; var im = IMGS[id], c = document.createElement('canvas'); c.width = im.width; c.height = im.height;
     var x = c.getContext('2d'); x.drawImage(im, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = color; x.fillRect(0, 0, c.width, c.height); return SIL[k] = c; }
   // 궁극기 팝업: 머리 위에 작게 → 크게 '뿅' 튀어나왔다가, 잠깐 머문 뒤 위로 떠오르며 사라져요
@@ -3735,7 +3747,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     var kb = knocks[u.uid]; if (kb && kb.t > 0){ if (!stop) kb.t -= el; var kk = Math.max(0, kb.t) / .15; x -= kb.dx * kk * kk; } // 처음엔 빠르게, 끝에 살짝 느리게
     if (stop && hs.flash > 0){ var sh = hs.flash >= .8 ? 2 : 1; x += (Math.random() < .5 ? -sh : sh); foot += Math.random() < .3 ? 1 : 0; } // ±1~2px 흔들림
     ctx.globalAlpha = u.alive ? (u.stealth > 0 ? .4 : 1) : .25;
-    ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.beginPath(); ctx.ellipse(x, foot, S * .34, 8, 0, 0, 6.29); ctx.fill();
+    var fb = footBox(sid); ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.beginPath(); if (fb) ctx.ellipse(x + (dir < 0 ? -1 : 1) * ((fb.l + fb.r) / 2 - .5) * S, foot - fb.g * S, Math.max(6, (fb.r - fb.l) * S / 2), 8, 0, 0, 6.29); else ctx.ellipse(x, foot, S * .34, 8, 0, 0, 6.29); ctx.fill(); /* 발 그림자: 그림의 발 너비·자리에 맞춰요 */
 
     if (u.shield > 1 && u.alive){ ctx.strokeStyle = 'rgba(127,184,255,.8)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(x, foot - S * .45, S * .42, S * .55, 0, 0, 6.29); ctx.stroke(); }
     ctx.save(); ctx.translate(Math.round(x), Math.round(foot)); if (dir < 0) ctx.scale(-1, 1);
