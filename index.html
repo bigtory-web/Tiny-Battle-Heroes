@@ -2741,7 +2741,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
     var fd = $('field'); if (!fd) return; var c = fd.querySelector('canvas.fbar');
     if (!c){ c = document.createElement('canvas'); c.className = 'fbar'; fd.appendChild(c); }
     var k = Math.min(2, window.devicePixelRatio || 1); c.width = W * k; c.height = H * k; var cx = c.getContext('2d'); cx.setTransform(k, 0, 0, k, 0, 0); cx.clearRect(0, 0, W, H); cx.imageSmoothingEnabled = false;
-    list.forEach(function(b){ drawBars(cx, b.x, b.y + OFF, { hpk: 1, ally: b.ally, energy: 0, star: b.star }); });
+    list.forEach(function(b){ drawBars(cx, b.x, b.y + OFF, { hpk: 1, ally: b.ally, energy: 0, star: b.star, S: unitPx(false), tf: imgTopFrac(IMGS[b.id]) }); });
     var cr = c.getBoundingClientRect(); if (!cr.width) return;
     fd.querySelectorAll('.unit .fst').forEach(function(s){ var fe = s.offsetParent, un = fe && fe.offsetParent; if (!un || !un.offsetWidth) return;
       var ur = un.getBoundingClientRect(), q = ur.width / un.offsetWidth, sx = W / cr.width, sy = H / cr.height;
@@ -2757,7 +2757,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
     var fbars = [], FP = foePos(st.team);
     function at(side, i, inner, key, estar){ var hid = side === 'A' ? (key && U(key) ? U(key).id : null) : key, p = side === 'E' && FP[i] ? FP[i] : POS[side][i], py = p[1], px = p[0];
       var cp = side === 'A' && key && S.pos && S.pos[key]; if (cp){ px = cp.x; py = cp.y; }
-      if (inner && hid && hero(hid).mob !== 'chest') fbars.push({ x: px, y: py, ally: side === 'A', mob: !!hero(hid).mob, star: side === 'A' ? (U(key) ? U(key).star : 0) : (hero(hid).mob ? 0 : estar || 1) });
+      if (inner && hid && hero(hid).mob !== 'chest') fbars.push({ x: px, y: py, ally: side === 'A', mob: !!hero(hid).mob, id: hid, star: side === 'A' ? (U(key) ? U(key).star : 0) : (hero(hid).mob ? 0 : estar || 1) });
       return '<div class="unit"' + (side === 'A' && key ? ' data-uid="' + key + '"' : '') + ' style="left:' + (100 * px / W) + '%;top:' + (100 * (py + OFF + FOOT) / H) + '%;z-index:' + Math.round(py) + '">' + inner + '</div>'; }
     function foeHtml(u){ if (!u) return ''; var h = hero(u.id); if (h.mob === 'chest'){ var ckf = chestImgKey(chestGrade(), 1); return foeHtml0(u, h).replace(IMGSRC.chest || 'img/p/chest.png', IMGSRC[ckf] || IMGSRC.chest || ''); } return foeHtml0(u, h); }
     function foeHtml0(u, h){ return '<div class="foe' + (u.boss ? ' boss' : '') + (u.merc ? ' merc' : '') + (h.mob ? ' mob' : '') + (MOBSZ[h.mob] ? ' mobsz' + (MOBSZ[h.mob] > 1 ? '2' : '') : '') + (h.mob === 'chest' ? ' chestbig' + chestFlashCls() : '') + '" data-foe="' + u.slot + '" style="--el:' + ELC[h.el] + footCss(h.id) + '" title="' + h.name + '">' + avO(h.id) + '' + bnBubble(u.bonus) + mobBub(u) + (h.mob === 'chest' ? chestBub() : '') + '</div>'; } // 레벨 표시는 뺐어요
@@ -3764,7 +3764,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
     if (o.trig){ var tn = o.trig.kind === "start" ? 1 : Math.max(1, o.trig.n || 1), sw = Math.floor((bw - (tn - 1) * 2) / tn), ek = Math.min(1, (o.energy || 0) / 100) * tn, full = (o.energy || 0) >= 99.9; // 발동 타입: n칸 눈금, 칸 안은 연속으로 차요 (start형은 쓰면 회색)
       for (var ti = 0; ti < tn; ti++){ var tx = bx + ti * (sw + 2), fw = Math.round(sw * Math.max(0, Math.min(1, ek - ti))); ctx.fillStyle = o.tdone ? "#6b6478" : "#4a4358"; ctx.fillRect(tx, by + 6, sw, 2); if (!o.tdone && fw > 0){ ctx.fillStyle = full ? "#ffe08a" : "#f2b53a"; ctx.fillRect(tx, by + 6, fw, 2); } } }
     else { ctx.fillStyle = o.energy >= 99.9 ? "#ffe08a" : "#f2b53a"; ctx.fillRect(bx, by + 6, Math.round(bw * Math.min(1, (o.energy || 0) / 100) / 2) * 2, 2); }
-    if (o.star) drawGradeStar(ctx, bx - 9, by + 4, o.star);
+    if (o.star){ if (o.S){ var hy = y + 26 + o.S * .04 - o.S + (o.tf || 0) * o.S; drawGradeStar(ctx, x, hy - 7, o.star); } else drawGradeStar(ctx, bx - 9, by + 4, o.star); } /* 성급 별 하나+숫자를 머리 바로 위(그림 위쪽 빈 줄 기준)에 (2026-11-25 사용자: HP 말고 캐릭터 위로) */
     return { bw: bw, bx: bx, by: by, rows: rows, fh: fh };
   }
   // 피격 연출: 맞은 유닛은 dur초 동안 모션을 고정하고 살짝 흔들며 흰 실루엣으로 번쩍여요 (flash 0~1 = 세기)
@@ -3868,7 +3868,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
     // 전리품 말풍선은 배치 화면(DOM)에서만, 전투 중엔 숨겨요
     if (u.merc){ var my = Math.round(foot - S - 4); if (EVIMG.mark_merc){ ctx.imageSmoothingEnabled = false; ctx.drawImage(EVIMG.mark_merc, Math.round(x - 12), my - 24, 24, 24); } else { ctx.font = '18px "Apple Color Emoji","Segoe UI Emoji",sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText('📜', x, my); } }
     // 체력·에너지 막대: 얇은 도트 스타일. 2px 단위, 어두운 테두리, 위쪽 밝은 줄, 4칸 눈금
-    var bb = u.h.mob === 'chest' ? { bw: 0, bx: x, by: foot, rows: 0, fh: 0 } : drawBars(ctx, x, y, { hpk: Math.max(0, u.hp / u.maxHp), ally: u.side === "A", shield: u.shield > 1 ? u.shield / u.maxHp : 0, energy: u.energy, trig: u.trig, tdone: u.trigDone, star: u.side === 'A' ? curGrades[u.slot] : (u.h.mob ? 0 : u.star) }), bw = bb.bw, bx = bb.bx, by = bb.by, rows = bb.rows, fh = bb.fh;
+    var bb = u.h.mob === 'chest' ? { bw: 0, bx: x, by: foot, rows: 0, fh: 0 } : drawBars(ctx, x, y, { hpk: Math.max(0, u.hp / u.maxHp), ally: u.side === "A", shield: u.shield > 1 ? u.shield / u.maxHp : 0, energy: u.energy, trig: u.trig, tdone: u.trigDone, star: u.side === 'A' ? curGrades[u.slot] : (u.h.mob ? 0 : u.star), S: unitPx(u.boss), tf: imgTopFrac(IMGS[u.id]) }), bw = bb.bw, bx = bb.bx, by = bb.by, rows = bb.rows, fh = bb.fh;
     if (u.alive && u.castT > 0 && u.h.ult && u.h.ult.cast){ var ck = Math.max(0, Math.min(1, 1 - u.castT / u.h.ult.cast)); ctx.fillStyle = '#17141d'; ctx.fillRect(bx - 2, by + 10, bw + 4, 6); ctx.fillStyle = '#3b3546'; ctx.fillRect(bx, by + 11, bw, 3); ctx.fillStyle = ELC[u.el] || '#a77bff'; ctx.fillRect(bx, by + 11, Math.round(bw * ck), 3); ctx.fillStyle = '#fff6d6'; ctx.fillRect(bx, by + 11, Math.round(bw * ck), 1); } // 캐스팅 진행 /* 아래 버프 칩이 막대 위치를 써요 */
     // 전투 중 이름은 표시하지 않아요
     // 버프·디버프: 막대 바로 밑에 작은 칸을 한 줄로. 칸 아래 가는 줄은 남은 시간(보호막은 남은 양)
