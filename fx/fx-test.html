@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>이펙트 테스트</title>
+<style>
+  body { margin: 20px; background: #181820; color: #eee; font-family: sans-serif; }
+  #buttons { display: flex; flex-wrap: nowrap; gap: 4px; overflow-x: auto; margin-bottom: 12px; }
+  button { white-space: nowrap; padding: 6px; cursor: pointer; }
+  #stage { display: block; width: 1440px; height: 800px; background: #252532; image-rendering: pixelated; }
+  #box { position: relative; width: 120px; height: 120px; background: #555; margin: 12px 0; }
+</style>
+</head>
+<body>
+<div id="buttons"></div>
+<canvas id="stage" width="720" height="400"></canvas>
+<div id="box"></div>
+<button id="on-box">poof를 상자 위에</button>
+<script src="../fx.js"></script>
+<script>
+  FX.base = '../img/fx/';
+  FX.preload();
+  const canvas = document.getElementById('stage');
+  const ctx = canvas.getContext('2d');
+  const names = FX.names();
+  const buttons = document.getElementById('buttons');
+  function options(name) { return name === 'knock' ? { dx: 30 } : name === 'stun' ? { dur: 2 } : {}; }
+  function button(label, action) {
+    const b = document.createElement('button'); b.textContent = label; b.onclick = action; buttons.appendChild(b);
+  }
+  names.forEach(name => button(name, () => FX.play(name, 360, 260, options(name))));
+  button('전부', () => names.forEach((name, i) => FX.play(name, (i + 0.5) * 720 / names.length, 260, options(name))));
+  document.getElementById('on-box').onclick = () => FX.playOn(document.getElementById('box'), 'poof');
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min((now - last) / 1000, 0.1); last = now;
+    ctx.clearRect(0, 0, 720, 400); ctx.imageSmoothingEnabled = false;
+    FX.update(dt); FX.draw(ctx, 'back');
+    ctx.fillStyle = '#888'; ctx.fillRect(360 - 36 * 2.2 / 2, 260 - 36 * 2.2, 36 * 2.2, 36 * 2.2);
+    FX.draw(ctx, 'front'); requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+</script>
+</body>
+</html>

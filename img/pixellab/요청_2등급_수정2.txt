@@ -1,0 +1,5 @@
+turtle|the turtle shell on the back and the shell shield are green: recolor both to a deep sky blue, a darker and more saturated blue than the pale blue hair, with a gold rim, so they match the blue and gold armor. No green anywhere.|turtle_v3
+spark|the bare fists look empty: put a pair of chunky steel and gold gauntlets on both raised hands, clearly bigger than the hands, with a small yellow lightning mark on each.|spark_v4
+ranger|one of the two eyes is drawn wrong: redraw both eyes as the same simple shape and the same size, like the knight eyes, symmetric and both clearly visible.|ranger_v3
+shield|the tower shield is too small and the other hand looks empty: make the steel tower shield with the blue cross much bigger, as tall as from the chin to the feet and almost as wide as the body, held in front with both hands so no hand is empty.|shield_v4
+nun|the golden hand bell is too small to read: make it a big golden bell on a short handle, about half as tall as the body, held up in front on the right.|nun_v3

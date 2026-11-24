@@ -1,0 +1,1 @@
+shield|keep the big tower shield size, but the character now stands straight front-facing and the shield hides the whole body like a block: turn the body a little toward the right like the knight, and hold the big shield slightly to the right side so a bit of the blue tabard and one leg show on the left.|shield_v5

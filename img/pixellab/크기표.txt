@@ -1,0 +1,74 @@
+﻿knight_v2_게임용|눈높이 23|틀 64
+bear_v3|눈높이 22|틀 64
+wolf_v3|눈높이 24|틀 64
+drum_v3|눈높이 22.5|틀 64
+harpy_v3|눈높이 22.5|틀 64
+imp_v3|눈높이 22.5|틀 64
+boar_v3|눈높이 22.5|틀 64
+squire_v3|눈높이 24|틀 64
+sprout_v3|눈높이 21.5|틀 64
+pup_v3|눈높이 22|틀 64
+mudgolem_v3|눈높이 28|틀 76
+slinger_v3|눈높이 22|틀 64
+candle_v3|눈높이 24.5|틀 64
+mossguard_v3|눈높이 23|틀 64
+song_v2|눈높이 32|틀 87
+song_v4|눈높이 24|틀 64
+piper_v3|눈높이 26.5|틀 72
+blades_v3|눈높이 25|틀 64
+hawk_v3|눈높이 25|틀 64
+spark_v3|눈높이 22|틀 64
+ranger_v3|눈높이 24.5|틀 64
+shield_v3|눈높이 23|틀 64
+fox_v3|눈높이 24.5|틀 64
+nun_v3|눈높이 23.8|틀 64
+warlock_v3|눈높이 27.7(로브가 길어 머리는 작음)|틀 68
+turtle_v3|눈높이 22|틀 64
+icefairy_v3|눈높이 27|틀 74
+blades_v4|눈높이 23.5|틀 64
+warlock_v4|눈높이 21|틀 57
+icefairy_v4|눈높이 23.5|틀 64
+spark_v4|눈높이 23|틀 64
+shield_v4|눈높이 22.5|틀 64
+spark_v6|눈높이 22~24.5|틀 64
+ranger_v6|눈높이 22~24.5|틀 64
+shield_v6|눈높이 22~24.5|틀 64
+nun_v5|눈높이 22~24.5|틀 64
+turtle_v5|눈높이 22~24.5|틀 64
+ranger_v7|틀 64
+icefairy_v7|틀 64
+turtle_v8|틀 64
+nun_v7|틀 64
+warlock_v8|틀 57
+frost_f|틀 77
+flame_f|틀 64
+storm_f|틀 64
+pegasus_f|틀 64
+thorn_f|틀 64
+shaman_f|틀 64
+monk_f|틀 64
+vine_f|틀 64
+gargoyle_f|틀 64
+assassin_f|틀 58
+druid_f|틀 64
+succubus_f|틀 64
+cannon_f|틀 57
+coral_f|틀 73
+moonarcher_f|틀 64
+minotaur_f|틀 57
+shadow_f|틀 64
+wyvern_f|틀 56
+gate_f|틀 64
+lion_f|틀 64
+valkyrie_f|틀 64
+tiger_f|틀 64
+thunderbird_f|틀 64
+necro_f|틀 64
+dragon_f|틀 64
+archmage_f|틀 64
+worldtree_f|틀 64
+demonlord_f|틀 64
+phoenix_f|틀 64
+seraph_f|틀 73
+kraken_f|틀 76
+windlord_f|틀 70

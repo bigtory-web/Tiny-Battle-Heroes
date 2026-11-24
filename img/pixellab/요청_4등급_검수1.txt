@@ -1,0 +1,5 @@
+shadow|the violet dagger is too small to read: make the glowing violet dagger about twice as long, held on the right in front of the dark cape so it clearly stands out.|shadow_v3
+lion|the golden war hammer is yellow on the yellow mane and gold armor, so it blends: make the hammer head silver steel with a gold band and a dark outline, and hold it on the right a bit away from the mane.|lion_v3
+thunderbird|the lightning staff is yellow on yellow hair and a white gold outfit, so it blends: make the staff shaft dark navy and the lightning bolt head pale white and electric cyan with a thin yellow outline, held on the right so it reads clearly.|thunderbird_v3
+worldtree|the green harp blends into the green hair and dress: make the harp frame warm golden brown wood with bright gold strings, held in front on the right with a dark outline so it clearly stands out.|worldtree_v3
+windlord|the golden bow is faint against the cream outfit and the green wind swirl floats in the air: make the longbow a strong gold with a dark outline and a little bigger, remove the floating wind swirl.|windlord_v3

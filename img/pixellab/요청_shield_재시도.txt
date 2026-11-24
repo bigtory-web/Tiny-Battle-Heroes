@@ -1,0 +1,2 @@
+turtle|the turtle shell on the back and the shell shield are green: recolor both to a deep sky blue, a darker and more saturated blue than the pale blue hair, with a gold rim, so they match the blue and gold armor. No green anywhere.|turtle_v3
+shield|the tower shield is too small and the other hand looks empty: make the steel tower shield with the blue cross much bigger, as tall as from the chin to the feet and almost as wide as the body, held in front with both hands so no hand is empty.|shield_v4
