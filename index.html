@@ -4044,7 +4044,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
     var tn = [].filter.call(it.childNodes, function(n){ return n.nodeType === 3; }).pop(); var t0 = performance.now();
     it.classList.add('gup'); it.insertAdjacentHTML('beforeend', '<em class="gplus">+' + (to - from).toLocaleString() + '</em>');
     (function up(now){ var k = Math.min(1, (now - t0) / 800); if (tn) tn.textContent = g(from + (to - from) * (1 - Math.pow(1 - k, 3))).replace(' G', ''); if (k < 1) requestAnimationFrame(up); else { it.classList.remove('gup'); var p = it.querySelector('.gplus'); if (p) p.remove(); } })(t0); setTimeout(function(){ it.classList.remove('gup'); renderHud(); }, 900); }
-  function closeBattle(){ tpw = null; if (!S.offer && !S.pending && $('roul').hidden) applyAdv(true); closeInspect(); lossWalk = null; lifeShown = null; $('enrageTag').hidden = true; dpsLast = bt ? { A: bt.A, E: bt.E, skills: bt.skills, enemySkills: bt.enemySkills, status: bt.status } : dpsLast; setTimeout(renderDps, 0); /* 지난 판 기록은 다음 전투 시작까지 */ setTimeout(function(){ renderEvent(); renderBell(); }, 0); cancelAnimationFrame(raf); bt = null; cv.hidden = true; $('skipBtn').disabled = true; $('res').hidden = true; $('field').style.visibility = ''; $('tab-camp').classList.remove('busy'); renderAll(); }
+  function closeBattle(){ setTimeout(function(){ if (shopOpen()) renderShop(); }, 0); tpw = null; if (!S.offer && !S.pending && $('roul').hidden) applyAdv(true); closeInspect(); lossWalk = null; lifeShown = null; $('enrageTag').hidden = true; dpsLast = bt ? { A: bt.A, E: bt.E, skills: bt.skills, enemySkills: bt.enemySkills, status: bt.status } : dpsLast; setTimeout(renderDps, 0); /* 지난 판 기록은 다음 전투 시작까지 */ setTimeout(function(){ renderEvent(); renderBell(); }, 0); cancelAnimationFrame(raf); bt = null; cv.hidden = true; $('skipBtn').disabled = true; $('res').hidden = true; $('field').style.visibility = ''; $('tab-camp').classList.remove('busy'); renderAll(); }
   // ───── 플레이어 체력: 진 판 연출과 패배 ─────
   var lossInfo = null, lossWalk = null, chestPop = null, chestInfo = null;
   function runLoss(info){
@@ -4368,7 +4368,8 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
     if (!nx){ if (!shopSel) return false; shopSel = null; return true; } /* 다 샀으면 정보 칸은 빈 상태 */
     var v = nx.dataset.sel.split(':'); shopSel = { t: v[0], i: +v[1] }; return true; }
   var _rsAuto = renderShop; renderShop = function(){ _rsAuto(); if (shopAutoSel()) _rsAuto(); };
-  function renderShopInfo(){ _rsiCore(); var nm = $('shopName'), bt = $('shopBuy');
+  function battleOn(){ return !!bt; } /* 전투 중이면 구매 버튼 꺼짐(2026-11-25 사용자) */
+  function renderShopInfo(){ _rsiCore(); var nm = $('shopName'), bt = $('shopBuy'); if (battleOn() && !bt.hidden) bt.disabled = true;
     nm.querySelectorAll('small').forEach(function(x){ x.remove(); });
     if (shopSel && ['stock', 'hero', 'merch'].indexOf(shopSel.t) >= 0 && !bt.hidden) bt.textContent = '구매'; }
   function _rsiCore(){
@@ -4410,7 +4411,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
   $('shopReroll').addEventListener('click', function(e){ var b = e.target.closest('[data-reroll]'); if (!b || b.disabled || merchOffer()) return; e.stopPropagation(); var rp = E.refreshPrice(D, S.shop.rerolls || 0);
     if (S.gold < rp || (S.shop.rerolls || 0) >= (D.shop.refreshMax || Infinity)) return; S.gold -= rp; S.shop = { stock: newStock(), rerolls: (S.shop.rerolls || 0) + 1, sold: [], ng: lastNg }; shopSel = null; save(); renderAll(); });
   $('shopBuy').addEventListener('click', function(){
-    if (!shopSel) return;
+    if (!shopSel || battleOn()) return;
     if (shopSel.t === 'merch'){ var wo = merchOffer(), mi = shopSel.i, it = wo && wo.stock[mi]; if (!it || wo.bought.indexOf(mi) >= 0) return; var payM = it.cur === 'mana'; if ((payM ? (S.mana || 0) : S.gold) < it.price) return;
       if (it.type === 's'){ if (!E.canTake(D, S.skills, it.id, PK().skillSlots)) return; E.takeSkill(D, S.skills, it.id); skKey = ''; }
       else recruitFrom(it.id); // 산 것은 HUD·백팩에 바로 보여서 구매 알림은 없어요
