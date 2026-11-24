@@ -2164,7 +2164,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
 #arena.evstage:not(.altaring) #altGoBtn{display:none!important} /* 초월 버튼은 제단 판에서만 */
 #arena.evstage .evacts .evact,#arena.evstage #altGoBtn{height:44px!important;min-width:150px!important;box-sizing:border-box}
 /* 룰렛·보물상자 버튼도 공통 버튼 모양 (예전 갈색 겹테두리 규칙보다 세게) */
-#roul button.go,#roul button.again,#chestPop button.go,#chestPop button.again{background:var(--bb)!important;color:var(--bt)!important;text-shadow:var(--bs)!important;box-shadow:inset 0 0 0 2px #17141d,inset 0 5px 0 -2px var(--bh),inset 0 -6px 0 -2px var(--bl)!important;border:0!important;outline:none!important}
+#roul button.go,#roul button.again,#chestPop button.go,#chestPop button.again{color:var(--bt)!important;text-shadow:var(--bs)!important;border:0!important;outline:none!important} /* 배경·입체 줄은 아래 픽셀 3D 블록이 맡음 */
 #roul button.go:disabled,#roul button.again:disabled{--bb:#6a6272;--bh:#857d8e;--bl:#4a4452}
 /* 모든 창 ✕: 밝은 빨강 + 흰 ✕ + 어두운 2px 테두리, 다른 UI보다 위 */
 .spX,.rx,#shopX,.gover.ll .llx,.hinfo .hi-x,.popx{background:#e0444c!important;color:#ffffff!important;box-shadow:inset 0 0 0 2px #17141d,inset 0 -4px 0 -2px #9a2228!important;text-shadow:0 1px 0 #17141d!important;font-weight:400!important;z-index:60!important}
@@ -2335,6 +2335,10 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
 #chestPop .rstage{position:relative}
 #chestPop .rstage::before{content:'';position:absolute;left:50%;top:42%;width:150px;height:150px;margin:0;border-radius:50%;background:radial-gradient(circle,rgba(255,226,120,.75) 0,rgba(255,211,77,.35) 38%,rgba(255,211,77,0) 68%);pointer-events:none;animation:cpglow var(--cpd,1.9s) ease-in-out infinite} /* 은은하게, 구간을 넘을 때마다 빨라짐 */
 #chestPop .rstage .rpic{position:relative;z-index:1}
+.dps .dti{vertical-align:-3px;margin-right:3px;image-rendering:pixelated}
+/* DPS 캐릭터 아이콘 테두리를 얇고 약하게 (2026-11-25 사용자: 과한 듯) */
+.dps .dav{box-shadow:inset 0 0 0 1px #17141d!important}
+.dps .dr{box-shadow:inset 0 0 0 1px #17141d,inset 0 0 0 2px #3b3546!important}
 </style>
 </head>
 <body>
@@ -3421,11 +3425,15 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
   // ───── DPS 미터: 유닛별 누적 피해·초당 피해(막대는 팀 최고 대비). 팀 스킬은 한 줄로 따로 ─────
   var skDmg = { A: 0, E: 0 };
   var dpsLast = null, DPSW = {};
+  /* DPS 글자 꼬리표(딜·힐·막·받)를 작은 픽셀 아이콘으로. 임시 그림: 이미지 세션이 정식 아이콘을 주면 바꿈 (2026-11-25 사용자 요청) */
+  var DTIC = { o: ['딜', '#ff9a4a', ['......x', '.....xx', '....xx.', 'x..xx..', '.xxx...', '..xx...', '.x..x..']], g: ['힐', '#6fe07a', ['.xx.xx.', 'xxxxxxx', 'xxxxxxx', '.xxxxx.', '..xxx..', '...x...']], b: ['막', '#6fa8ff', ['xxxxxxx', 'xxxxxxx', 'xxxxxxx', 'xxxxxxx', '.xxxxx.', '.xxxxx.', '..xxx..', '...x...']], r: ['받', '#ff6b6b', ['..xxx..', '..xxx..', '..xxx..', 'xxxxxxx', '.xxxxx.', '..xxx..', '...x...']] };
+  function dtIc(c){ var d = DTIC[c], rows = d[2], w = rows[0].length, h = rows.length, o = '', f = ''; rows.forEach(function(r, y){ for (var x = 0; x < w; x++) if (r[x] === 'x'){ f += '<rect x="' + (x + 1) + '" y="' + (y + 1) + '" width="1" height="1"/>'; [[-1, 0], [1, 0], [0, -1], [0, 1]].forEach(function(q){ o += '<rect x="' + (x + 1 + q[0]) + '" y="' + (y + 1 + q[1]) + '" width="1" height="1"/>'; }); } });
+    return '<svg class="dti" viewBox="0 0 ' + (w + 2) + ' ' + (h + 2) + '" shape-rendering="crispEdges" width="' + (w + 2) * 2 + '" height="' + (h + 2) * 2 + '"><title>' + d[0] + '</title><g fill="#17141d">' + o + '</g><g fill="' + d[1] + '">' + f + '</g></svg>'; }
   function dpsFmt(n){ n = Math.round(n || 0); return n >= 10000 ? (n / 1000).toFixed(n >= 100000 ? 0 : 1) + 'k' : n.toLocaleString(); }
   (function(){ ['A', 'E'].forEach(function(side){ var h = $('dps' + side).querySelector('.dpsh'), m = document.createElement('button'); m.type = 'button'; m.className = 'dpsm'; m.innerHTML = '<i>캐릭터</i><i>유물</i>'; h.parentNode.insertBefore(m, h.nextSibling); m.addEventListener('click', function(){ S.ui = S.ui || {}; S.ui['dpsRel' + side] = !S.ui['dpsRel' + side]; save(); renderDps(); }); }); })(); /* 캐릭터/유물 전환: 같은 창 안에서 바뀜 */
   function dpsRelHtml(list){ if (!list.length) return '<small class="d2">유물 없음</small>'; var mx = Math.max(1, list.reduce(function(m, s){ var st = s.stats || {}; return Math.max(m, (st.dealt || 0) + (st.healed || 0) + (st.shield || 0)); }, 0));
     return list.slice().sort(function(x, y){ var a = x.stats || {}, b = y.stats || {}; return ((b.dealt || 0) + (b.healed || 0) + (b.shield || 0)) - ((a.dealt || 0) + (a.healed || 0) + (a.shield || 0)); }).map(function(s){ var st = s.stats || {}, d = s.def || E.skillById(D, s.id), v = [], tot = (st.dealt || 0) + (st.healed || 0) + (st.shield || 0), key = 'R' + (d && d.id), w = Math.round(100 * tot / mx), w0 = DPSW[key] == null ? w : DPSW[key]; DPSW[key] = w;
-      if (st.dealt > 0) v.push('<i class="dt o">딜</i>' + dpsFmt(st.dealt)); if (st.healed > 0) v.push('<i class="dt g">힐</i>' + dpsFmt(st.healed)); if (st.shield > 0) v.push('<i class="dt b">막</i>' + dpsFmt(st.shield));
+      if (st.dealt > 0) v.push('' + dtIc('o') + '' + dpsFmt(st.dealt)); if (st.healed > 0) v.push('' + dtIc('g') + '' + dpsFmt(st.healed)); if (st.shield > 0) v.push('' + dtIc('b') + '' + dpsFmt(st.shield));
       return '<div class="dr drel"><span class="dav rav" style="--sg:' + skG(d.id).col + '">' + skIconHtml(d) + '</span><div class="dm"><div class="dn"><b>' + (v.join(' ') || '–') + '</b><em class="dult">' + (st.casts ? '×' + st.casts : '상시') + '</em></div><i class="dbar rbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i></div></div>'; }).join(''); }
   function renderDps(){ var B = bt || dpsLast; ['A', 'E'].forEach(function(side){ var box = $('dps' + side); if (!box) return; if (!B){ box.hidden = true; return; } box.hidden = false;
     var off = !!(S.ui && S.ui.dpsOff); box.classList.toggle('off', off); if (off) return;
@@ -3435,7 +3443,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
     var mx = Math.max(1, list.reduce(function(m, u){ return Math.max(m, u.stats.dealt); }, 0));
     function row(ic, dealt, sub, dead){ return '<div class="dr' + (dead ? ' dead' : '') + '"><span class="dav">' + ic + '</span><div class="dm"><div class="dn"><b>' + Math.round(dealt).toLocaleString() + '</b></div><i class="dbar"><s style="width:' + Math.round(100 * dealt / mx) + '%"></s></i>' + (sub ? '<small>' + sub + '</small>' : '') + '</div></div>'; }
     box.querySelector('.dpsb').innerHTML = list.map(function(u){ var s = u.stats, sub = [], key = side + u.uid, w = Math.round(100 * s.dealt / mx), w0 = DPSW[key] == null ? w : DPSW[key]; DPSW[key] = w;
-      if (s.taken > 0) sub.push('<i class="dt r">받</i>' + dpsFmt(s.taken)); if (s.healed > 0) sub.push('<i class="dt g">힐</i>' + dpsFmt(s.healed)); if (s.shield > 0) sub.push('<i class="dt b">막</i>' + dpsFmt(s.shield));
+      if (s.taken > 0) sub.push('' + dtIc('r') + '' + dpsFmt(s.taken)); if (s.healed > 0) sub.push('' + dtIc('g') + '' + dpsFmt(s.healed)); if (s.shield > 0) sub.push('' + dtIc('b') + '' + dpsFmt(s.shield));
       return '<div class="dr' + (u.alive ? '' : ' dead') + '"><span class="dav">' + heroFr(u.id, 0) + '</span><div class="dm"><div class="dn"><b>' + dpsFmt(s.dealt) + '</b><em class="dult">궁 ' + (s.ults || 0) + '</em></div><i class="dbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i>' + (sub.length ? '<small class="d2">' + sub.join(' ') + '</small>' : '') + '</div></div>'; }).join(''); }); }
   $('dpsBtn').addEventListener('click', function(){ S.ui = S.ui || {}; S.ui.dpsOff = !S.ui.dpsOff; save(); dpsBtnSync(); renderDps(); }); /* DPS 창 켜고 끄는 길은 이 버튼 하나 (상점 아래) */
   function dpsBtnSync(){ $('dpsBtn').classList.toggle('on', !(S.ui && S.ui.dpsOff)); } dpsBtnSync();
@@ -3784,7 +3792,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
     if (h && h.t > 0){ h.t = Math.max(h.t, dur); h.max = Math.max(h.max, h.t); h.flash = Math.max(h.flash, flash); return; } // 겹치면 타이머만 갱신
     hitStop[uid] = { t: dur, max: dur, flash: flash, frz: performance.now() }; }
   var ATK_IDS = ['bear', 'rain', 'candle', 'wolf', 'drum', 'harpy', 'imp', 'boar', 'squire', 'sprout', 'pup', 'mudgolem', 'slinger', 'batling', 'frog', 'piper', 'mossguard']; // 공격 자세 그림이 온 영웅 (img/p/<id>_atk.png)
-  var ANIM_IDS = ['knight', 'bear', 'rain', 'wolf', 'drum', 'harpy', 'imp', 'boar', 'squire', 'sprout', 'pup', 'mudgolem', 'slinger', 'candle', 'batling', 'frog', 'piper', 'mossguard', 'blades', 'hawk', 'song', 'bat', 'dancer', 'spark', 'ranger', 'shield', 'fox', 'nun', 'warlock', 'turtle', 'horn', 'owl', 'icefairy'], ANIM_ATK = .4; /* 프레임 시트(img/p/<id>_anim.png, 64x64 8칸): 1~4 대기, 5~8 공격 (0.4초) */
+  var ANIM_IDS = ['knight', 'bear', 'rain', 'wolf', 'drum', 'harpy', 'imp', 'boar', 'squire', 'sprout', 'pup', 'mudgolem', 'slinger', 'candle', 'batling', 'frog', 'piper', 'mossguard', 'blades', 'hawk', 'song', 'bat', 'dancer', 'spark', 'ranger', 'shield', 'fox', 'nun', 'warlock', 'turtle', 'horn', 'owl', 'icefairy', 'frost', 'flame', 'storm', 'pegasus', 'thorn', 'shaman', 'monk', 'vine', 'gargoyle'], ANIM_ATK = .4; /* 프레임 시트(img/p/<id>_anim.png, 64x64 8칸): 1~4 대기, 5~8 공격 (0.4초) */
   ANIM_IDS.forEach(function(id){ var sh = new Image(); sh.onload = function(){ for (var i = 0; i < 8; i++){ var c = document.createElement('canvas'); c.width = c.height = 64; c.getContext('2d').drawImage(sh, i * 64, 0, 64, 64, 0, 0, 64, 64); IMGS[id + '_a' + (i + 1)] = c; PIX[id + '_a' + (i + 1)] = true; } }; sh.src = 'img/p/' + id + '_anim.png'; });
   var BUBIMG = new Image(); BUBIMG.src = 'img/fx/fx_bubble.png'; /* 보호막 방울: 72x72 8장(4열x2행), 0~3 유지(왔다 갔다 150ms), 4~7 깨짐(60ms, 한 번) */
   function drawBubble(x, foot, S, u){ var k = 1.1 * S / 64, f, now = performance.now(); if (u._brk > 0) f = 4 + Math.min(3, Math.floor((.24 - u._brk) / .06)); else f = [0, 1, 2, 3, 2, 1][Math.floor(now / 150) % 6];
