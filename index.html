@@ -2267,7 +2267,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
 .dps .d2{margin-top:3px;font:400 11px/1.4 var(--display);color:#f3e6c4}
 .dt{display:inline-block;margin-right:2px;padding:0 3px;font:400 10px/14px var(--display);font-style:normal;color:#fff;background:var(--tc,#5d5470);box-shadow:0 0 0 1px #17141d;text-shadow:none}
 .dt.r{--tc:#c84a4a}.dt.g{--tc:#3f8a4a}.dt.b{--tc:#3f6fc2}.dt.o{--tc:#d96a2a}
-.dps .dpsx{background:#3b3546;color:#fff;font:400 12px var(--display);padding:5px 6px;border-top:2px solid #17141d}
+.dps.off{display:none!important}
 .dps .dpsm{position:absolute;top:6px;right:8px;display:flex;gap:0;height:18px;padding:0;border:0;background:#17141d;cursor:pointer;box-shadow:0 0 0 1px #5d5470}
 .dps.e .dpsm{right:auto;left:8px}
 .dps .dpsm i{font:400 11px/18px var(--display);text-shadow:none;font-style:normal;padding:0 5px;color:#a99f90}
@@ -2293,7 +2293,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
       <aside class="lbag" id="lbag"><div class="ubagbox"><div class="bagcol bagdrawer open ubag" id="bagDrawer"><div class="bagin"><div class="roster" id="roster"></div></div></div></div></aside>
       <div class="mid">
         <div class="hud" id="hud"><span class="it hudbag" title="백팩"><img class="hi" src="img/p/hud_bag.png" alt=""></span><span class="hudits" id="hudItems"></span><span class="hudbtns"><button class="hbtn" id="spdBtn" type="button" title="배속"><span class="spem">⏩</span>X1.5</button><button class="hbtn" id="skipBtn" type="button" title="건너뛰기" disabled><span class="spem">⏭️</span>스킵</button></span><span class="hudits" id="hudStg"></span></div>
-        <div class="arena" id="arena"><div class="dps a" id="dpsA" hidden><button class="dpsh" type="button" data-dps="A"><b>우리 DPS</b><em>▾</em></button><div class="dpsb"></div><button class="dpsx" id="dpsX" type="button">DPS 숨기기</button></div><div class="dps e" id="dpsE" hidden><button class="dpsh" type="button" data-dps="E"><em>▾</em><b>상대 DPS</b></button><div class="dpsb"></div></div><div class="evban" id="evBan" hidden></div><div class="evmerch" id="evMerch" hidden></div><div class="hinfo left" id="hinfo" hidden></div>
+        <div class="arena" id="arena"><div class="dps a" id="dpsA" hidden><button class="dpsh" type="button" data-dps="A"><b>우리 DPS</b><em>▾</em></button><div class="dpsb"></div></div><div class="dps e" id="dpsE" hidden><button class="dpsh" type="button" data-dps="E"><em>▾</em><b>상대 DPS</b></button><div class="dpsb"></div></div><div class="evban" id="evBan" hidden></div><div class="evmerch" id="evMerch" hidden></div><div class="hinfo left" id="hinfo" hidden></div>
           <div class="evdock" id="evDock" hidden><button class="edtab" id="edTab" type="button">이벤트</button><div class="edbody"><div class="edfe" title="0이면 평소 확률, N이면 스테이지 N개마다 이벤트 스테이지가 꼭 나와요"><button id="edFeDown" type="button">−</button><b id="edFe">간격 0</b><button id="edFeUp" type="button">+</button></div><div class="edlist" id="edList"></div></div></div><div class="field" id="field"></div>
           <canvas id="cv" width="720" height="400" aria-label="전투 화면" hidden></canvas>
           <div class="vsbar" id="vsBar" hidden><div class="tbar a" id="tbA"></div><b class="vsb" id="vsB">VS</b><div class="tbar e" id="tbE"></div></div><div class="skbar a" id="skA"></div>
@@ -2314,7 +2314,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
             <div class="spRight"><div class="srow" id="stock"></div><button class="go" id="shopBuy" hidden>구매</button></div></div>
           </section>
         </div>
-        <div class="underbar" id="underBar"><div class="ugrp"><button class="abtn shopb" data-go="shop" type="button" title="상점"><img class="uic" src="img/p/ui_shop.png" alt="" onerror="this.outerHTML='🛒'"><i class="dot" id="shopDot" hidden></i><b class="ulbl">상점</b></button><button class="abtn" data-go="hero" type="button" title="도감"><img class="uic" src="img/p/ui_book.png" alt="" onerror="this.outerHTML='📖'"><i class="dot" id="heroDot" hidden></i><b class="ulbl">도감</b></button><button class="abtn idleChip" id="idleBtn" type="button" title="방치 보상 받기" hidden><span>💰</span><b id="idleAmt">0 G</b></button></div><div class="ugrp utest"><button class="abtn" id="autoBtn" type="button" title="자동 편성"><span class="uem">🪄</span><b class="ulbl">자동</b></button><button class="abtn" id="resetBtn" type="button" title="처음부터"><span class="uem">🔄</span><b class="ulbl">처음부터</b></button><button class="abtn" data-go="tool" type="button" title="도구"><img class="uic" src="img/p/ui_tool.png" alt="" onerror="this.outerHTML='⚙️'"><b class="ulbl">도구</b></button></div></div>
+        <div class="underbar" id="underBar"><div class="ugrp"><button class="abtn shopb" data-go="shop" type="button" title="상점"><img class="uic" src="img/p/ui_shop.png" alt="" onerror="this.outerHTML='🛒'"><i class="dot" id="shopDot" hidden></i><b class="ulbl">상점</b></button><button class="abtn on" id="dpsBtn" type="button" title="DPS 보기/숨기기"><img class="uic" src="img/p/ui_dps.png" alt="" onerror="this.outerHTML='<span class=&quot;uem&quot;>📊</span>'"><b class="ulbl">DPS</b></button><button class="abtn" data-go="hero" type="button" title="도감"><img class="uic" src="img/p/ui_book.png" alt="" onerror="this.outerHTML='📖'"><i class="dot" id="heroDot" hidden></i><b class="ulbl">도감</b></button><button class="abtn idleChip" id="idleBtn" type="button" title="방치 보상 받기" hidden><span>💰</span><b id="idleAmt">0 G</b></button></div><div class="ugrp utest"><button class="abtn" id="autoBtn" type="button" title="자동 편성"><span class="uem">🪄</span><b class="ulbl">자동</b></button><button class="abtn" id="resetBtn" type="button" title="처음부터"><span class="uem">🔄</span><b class="ulbl">처음부터</b></button><button class="abtn" data-go="tool" type="button" title="도구"><img class="uic" src="img/p/ui_tool.png" alt="" onerror="this.outerHTML='⚙️'"><b class="ulbl">도구</b></button></div></div>
       </div>
       <aside class="rcol" id="rcol"></aside>
     </div>
@@ -3407,7 +3407,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
       if (st.dealt > 0) v.push('<i class="dt o">딜</i>' + dpsFmt(st.dealt)); if (st.healed > 0) v.push('<i class="dt g">힐</i>' + dpsFmt(st.healed)); if (st.shield > 0) v.push('<i class="dt b">막</i>' + dpsFmt(st.shield));
       return '<div class="dr drel"><span class="dav rav" style="--sg:' + skG(d.id).col + '">' + skIconHtml(d) + '</span><div class="dm"><div class="dn"><b>' + (v.join(' ') || '–') + '</b><em class="dult">' + (st.casts ? '×' + st.casts : '상시') + '</em></div><i class="dbar rbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i></div></div>'; }).join(''); }
   function renderDps(){ var B = bt || dpsLast; ['A', 'E'].forEach(function(side){ var box = $('dps' + side); if (!box) return; if (!B){ box.hidden = true; return; } box.hidden = false;
-    var off = !!(S.ui && S.ui.dpsOff); box.classList.toggle('off', off); if (side === 'A') $('dpsX').textContent = off ? 'DPS 보기' : 'DPS 숨기기'; if (off) return;
+    var off = !!(S.ui && S.ui.dpsOff); box.classList.toggle('off', off); if (off) return;
     var cl = dpsClosed(side); box.classList.toggle('closed', cl); box.querySelector('.dpsh em').textContent = cl ? (side === 'A' ? '▸' : '◂') : '▾';
     var rel = !!(S.ui && S.ui['dpsRel' + side]); box.querySelectorAll('.dpsm i').forEach(function(i, k){ i.classList.toggle('on', !!k === rel); });
     if (cl) return;
@@ -3418,7 +3418,8 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     box.querySelector('.dpsb').innerHTML = list.map(function(u){ var s = u.stats, sub = [], key = side + u.uid, w = Math.round(100 * s.dealt / mx), w0 = DPSW[key] == null ? w : DPSW[key]; DPSW[key] = w;
       if (s.taken > 0) sub.push('<i class="dt r">받</i>' + dpsFmt(s.taken)); if (s.healed > 0) sub.push('<i class="dt g">힐</i>' + dpsFmt(s.healed)); if (s.shield > 0) sub.push('<i class="dt b">막</i>' + dpsFmt(s.shield));
       return '<div class="dr' + (u.alive ? '' : ' dead') + '"><span class="dav">' + heroFr(u.id, 0) + '</span><div class="dm"><div class="dn"><b>' + dpsFmt(s.dealt) + '</b><em class="dult">궁 ' + (s.ults || 0) + '</em></div><i class="dbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i>' + (sub.length ? '<small class="d2">' + sub.join(' ') + '</small>' : '') + '</div></div>'; }).join(''); }); }
-  $('dpsX').addEventListener('click', function(){ S.ui = S.ui || {}; S.ui.dpsOff = !S.ui.dpsOff; save(); renderDps(); });
+  $('dpsBtn').addEventListener('click', function(){ S.ui = S.ui || {}; S.ui.dpsOff = !S.ui.dpsOff; save(); dpsBtnSync(); renderDps(); }); /* DPS 창 켜고 끄는 길은 이 버튼 하나 (상점 아래) */
+  function dpsBtnSync(){ $('dpsBtn').classList.toggle('on', !(S.ui && S.ui.dpsOff)); } dpsBtnSync();
   document.querySelectorAll('.dpsh[data-dps]').forEach(function(h){ h.addEventListener('click', function(){ var side = h.dataset.dps; S.ui = S.ui || {}; S.ui['dpsClosed' + side] = !dpsClosed(side); save(); renderDps(); }); });
   function stepMarch(el){ if (!march) return; march.t += el; var k = Math.min(1, march.t / march.dur), e = k * k * (3 - 2 * k);
     march.sx = W * e; march.e = e; march.walk = 0;
