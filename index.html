@@ -2325,6 +2325,9 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
 #field .foe .cbub{background:#2a2533;box-shadow:0 0 0 2px #17141d,inset 0 0 0 1px #5d5470}
 #field .foe .cbub .mbi em,#field .foe .cbub .mbi em{color:#f3e6c4!important}
 #field .foe .cbub .mbi em b,#field .foe .cbub .mbi b{color:#ffd34d!important}
+@keyframes vsbob2{50%{transform:translateY(-2px)}}
+#field .vsmark img{animation:vsbob2 1.6s steps(2,jump-none) infinite!important} /* 2026-11-25 V·S 같이 1~2px 들썩 */
+#hinfo.hinfo{z-index:45!important} /* 상세 창은 이벤트 도크(40)보다 위 */
 </style>
 </head>
 <body>
