@@ -1,1 +1,1 @@
-{"version":"0.0.1","configurations":[{"name":"testbed","runtimeExecutable":"node","runtimeArgs":[".claude/serve.js"],"port":8765}]}
+{"version":"0.0.1","configurations":[{"name":"testbed","runtimeExecutable":"node","runtimeArgs":[".claude/serve.js"],"port":8765},{"name":"testbed-qa","runtimeExecutable":"node","runtimeArgs":[".claude/serve.js","8766"],"port":8766}]}
