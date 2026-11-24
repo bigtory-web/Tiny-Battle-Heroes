@@ -3516,12 +3516,12 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
       if (ev.mag && a.h.ult && a.h.ult.kind === 'barrage'){ var bp2 = posOf(b); bolts.push({ x: bp2[0], y: bp2[1], t: .28, c: ELC[a.el] || '#ffd34d', seed: Math.random() }); }
       if (ev.burn){ var bp = posOf(b); pops.push({ x: bp[0] + (Math.random() - .5) * 16, y: bp[1] - 22, s: '' + ev.amt, c: '#ff9a3a', life: .6, max: .6, size: 12 }); return; } // 화상 틱
       atkT[a.uid] = ANIM_IDS.indexOf(a.id) >= 0 ? ANIM_ATK : .2;
-      if (a.range === 'melee'){ lunges[a.uid] = .18; fxAt('slash', b, { scale: 1, flip: a.x > b.x, speed: 1.4 }); }
-      else shots.push({ from: posOf(a), to: posOf(b), t: 0, c: ELC[a.el] });
-      var p = posOf(b); pops.push({ x: p[0] + (Math.random() - .5) * 20, y: p[1] - 30, s: '' + ev.amt + (ev.crit ? '!' : ''), c: ev.crit ? '#ffe14d' : ev.mag ? '#c99bff' : a.side === 'A' ? '#fff' : '#ffb3a8', mag: !!ev.mag, life: ev.crit ? .9 : .7, max: ev.crit ? .9 : .7, size: (ev.crit ? 24 : ev.amt > a.atk * 2 ? 20 : 14) + (ev.mag ? 3 : 0) }); // 스킬 피해 = 보라
-      fxs.push({ x: p[0], y: p[1], t: .15, c: '#fff' });
-      hitStopOn(b.uid, ev.crit ? .18 : .13, 1); if (a.range === 'melee') hitStopOn(a.uid, .07, 0); // 맞은 쪽 멈칫+번쩍, 근접 공격자도 짧게 멈칫
-      if (HAS_FX) fxAt('hit', b, { scale: ev.crit ? 1 : .7 });
+      var land = function(){ var p = posOf(b); pops.push({ x: p[0] + (Math.random() - .5) * 20, y: p[1] - 30, s: '' + ev.amt + (ev.crit ? '!' : ''), c: ev.crit ? '#ffe14d' : ev.mag ? '#c99bff' : a.side === 'A' ? '#fff' : '#ffb3a8', mag: !!ev.mag, life: ev.crit ? .9 : .7, max: ev.crit ? .9 : .7, size: (ev.crit ? 24 : ev.amt > a.atk * 2 ? 20 : 14) + (ev.mag ? 3 : 0) }); // 스킬 피해 = 보라
+        fxs.push({ x: p[0], y: p[1], t: .15, c: '#fff' });
+        hitStopOn(b.uid, ev.crit ? .18 : .13, 1); if (a.range === 'melee') hitStopOn(a.uid, .07, 0); // 맞은 쪽 멈칫+번쩍, 근접 공격자도 짧게 멈칫
+        if (HAS_FX) fxAt('hit', b, { scale: ev.crit ? 1 : .7 }); };
+      if (a.range === 'melee'){ lunges[a.uid] = .18; fxAt('slash', b, { scale: 1, flip: a.x > b.x, speed: 1.4 }); land(); }
+      else shots.push({ from: posOf(a), to: posOf(b), t: 0, c: ELC[a.el], kind: a.h.shot, big: a.id === 'cannon', wait: ANIM_IDS.indexOf(a.id) >= 0 ? (a.h.shot === 'arrow' ? .2 : .1) : 0, land: land }); /* 시트 영웅은 공격 프레임에 맞춰 출발(화살 7칸, 나머지 6칸), 맞는 연출은 도착할 때 */
     } else if (ev.kind === 'heal'){
       var hu = unitByUid(ev.to), hp = posOf(hu); if (ev.amt > 0) pops.push({ x: hp[0], y: hp[1] - 34, s: '+' + ev.amt, c: '#7ee08a', life: .8, max: .8, size: 15 });
     } else if (ev.kind === 'ult'){
@@ -3570,8 +3570,11 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     bt.A.concat(bt.E).sort(function(a, b){ return posOf(a)[1] - posOf(b)[1]; }).forEach(function(u){ drawUnit(u, el); }); // 아래쪽 유닛이 앞에 그려져요
     if (HAS_FX) FX.draw(ctx, 'front');
     drawUltPops(el); drawArrows(el);
-    shots = shots.filter(function(s){ s.t += el * 5; if (s.t >= 1) return false; var x = s.from[0] + (s.to[0] - s.from[0]) * s.t, y = s.from[1] + (s.to[1] - s.from[1]) * s.t - Math.sin(s.t * Math.PI) * 20;
-      ctx.fillStyle = s.c; ctx.beginPath(); ctx.arc(x, y, 4, 0, 6.29); ctx.fill(); return true; });
+    shots = shots.filter(function(s){ if (s.wait > 0){ s.wait -= el; return true; } s.t += el * 5; if (s.t >= 1){ if (s.land) s.land(); return false; }
+      var dx = s.to[0] - s.from[0], dy0 = s.to[1] - s.from[1], x = s.from[0] + dx * s.t, y = s.from[1] + dy0 * s.t - Math.sin(s.t * Math.PI) * 20, im = s.kind && SHOT_IMGS[s.kind];
+      if (!im){ ctx.fillStyle = s.c; ctx.beginPath(); ctx.arc(x, y, 4, 0, 6.29); ctx.fill(); return true; } /* 그림이 없으면 진영 색 동그라미 */
+      var fl = dx < 0, ang = Math.atan2(dy0 - Math.cos(s.t * Math.PI) * Math.PI * 20, fl ? -dx : dx), fw = im.width > im.height * 1.5 ? im.width / 2 : im.width, fr = fw < im.width ? Math.floor(performance.now() / 80) % 2 : 0, sc = s.big ? 3 : 2, src = s.kind === 'orb' ? tintShot(im, s.c) : im;
+      ctx.save(); ctx.translate(Math.round(x), Math.round(y)); if (fl) ctx.scale(-1, 1); ctx.rotate(ang); ctx.imageSmoothingEnabled = false; ctx.drawImage(src, fr * fw, 0, fw, im.height, -fw * sc / 2, -im.height * sc / 2, fw * sc, im.height * sc); ctx.restore(); return true; });
     bolts = bolts.filter(function(o){ o.t -= el; if (o.t <= 0) return false; var k = o.t / .28, top = o.y - 150, x0 = Math.round(o.x), y0 = Math.round(o.y - 20), seg = 6, xs = [];
       for (var i = 0; i <= seg; i++) xs.push(x0 + (i === seg ? 0 : Math.round(Math.sin(o.seed * 50 + i * 2.3) * 9)));
       ctx.globalAlpha = Math.min(1, k * 1.6); for (var j = 0; j < seg; j++){ var ya = top + (y0 - top) * j / seg, yb = top + (y0 - top) * (j + 1) / seg;
@@ -3722,6 +3725,8 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   var ATK_IDS = ['bear', 'rain', 'candle', 'wolf', 'drum', 'harpy', 'imp', 'boar', 'squire', 'sprout', 'pup', 'mudgolem', 'slinger', 'batling', 'frog', 'piper', 'mossguard']; // 공격 자세 그림이 온 영웅 (img/p/<id>_atk.png)
   var ANIM_IDS = ['knight', 'bear', 'rain', 'wolf', 'drum', 'harpy', 'imp', 'boar', 'squire', 'sprout', 'pup', 'mudgolem', 'slinger', 'candle', 'batling', 'frog', 'piper', 'mossguard'], ANIM_ATK = .4; /* 프레임 시트(img/p/<id>_anim.png, 64x64 8칸): 1~4 대기, 5~8 공격 (0.4초) */
   ANIM_IDS.forEach(function(id){ var sh = new Image(); sh.onload = function(){ for (var i = 0; i < 8; i++){ var c = document.createElement('canvas'); c.width = c.height = 64; c.getContext('2d').drawImage(sh, i * 64, 0, 64, 64, 0, 0, 64, 64); IMGS[id + '_a' + (i + 1)] = c; PIX[id + '_a' + (i + 1)] = true; } }; sh.src = 'img/p/' + id + '_anim.png'; });
+  var SHOT_IMGS = {}, SHOT_TINT = {}; ['arrow', 'stone', 'fire', 'ice', 'bolt', 'orb', 'note'].forEach(function(k){ var im = new Image(); im.onload = function(){ SHOT_IMGS[k] = im; }; im.src = 'img/p/shot_' + k + '.png'; }); /* 원거리 투사체 그림 (16x16, 오른쪽 방향, 2프레임이면 32x16) */
+  function tintShot(im, c){ var k = c; if (SHOT_TINT[k]) return SHOT_TINT[k]; var cv2 = document.createElement('canvas'); cv2.width = im.width; cv2.height = im.height; var x = cv2.getContext('2d'); x.drawImage(im, 0, 0); x.globalCompositeOperation = 'source-atop'; x.globalAlpha = .6; x.fillStyle = c; x.fillRect(0, 0, cv2.width, cv2.height); return SHOT_TINT[k] = cv2; } /* orb는 진영 색으로 물들임 */
   var atkT = {}; ATK_IDS.forEach(function(id){ var im = new Image(); im.onload = function(){ IMGS[id + '_atk'] = im; }; im.src = 'img/p/' + id + '_atk.png'; });
   function blinkStep(u){ var bk = blinks[u.uid]; if (!bk || !bk.t0) return; if (!u.alive){ delete blinks[u.uid]; return; }
     var k = Math.floor((performance.now() - bk.t0) / (360 / speed)); // 한 자리에 0.36초(배속 반영)
