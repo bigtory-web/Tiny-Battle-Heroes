@@ -193,7 +193,7 @@ img.lic.padic{object-fit:contain}
 /* 편성 화면의 전장: 원 대신 서 있는 전신 그림, 발밑 타원 = 진영 색 */
 .slot.on{touch-action:none;cursor:grab}
 .slot.on,.foe{width:var(--u,72px);height:var(--u,72px);border:0;border-radius:0;background:none;box-shadow:none;align-items:flex-end}
-.foe.boss{width:calc(var(--u,72px) * 4 / 3);height:calc(var(--u,72px) * 4 / 3);box-shadow:none;filter:drop-shadow(0 0 8px var(--gold))}
+.foe.boss{width:var(--u,72px);height:var(--u,72px);box-shadow:none;filter:drop-shadow(0 0 8px var(--gold))}
 .slot.on::after,.foe::after{content:'';position:absolute;left:calc(var(--fl,18%) - 8%);right:calc(var(--fr,18%) - 8%);bottom:calc(var(--fg,0%) - 5px);height:10px;border-radius:50%;background:rgba(0,0,0,.3);z-index:-1} /* 발밑은 옅은 그림자만. 폭·높이는 그림의 발 자리에 맞춰요(--fl/--fr/--fg, footCss()) */
 .slot.on .av.pic,.foe .av.pic{border-radius:0;background-size:contain;background-position:50% 100%}
 /* 등급 외곽선 (코스트 1 흰색 · 2 파랑 · 3 보라) */
@@ -2728,7 +2728,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
   function padTipAttr(el){ return ' data-tipt="' + padName(el) + '" data-tiptx="이 칸에 선 영웅은 ' + D.elements.names[el] + ' 진영이 더해진다."'; }
   (function(){ var cv2 = document.createElement('canvas'); cv2.width = 124; cv2.height = 30; var c = cv2.getContext('2d'); drawDais(c, 62, 11, 116);
     DAISURL = hexDaisURL({ rim: '#e9c46a', top: '#4a4258', top2: '#5d5470', side: '#2a2533', hi: '#ffd98a' }); document.documentElement.style.setProperty('--dais', 'url(' + DAISURL + ')'); })();
-  function unitPx(boss){ return Math.round((boss ? 119 : 79) * uScale()); }
+  function unitPx(boss){ return Math.round(79 * uScale()); }
   function alignBtnCol(){ var ar = $("arena"), bc = document.querySelector(".camp3 > .btncol"), mid = document.querySelector(".camp3 > .mid"); if (!ar || !bc || !mid || !ar.offsetHeight) return;
     var top = ar.getBoundingClientRect().top - mid.getBoundingClientRect().top, k = (document.querySelector(".app").getBoundingClientRect().width / 960) || 1;
     bc.style.marginTop = Math.round(top / k) + "px"; bc.style.height = ar.offsetHeight + "px";
