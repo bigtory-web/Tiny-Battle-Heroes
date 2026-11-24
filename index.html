@@ -423,7 +423,6 @@ html,body{overflow:hidden;background:#0b0c14}
 .spRe img{width:24px;height:24px;image-rendering:pixelated;display:block}
 .spRe.sel{box-shadow:inset 0 0 0 2px #f3e6c4} .spRe.no{color:#ff8a80} /* 상품이 5~6개로 늘어도 줄바꿈해서 들어가요 (한 줄 4칸) */
 .shopPop .srow .sep{display:none}
-.shopPop .stile[data-sel="reroll"]{background:#241f2c}
 .spHint{font:600 10px var(--body);color:#8f8679;text-align:center}
 /* 상품·내 스킬 설명: 상점 패널 왼쪽, 보이는 전장 쪽에 작게 */
 .shopInfo{position:absolute;right:316px;top:132px;width:236px;z-index:25;display:flex;flex-direction:column;gap:5px;padding:8px;background:rgba(34,30,43,.94);color:#f3e6c4;box-shadow:inset 0 0 0 3px #17141d,inset 0 0 0 4px #5d5470;pointer-events:none}
@@ -2365,7 +2364,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     </section>
     <section class="card">
       <h2>캐릭터 크기 <small>편성·전투 화면에 바로 반영</small></h2>
-      <div class="row"><button class="ghost" id="usDown">− 10%</button><b id="usVal" style="font:400 20px var(--display);min-width:70px;text-align:center">80%</b><button class="ghost" id="usUp">+ 10%</button><button class="ghost" id="usReset">기본값으로</button></div>
+      <div class="row"><button class="ghost" id="usDown">− 10%</button><b id="usVal" style="font:400 20px var(--display);min-width:70px;text-align:center">110%</b><button class="ghost" id="usUp">+ 10%</button><button class="ghost" id="usReset">기본값으로</button></div>
     </section>
     <section class="card">
       <h2>테스트</h2>
@@ -2632,7 +2631,8 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   // ───── 편성 화면 ─────
   // 편성 전장의 그림 크기 = 전장 폭 × 108/480 (전투 캔버스와 같은 배율)
   // 캐릭터 크기 배율 (도구 화면에서 조절, 100% = 79 논리 px = 36px 그림 × 2.2)
-  function uScale(){ return (S.ui && S.ui.unitScale) || 0.8; } // 기본 캐릭터 크기 80%
+  function uScale(){ return (S.ui && S.ui.unitScale) || 1.1; } // 기본 캐릭터 크기 110% (2026-11-25 사용자: 80%에서 110%로)
+  (function(){ if (S && S.ui){ if (S.ui.unitScale === 0.8 && !S.ui.us110) delete S.ui.unitScale; S.ui.us110 = 1; } })(); /* 예전 기본값 0.8이 저장돼 있으면 한 번만 새 기본값 110%로 */
   function drawDais(c, x, foot, w, pal){ // 윗면 가운데가 foot에 오는 타원형 단상
     pal = pal || { rim: '#e9c46a', top: '#4a4258', top2: '#5d5470', side: '#2a2533', hi: '#ffd98a' };
     var hw = w / 2, P = [.55, .8, .93, 1, 1, .93, .8, .55], rh = 2, top = foot - P.length; x = Math.round(x);
@@ -3490,33 +3490,34 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   var uxs = [], UC = {};
   var BURSTC = { fire: ['#ff9a3a', '#ffd34d', '#ff5a3a'], forest: ['#7ee08a', '#3f8a4a', '#c8f08a'], water: ['#7fb8ff', '#e0f4ff', '#3f6fc2'], light: ['#fff3b0', '#ffd34d', '#ffffff'], dark: ['#c99bff', '#7a3fc4', '#e8d6ff'] };
   function uxAdd(k, x, y, o, max, wait){ o = o || {}; o.k = k; o.x = x; o.y = y; o.t = 0; o.max = max || .4; o.wait = wait || 0; uxs.push(o); }
-  function uxLine(x0, y0, x1, y1, w, c){ ctx.lineCap = 'butt'; ctx.strokeStyle = '#17141d'; ctx.lineWidth = w + 3; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); ctx.strokeStyle = c; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); }
+  /* 부드러운 빛 이펙트: 둥근 번짐(방사형 그라데이션)·가산 합성·둥근 끝 선. 캐릭터는 픽셀, 이펙트는 부드럽게 (2026-11-25 사용자 결정) */
+  function uxRgb(c){ c = ('' + c).replace('#', ''); if (c.length === 3) c = c.replace(/./g, '$&$&'); var n = parseInt(c, 16) || 16777215; return (n >> 16 & 255) + ',' + (n >> 8 & 255) + ',' + (n & 255); }
+  function uxGlow(x, y, r, c, a){ var k = uxRgb(c), g = ctx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, 'rgba(' + k + ',' + a + ')'); g.addColorStop(1, 'rgba(' + k + ',0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.29); ctx.fill(); }
+  function uxDot(x, y, r, c, a){ uxGlow(x, y, r * 2.2, c, a * .6); ctx.fillStyle = 'rgba(255,255,255,' + Math.min(1, a) + ')'; ctx.beginPath(); ctx.arc(x, y, Math.max(.8, r * .4), 0, 6.29); ctx.fill(); }
+  function uxLine(x0, y0, x1, y1, w, c){ ctx.lineCap = 'round'; ctx.shadowColor = c; ctx.shadowBlur = 8; ctx.strokeStyle = c; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); ctx.shadowBlur = 0; ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.lineWidth = Math.max(1, w * .4); ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); }
   var UXF = {
-    ring: function(o, k){ var r = (o.r || 40) * k; ctx.lineWidth = 6; ctx.strokeStyle = '#17141d'; ctx.beginPath(); ctx.ellipse(o.x, o.y, r + 2, (r + 2) * .45, 0, 0, 6.29); ctx.stroke(); ctx.lineWidth = 3; ctx.strokeStyle = o.c; ctx.beginPath(); ctx.ellipse(o.x, o.y, r, r * .45, 0, 0, 6.29); ctx.stroke(); },
-    burst: function(o, k){ var cs = o.cs || ['#fff'], n = 10; for (var i = 0; i < n; i++){ var a = i / n * 6.283 + (o.seed || 0), d = 8 + k * 32 * (i % 2 ? .7 : 1), s = Math.max(2, Math.round(8 * (1 - k))); ctx.fillStyle = '#17141d'; ctx.fillRect(Math.round(o.x + Math.cos(a) * d - s / 2) - 1, Math.round(o.y - 14 + Math.sin(a) * d * .8 - s / 2) - 1, s + 2, s + 2); ctx.fillStyle = cs[i % cs.length]; ctx.fillRect(Math.round(o.x + Math.cos(a) * d - s / 2), Math.round(o.y - 14 + Math.sin(a) * d * .8 - s / 2), s, s); } },
-    rise: function(o, k){ for (var i = 0; i < 3; i++){ var x = Math.round(o.x + (i - 1) * 12), y = Math.round(o.y - 4 - k * 38 - i * 5); for (var r = 0; r < 6; r++){ ctx.fillStyle = '#17141d'; ctx.fillRect(x - r - 1, y + r * 2 - 1, r * 2 + 3, 4); } for (var r2 = 0; r2 < 6; r2++){ ctx.fillStyle = o.c; ctx.fillRect(x - r2, y + r2 * 2, r2 * 2 + 1, 2); } } },
-    cross: function(o, k){ var r = 24 - 14 * k; ctx.lineWidth = 3; ctx.strokeStyle = '#17141d'; ctx.beginPath(); ctx.arc(o.x, o.y - 18, r + 1, 0, 6.29); ctx.stroke(); ctx.strokeStyle = '#ff5a4a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(o.x, o.y - 18, r, 0, 6.29); ctx.stroke(); uxLine(o.x - r - 6, o.y - 18, o.x + r + 6, o.y - 18, 2, '#ff5a4a'); uxLine(o.x, o.y - 18 - r - 6, o.x, o.y - 18 + r + 6, 2, '#ff5a4a'); if (k > .8){ ctx.fillStyle = '#fff'; ctx.fillRect(Math.round(o.x - 5), Math.round(o.y - 23), 10, 10); } },
-    bigx: function(o, k){ var g = Math.min(1, k * 3), s = 22 * g; uxLine(o.x - s, o.y - 18 - s, o.x + s, o.y - 18 + s, 6, o.c); uxLine(o.x + s, o.y - 18 - s, o.x - s, o.y - 18 + s, 6, '#ffffff'); },
-    slash: function(o, k){ var g = Math.min(1, k * 3), s = 16 * g; uxLine(o.x - s, o.y - 18 - s, o.x + s, o.y - 18 + s, 4, o.c); },
-    claw: function(o, k){ var g = Math.min(1, k * 3), s = 14 * g; for (var i = -1; i <= 1; i++) uxLine(o.x - s + i * 7, o.y - 18 - s, o.x + s + i * 7, o.y - 18 + s, 3, '#ffe6c4'); },
-    shx: function(o, k){ var g = Math.min(1, k * 3), s = 20 * g; uxLine(o.x - s, o.y - 18 - s, o.x + s, o.y - 18 + s, 6, '#b58cff'); uxLine(o.x + s, o.y - 18 - s, o.x - s, o.y - 18 + s, 6, '#3a1f5c'); },
-    wind: function(o, k){ for (var i = 0; i < 4; i++){ var x = o.x - 34 + k * 70 + i * 4, y = o.y - 8 - i * 10; ctx.fillStyle = '#17141d'; ctx.fillRect(Math.round(x) - 1, Math.round(y) - 1, 26, 5); ctx.fillStyle = i % 2 ? '#ffffff' : o.c; ctx.fillRect(Math.round(x), Math.round(y), 24, 3); } },
-    mark: function(o, k){ var y = o.y - 52 - Math.round(Math.sin(k * 12) * 2); ctx.lineWidth = 3; ctx.strokeStyle = '#17141d'; ctx.beginPath(); ctx.arc(o.x, y, 11, 0, 6.29); ctx.stroke(); ctx.strokeStyle = '#ff4a3a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(o.x, y, 10, 0, 6.29); ctx.stroke(); uxLine(o.x - 15, y, o.x + 15, y, 2, '#ff4a3a'); uxLine(o.x, y - 15, o.x, y + 15, 2, '#ff4a3a'); ctx.fillStyle = '#ff4a3a'; ctx.fillRect(Math.round(o.x) - 2, Math.round(y) - 2, 4, 4); },
-    stone: function(o, k){ for (var i = 0; i < 8; i++){ var a = i / 8 * 6.283 + (o.seed || 0), x = o.x + Math.cos(a) * 26 * k, y = o.y - 16 + Math.sin(a) * 14 * k - 20 * k + 70 * k * k * (i % 2 ? 1 : .6), s = 6; ctx.fillStyle = '#17141d'; ctx.fillRect(Math.round(x) - 1, Math.round(y) - 1, s + 2, s + 2); ctx.fillStyle = i % 2 ? '#a8a2b0' : '#6e6878'; ctx.fillRect(Math.round(x), Math.round(y), s, s); } },
-    pillar: function(o, k){ var h = 80 * Math.min(1, k * 2.5), a = 1 - k; ctx.globalAlpha = Math.max(0, a) * .8; ctx.fillStyle = 'rgba(255,246,214,.22)'; ctx.fillRect(Math.round(o.x - 10), Math.round(o.y - h), 20, h); ctx.fillStyle = 'rgba(255,246,214,.55)'; ctx.fillRect(Math.round(o.x - 3), Math.round(o.y - h), 6, h); for (var i = 0; i < 5; i++){ ctx.fillStyle = '#ffffff'; ctx.fillRect(Math.round(o.x - 14 + i * 7 + Math.sin(k * 8 + i) * 3), Math.round(o.y - 10 - k * 60 - i * 8), 3, 6); } },
-    beam: function(o, k){ var w = Math.max(2, Math.round(10 * (1 - k))); uxLine(o.x, o.y, o.x2, o.y, w, o.c); ctx.fillStyle = '#fff'; ctx.fillRect(Math.round(Math.min(o.x, o.x2)), Math.round(o.y) - 1, Math.round(Math.abs(o.x2 - o.x)), 2); },
-    zig: function(o, k){ var n = 5, px = o.x, py = o.y - 18; for (var i = 1; i <= n; i++){ var tx = o.x + (o.x2 - o.x) * i / n, ty = o.y - 18 + (o.y2 - o.y) * i / n + (i === n ? 0 : (i % 2 ? -9 : 9)); uxLine(px, py, tx, ty, 3, i % 2 ? '#fff3b0' : o.c); px = tx; py = ty; } }
+    burst: function(o, k){ var a = 1 - k, c = (o.cs && o.cs[0]) || '#ffffff'; uxGlow(o.x, o.y - 16, 8 + k * 22, c, .6 * a); uxGlow(o.x, o.y - 16, 5 + k * 9, '#ffffff', .5 * a); for (var i = 0; i < 5; i++){ var an = i * 1.2566 + (o.seed || 0), d = 8 + k * 26; uxDot(o.x + Math.cos(an) * d, o.y - 16 + Math.sin(an) * d * .8, 3 * a + .8, (o.cs && o.cs[i % o.cs.length]) || c, a); } },
+    rise: function(o, k){ var a = 1 - k; uxGlow(o.x, o.y - 14, 24, o.c, .22 * a); for (var i = 0; i < 4; i++){ var p = (k * 1.2 + i * .22) % 1; uxDot(o.x + (i - 1.5) * 9, o.y - 4 - p * 42, 3.2, o.c, a * (1 - p)); } },
+    flash: function(o, k){ uxGlow(o.x, o.y - 40, 22 + k * 14, o.c || '#ff6b6b', .75 * (1 - k)); uxGlow(o.x, o.y - 40, 9, '#ffffff', .6 * (1 - k)); },
+    wind: function(o, k){ ctx.lineCap = 'round'; for (var i = 0; i < 4; i++){ var x = o.x - 30 + k * 60 + i * 3, y = o.y - 8 - i * 10; ctx.strokeStyle = 'rgba(' + uxRgb(i % 2 ? '#ffffff' : o.c) + ',.7)'; ctx.lineWidth = 2; ctx.shadowColor = o.c; ctx.shadowBlur = 6; ctx.beginPath(); ctx.moveTo(x - 10, y); ctx.quadraticCurveTo(x, y - 3, x + 14, y); ctx.stroke(); } ctx.shadowBlur = 0; },
+    cross: function(o, k){ var r = 24 - 14 * k, cy = o.y - 18; ctx.lineCap = 'round'; ctx.shadowColor = '#ff5a4a'; ctx.shadowBlur = 8; ctx.strokeStyle = '#ff7a6a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(o.x, cy, r, 0, 6.29); ctx.stroke(); ctx.shadowBlur = 0; uxLine(o.x - r - 6, cy, o.x + r + 6, cy, 2, '#ff7a6a'); uxLine(o.x, cy - r - 6, o.x, cy + r + 6, 2, '#ff7a6a'); if (k > .8) uxGlow(o.x, cy, 14, '#ffffff', .8); },
+    bigx: function(o, k){ var g = Math.min(1, k * 3), s = 22 * g; uxLine(o.x - s, o.y - 18 - s, o.x + s, o.y - 18 + s, 5, o.c); uxLine(o.x + s, o.y - 18 - s, o.x - s, o.y - 18 + s, 5, '#ffffff'); },
+    slash: function(o, k){ var g = Math.min(1, k * 3), s = 16 * g; uxLine(o.x - s, o.y - 18 - s, o.x + s, o.y - 18 + s, 3, o.c); },
+    claw: function(o, k){ var g = Math.min(1, k * 3), s = 14 * g; for (var i = -1; i <= 1; i++) uxLine(o.x - s + i * 7, o.y - 18 - s, o.x + s + i * 7, o.y - 18 + s, 2, '#ffe6c4'); },
+    shx: function(o, k){ var g = Math.min(1, k * 3), s = 20 * g; uxLine(o.x - s, o.y - 18 - s, o.x + s, o.y - 18 + s, 5, '#b58cff'); uxLine(o.x + s, o.y - 18 - s, o.x - s, o.y - 18 + s, 5, '#7a3fc4'); },
+    mark: function(o, k){ var y = o.y - 52 - Math.sin(k * 12) * 2; ctx.lineCap = 'round'; ctx.shadowColor = '#ff4a3a'; ctx.shadowBlur = 8; ctx.strokeStyle = '#ff6a5a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(o.x, y, 10, 0, 6.29); ctx.stroke(); ctx.shadowBlur = 0; uxLine(o.x - 15, y, o.x + 15, y, 2, '#ff6a5a'); uxLine(o.x, y - 15, o.x, y + 15, 2, '#ff6a5a'); uxGlow(o.x, y, 6, '#ffffff', .7); },
+    pillar: function(o, k){ var h = 80 * Math.min(1, k * 2.5), a = (1 - k) * .8, g = ctx.createLinearGradient(0, o.y - h, 0, o.y); g.addColorStop(0, 'rgba(255,246,214,0)'); g.addColorStop(1, 'rgba(255,246,214,' + (.5 * a) + ')'); ctx.fillStyle = g; ctx.fillRect(Math.round(o.x - 10), Math.round(o.y - h), 20, h); uxGlow(o.x, o.y - 4, 20, '#fff6d6', .45 * a); for (var i = 0; i < 5; i++) uxDot(o.x - 12 + i * 6 + Math.sin(k * 8 + i) * 3, o.y - 10 - k * 56 - i * 6, 2.4, '#fff6d6', a); },
+    beam: function(o, k){ var w = Math.max(2, 9 * (1 - k)); uxLine(o.x, o.y, o.x2, o.y, w, o.c); },
+    zig: function(o, k){ var n = 5, px = o.x, py = o.y - 18; for (var i = 1; i <= n; i++){ var tx = o.x + (o.x2 - o.x) * i / n, ty = o.y - 18 + (o.y2 - o.y) * i / n + (i === n ? 0 : (i % 2 ? -9 : 9)); uxLine(px, py, tx, ty, 2.5, i % 2 ? '#fff3b0' : o.c); px = tx; py = ty; } }
   };
-  function drawUx(el){ uxs = uxs.filter(function(o){ if (o.wait > 0){ o.wait -= el; return true; } o.t += el; var k = o.t / o.max; if (k >= 1) return false; ctx.save(); ctx.globalAlpha = k < .7 ? 1 : Math.max(0, (1 - k) / .3); (UXF[o.k] || function(){})(o, k); ctx.restore(); return true; }); }
+  function drawUx(el){ uxs = uxs.filter(function(o){ if (o.wait > 0){ o.wait -= el; return true; } o.t += el; var k = o.t / o.max; if (k >= 1) return false; ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = k < .7 ? .9 : Math.max(0, (1 - k) / .3) * .9; (UXF[o.k] || function(){})(o, k); ctx.restore(); return true; }); }
   function ultCastFx(u, uk, ev){ if (!bt) return false; var al = function(L){ return L.filter(function(x){ return x.alive; }); }, foes = al(u.side === 'A' ? bt.E : bt.A), mates = al(u.side === 'A' ? bt.A : bt.E), c = ELC[u.el] || '#fff', fp = function(x){ var p = posOf(x); return [p[0], p[1] + 26]; }, me = fp(u), seed = Math.random() * 6;
     UC[u.uid] = { k: uk, t: ev.t, prev: null, poof: false };
     if (uk === 'aoe' && !(u.h.ult && u.h.ult.slow)){ foes.forEach(function(x){ var q = fp(x); uxAdd('burst', q[0], q[1], { cs: BURSTC[u.el] || [c, '#fff'], seed: seed }, .45); }); return true; }
     if (uk === 'buff'){ mates.forEach(function(x){ var q = fp(x); uxAdd('rise', q[0], q[1], { c: c }, .6); }); return true; }
-    if (uk === 'taunt'){ uxAdd('ring', me[0], me[1], { r: 46, c: '#ff6b6b' }, .45); uxAdd('ring', me[0], me[1], { r: 64, c: '#ff6b6b' }, .5, .15); return true; }
+    if (uk === 'taunt'){ uxAdd('flash', me[0], me[1], { c: '#ff6b6b' }, .3); return true; }
     if (uk === 'haste' || uk === 'selfHaste'){ (uk === 'haste' ? mates : [u]).forEach(function(x){ var q = fp(x); uxAdd('wind', q[0], q[1], { c: c }, .5); }); return true; }
-    if (uk === 'nova'){ uxAdd('ring', me[0], me[1], { r: 96, c: c }, .5); uxAdd('ring', me[0], me[1], { r: 64, c: '#ffffff' }, .4, .08); return true; }
     if (uk === 'pierce'){ uxAdd('beam', me[0], me[1] - 14, { x2: u.side === 'A' ? W : 0, c: c }, .4); return true; }
-    if (uk === 'stone'){ foes.forEach(function(x){ var q = fp(x); uxAdd('stone', q[0], q[1], { seed: seed }, .5); }); return true; }
     if (uk === 'bombard'){ foes.forEach(function(x, i){ var q = fp(x); uxAdd('burst', q[0], q[1], { cs: BURSTC.fire, seed: seed + i }, .45, i * .08); }); return true; }
     return false; }
   function ultHitFx(a, b, ev){ var C = UC[a.uid]; if (!C || !ev.mag || ev.t !== C.t) return; var pb = posOf(b), x = pb[0], y = pb[1] + 26, c = ELC[a.el] || '#fff';
@@ -3726,7 +3727,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     if (h && h.t > 0){ h.t = Math.max(h.t, dur); h.max = Math.max(h.max, h.t); h.flash = Math.max(h.flash, flash); return; } // 겹치면 타이머만 갱신
     hitStop[uid] = { t: dur, max: dur, flash: flash, frz: performance.now() }; }
   var ATK_IDS = ['bear', 'rain', 'candle', 'wolf', 'drum', 'harpy', 'imp', 'boar', 'squire', 'sprout', 'pup', 'mudgolem', 'slinger', 'batling', 'frog', 'piper', 'mossguard']; // 공격 자세 그림이 온 영웅 (img/p/<id>_atk.png)
-  var ANIM_IDS = ['knight', 'bear', 'rain', 'wolf', 'drum', 'harpy', 'imp', 'boar', 'squire', 'sprout', 'pup', 'mudgolem', 'slinger', 'candle', 'batling', 'frog', 'piper', 'mossguard'], ANIM_ATK = .4; /* 프레임 시트(img/p/<id>_anim.png, 64x64 8칸): 1~4 대기, 5~8 공격 (0.4초) */
+  var ANIM_IDS = ['knight', 'bear', 'rain', 'wolf', 'drum', 'harpy', 'imp', 'boar', 'squire', 'sprout', 'pup', 'mudgolem', 'slinger', 'candle', 'batling', 'frog', 'piper', 'mossguard', 'blades', 'hawk', 'song', 'bat', 'dancer', 'spark', 'ranger', 'shield', 'fox', 'nun'], ANIM_ATK = .4; /* 프레임 시트(img/p/<id>_anim.png, 64x64 8칸): 1~4 대기, 5~8 공격 (0.4초) */
   ANIM_IDS.forEach(function(id){ var sh = new Image(); sh.onload = function(){ for (var i = 0; i < 8; i++){ var c = document.createElement('canvas'); c.width = c.height = 64; c.getContext('2d').drawImage(sh, i * 64, 0, 64, 64, 0, 0, 64, 64); IMGS[id + '_a' + (i + 1)] = c; PIX[id + '_a' + (i + 1)] = true; } }; sh.src = 'img/p/' + id + '_anim.png'; });
   var BUBIMG = new Image(); BUBIMG.src = 'img/fx/fx_bubble.png'; /* 보호막 방울: 72x72 8장(4열x2행), 0~3 유지(왔다 갔다 150ms), 4~7 깨짐(60ms, 한 번) */
   function drawBubble(x, foot, S, u){ var k = 1.1 * S / 64, f, now = performance.now(); if (u._brk > 0) f = 4 + Math.min(3, Math.floor((.24 - u._brk) / .06)); else f = [0, 1, 2, 3, 2, 1][Math.floor(now / 150) % 6];
@@ -3914,7 +3915,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
       (SKIMG[x.id] ? '<img src="img/p/skill_' + x.id + '.png" alt="">' : '<span class="emo">' + d.icon + '</span>') + synN(d, side) + '<i class="cd"></i></button>'; }
   function updSkillBars(){
     var L = skList(), key = 'n' + PK().skillSlots + (bt ? 'b' + bt.A.filter(function(u){ return u.alive; }).length : 'f' + S.team.join()) + JSON.stringify([L.A.map(function(x){ return x.id + x.lv; }), L.E.map(function(x){ return x.id + x.lv; })]);
-    if (key !== skKey){ skKey = key; var emp = ''; for (var ei = (S.skills || []).length; ei < (PK().skillSlots || 0); ei++) emp += '<i class="skc A empty"><span>+</span></i>'; var SS = PK().skillSlots || 0, SN = L.A.length; $('skA').innerHTML = L.A.map(function(x, xi){ var c = skCell(x, 'A'); return xi >= SS ? c.replace('class="skc ', 'class="skc over ') : c; }).join('') + emp + ''; /* 넘쳤을 때만 빨간 칸 수 */ $('skE').innerHTML = L.E.map(function(x){ return skCell(x, 'E'); }).join(''); renderLootPrev(); markShopSk(); fitSkRows(); }
+    if (key !== skKey){ skKey = key; var emp = ''; for (var ei = (S.skills || []).length; ei < (PK().skillSlots || 0); ei++) emp += '<i class="skc A empty"><span>+</span></i>'; var SS = PK().skillSlots || 0, SN = L.A.length; $('skA').innerHTML = L.A.map(function(x, xi){ var c = skCell(x, 'A'); return xi >= SS ? c.replace('class="skc ', 'class="skc over ') : c; }).join('') + emp + ''; /* 넘쳤을 때만 빨간 칸 수 */ $('skE').innerHTML = L.E.map(function(x){ return skCell(x, 'E'); }).join(''); renderLootPrev(); fitSkRows(); }
     $('lootPrev').hidden = !!bt;
     if (!bt) return;
     [['skA', L.A], ['skE', L.E]].forEach(function(p){ var els = $(p[0]).children;
@@ -4068,7 +4069,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
       if (LIFE_ON){ S.streak = 0; if (st.boss && D.life.recoverOnBoss && S.life < D.life.max){ S.life = Math.max(S.life, D.life.max); setTimeout(function(){ toast('보스를 깼어요! 체력이 모두 찼어요'); }, 600); } }
       if (curEv && curEv.kind === 'goblin' && bt.E.some(function(u){ return u.h.mob === 'goblin' && !u.alive && !u.escaped; })){ var gb2 = Math.round(reward * D.events.goblin.goldMul); S.gold += gb2; gain += '<div class="evgain">' + (EVIMG.ev_goblin ? '<img class="evi" src="img/p/ev_goblin.png" alt="">' : '💰 ') + '돈고블린 +' + gb2.toLocaleString() + ' G</div>'; }
       else if (curEv && curEv.kind === 'goblin') gain += '<div class="evgain miss">💨 돈고블린이 도망쳤어요</div>';
-      if (curEv && curEv.kind === 'merchant' && !(E.merchantNoBattle && E.merchantNoBattle(D))) S.evOffer = { kind: 'merchant', stock: E.rollMerchant(D, curStage, Math.random, plv()), bought: [] };
       if (curEv && curEv.kind === 'merc') S.evOffer = { kind: 'merc', id: curEv.id, price: curEv.price };
       html += '<div class="rsc win"><i class="rays"></i><div class="ban">승리!</div><div class="rsub">' + stNm(st, curStage, curEv) + ' 클리어 · ' + r.time + '초</div>' +
         '<div class="rrew">' + (HUDOK.gold ? '<img src="img/p/hud_gold.png" alt="">' : '🪙') + '<b class="cnt" data-to="' + reward + '">0</b></div>' + gain;
@@ -4180,7 +4180,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   function renderUnitScale(){ var v = uScale(); $('usVal').textContent = Math.round(v * 100) + '%'; $('usDown').disabled = v <= .7; $('usUp').disabled = v >= 1.5; }
   $('usDown').addEventListener('click', function(){ setUnitScale(uScale() - .1); });
   $('usUp').addEventListener('click', function(){ setUnitScale(uScale() + .1); });
-  $('usReset').addEventListener('click', function(){ setUnitScale(0.8); });
+  $('usReset').addEventListener('click', function(){ setUnitScale(1.1); });
   // 도구: 플레이어 레벨만 바꿔요 (경험치를 그 레벨 시작값으로). 등급 확률은 읽기 전용
   function plMax(){ return D.player ? D.player.need.length + 1 : 1; }
   function setPlv(lv){ if (!D.player) return; lv = Math.max(1, Math.min(plMax(), lv)); var xp = 0; for (var i = 0; i < lv - 1; i++) xp += D.player.need[i]; S.xp = xp;
@@ -4252,7 +4252,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     return d.desc.replace(/{a}(%?)/g, function(_, p){ return v + p + (dv ? '(+' + dv + p + ')' : ''); }).replace('{d}', d.dur).replace(/{m}/g, d.max); }
   function cdBox(d){ if (/^star/.test(d.kind || '')) return '<span class="cdb trg" title="' + (d.trigger === 'death' ? '별이 낮은 아군이 쓰러질 때마다 걸려요' : '전투 시작 때 아군 별 수로 걸려요') + '">별</span>'; /* 별 유물 */ if (d.trigger === 'line') return '<span class="cdb trg" title="전투 시작 때 그 열에 걸려요">열</span>'; return d.cd ? '<span class="cdb" title="쿨타임">' + d.cd + '초</span>' : '<span class="cdb trg" title="쿨타임 없이 조건마다 쌓여요">연계</span>'; } // 이름 줄 오른쪽 끝
   var sellArm = null; // 판매: 한 번 누르면 확인, 한 번 더 누르면 판매
-  var shopSel = null; // { t: 'stock', i } | { t: 'mine', id } | { t: 'reroll' }
+  var shopSel = null; // { t: 'stock' | 'hero' | 'merch', i }
   function manaCost(id){ return E.skillManaPrice ? E.skillManaPrice(D, id, S.skills) : 0; } // 가진 스킬이면 등급업 뒤 등급 기준
   function buyPrice(id){ return E.skillBuyPrice ? E.skillBuyPrice(D, id, S.stage, S.skills) : { gold: E.skillPrice(D, id, S.stage), mana: manaCost(id) }; }
   function canPay(c){ return S.gold >= (c.gold || 0) && (S.mana || 0) >= (c.mana || 0); }
@@ -4271,7 +4271,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     if (wo){ renderMerchShop(wo); return; }
     var SL = PK().skillSlots, mine = S.skills, anyBuy = false, OPEN = PK().shopSlots || S.shop.stock.length;
     if (S.shop.stock.length < OPEN){ var add = newStock().filter(function(id){ return S.shop.stock.indexOf(id) < 0; }); while (S.shop.stock.length < OPEN && add.length) S.shop.stock.push(add.shift()); S.shop.ng = null; save(); } /* 레벨업으로 열린 칸은 바로 채워요 */
-    markShopSk();
     var SR = D.shop.rows || {}, NG = shopNg(), RMAX = { g: SR.gold != null ? SR.gold : 3, m: SR.mana != null ? SR.mana : 3 };
     // 줄은 진열된 자리로 정해요 (품절이어도, 등급업으로 값이 바뀌어도 그대로). 줄마다 최대 3칸
     var rowOf = S.shop.stock.map(function(id, i){ var k = i < NG ? 'g' : 'm', n = k === 'g' ? i : i - NG; return n < RMAX[k] ? k : null; });
@@ -4280,7 +4279,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
       if (ok) anyBuy = true;
       return '<button class="stile sk' + gCls(id, myLv(id) || undefined) + ((synInfo(d) || {}).off ? ' synoff' : '') + (d.tag ? ' syn' : '') + (sold ? ' sold' : '') + (on ? ' sel' : '') + (myLv(id) && !skMaxed(id) ? ' up' : '') + '"' + gAttr(id, myLv(id) || undefined) + ' data-sel="stock:' + i + '"><span class="ic">' + skIcon(d) + '</span>' + synN(d) + (sold ? '<span class="pr">품절</span>' : skMaxed(id) ? '<span class="pr">최고 등급</span>' : costTag(c, !E.canTake(D, mine, id, PK().skillSlots))) + '</button>';
     });
-    var rp = E.refreshPrice(D, S.shop.rerolls), ron = shopSel && shopSel.t === 'reroll';
+    var rp = E.refreshPrice(D, S.shop.rerolls);
     var HS = D.shop.heroes ? S.shop.heroes || [] : [], hrow = HS.map(function(it, i){ if ((S.shop.hsold || []).indexOf(i) >= 0) return '<span class="stile empty"></span>'; var on = shopSel && shopSel.t === 'hero' && shopSel.i === i; if (S.gold >= it.price) anyBuy = true;
       return '<button class="stile mhero' + (on ? ' sel' : '') + '" style="--gcol:' + HG(it.id).col + '" data-sel="hero:' + i + '" type="button"><span class="ic">' + heroFr(it.id) + '</span>' + priceTag(it.price, S.gold >= it.price) + '</button>'; });
     var cells = tiles.slice(); for (var ci = cells.length; ci < 6; ci++){ var lv = shopLockLv(ci); cells.push(lv ? '<span class="stile lockd"><em>🔒 Lv' + lv + '</em></span>' : '<span class="stile empty"></span>'); }
@@ -4292,7 +4291,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     renderShopInfo();
   }
   // 방랑상점: 상점과 같은 칸·카드 (할인 전 값은 카드 안에 줄 그어 작게), 새로고침 없음
-  function renderMerchShop(o){ markShopSk(); var SR = D.shop.rows || {}, cols = SR.gold != null ? SR.gold : 3;
+  function renderMerchShop(o){ var SR = D.shop.rows || {}, cols = SR.gold != null ? SR.gold : 3;
     var t = o.stock.map(function(it, i){ var done = o.bought.indexOf(i) >= 0, mana = it.cur === 'mana', payOk = (mana ? (S.mana || 0) : S.gold) >= it.price && (it.type !== 's' || E.canTake(D, S.skills, it.id, PK().skillSlots)), on = shopSel && shopSel.t === 'merch' && shopSel.i === i, cls, attr = '', ic;
       if (it.type === 's'){ var d = E.skillById(D, it.id), ml = myLv(it.id); cls = 'stile sk' + gCls(it.id, ml || undefined) + (ml && !skMaxed(it.id) ? ' up' : ''); attr = gAttr(it.id, ml || undefined); ic = skIcon(d) + '</span>' + synN(d) + '<span hidden>'; }
       else { cls = 'stile mhero'; attr = ' style="--gcol:' + HG(it.id).col + '"'; ic = heroFr(it.id); }
@@ -4302,8 +4301,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     var rows = ''; for (var r = 0; r < t.length; r += cols) rows += '<div class="srow2 g' + (cols > 3 ? ' c' + cols : '') + '"><span class="rowic"></span>' + t.slice(r, r + cols).join('') + '</div>';
     $('stock').innerHTML = rows; $('shopReroll').hidden = true; renderShopInfo(); }
   // 상점이 열려 있을 때 전장 왼쪽 위 '내 유물' 아이콘: 고른 것 표시 (누르면 팔기)
-  function markShopSk(){ document.querySelectorAll('#skA .skc').forEach(function(el){ var id = (el.dataset.k || '').split(':')[1]; el.classList.toggle('shopsel', shopOpen() && !!shopSel && shopSel.t === 'mine' && shopSel.id === id); }); }
-  function shopAutoSel(){ if (!shopOpen() || (shopSel && (shopSel.t === 'mine' || shopSel.t === 'reroll'))) return false;
+  function shopAutoSel(){ if (!shopOpen()) return false;
     var L = [].slice.call(document.querySelectorAll('#stock [data-sel]')), cur = shopSel ? L.findIndex(function(b){ return b.dataset.sel === shopSel.t + ':' + shopSel.i; }) : -1;
     if (cur >= 0 && !L[cur].classList.contains('sold')) return false;
     var R2 = L.slice(Math.max(cur, 0)).concat(L.slice(0, Math.max(cur, 0))), nx = R2.filter(function(b){ return !b.classList.contains('sold'); })[0];
@@ -4317,12 +4315,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     var nm = $('shopName'), ds = $('shopDesc'), bt2 = $('shopBuy'), mine = S.skills;
     $('shopInfo').hidden = false; // 상점 창 안 고정 칸
     if (!shopSel){ nm.textContent = '상품을 골라 보세요'; ds.innerHTML = merchOffer() ? '' : shopOdds(); bt2.hidden = true; return; }
-    if (shopSel.t === 'reroll'){ var rp = E.refreshPrice(D, S.shop.rerolls);
-      nm.textContent = '새로고침'; ds.innerHTML = (MANA_ON ? '골드 줄과 마나스톤 줄을 모두 새로 채워요.' : '상품 칸을 모두 새로 채워요.') + '<br>누를 때마다 값이 올라가고, 전투가 끝나면 다시 처음 값이 돼요.' + shopOdds();
-      bt2.classList.remove('sell', 'arm'); bt2.hidden = false; bt2.textContent = '새로고침 · ' + g(rp); bt2.disabled = S.gold < rp; return; }
-    if (shopSel.t === 'mine'){ var o = mine.filter(function(x){ return x.id === shopSel.id; })[0]; if (!o){ shopSel = null; return renderShopInfo(); }
-      var dm = E.skillById(D, o.id); nm.innerHTML = dm.name + cdBox(dm); ds.innerHTML = skillDesc(dm, o.level) + synLine(dm); var sp = E.skillSellPrice(D, o, S.stage), arm = sellArm === o.id;
-      bt2.hidden = false; bt2.disabled = false; bt2.classList.add('sell'); bt2.classList.toggle('arm', arm); bt2.textContent = arm ? '정말 판매? +' + g(sp) : '판매 +' + g(sp); return; }
     if (shopSel.t === 'merch'){ var wo = merchOffer(), it2 = wo && wo.stock[shopSel.i]; if (!it2){ shopSel = null; return renderShopInfo(); }
       var done2 = wo.bought.indexOf(shopSel.i) >= 0, mana2 = it2.cur === 'mana', ok2 = true, why2 = ''; bt2.classList.remove('sell', 'arm');
       if (it2.type === 's'){ var d2 = E.skillById(D, it2.id), own2 = mine.filter(function(x){ return x.id === it2.id; })[0], maxed2 = own2 && skMaxed(it2.id), lv2 = own2 ? own2.level + 1 : 1;
@@ -4352,19 +4344,13 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   $('stock').addEventListener('pointerleave', function(e){ if (e.pointerType === 'mouse') renderShopInfo(); });
   $('tab-shop').addEventListener('click', function(e){
     var t = e.target.closest('[data-sel]'); if (!t) return; var v = t.dataset.sel.split(':');
-    shopSel = v[0] === 'stock' || v[0] === 'hero' || v[0] === 'merch' ? { t: v[0], i: +v[1] } : v[0] === 'mine' ? { t: 'mine', id: v[1] } : { t: 'reroll' }; sellArm = null; renderShop();
+    shopSel = { t: v[0], i: +v[1] }; sellArm = null; renderShop();
   });
   $('shopX').addEventListener('click', function(){ setShop(false); });
   $('shopReroll').addEventListener('click', function(e){ var b = e.target.closest('[data-reroll]'); if (!b || b.disabled || merchOffer()) return; e.stopPropagation(); var rp = E.refreshPrice(D, S.shop.rerolls || 0);
     if (S.gold < rp || (S.shop.rerolls || 0) >= (D.shop.refreshMax || Infinity)) return; S.gold -= rp; S.shop = { stock: newStock(), rerolls: (S.shop.rerolls || 0) + 1, sold: [], ng: lastNg }; shopSel = null; save(); renderAll(); });
   $('shopBuy').addEventListener('click', function(){
     if (!shopSel) return;
-    if (shopSel.t === 'reroll'){ var rp = E.refreshPrice(D, S.shop.rerolls); if (S.gold < rp) return;
-      S.gold -= rp; S.shop = { stock: newStock(), rerolls: S.shop.rerolls + 1, sold: [], ng: lastNg }; save(); renderAll(); return; }
-    if (shopSel.t === 'mine'){ var o = S.skills.filter(function(x){ return x.id === shopSel.id; })[0]; if (!o) return;
-      if (sellArm !== o.id){ sellArm = o.id; return renderShopInfo(); }
-      var sp = E.skillSellPrice(D, o, S.stage), nm = E.skillById(D, o.id).name; S.gold += sp; E.sellSkill(D, S.skills, o.id); sellArm = null; shopSel = null; skKey = '';
-      save(); renderAll(); return; }
     if (shopSel.t === 'merch'){ var wo = merchOffer(), mi = shopSel.i, it = wo && wo.stock[mi]; if (!it || wo.bought.indexOf(mi) >= 0) return; var payM = it.cur === 'mana'; if ((payM ? (S.mana || 0) : S.gold) < it.price) return;
       if (it.type === 's'){ if (!E.canTake(D, S.skills, it.id, PK().skillSlots)) return; E.takeSkill(D, S.skills, it.id); skKey = ''; }
       else recruitFrom(it.id); // 산 것은 HUD·백팩에 바로 보여서 구매 알림은 없어요
