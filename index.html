@@ -2353,6 +2353,19 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
 .rbox.rl4 .rfx .rays{opacity:.42!important;animation:spinr 5s linear infinite!important}
 /* 태그(수인·마법사·숲 등) 글씨 흐림 고침: 본문 글꼴은 보통(400)만 불러오는데 700(굵게)을 써서 브라우저가 억지로 굵게 번지게 그렸음 -> 굵은 제목 글꼴(400)로 (2026-11-25 사용자) */
 .htag,.rtags .htag{font-family:var(--display)!important;font-weight:400!important;letter-spacing:.03em;-webkit-font-smoothing:auto}
+/* 적을 골랐을 때 아군과 같은 선택 라인(금색 픽셀 외곽선 + 깜빡임) (2026-11-25 사용자) */
+#field[data-sf="0"] .foe[data-foe="0"] .av.pic.olb{filter:drop-shadow(2px 0 0 #ffd34d) drop-shadow(-2px 0 0 #ffd34d) drop-shadow(0 2px 0 #ffd34d) drop-shadow(0 -2px 0 #ffd34d) drop-shadow(0 0 6px rgba(255,211,77,.7));animation:pkav .7s steps(2) infinite}
+#field[data-sf="1"] .foe[data-foe="1"] .av.pic.olb{filter:drop-shadow(2px 0 0 #ffd34d) drop-shadow(-2px 0 0 #ffd34d) drop-shadow(0 2px 0 #ffd34d) drop-shadow(0 -2px 0 #ffd34d) drop-shadow(0 0 6px rgba(255,211,77,.7));animation:pkav .7s steps(2) infinite}
+#field[data-sf="2"] .foe[data-foe="2"] .av.pic.olb{filter:drop-shadow(2px 0 0 #ffd34d) drop-shadow(-2px 0 0 #ffd34d) drop-shadow(0 2px 0 #ffd34d) drop-shadow(0 -2px 0 #ffd34d) drop-shadow(0 0 6px rgba(255,211,77,.7));animation:pkav .7s steps(2) infinite}
+#field[data-sf="3"] .foe[data-foe="3"] .av.pic.olb{filter:drop-shadow(2px 0 0 #ffd34d) drop-shadow(-2px 0 0 #ffd34d) drop-shadow(0 2px 0 #ffd34d) drop-shadow(0 -2px 0 #ffd34d) drop-shadow(0 0 6px rgba(255,211,77,.7));animation:pkav .7s steps(2) infinite}
+#field[data-sf="4"] .foe[data-foe="4"] .av.pic.olb{filter:drop-shadow(2px 0 0 #ffd34d) drop-shadow(-2px 0 0 #ffd34d) drop-shadow(0 2px 0 #ffd34d) drop-shadow(0 -2px 0 #ffd34d) drop-shadow(0 0 6px rgba(255,211,77,.7));animation:pkav .7s steps(2) infinite}
+#field[data-sf="5"] .foe[data-foe="5"] .av.pic.olb{filter:drop-shadow(2px 0 0 #ffd34d) drop-shadow(-2px 0 0 #ffd34d) drop-shadow(0 2px 0 #ffd34d) drop-shadow(0 -2px 0 #ffd34d) drop-shadow(0 0 6px rgba(255,211,77,.7));animation:pkav .7s steps(2) infinite}
+#field[data-sf="6"] .foe[data-foe="6"] .av.pic.olb{filter:drop-shadow(2px 0 0 #ffd34d) drop-shadow(-2px 0 0 #ffd34d) drop-shadow(0 2px 0 #ffd34d) drop-shadow(0 -2px 0 #ffd34d) drop-shadow(0 0 6px rgba(255,211,77,.7));animation:pkav .7s steps(2) infinite}
+#field[data-sf="7"] .foe[data-foe="7"] .av.pic.olb{filter:drop-shadow(2px 0 0 #ffd34d) drop-shadow(-2px 0 0 #ffd34d) drop-shadow(0 2px 0 #ffd34d) drop-shadow(0 -2px 0 #ffd34d) drop-shadow(0 0 6px rgba(255,211,77,.7));animation:pkav .7s steps(2) infinite}
+#field[data-sf="8"] .foe[data-foe="8"] .av.pic.olb{filter:drop-shadow(2px 0 0 #ffd34d) drop-shadow(-2px 0 0 #ffd34d) drop-shadow(0 2px 0 #ffd34d) drop-shadow(0 -2px 0 #ffd34d) drop-shadow(0 0 6px rgba(255,211,77,.7));animation:pkav .7s steps(2) infinite}
+#field[data-sf="9"] .foe[data-foe="9"] .av.pic.olb{filter:drop-shadow(2px 0 0 #ffd34d) drop-shadow(-2px 0 0 #ffd34d) drop-shadow(0 2px 0 #ffd34d) drop-shadow(0 -2px 0 #ffd34d) drop-shadow(0 0 6px rgba(255,211,77,.7));animation:pkav .7s steps(2) infinite}
+#field[data-sf="10"] .foe[data-foe="10"] .av.pic.olb{filter:drop-shadow(2px 0 0 #ffd34d) drop-shadow(-2px 0 0 #ffd34d) drop-shadow(0 2px 0 #ffd34d) drop-shadow(0 -2px 0 #ffd34d) drop-shadow(0 0 6px rgba(255,211,77,.7));animation:pkav .7s steps(2) infinite}
+#field[data-sf="11"] .foe[data-foe="11"] .av.pic.olb{filter:drop-shadow(2px 0 0 #ffd34d) drop-shadow(-2px 0 0 #ffd34d) drop-shadow(0 2px 0 #ffd34d) drop-shadow(0 -2px 0 #ffd34d) drop-shadow(0 0 6px rgba(255,211,77,.7));animation:pkav .7s steps(2) infinite}
 </style>
 </head>
 <body>
@@ -3280,6 +3293,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
   (function(){ ['roul', 'chestPop', 'res', 'mobLoot', 'bagOver', 'gameOver', 'evWin'].forEach(function(id){ if ($(id)) popAdd($(id), true); }); if ($('pendBox')) popAdd($('pendBox'), false); })();
   function showInfo(html, side){ var p = $('hinfo'); if (shopOpen()) setShop(false); /* 창은 한 번에 하나 */ p.innerHTML = (html.indexOf('data-hix') < 0 ? '<button class="hi-x" data-hix="1" type="button" title="닫기">✕</button>' : '') + html; /* 모든 상세 창에 닫기 ✕ */ p.className = 'hinfo ' + side; p.hidden = false; }
   function hideInfo(){ $('hinfo').hidden = true; }
+  new MutationObserver(function(){ if ($('hinfo').hidden) delete $('field').dataset.sf; }).observe($('hinfo'), { attributes: true, attributeFilter: ['hidden'] }); /* 상세 창이 닫히면 적 선택 라인도 풀림 */
   (function(){ var sc = document.createElement('div'); sc.id = 'shopScrim'; sc.className = 'shopscrim'; $('tab-shop').parentNode.insertBefore(sc, $('tab-shop'));
     var eat = false; sc.addEventListener('pointerdown', function(e){ e.stopPropagation(); e.preventDefault(); if (shopOpen()){ setShop(false); eat = true; setTimeout(function(){ eat = false; }, 400); } });
     document.addEventListener('click', function(e){ if (eat){ eat = false; e.stopPropagation(); e.preventDefault(); } }, true); })(); /* 상점 밖을 누르면 상점부터 닫혀요 (그 누름은 아래로 안 넘어가요) */
@@ -3343,7 +3357,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
     var t = e.target.closest('.slot.on, #roster .chip[data-uid], .foe[data-foe]');
     if (!t){ if (sel) clearSel(); else hideInfo(); return; }
     if (t.classList.contains('foe')){
-      sel = null; applySel();
+      sel = null; applySel(); $('field').dataset.sf = t.dataset.foe; /* 적도 고르면 아군과 같은 선택 라인 */
       var st = E.stageTeam(D, S.stage, S.event, S.bell || 0, bt ? curPlv : plv()), fu = st.team.filter(function(x){ return x.slot === +t.dataset.foe; })[0]; if (!fu) return;
       if (hero(fu.id).mob){ var mh0 = hero(fu.id), gr0 = 1 + D.growth.perLevel * (fu.level - 1); showInfo(mobInfoHtml(fu.id, { lv: fu.level, hp: mh0.hp * gr0 * ((fu.mul && fu.mul.hp) || 1), atk: mh0.atk * gr0 * ((fu.mul && fu.mul.atk) || 1), def: mh0.def * gr0, interval: mh0.interval, drops: mobDropList(fu) }), 'left'); return; }
       if (false){ showInfo('<div class="hi-top"><span class="hi-av">' + av(fu.id) + '</span><div><b>돈고블린</b><div class="hi-tag">싸우지 않아요 · ' + D.events.goblin.flee + '초 뒤 도망</div></div></div><div class="hi-ult"><div>잡고 이기면 클리어 골드 ×' + D.events.goblin.goldMul + '</div></div>', 'left'); return; }
@@ -3848,6 +3862,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
     if (u.energy >= 99.9 && u.alive){ ctx.shadowColor = '#ffd34d'; ctx.shadowBlur = 18; }
     if (im){ var sil = silhouette(sid, gc(u.id)), o = 1, ga0 = ctx.globalAlpha; // 등급 외곽선: 가장 얇게(1 논리 px), 옅게
       ctx.imageSmoothingEnabled = false; var sx = Math.round(-S / 2), sy = Math.round(-S + S * .04);
+      if (inspect && inspect.uid === u.uid){ var ps = silhouette(sid, Math.floor(performance.now() / 350) % 2 ? '#fff3b0' : '#ffd34d'); [[2, 0], [-2, 0], [0, 2], [0, -2]].forEach(function(d){ ctx.drawImage(ps, sx + d[0], sy + d[1], S, S); }); } /* 전투 중에도 고른 캐릭터(아군·적)에 금색 선택 라인, 0.7초 깜빡임 (편성 화면 .picked와 같은 모양) */
       ctx.globalAlpha = ga0 * .65; [[o, 0], [-o, 0], [0, o], [0, -o]].forEach(function(d){ ctx.drawImage(sil, sx + d[0], sy + d[1], S, S); }); ctx.globalAlpha = ga0;
       ctx.drawImage(im, sx, sy, S, S);
       if (u._cfl > 0){ ctx.globalAlpha = ga0 * Math.min(1, u._cfl / .25); ctx.drawImage(silhouette(sid, '#ffffff'), sx, sy, S, S); ctx.globalAlpha = ga0; } /* 상자 그림이 바뀌는 순간 반짝 */
