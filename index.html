@@ -856,6 +856,14 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .hinfo .hi-st4 b{font-size:13px}
 .hinfo .hi-ult{padding:8px;background:#17141d;font-size:11px}
 .hinfo .hi-ult b{font-size:13px}
+/* 2026-11-25 상세 창: 높이를 더 쓰고 간격을 넓힘 (사용자: 빡빡해서) */
+.hinfo{top:58px;bottom:6px;padding:14px 14px 12px;gap:11px}
+.hinfo .hi-st4{padding:10px 11px;gap:7px 10px}
+.hinfo .hi-ult{padding:10px 10px}
+.hinfo .hi-skrow{min-height:52px;gap:10px}
+.hinfo .hi-skrow .hi-skd{margin-top:3px;line-height:1.55}
+.hinfo .hi-tags{margin-top:5px;gap:4px}
+.hinfo .hi-btns{margin-top:10px}
 .hinfo .hi-pas{margin:0;font-size:11px}
 .hinfo .hi-btns{margin-top:auto}
 .hinfo .hi-b{padding:9px 0;font-size:15px}
@@ -3147,7 +3155,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     return ''; }
   // 영웅 스킬 설명 = 스킬 종류 설명 + 속성 효과 + 등급 효과
   function ultDescFull(hh, U, k){ if (!U) return ''; if (U.desc) return U.desc; var e = elSkillText(hh.el, U.kind); return (ULTD[U.kind] ? ULTD[U.kind](U) : '') + (e ? ' ' + e : '') + ultLvNote(k); }
-  function ultIconEl(hh){ return ultIcon(hh, 24) + '<i class="eldot" style="background:' + ELC[hh.el] + '" title="' + (((D.elements || {}).names || {})[hh.el] || '') + '"></i>'; }
+  function ultIconEl(hh){ return ultIcon(hh, 24); } /* 2026-11-25: 아이콘 오른쪽 아래 속성 색 네모(.eldot) 뺌 (사용자 요청) */
   function dropIc(k){ var p = LP(k), at = p.type === 's' ? ' data-tipsk="' + p.id + '" data-tiplv="1"' : p.type === 'p' ? padTipAttr(p.id) : ' title="' + lootName(k) + (p.type === 'g' ? ' ' + p.amt.toLocaleString() + 'G' : '') + '"'; return '<span class="mdrop ' + p.type + '" style="--el:' + lootColor(k) + '"' + at + '>' + lootIcon(k) + '</span>'; }
   var RNG_NM = { melee: '1칸', mid: '2칸', long: '3칸', far: '4칸' };
   // o: { lv, hp, maxHp, atk, def, interval, drops(전리품 키), dropHtml(도감용), dead }
