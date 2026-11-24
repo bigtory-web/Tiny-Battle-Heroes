@@ -335,3 +335,11 @@ If installation is not possible in this environment, tell the user which depende
 - `references/codex-network.md`: fallback-only network/sandbox troubleshooting for CLI mode.
 - `scripts/image_gen.py`: fallback-only CLI implementation. Use only when the user explicitly chooses or confirms CLI mode.
 
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Copy-Item -LiteralPath 'C:\\Users\\Home\\.codex\\generated_images\\01a20e74-fd52-7a80-a511-1cda2ad6302c\\exec-c75aed90-5f5d-4aff-9085-83808faee30f.png' -Destination 'C:\\Users\\Home\\Downloads\\방치형RPG_테스트베드\\img\\pixellab\\ev_fairy_v1_src.png'" in C:\Users\Home\Downloads\방치형RPG_테스트베드
+ succeeded in 111ms:
+codex
+Generated the fairy sprite with the image generation tool and saved it as [ev_fairy_v1_src.png](C:/Users/Home/Downloads/방치형RPG_테스트베드/img/pixellab/ev_fairy_v1_src.png).
+tokens used
+9,596
+Generated the fairy sprite with the image generation tool and saved it as [ev_fairy_v1_src.png](C:/Users/Home/Downloads/방치형RPG_테스트베드/img/pixellab/ev_fairy_v1_src.png).

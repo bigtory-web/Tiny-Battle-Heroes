@@ -1281,10 +1281,10 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .hic::after{content:'';position:absolute;inset:0;box-shadow:inset 0 0 0 2px var(--hg,#5d5470);pointer-events:none;z-index:2}
 .hicf{display:block;width:100%;height:100%;overflow:hidden}
 .hicf > .av{width:100%;height:100%;display:block;border-radius:0}
-.hst{position:absolute;left:0;right:0;bottom:3px;z-index:3;display:flex;justify-content:center;gap:1px;pointer-events:none;font-style:normal}
+.hst{position:absolute;left:0;right:0;top:max(3px,calc(var(--ht,0%) - 10px));z-index:3;display:flex;justify-content:center;gap:1px;pointer-events:none;font-style:normal}
 .hst b{display:block;font:400 10px/9px var(--display);color:#ffd34d;text-shadow:1px 0 0 #17141d,-1px 0 0 #17141d,0 1px 0 #17141d,0 -1px 0 #17141d}
 .hst b::before{content:"★"}
-.chip > .hst{bottom:4px}
+.chip > .hst{bottom:auto}
 .rgrade{display:none!important} /* 등급 글자 대신 테두리 색으로 */
 .cdxg{display:block;font:600 9px var(--body);font-style:normal}
 
@@ -1531,7 +1531,7 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 #field .altcell{position:absolute;z-index:1;width:calc(100% * 94 / 720);height:calc(100% * 62 / 400);transform:translate(-50%,-46.8%);background:no-repeat center/100% 100%;image-rendering:pixelated;pointer-events:none}
 #field .altM .cfslot{filter:drop-shadow(2px 0 0 #fff3b0) drop-shadow(-2px 0 0 #fff3b0) drop-shadow(0 2px 0 #fff3b0) drop-shadow(0 -2px 0 #fff3b0)}
 #field .altc:hover .cfslot{filter:drop-shadow(2px 0 0 #fff3b0) drop-shadow(-2px 0 0 #fff3b0)}
-#field .cfslot .hst{position:absolute;left:50%;top:-10px;transform:translateX(-50%)}
+#field .cfslot .hst{position:absolute;left:50%;top:max(0px,calc(var(--ht,0%) - 10px));transform:translateX(-50%)}
 #field .altarrow{position:absolute;width:56px;height:28px;margin:-14px 0 0 -28px;z-index:300;background:#c9a6ff;clip-path:polygon(0 50%,40% 0,40% 30%,100% 30%,100% 70%,40% 70%,40% 100%);filter:drop-shadow(0 2px 0 #17141d);animation:altarw .7s steps(2) infinite;pointer-events:none}
 @keyframes altarw{50%{transform:translateX(-5px)}}
 #field .altslot{display:none;position:absolute;width:64px;height:64px;margin:-64px 0 0 -32px;box-shadow:inset 0 0 0 2px rgba(255,243,176,.55);background:rgba(255,243,176,.06);pointer-events:none}
@@ -3160,7 +3160,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     var h = hero(id), hT = h, pe0 = unit && padOf(unit.uid); if (pe0 && pe0 !== h.el) hT = Object.assign({}, h, { el2: pe0 });
     var gr = 1 + D.growth.perLevel * (lv - 1), mh = (mul && mul.hp) || 1, ma = (mul && mul.atk) || 1, U = h.ult, P = h.passive;
 
-    return '<div class="hi-top"><span class="hi-av hic" style="--hg:' + HG(id).col + '">' + av(id) + (st && !foe && !noStar ? starsIn(st) : '') + '</span><div><b>' + h.name + ' <em class="hlv">Lv ' + lv + '</em></b>' +
+    return '<div class="hi-top"><span class="hi-av hic" style="--hg:' + HG(id).col + '">' + av(id) + (st && !foe && !noStar ? starsIn(st, id) : '') + '</span><div><b>' + h.name + ' <em class="hlv">Lv ' + lv + '</em></b>' +
       '<div class="hi-tags">' + tagHtml(hT) + '</div></div></div>' +
       '<div class="hi-st4"><span>체력<b>' + Math.round(h.hp * gr * mh).toLocaleString() + '</b></span><span>공격<b>' + Math.round(h.atk * gr * ma) + '</b></span><span>방어<b>' + h.def + '</b></span><span>공속<b>' + (+(1 / h.interval).toFixed(2)) + '</b></span><span>치명타<b>' + Math.round(100 * (E.critChance ? E.critChance(D, h) : 0)) + '%</b></span><span>사거리<b>' + (RNG_NM[h.range] || '-') + '</b></span></div>' +
       (unit && E.unitSkills ? trRows(unit) : skRow(skFrame(ultIconEl(h), HG(id).col), ultName(h), EL.ult, ultDescFull(h, U, 1 + (GE.ultPer || 0) * (EL.ult - 1)), ultNum(U))) +
@@ -3176,7 +3176,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     if (h.mob) return mobInfoHtml(u.id, { lv: u.level, hp: h.hp * bg * (bm.hp || 1), atk: h.atk * bg * (bm.atk || 1), def: h.def * bg, interval: h.interval, dead: !u.alive, drops: (curEv && curEv.kind === 'mobs' && curEv.drops) ? [].concat(curEv.drops[u.slot] || []) : [] });
     if (false) return '<div class="hi-top"><span class="hi-av">' + av(u.id) + '</span><div><b>돈고블린</b><div class="hi-tag">싸우지 않아요 · ' + D.events.goblin.flee + '초 뒤 도망</div></div></div><div class="hi-ult"><div>잡고 이기면 클리어 골드 ×' + D.events.goblin.goldMul + '</div></div>';
     var PS = h.passive && (D.passives || {})[h.passive.kind];
-    return '<div class="hi-top"><span class="hi-av hic" style="--hg:' + HG(u.id).col + '">' + av(u.id) + starsIn(st) + '</span><div><b>' + h.name + ' <em class="hlv">Lv ' + (u.level || '') + '</em></b>' +
+    return '<div class="hi-top"><span class="hi-av hic" style="--hg:' + HG(u.id).col + '">' + av(u.id) + starsIn(st, u.id) + '</span><div><b>' + h.name + ' <em class="hlv">Lv ' + (u.level || '') + '</em></b>' +
       (u.boss || !u.alive ? '<div class="hi-tag">' + (u.boss ? '보스' : '') + (u.boss && !u.alive ? ' · ' : '') + (u.alive ? '' : '<span class="hi-dead">쓰러짐</span>') + '</div>' : '') + '<div class="hi-tags">' + tagHtml(u.el2 ? Object.assign({}, h, { el2: u.el2 }) : h) + '</div></div></div>' +
       '<div class="hi-st4"><span>체력<b>' + Math.round(h.hp * bg * (bm.hp || 1)).toLocaleString() + '</b></span><span>공격<b>' + Math.round(h.atk * bg * (bm.atk || 1)) + '</b></span><span>방어<b>' + h.def + '</b></span><span>공속<b>' + (+(1 / h.interval).toFixed(2)) + '</b></span><span>치명타<b>' + Math.round(100 * (E.critChance ? E.critChance(D, h) : 0)) + '%</b></span><span>사거리<b>' + (RNG_NM[h.range] || '-') + '</b></span></div>' +
       skRow(skFrame(ultIconEl(h), HG(u.id).col, 1 - (u.energy || 0) / (D.battle.energyMax || 100), ultFlash(u)), ultName(h), u.ultLv, ultDescFull(h, U, 1 + (GE.ultPer || 0) * (u.ultLv - 1)), ultNum(U)) +
@@ -4442,7 +4442,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   function altDone(){ var n = (D.transcend || {}).perAltar; return !!(n && S.event && (S.event.trCount || 0) >= n); } /* 이 제단에서 할 만큼 했으면 true */
   function altCellImg(k){ return ALTCELL[k] || (ALTCELL[k] = k === 'A' ? hexDaisURL({ rim: '#ffd34d', top: '#5a4720', top2: '#7a6228', side: '#3a2e14', hi: '#fff3b0' }) : hexDaisURL({ rim: '#fff3b0', top: '#3b3546', top2: '#4a4358', side: '#2a2533', hi: '#ffffff' })); }
   function altCell(pos, k){ return '<i class="altcell" style="left:' + (100 * pos[0] / W) + '%;top:' + (100 * (pos[1] + OFF + FOOT) / H) + '%;background-image:url(' + altCellImg(k) + ')"></i>'; }
-  function altUnit(cls, u, pos, attr){ return '<div class="unit cfh ' + cls + '"' + (attr || '') + ' style="left:' + (100 * pos[0] / W) + '%;top:' + (100 * (pos[1] + OFF + FOOT) / H) + '%;z-index:' + pos[1] + '"><div class="cfslot flip" style="--hg:' + HG(u.id).col + '">' + av(u.id) + starsIn(u.star) + '</div></div>'; }
+  function altUnit(cls, u, pos, attr){ return '<div class="unit cfh ' + cls + '"' + (attr || '') + ' style="left:' + (100 * pos[0] / W) + '%;top:' + (100 * (pos[1] + OFF + FOOT) / H) + '%;z-index:' + pos[1] + '"><div class="cfslot flip" style="--hg:' + HG(u.id).col + '">' + av(u.id) + starsIn(u.star, u.id) + '</div></div>'; }
   function altarPickHtml(){ var ALT_POS = altPos(), a = U(altA), m = altM != null && U(altM), q = function(s){ return String(s || '').replace(/"/g, '&quot;'); };
     var E3 = hexCells().E, b1 = E3[2], b2 = E3[5], bx = (b1[0] + b2[0]) / 2, by = E3[0][1] + OFF + FOOT - 27, bw = Math.abs(b2[0] - b1[0]) + 76;
     var o = '<img class="altbld" src="img/p/altar_building.png" alt="" style="left:' + (100 * bx / W) + '%;top:' + (100 * by / H) + '%;width:' + (100 * 86 * 1.74 / W) + '%">' + altCell(ALT_POS.A, 'A') + altCell(ALT_POS.M, 'M') + (a ? altUnit('altA', a, ALT_POS.A, ' data-tipt="' + q(hero(a.id).name) + '" data-tiptx="' + q(ultName(hero(a.id))) + '"') : '') +

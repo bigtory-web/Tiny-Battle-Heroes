@@ -349,3 +349,15 @@ If installation is not possible in this environment, tell the user which depende
 - `references/codex-network.md`: fallback-only network/sandbox troubleshooting for CLI mode.
 - `scripts/image_gen.py`: fallback-only CLI implementation. Use only when the user explicitly chooses or confirms CLI mode.
 
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Copy-Item -LiteralPath 'C:\\Users\\Home\\.codex\\generated_images\\01a20e74-b1bf-7bf3-8c91-9116aa387761\\exec-e6fae0c8-4500-4f56-a30c-828b766f2593.png' -Destination 'C:\\Users\\Home\\Downloads\\방치형RPG_테스트베드\\img\\codex\\shots_sheet.png'" in C:\Users\Home\Downloads\방치형RPG_테스트베드
+ succeeded in 109ms:
+codex
+Generated the sprite sheet and saved it unchanged to [shots_sheet.png](C:/Users/Home/Downloads/방치형RPG_테스트베드/img/codex/shots_sheet.png).
+
+The image contains all nine requested sprites in the specified order. The generated edges and shading show some softening, so it may need adjustment before use if exact hard pixels and a uniform `#FF00FF` background are required.
+tokens used
+9,854
+Generated the sprite sheet and saved it unchanged to [shots_sheet.png](C:/Users/Home/Downloads/방치형RPG_테스트베드/img/codex/shots_sheet.png).
+
+The image contains all nine requested sprites in the specified order. The generated edges and shading show some softening, so it may need adjustment before use if exact hard pixels and a uniform `#FF00FF` background are required.
