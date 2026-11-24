@@ -3707,7 +3707,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     ctx.fillStyle = ally ? (hpk < .3 ? "#e8a23a" : "#5fc85a") : "#d8443e"; ctx.fillRect(bx, by, hpw, 4);
     ctx.fillStyle = ally ? (hpk < .3 ? "#ffd27a" : "#b6f59a") : "#ff8f7a"; ctx.fillRect(bx, by, hpw, 2);
     ctx.fillStyle = "#17141d"; for (var tk = 1; tk < 4; tk++) ctx.fillRect(bx + Math.round(bw * tk / 4 / 2) * 2 - 1, by, 2, 4);
-    if (o.shield > 0){ ctx.fillStyle = "#9ab8ff"; ctx.fillRect(bx, by, Math.min(bw, Math.round(bw * o.shield / 2) * 2), 2); }
+    if (o.shield > 0){ var shW = Math.max(2, Math.round(bw * o.shield / 2) * 2), shE = Math.min(bx + bw, bx + hpw + shW), shS = Math.max(bx, shE - shW); ctx.fillStyle = "#17141d"; ctx.fillRect(shS - 1, by, 1, 4); ctx.fillStyle = "#a8d8ff"; ctx.fillRect(shS, by, shE - shS, 4); ctx.fillStyle = "#ffffff"; ctx.fillRect(shS, by, shE - shS, 2); } /* 보호막 양: HP 끝에 이어 붙는 흰·하늘색 칸 (꽉 찼으면 오른쪽 끝에 겹침) */
     ctx.fillStyle = "#2a2533"; ctx.fillRect(bx, by + 6, bw, 2);
     if (o.trig){ var tn = o.trig.kind === "start" ? 1 : Math.max(1, o.trig.n || 1), sw = Math.floor((bw - (tn - 1) * 2) / tn), ek = Math.min(1, (o.energy || 0) / 100) * tn, full = (o.energy || 0) >= 99.9; // 발동 타입: n칸 눈금, 칸 안은 연속으로 차요 (start형은 쓰면 회색)
       for (var ti = 0; ti < tn; ti++){ var tx = bx + ti * (sw + 2), fw = Math.round(sw * Math.max(0, Math.min(1, ek - ti))); ctx.fillStyle = o.tdone ? "#6b6478" : "#4a4358"; ctx.fillRect(tx, by + 6, sw, 2); if (!o.tdone && fw > 0){ ctx.fillStyle = full ? "#ffe08a" : "#f2b53a"; ctx.fillRect(tx, by + 6, fw, 2); } } }
@@ -3722,6 +3722,9 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   var ATK_IDS = ['bear', 'rain', 'candle', 'wolf', 'drum', 'harpy', 'imp', 'boar', 'squire', 'sprout', 'pup', 'mudgolem', 'slinger', 'batling', 'frog', 'piper', 'mossguard']; // 공격 자세 그림이 온 영웅 (img/p/<id>_atk.png)
   var ANIM_IDS = ['knight', 'bear', 'rain', 'wolf', 'drum', 'harpy', 'imp', 'boar', 'squire', 'sprout', 'pup', 'mudgolem', 'slinger', 'candle', 'batling', 'frog', 'piper', 'mossguard'], ANIM_ATK = .4; /* 프레임 시트(img/p/<id>_anim.png, 64x64 8칸): 1~4 대기, 5~8 공격 (0.4초) */
   ANIM_IDS.forEach(function(id){ var sh = new Image(); sh.onload = function(){ for (var i = 0; i < 8; i++){ var c = document.createElement('canvas'); c.width = c.height = 64; c.getContext('2d').drawImage(sh, i * 64, 0, 64, 64, 0, 0, 64, 64); IMGS[id + '_a' + (i + 1)] = c; PIX[id + '_a' + (i + 1)] = true; } }; sh.src = 'img/p/' + id + '_anim.png'; });
+  var BUBIMG = new Image(); BUBIMG.src = 'img/fx/fx_bubble.png'; /* 보호막 방울: 72x72 8장(4열x2행), 0~3 유지(왔다 갔다 150ms), 4~7 깨짐(60ms, 한 번) */
+  function drawBubble(x, foot, S, u){ var k = 1.1 * S / 64, f, now = performance.now(); if (u._brk > 0) f = 4 + Math.min(3, Math.floor((.24 - u._brk) / .06)); else f = [0, 1, 2, 3, 2, 1][Math.floor(now / 150) % 6];
+    ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(BUBIMG, (f % 4) * 72, Math.floor(f / 4) * 72, 72, 72, Math.round(x - 35.5 * k), Math.round(foot + 3 - 70 * k), Math.round(72 * k), Math.round(72 * k)); ctx.restore(); } /* 방울 아래 끝(프레임 y 70)이 발 밑(foot+3)에 닿게 */
   var SHOT_IMGS = {}, SHOT_TINT = {}; ['arrow', 'stone', 'fire', 'ice', 'bolt', 'orb', 'note'].forEach(function(k){ var im = new Image(); im.onload = function(){ SHOT_IMGS[k] = im; }; im.src = 'img/p/shot_' + k + '.png'; }); /* 원거리 투사체 그림 (16x16, 오른쪽 방향, 2프레임이면 32x16) */
   function tintShot(im, c){ var k = c; if (SHOT_TINT[k]) return SHOT_TINT[k]; var cv2 = document.createElement('canvas'); cv2.width = im.width; cv2.height = im.height; var x = cv2.getContext('2d'); x.drawImage(im, 0, 0); x.globalCompositeOperation = 'source-atop'; x.globalAlpha = .6; x.fillStyle = c; x.fillRect(0, 0, cv2.width, cv2.height); return SHOT_TINT[k] = cv2; } /* orb는 진영 색으로 물들임 */
   var atkT = {}; ATK_IDS.forEach(function(id){ var im = new Image(); im.onload = function(){ IMGS[id + '_atk'] = im; }; im.src = 'img/p/' + id + '_atk.png'; });
@@ -3753,7 +3756,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     ctx.globalAlpha = u.alive ? (u.stealth > 0 ? .4 : 1) : .25;
     var fb = footBox(sid); ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.beginPath(); if (fb) ctx.ellipse(x + (dir < 0 ? -1 : 1) * ((fb.l + fb.r) / 2 - .5) * S, foot - fb.g * S - 1, Math.max(S * .25, (fb.r - fb.l) * S / 2 + 8), 6, 0, 0, 6.29); else ctx.ellipse(x, foot, S * .34, 8, 0, 0, 6.29); ctx.fill(); /* 발 그림자: 그림의 발 너비·자리에 맞춰요 */
 
-    if (u.shield > 1 && u.alive){ ctx.strokeStyle = 'rgba(127,184,255,.8)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(x, foot - S * .45, S * .42, S * .55, 0, 0, 6.29); ctx.stroke(); }
+    var hasSh = u.shield > 1 && u.alive; if (u._hadSh && !hasSh && u.alive) u._brk = .24; u._hadSh = hasSh; if (u._brk > 0) u._brk -= el; if (!u.alive) u._brk = 0;
     ctx.save(); ctx.translate(Math.round(x), Math.round(foot)); if (dir < 0) ctx.scale(-1, 1);
     if (u.energy >= 99.9 && u.alive){ ctx.shadowColor = '#ffd34d'; ctx.shadowBlur = 18; }
     if (im){ var sil = silhouette(sid, gc(u.id)), o = 1, ga0 = ctx.globalAlpha; // 등급 외곽선: 가장 얇게(1 논리 px), 옅게
@@ -3767,6 +3770,8 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
       if (stop && hs.flash > 0){ ctx.shadowBlur = 0; ctx.globalAlpha = ga0 * hs.flash * Math.min(1, 1.6 * hs.t / hs.max); ctx.drawImage(silhouette(sid, '#ffffff'), sx, sy, S, S); ctx.globalAlpha = ga0; } }
     else { ctx.font = (u.boss ? 44 : 34) + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText(AV[u.id], 0, -4); }
     ctx.restore();
+    if ((hasSh || u._brk > 0) && BUBIMG.complete && BUBIMG.naturalWidth) drawBubble(x, foot, S, u);
+    else if (hasSh){ ctx.strokeStyle = 'rgba(127,184,255,.8)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(x, foot - S * .45, S * .42, S * .55, 0, 0, 6.29); ctx.stroke(); } /* 그림이 없으면 예전 파란 선 */
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     if (u.stun > 0){ var sa = performance.now() / 150, sy0 = Math.round(foot - S + 10);
       for (var si2 = 0; si2 < 3; si2++){ var aa = sa + si2 * 2.09, px2 = Math.round(x + Math.cos(aa) * 16), py2 = Math.round(sy0 + Math.sin(aa) * 5), cl = si2 === 1 ? '#fff6d6' : '#ffd34d';
