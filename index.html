@@ -3749,8 +3749,9 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
   var knocks = {}; // uid → { dx, t } : 돌풍에 밀린 유닛을 0.15초 동안 휙 미끄러지게 그려요
   // 체력·에너지 막대: 전투와 편성 화면이 같이 써요
   // 5×5 픽셀 별 (성급 표시, 은은한 금색)
-  function drawGradeStar(c, cx, cy, n){ var R = 6.5, r = 2.9; c.save(); c.beginPath(); for (var i = 0; i < 10; i++){ var a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r : R; c.lineTo(cx + Math.cos(a) * rr, cy + 0.5 + Math.sin(a) * rr); } c.closePath(); c.lineJoin = 'round'; c.lineWidth = 2.2; c.strokeStyle = '#17141d'; c.stroke(); c.fillStyle = '#ffd34d'; c.fill();
-    c.font = '400 8px "Black Han Sans", sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#3a2208'; c.fillText('' + n, cx, cy + 1.2); c.restore(); } /* 성급: HP 막대 왼쪽 앞에 별 하나 + 별 안에 숫자 (2026-11-25 사용자) */
+  function drawGradeStar(c, cx, cy, n){ var R = 5.4, r = 2.4, gap = 11, x0 = cx - (n - 1) * gap / 2; c.save(); c.lineJoin = 'round';
+    for (var k = 0; k < n; k++){ var x = x0 + k * gap; c.beginPath(); for (var i = 0; i < 10; i++){ var a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r : R; c.lineTo(x + Math.cos(a) * rr, cy + 0.5 + Math.sin(a) * rr); } c.closePath(); c.lineWidth = 2; c.strokeStyle = '#17141d'; c.stroke(); c.fillStyle = '#ffd34d'; c.fill(); }
+    c.restore(); } /* 성급 = 머리 위 작은 별을 성급 개수만큼 (숫자 없음) (2026-11-25 사용자: "별개수만큼 표시, 숫자는 X") */
   function drawBars(ctx, x, y, o){
     var bw = 44, bx = Math.round(x - bw / 2), by = Math.round(y + 30), rows = 2, fh = 2 + 4 + 2 + (rows - 1) * 4;
     ctx.fillStyle = "#17141d"; ctx.fillRect(bx - 2, by - 2, bw + 4, fh);
