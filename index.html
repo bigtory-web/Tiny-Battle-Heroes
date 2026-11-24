@@ -2285,6 +2285,19 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
 .dps .dpsm i.on{background:#6a4fb0;color:#fff}
 .dps.closed .dpsm{display:none}
 .dps.off .dpsm{display:none!important}
+/* ───── 전투 시작 버튼: 평평하지 않은 픽셀 입체 (2026-11-25 시험, 사용자: "지금 너무 플랫해서 AI 느낌이 나거든") ─────
+   명암 3단(그라데이션 아님, 계단식), 위 밝은 줄, 아래 두꺼운 단, 좌우 어두운 세로 줄, 1칸 깎은 픽셀 모서리, 옅은 사선 줄무늬와 하이라이트 점.
+   되돌리는 방법: 이 블록을 통째로 지우면 예전 평평한 버튼이에요. */
+#arena:not(.evstage) #fightBtn{--fo:#3a2208;--fb:#8a5a0a;--fm:#b8761c;--fl:#fff0b0;
+  padding:0 0 5px!important;font-size:19px;color:#3a2208!important;text-shadow:0 1px 0 #ffe9a8!important;
+  background:linear-gradient(#fff3b8,#fff3b8) 14px 6px/10px 2px no-repeat,linear-gradient(#fff3b8,#fff3b8) 28px 6px/2px 2px no-repeat,repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 2px,transparent 2px 8px),linear-gradient(#ffd45c 0 30%,#f2b53a 30% 64%,#dc9a22 64% 100%)!important;
+  box-shadow:inset 0 0 0 2px var(--fo),inset 0 4px 0 -2px var(--fl),inset 3px 0 0 -1px #c98a1e,inset -3px 0 0 -1px #c98a1e,inset 0 -7px 0 -2px var(--fm),inset 0 -10px 0 -2px var(--fb)!important;
+  clip-path:polygon(2px 0,calc(100% - 2px) 0,calc(100% - 2px) 2px,100% 2px,100% calc(100% - 2px),calc(100% - 2px) calc(100% - 2px),calc(100% - 2px) 100%,2px 100%,2px calc(100% - 2px),0 calc(100% - 2px),0 2px,2px 2px)!important}
+#arena:not(.evstage) #fightBtn:active:not(:disabled){transform:translateY(3px)!important;padding-bottom:2px!important;
+  box-shadow:inset 0 0 0 2px var(--fo),inset 0 3px 0 -1px var(--fl),inset 3px 0 0 -1px #c98a1e,inset -3px 0 0 -1px #c98a1e,inset 0 -4px 0 -2px var(--fm),inset 0 -6px 0 -2px var(--fb)!important}
+#arena:not(.evstage) #fightBtn:disabled{color:#ece6f2!important;text-shadow:-1px 0 #3a3442,1px 0 #3a3442,0 -1px #3a3442,0 1px #3a3442!important;
+  background:linear-gradient(#b5aec0,#b5aec0) 14px 6px/10px 2px no-repeat,linear-gradient(#b5aec0,#b5aec0) 28px 6px/2px 2px no-repeat,repeating-linear-gradient(135deg,rgba(255,255,255,.06) 0 2px,transparent 2px 8px),linear-gradient(#8f879b 0 30%,#7c7488 30% 64%,#6a6272 64% 100%)!important;
+  box-shadow:inset 0 0 0 2px #17141d,inset 0 4px 0 -2px #a59eb0,inset 3px 0 0 -1px #5a5266,inset -3px 0 0 -1px #5a5266,inset 0 -7px 0 -2px #5a5266,inset 0 -10px 0 -2px #4a4452!important}
 </style>
 </head>
 <body>

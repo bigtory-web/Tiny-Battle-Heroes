@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>전투 시작 버튼 시안</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+<style>
+:root{--display:'Black Han Sans',sans-serif}
+body{margin:0;min-width:0;background:#1d1a24;color:#f3e6c4;font:14px var(--display);padding:18px}
+h1{font:400 18px var(--display);margin:0 0 4px} p{margin:0 0 14px;color:#c9bfae;font:12px sans-serif}
+.grid{display:grid;grid-template-columns:130px 1fr 1fr 1fr;gap:14px 18px;align-items:center}
+.lab{font:400 14px var(--display);color:#ffd34d}
+.stage{background:url(img/p/bg_field.png) 50% 100%/cover,#b8a0a6;image-rendering:pixelated;padding:22px 16px;display:flex;justify-content:center;align-items:center;min-height:70px;border:3px solid #17141d}
+.col h2{margin:0;font:400 15px var(--display);color:#f3e6c4}
+.zoom{zoom:1.5}
+/* 공통 글자 규칙: 노랑 위 = 진갈색 */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:6px;height:44px;min-width:132px;padding:0 14px;border:0;border-radius:0;cursor:pointer;font:400 18px var(--display);letter-spacing:.1em;color:#3a2208;background:#f2b53a;text-shadow:0 1px 0 #ffd98a}
+.btn:disabled{background:#6a6272;color:#ece6f2;text-shadow:-1px 0 #3a3442,1px 0 #3a3442,0 -1px #3a3442,0 1px #3a3442;cursor:default;box-shadow:inset 0 0 0 2px #17141d,inset 0 5px 0 -2px #857d8e,inset 0 -6px 0 -2px #4a4452!important;animation:none!important}
+.btn svg{width:22px;height:22px;image-rendering:pixelated;flex:none}
+/* A: 현재 모양 + 교차 칼 */
+.a{box-shadow:inset 0 0 0 2px #17141d,inset 0 5px 0 -2px #ffe08a,inset 0 -6px 0 -2px #a8711a}
+.a:active,.a.press{transform:translateY(2px);box-shadow:inset 0 0 0 2px #17141d,inset 0 3px 0 -2px #ffe08a,inset 0 -3px 0 -2px #a8711a}
+/* B: 금속 틀 + 리벳 */
+.b{background:#f2b53a;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 5px #5d5470,inset 0 0 0 7px #17141d,inset 0 8px 0 -5px #ffe08a,inset 0 -9px 0 -5px #a8711a;padding:0 20px}
+.b i{position:absolute;width:3px;height:3px;background:#d9dde8;box-shadow:1px 1px 0 #17141d}
+.b i:nth-of-type(1){left:3px;top:3px}.b i:nth-of-type(2){right:4px;top:3px}.b i:nth-of-type(3){left:3px;bottom:4px}.b i:nth-of-type(4){right:4px;bottom:4px}
+.b:active,.b.press{transform:translateY(2px)}
+/* C: 숨쉬는 빛 + 칼 */
+.c{box-shadow:inset 0 0 0 2px #17141d,inset 0 5px 0 -2px #ffe08a,inset 0 -6px 0 -2px #a8711a,0 0 0 2px #17141d,0 0 12px 2px rgba(255,211,77,.55);animation:breath 1.8s ease-in-out infinite}
+@keyframes breath{50%{box-shadow:inset 0 0 0 2px #17141d,inset 0 5px 0 -2px #fff0b0,inset 0 -6px 0 -2px #a8711a,0 0 0 2px #17141d,0 0 22px 6px rgba(255,211,77,.9)}}
+.c:active,.c.press{transform:translateY(2px);animation:none;box-shadow:inset 0 0 0 2px #17141d,inset 0 3px 0 -2px #ffe08a,inset 0 -3px 0 -2px #a8711a,0 0 0 2px #17141d}
+.pressed{transform:translateY(2px)}
+</style></head><body>
+<h1>전투 시작 버튼 시안 (배포 전)</h1>
+<p>규칙: 사각(모서리 0), 노랑 + 진갈색 글자, 테두리 하나로 통일, 누를 수 없으면 회색(글자 그대로). 아래는 왼쪽부터 평소 / 누르는 중 / 누를 수 없음. 실제 크기(132×44)를 1.5배로 키웠어요.</p>
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="sw" viewBox="0 0 16 16" shape-rendering="crispEdges"><g transform="rotate(45 8 8)"><rect x="6" y="0" width="4" height="10" fill="#17141d"/><rect x="7" y="1" width="2" height="8" fill="#e8f0ff"/><rect x="8" y="1" width="1" height="8" fill="#9fb4d8"/><rect x="3" y="9" width="10" height="4" fill="#17141d"/><rect x="4" y="10" width="8" height="2" fill="#ffd34d"/><rect x="6" y="12" width="4" height="4" fill="#17141d"/><rect x="7" y="12" width="2" height="3" fill="#8a4a1e"/></g></symbol></defs></svg>
+<div class="grid">
+  <div></div><div class="col"><h2>평소</h2></div><div class="col"><h2>누르는 중</h2></div><div class="col"><h2>누를 수 없음</h2></div>
+  <div class="lab">A · 칼 + 글자<br><small style="font:11px sans-serif;color:#c9bfae">지금 모양 그대로, 왼쪽에 교차 칼 아이콘</small></div>
+  <div class="stage"><div class="zoom"><button class="btn a"><svg><use href="#sw"/></svg>전투 시작</button></div></div>
+  <div class="stage"><div class="zoom"><button class="btn a press"><svg><use href="#sw"/></svg>전투 시작</button></div></div>
+  <div class="stage"><div class="zoom"><button class="btn a" disabled><svg><use href="#sw"/></svg>전투 시작</button></div></div>
+  <div class="lab">B · 금속 틀 + 리벳<br><small style="font:11px sans-serif;color:#c9bfae">어두운 보라 판넬 같은 이중 틀, 네 모서리 리벳</small></div>
+  <div class="stage"><div class="zoom"><button class="btn b"><i></i><i></i><i></i><i></i>전투 시작</button></div></div>
+  <div class="stage"><div class="zoom"><button class="btn b press"><i></i><i></i><i></i><i></i>전투 시작</button></div></div>
+  <div class="stage"><div class="zoom"><button class="btn b" disabled><i></i><i></i><i></i><i></i>전투 시작</button></div></div>
+  <div class="lab">C · 숨 쉬는 빛 + 칼<br><small style="font:11px sans-serif;color:#c9bfae">누르기 전 금빛이 은은히 커졌다 작아짐(1.8초), 누르면 눌림</small></div>
+  <div class="stage"><div class="zoom"><button class="btn c"><svg><use href="#sw"/></svg>전투 시작</button></div></div>
+  <div class="stage"><div class="zoom"><button class="btn c press"><svg><use href="#sw"/></svg>전투 시작</button></div></div>
+  <div class="stage"><div class="zoom"><button class="btn c" disabled><svg><use href="#sw"/></svg>전투 시작</button></div></div>
+</div>
+</body></html>
