@@ -3398,7 +3398,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     vsBarInit(); tpw.last = { A: -1, E: -1 };
     bt = E.createBattle(D, teamSpec().map(function(sp){ var pe = padOf(sp.tuid); if (pe) sp.el2 = pe; return sp; }), foeTeamAt(st.team), { seed: (Math.random() * 1e9) | 0, modules: S.modules, record: true, skills: S.skills, enemySkills: st.skills });
     bt.E.forEach(function(u){ if (MOBSZ[u.h.mob]) tpw.E[u.slot] = mobPw(u); }); // 몹 전투력은 능력치로
-    logI = 0; acc = 0; fxs = []; shots = []; arrows = []; bolts = []; skArrowSrc = null; pops = []; knocks = {}; hitStop = {}; blinks = {}; skDmg = { A: 0, E: 0 }; if (HAS_FX) FX.clear(); banners = []; ultPops = []; graves = {}; lunges = {}; flash = 0; done = false;
+    logI = 0; acc = 0; fxs = []; shots = []; arrows = []; uxs = []; UC = {}; bolts = []; skArrowSrc = null; pops = []; knocks = {}; hitStop = {}; blinks = {}; skDmg = { A: 0, E: 0 }; if (HAS_FX) FX.clear(); banners = []; ultPops = []; graves = {}; lunges = {}; flash = 0; done = false;
     $('res').hidden = true; $('field').style.visibility = 'hidden'; cv.hidden = false; $('skipBtn').disabled = false;
     $('tab-camp').classList.add('busy'); $('fightBtn').disabled = true; dpsLast = null; DPSW = {}; /* 새 전투: DPS 기록 새로 */ $('fightBtn').classList.add('busyhide'); /* 전투 중에는 숨김 */ $('spdBtn').disabled = false;
     cancelAnimationFrame(raf); last = performance.now(); raf = requestAnimationFrame(loop);
@@ -3482,6 +3482,46 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     if (!u){ closeInspect(); return; }
     inspect = { uid: u.uid }; showInfo(battleInfoHtml(u), infoSide(e.clientX)); $('hinfo').classList.add('btl');
   });
+  // ───── 궁극기 이펙트: kind(종류)가 모양, el(진영)이 색. 코드로 그리는 임시 이펙트 (그림이 오면 갈아 끼움) ─────
+  var uxs = [], UC = {};
+  var BURSTC = { fire: ['#ff9a3a', '#ffd34d', '#ff5a3a'], forest: ['#7ee08a', '#3f8a4a', '#c8f08a'], water: ['#7fb8ff', '#e0f4ff', '#3f6fc2'], light: ['#fff3b0', '#ffd34d', '#ffffff'], dark: ['#c99bff', '#7a3fc4', '#e8d6ff'] };
+  function uxAdd(k, x, y, o, max, wait){ o = o || {}; o.k = k; o.x = x; o.y = y; o.t = 0; o.max = max || .4; o.wait = wait || 0; uxs.push(o); }
+  function uxLine(x0, y0, x1, y1, w, c){ ctx.lineCap = 'butt'; ctx.strokeStyle = '#17141d'; ctx.lineWidth = w + 3; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); ctx.strokeStyle = c; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); }
+  var UXF = {
+    ring: function(o, k){ var r = (o.r || 40) * k; ctx.lineWidth = 6; ctx.strokeStyle = '#17141d'; ctx.beginPath(); ctx.ellipse(o.x, o.y, r + 2, (r + 2) * .45, 0, 0, 6.29); ctx.stroke(); ctx.lineWidth = 3; ctx.strokeStyle = o.c; ctx.beginPath(); ctx.ellipse(o.x, o.y, r, r * .45, 0, 0, 6.29); ctx.stroke(); },
+    burst: function(o, k){ var cs = o.cs || ['#fff'], n = 10; for (var i = 0; i < n; i++){ var a = i / n * 6.283 + (o.seed || 0), d = 8 + k * 32 * (i % 2 ? .7 : 1), s = Math.max(2, Math.round(8 * (1 - k))); ctx.fillStyle = '#17141d'; ctx.fillRect(Math.round(o.x + Math.cos(a) * d - s / 2) - 1, Math.round(o.y - 14 + Math.sin(a) * d * .8 - s / 2) - 1, s + 2, s + 2); ctx.fillStyle = cs[i % cs.length]; ctx.fillRect(Math.round(o.x + Math.cos(a) * d - s / 2), Math.round(o.y - 14 + Math.sin(a) * d * .8 - s / 2), s, s); } },
+    rise: function(o, k){ for (var i = 0; i < 3; i++){ var x = Math.round(o.x + (i - 1) * 12), y = Math.round(o.y - 4 - k * 38 - i * 5); for (var r = 0; r < 6; r++){ ctx.fillStyle = '#17141d'; ctx.fillRect(x - r - 1, y + r * 2 - 1, r * 2 + 3, 4); } for (var r2 = 0; r2 < 6; r2++){ ctx.fillStyle = o.c; ctx.fillRect(x - r2, y + r2 * 2, r2 * 2 + 1, 2); } } },
+    cross: function(o, k){ var r = 24 - 14 * k; ctx.lineWidth = 3; ctx.strokeStyle = '#17141d'; ctx.beginPath(); ctx.arc(o.x, o.y - 18, r + 1, 0, 6.29); ctx.stroke(); ctx.strokeStyle = '#ff5a4a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(o.x, o.y - 18, r, 0, 6.29); ctx.stroke(); uxLine(o.x - r - 6, o.y - 18, o.x + r + 6, o.y - 18, 2, '#ff5a4a'); uxLine(o.x, o.y - 18 - r - 6, o.x, o.y - 18 + r + 6, 2, '#ff5a4a'); if (k > .8){ ctx.fillStyle = '#fff'; ctx.fillRect(Math.round(o.x - 5), Math.round(o.y - 23), 10, 10); } },
+    bigx: function(o, k){ var g = Math.min(1, k * 3), s = 22 * g; uxLine(o.x - s, o.y - 18 - s, o.x + s, o.y - 18 + s, 6, o.c); uxLine(o.x + s, o.y - 18 - s, o.x - s, o.y - 18 + s, 6, '#ffffff'); },
+    slash: function(o, k){ var g = Math.min(1, k * 3), s = 16 * g; uxLine(o.x - s, o.y - 18 - s, o.x + s, o.y - 18 + s, 4, o.c); },
+    claw: function(o, k){ var g = Math.min(1, k * 3), s = 14 * g; for (var i = -1; i <= 1; i++) uxLine(o.x - s + i * 7, o.y - 18 - s, o.x + s + i * 7, o.y - 18 + s, 3, '#ffe6c4'); },
+    shx: function(o, k){ var g = Math.min(1, k * 3), s = 20 * g; uxLine(o.x - s, o.y - 18 - s, o.x + s, o.y - 18 + s, 6, '#b58cff'); uxLine(o.x + s, o.y - 18 - s, o.x - s, o.y - 18 + s, 6, '#3a1f5c'); },
+    wind: function(o, k){ for (var i = 0; i < 4; i++){ var x = o.x - 34 + k * 70 + i * 4, y = o.y - 8 - i * 10; ctx.fillStyle = '#17141d'; ctx.fillRect(Math.round(x) - 1, Math.round(y) - 1, 26, 5); ctx.fillStyle = i % 2 ? '#ffffff' : o.c; ctx.fillRect(Math.round(x), Math.round(y), 24, 3); } },
+    mark: function(o, k){ var y = o.y - 52 - Math.round(Math.sin(k * 12) * 2); ctx.lineWidth = 3; ctx.strokeStyle = '#17141d'; ctx.beginPath(); ctx.arc(o.x, y, 11, 0, 6.29); ctx.stroke(); ctx.strokeStyle = '#ff4a3a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(o.x, y, 10, 0, 6.29); ctx.stroke(); uxLine(o.x - 15, y, o.x + 15, y, 2, '#ff4a3a'); uxLine(o.x, y - 15, o.x, y + 15, 2, '#ff4a3a'); ctx.fillStyle = '#ff4a3a'; ctx.fillRect(Math.round(o.x) - 2, Math.round(y) - 2, 4, 4); },
+    stone: function(o, k){ for (var i = 0; i < 8; i++){ var a = i / 8 * 6.283 + (o.seed || 0), x = o.x + Math.cos(a) * 26 * k, y = o.y - 16 + Math.sin(a) * 14 * k - 20 * k + 70 * k * k * (i % 2 ? 1 : .6), s = 6; ctx.fillStyle = '#17141d'; ctx.fillRect(Math.round(x) - 1, Math.round(y) - 1, s + 2, s + 2); ctx.fillStyle = i % 2 ? '#a8a2b0' : '#6e6878'; ctx.fillRect(Math.round(x), Math.round(y), s, s); } },
+    pillar: function(o, k){ var h = 80 * Math.min(1, k * 2.5), a = 1 - k; ctx.globalAlpha = Math.max(0, a); ctx.fillStyle = 'rgba(255,246,214,.55)'; ctx.fillRect(Math.round(o.x - 12), Math.round(o.y - h), 24, h); ctx.fillStyle = '#fff6d6'; ctx.fillRect(Math.round(o.x - 5), Math.round(o.y - h), 10, h); for (var i = 0; i < 5; i++){ ctx.fillStyle = '#ffffff'; ctx.fillRect(Math.round(o.x - 14 + i * 7 + Math.sin(k * 8 + i) * 3), Math.round(o.y - 10 - k * 60 - i * 8), 3, 6); } },
+    beam: function(o, k){ var w = Math.max(2, Math.round(10 * (1 - k))); uxLine(o.x, o.y, o.x2, o.y, w, o.c); ctx.fillStyle = '#fff'; ctx.fillRect(Math.round(Math.min(o.x, o.x2)), Math.round(o.y) - 1, Math.round(Math.abs(o.x2 - o.x)), 2); },
+    zig: function(o, k){ var n = 5, px = o.x, py = o.y - 18; for (var i = 1; i <= n; i++){ var tx = o.x + (o.x2 - o.x) * i / n, ty = o.y - 18 + (o.y2 - o.y) * i / n + (i === n ? 0 : (i % 2 ? -9 : 9)); uxLine(px, py, tx, ty, 3, i % 2 ? '#fff3b0' : o.c); px = tx; py = ty; } }
+  };
+  function drawUx(el){ uxs = uxs.filter(function(o){ if (o.wait > 0){ o.wait -= el; return true; } o.t += el; var k = o.t / o.max; if (k >= 1) return false; ctx.save(); ctx.globalAlpha = k < .7 ? 1 : Math.max(0, (1 - k) / .3); (UXF[o.k] || function(){})(o, k); ctx.restore(); return true; }); }
+  function ultCastFx(u, uk, ev){ if (!bt) return false; var al = function(L){ return L.filter(function(x){ return x.alive; }); }, foes = al(u.side === 'A' ? bt.E : bt.A), mates = al(u.side === 'A' ? bt.A : bt.E), c = ELC[u.el] || '#fff', fp = function(x){ var p = posOf(x); return [p[0], p[1] + 26]; }, me = fp(u), seed = Math.random() * 6;
+    UC[u.uid] = { k: uk, t: ev.t, prev: null, poof: false };
+    if (uk === 'aoe' && !(u.h.ult && u.h.ult.slow)){ foes.forEach(function(x){ var q = fp(x); uxAdd('burst', q[0], q[1], { cs: BURSTC[u.el] || [c, '#fff'], seed: seed }, .45); }); return true; }
+    if (uk === 'buff'){ mates.forEach(function(x){ var q = fp(x); uxAdd('rise', q[0], q[1], { c: c }, .6); }); return true; }
+    if (uk === 'taunt'){ uxAdd('ring', me[0], me[1], { r: 46, c: '#ff6b6b' }, .45); uxAdd('ring', me[0], me[1], { r: 64, c: '#ff6b6b' }, .5, .15); return true; }
+    if (uk === 'haste' || uk === 'selfHaste'){ (uk === 'haste' ? mates : [u]).forEach(function(x){ var q = fp(x); uxAdd('wind', q[0], q[1], { c: c }, .5); }); return true; }
+    if (uk === 'nova'){ uxAdd('ring', me[0], me[1], { r: 96, c: c }, .5); uxAdd('ring', me[0], me[1], { r: 64, c: '#ffffff' }, .4, .08); return true; }
+    if (uk === 'pierce'){ uxAdd('beam', me[0], me[1] - 14, { x2: u.side === 'A' ? W : 0, c: c }, .4); return true; }
+    if (uk === 'stone'){ foes.forEach(function(x){ var q = fp(x); uxAdd('stone', q[0], q[1], { seed: seed }, .5); }); return true; }
+    if (uk === 'bombard'){ foes.forEach(function(x, i){ var q = fp(x); uxAdd('burst', q[0], q[1], { cs: BURSTC.fire, seed: seed + i }, .45, i * .08); }); return true; }
+    return false; }
+  function ultHitFx(a, b, ev){ var C = UC[a.uid]; if (!C || !ev.mag || ev.t !== C.t) return; var pb = posOf(b), x = pb[0], y = pb[1] + 26, c = ELC[a.el] || '#fff';
+    if (C.k === 'strike'){ if (HAS_FX && FX._sheets && FX._sheets.bigslash) FX.play('bigslash', x, y - 36, {}); else uxAdd('bigx', x, y, { c: c }, .4); }
+    else if (C.k === 'multi') uxAdd(a.h.race === 'beast' ? 'claw' : 'slash', x + (Math.random() - .5) * 14, y + (Math.random() - .5) * 10, { c: c }, .3);
+    else if (C.k === 'snipe'){ uxAdd('cross', x, y, {}, .45); uxAdd('burst', x, y, { cs: [c, '#fff'], seed: 0 }, .35, .4); }
+    else if (C.k === 'backstab'){ uxAdd('shx', x, y, {}, .4); if (!C.poof){ C.poof = true; fxAt('poof', a, { scale: .6 }); } }
+    else if (C.k === 'mark') uxAdd('mark', x, y, {}, .9);
+    else if (C.k === 'zigzag'){ if (C.prev) uxAdd('zig', C.prev[0], C.prev[1], { x2: x, y2: y, c: c }, .3); C.prev = [x, y]; } }
   function onEvent(ev){
     if (ev.kind === 'die') killXp(ev.uid);
     if (ev.kind === 'knock'){ var ku = unitByUid(ev.uid); if (ku){ knocks[ku.uid] = { dx: ev.dx, t: .15 }; var kp = posOf(ku), sx0 = kp[0] - ev.dx, sg = ev.dx > 0 ? 1 : -1;
@@ -3492,7 +3532,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
       var bk = blinks[a.uid]; if (bk && ev.t === bk.t && bk.pts.length < bk.n){ bk.pts.push([b.x + bk.f * 30, b.y, -bk.f]); bk.f = -bk.f; if (!bk.t0) bk.t0 = performance.now(); } // 엔진과 같은 자리: 적 등 뒤 30
       if (ev.mag && a.h.ult && a.h.ult.kind === 'barrage'){ var bp2 = posOf(b); bolts.push({ x: bp2[0], y: bp2[1], t: .28, c: ELC[a.el] || '#ffd34d', seed: Math.random() }); }
       if (ev.burn){ var bp = posOf(b); pops.push({ x: bp[0] + (Math.random() - .5) * 16, y: bp[1] - 22, s: '' + ev.amt, c: '#ff9a3a', life: .6, max: .6, size: 12 }); return; } // 화상 틱
-      atkT[a.uid] = ANIM_IDS.indexOf(a.id) >= 0 ? ANIM_ATK : .2;
+      atkT[a.uid] = ANIM_IDS.indexOf(a.id) >= 0 ? ANIM_ATK : .2; ultHitFx(a, b, ev);
       var land = function(){ var p = posOf(b); pops.push({ x: p[0] + (Math.random() - .5) * 20, y: p[1] - 30, s: '' + ev.amt + (ev.crit ? '!' : ''), c: ev.crit ? '#ffe14d' : ev.mag ? '#c99bff' : a.side === 'A' ? '#fff' : '#ffb3a8', mag: !!ev.mag, life: ev.crit ? .9 : .7, max: ev.crit ? .9 : .7, size: (ev.crit ? 24 : ev.amt > a.atk * 2 ? 20 : 14) + (ev.mag ? 3 : 0) }); // 스킬 피해 = 보라
         fxs.push({ x: p[0], y: p[1], t: .15, c: '#fff' });
         hitStopOn(b.uid, ev.crit ? .18 : .13, 1); if (a.range === 'melee') hitStopOn(a.uid, .07, 0); // 맞은 쪽 멈칫+번쩍, 근접 공격자도 짧게 멈칫
@@ -3506,7 +3546,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
       var uk = u.h.ult && u.h.ult.kind; if (uk === 'teamShield') fxTeam('shield', u.side, { scale: 1.2 }); else if (uk === 'healAll') fxTeam('heal', u.side, { scale: .9 }); else if (uk === 'chain') fxAt('chain', u, { scale: 1.2, flip: u.side === 'E' }); else if (uk === 'aoe' && u.h.ult.slow) fxTeam('frost', u.side === 'A' ? 'E' : 'A', { scale: 1 });
       fxs.push({ x: posOf(u)[0], y: posOf(u)[1], t: .5, c: ELC[u.el], big: 1 });
       var bkb = uk === 'blink' && u.h.ult.back; if (bkb){ blinks[u.uid] = { t: ev.t, f: u.face || (u.side === 'A' ? 1 : -1), pts: [], n: u.h.ult.chain || 1 }; fxAt('poof', u, { scale: .6 }); }
-      var UM = bkb ? null : ULTMAP[uk]; if (UM && HAS_FX){ if (UM[1] === 'self') fxAt(UM[0], u, { scale: UM[2], flip: u.side === 'E' }); else fxTeam(UM[0], UM[1] === 'ally' ? u.side : (u.side === 'A' ? 'E' : 'A'), { scale: UM[2] }); }
+      var ovr = ultCastFx(u, uk, ev), UM = bkb || ovr ? null : ULTMAP[uk]; if (UM && HAS_FX){ if (UM[1] === 'self') fxAt(UM[0], u, { scale: UM[2], flip: u.side === 'E' }); else fxTeam(UM[0], UM[1] === 'ally' ? u.side : (u.side === 'A' ? 'E' : 'A'), { scale: UM[2] }); }
       if (ev.ult === 'aoe' || ev.ult === 'chain' || uk === 'nova' || uk === 'bombard') flash = .25;
     } else if (ev.kind === 'skill'){
       var sd = E.skillById(D, ev.id), sside = ev.side || 'A'; flashSkill(sside + ':' + ev.id);
@@ -3546,7 +3586,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     updSkillBars(); // 스킬 막대는 전장 위 DOM(왼쪽 위 내 스킬, 오른쪽 위 적 스킬)
     bt.A.concat(bt.E).sort(function(a, b){ return posOf(a)[1] - posOf(b)[1]; }).forEach(function(u){ drawUnit(u, el); }); // 아래쪽 유닛이 앞에 그려져요
     if (HAS_FX) FX.draw(ctx, 'front');
-    drawUltPops(el); drawArrows(el);
+    drawUltPops(el); drawArrows(el); drawUx(el);
     shots = shots.filter(function(s){ if (s.wait > 0){ s.wait -= el; return true; } s.t += el * 5; if (s.t >= 1){ if (s.land) s.land(); return false; }
       var dx = s.to[0] - s.from[0], dy0 = s.to[1] - s.from[1], x = s.from[0] + dx * s.t, y = s.from[1] + dy0 * s.t - Math.sin(s.t * Math.PI) * 20, im = s.kind && SHOT_IMGS[s.kind];
       if (!im){ ctx.fillStyle = s.c; ctx.beginPath(); ctx.arc(x, y, 4, 0, 6.29); ctx.fill(); return true; } /* 그림이 없으면 진영 색 동그라미 */
@@ -3698,7 +3738,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   function drawUnit(u, el){
     blinkStep(u);
     if (!u.alive){ if (!u.escaped) drawGrave(u, el); u._dead = true; return; }
-    if (u._dead){ u._dead = false; delete graves[u.uid]; u._rev = .6; } // 되살아남
+    if (u._dead){ u._dead = false; delete graves[u.uid]; u._rev = .6; var rvp = posOf(u); uxAdd('pillar', rvp[0], rvp[1] + 26, {}, .8); } // 되살아남
     var p = posOf(u), x = p[0], y = p[1], dir = (blinks[u.uid] && blinks[u.uid].cur ? blinks[u.uid].cur[2] : u.face) || (u.side === 'A' ? 1 : -1), sid = atkT[u.uid] > 0 && IMGS[u.id + '_atk'] ? u.id + '_atk' : u.id, im = IMGS[sid]; if (atkT[u.uid] > 0) atkT[u.uid] -= el; if (IMGS[u.id + '_a1']){ sid = u.id + '_a' + (atkT[u.uid] > 0 ? 5 + Math.min(3, Math.floor((ANIM_ATK - atkT[u.uid]) / (ANIM_ATK / 4))) : 1 + Math.floor(performance.now() / 180 + u.uid) % 4); im = IMGS[sid]; } /* 프레임 시트가 있는 영웅: 대기·이동 1~4 반복, 공격 5~8 */
     var hs = hitStop[u.uid], stop = hs && hs.t > 0; if (stop) hs.t -= el;
     var now = stop ? hs.frz : performance.now(); if (!stop && hs) hs.frz = 0;

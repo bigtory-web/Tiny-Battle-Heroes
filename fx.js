@@ -28,7 +28,8 @@
     frost: { file: 'fx_frost', w: 140, h: 120, cols: 10, n: 97, fps: 30, loop: false, px: 70, py: 106, speed: 4.3, scaleK: 1, cut: 1 },
     chain: { file: 'fx_chain', w: 248, h: 104, cols: 5, n: 55, fps: 30, loop: false, px: 40, py: 82, speed: 2.4, scaleK: 0.6, cut: 0.85 },
     hit: { file: 'fx_hit', w: 128, h: 88, cols: 5, n: 28, fps: 30, loop: false, px: 64, py: 72, speed: 1.25, scaleK: 1, cut: 1 },
-    slash: { file: 'fx_slash', w: 136, h: 104, cols: 5, n: 24, fps: 30, loop: false, px: 44, py: 92, speed: 1.05, scaleK: 1, cut: 1 }
+    slash: { file: 'fx_slash', w: 136, h: 104, cols: 5, n: 24, fps: 30, loop: false, px: 44, py: 92, speed: 1.05, scaleK: 1, cut: 1 },
+    bigslash: { file: 'fx_bigslash', w: 64, h: 64, cols: 4, n: 8, fps: 20, loop: false, px: 32, py: 32, speed: 1, scaleK: .5, cut: 1 }, // 궁극기 strike: 맞는 적에 큰 X자 베기 (이미지 세션 시안)
   };
 
   // ───── 공통 도구 ─────
