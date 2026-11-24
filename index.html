@@ -3720,7 +3720,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     if (h && h.t > 0){ h.t = Math.max(h.t, dur); h.max = Math.max(h.max, h.t); h.flash = Math.max(h.flash, flash); return; } // 겹치면 타이머만 갱신
     hitStop[uid] = { t: dur, max: dur, flash: flash, frz: performance.now() }; }
   var ATK_IDS = ['bear', 'rain', 'candle', 'wolf', 'drum', 'harpy', 'imp', 'boar', 'squire', 'sprout', 'pup', 'mudgolem', 'slinger', 'batling', 'frog', 'piper', 'mossguard']; // 공격 자세 그림이 온 영웅 (img/p/<id>_atk.png)
-  var ANIM_IDS = ['knight', 'bear', 'rain', 'wolf', 'drum', 'harpy', 'imp', 'boar'], ANIM_ATK = .4; /* 프레임 시트(img/p/<id>_anim.png, 64x64 8칸): 1~4 대기, 5~8 공격 (0.4초) */
+  var ANIM_IDS = ['knight', 'bear', 'rain', 'wolf', 'drum', 'harpy', 'imp', 'boar', 'squire', 'sprout', 'pup', 'mudgolem', 'slinger'], ANIM_ATK = .4; /* 프레임 시트(img/p/<id>_anim.png, 64x64 8칸): 1~4 대기, 5~8 공격 (0.4초) */
   ANIM_IDS.forEach(function(id){ var sh = new Image(); sh.onload = function(){ for (var i = 0; i < 8; i++){ var c = document.createElement('canvas'); c.width = c.height = 64; c.getContext('2d').drawImage(sh, i * 64, 0, 64, 64, 0, 0, 64, 64); IMGS[id + '_a' + (i + 1)] = c; PIX[id + '_a' + (i + 1)] = true; } }; sh.src = 'img/p/' + id + '_anim.png'; });
   var atkT = {}; ATK_IDS.forEach(function(id){ var im = new Image(); im.onload = function(){ IMGS[id + '_atk'] = im; }; im.src = 'img/p/' + id + '_atk.png'; });
   function blinkStep(u){ var bk = blinks[u.uid]; if (!bk || !bk.t0) return; if (!u.alive){ delete blinks[u.uid]; return; }

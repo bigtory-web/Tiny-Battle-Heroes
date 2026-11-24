@@ -18,3 +18,7 @@
 ## [개발] 애니 시트 연결: rain·wolf·drum·harpy·imp·boar 추가
 - 한 것: ANIM_IDS에 6명 추가(knight·bear 포함 8명). 그림 img/p/<id>_anim.png.
 - 결과: 실제 전투 모습은 직접 못 봄. harpy 칸 5 날개 끝 잘림 가능, drum 칸 6·7은 얼굴이 2~4px 올라감(이미지 세션 안내).
+
+## [개발] 애니 시트 연결: squire·sprout·pup·mudgolem·slinger 추가
+- 한 것: ANIM_IDS에 5명 추가(총 13명). 그림 img/p/<id>_anim.png.
+- 결과: 실제 전투 모습은 직접 못 봄. squire 칸 5에서 몸이 4px 올라가고 발 가운데가 칸마다 31.5~35.5로 달라 흔들려 보일 수 있음, slinger 칸 5~7은 앞으로 2px(이미지 세션 안내).
