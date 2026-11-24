@@ -2247,6 +2247,13 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
 /* 유물 DPS 창: 영웅 창 옆, 폭 132 */
 .dps.rel{width:132px!important}
 .dps.rel.closed{width:auto!important} /* 접힌 유물 창은 머리만큼만 */
+.dps .dav:not(.rav){width:36px!important;height:36px!important} /* 영웅 얼굴 키움 (유물 아이콘은 그대로) */
+.dps .dpsm{position:absolute;top:3px;right:24px;display:flex;gap:0;height:18px;padding:0;border:0;background:#17141d;cursor:pointer;box-shadow:0 0 0 1px #5d5470}
+.dps.e .dpsm{right:auto;left:24px}
+.dps .dpsm i{font:600 10px/18px var(--body);font-style:normal;padding:0 5px;color:#a99f90}
+.dps .dpsm i.on{background:#6a4fb0;color:#fff}
+.dps.closed .dpsm{display:none}
+.dps.off .dpsm{display:none!important}
 </style>
 </head>
 <body>
@@ -3374,30 +3381,23 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   function dpsClosed(side){ return !!(S.ui && S.ui['dpsClosed' + side]); }
   var dpsLast = null, DPSW = {};
   function dpsFmt(n){ n = Math.round(n || 0); return n >= 10000 ? (n / 1000).toFixed(n >= 100000 ? 0 : 1) + 'k' : n.toLocaleString(); }
-  (function(){ var ar = $('arena'); ['A', 'E'].forEach(function(side){ var d = document.createElement('div'); d.className = 'dps rel ' + (side === 'A' ? 'a' : 'e'); d.id = 'dpsR' + side; d.hidden = true;
-      d.innerHTML = side === 'A' ? '<button class="dpsh" type="button" data-dpsr="A"><b>우리 유물</b><em>▾</em></button><div class="dpsb"></div><button class="dpsx" id="dpsRX" type="button">유물 숨기기</button>' : '<button class="dpsh" type="button" data-dpsr="E"><em>▾</em><b>상대 유물</b></button><div class="dpsb"></div>';
-      ar.insertBefore(d, $('dps' + side).nextSibling); });
-    $('dpsRX').addEventListener('click', function(){ S.ui = S.ui || {}; S.ui.dpsRelOff = !S.ui.dpsRelOff; save(); renderDps(); });
-    document.querySelectorAll('.dpsh[data-dpsr]').forEach(function(hh){ hh.addEventListener('click', function(){ var sd = hh.dataset.dpsr; S.ui = S.ui || {}; S.ui['dpsRClosed' + sd] = S.ui['dpsRClosed' + sd] === false; /* 기본 접힘: 처음 누르면 펼침 */ save(); renderDps(); }); }); })();
-  function renderRelDps(B){ ['A', 'E'].forEach(function(side){ var box = $('dpsR' + side), hb = $('dps' + side); if (!box) return; var list = B ? (side === 'A' ? B.skills : B.enemySkills) || [] : [];
-      if (!B || !list.length){ box.hidden = true; return; } box.hidden = false; var off = !!(S.ui && S.ui.dpsRelOff); box.classList.toggle('off', off); if (side === 'A') $('dpsRX').textContent = off ? '유물 보기' : '유물 숨기기'; if (off && side === 'E'){ box.hidden = true; }
-      var top = hb && !hb.hidden ? hb.offsetTop : 112, aw = $('arena').clientWidth || 804, hOn = hb && !hb.hidden && !hb.classList.contains('off'); box.style.setProperty('top', top + 'px', 'important'); /* 영웅 DPS 창 바로 옆(위끝 맞춤): 우리 오른쪽, 상대 왼쪽 */ if (side === 'A'){ box.style.setProperty('left', (hOn ? hb.offsetLeft + hb.offsetWidth + 6 : 4) + 'px', 'important'); box.style.setProperty('right', 'auto', 'important'); } else { box.style.setProperty('right', (hOn ? aw - hb.offsetLeft + 6 : 4) + 'px', 'important'); box.style.setProperty('left', 'auto', 'important'); } box.style.maxHeight = Math.max(60, ($('arena').clientHeight || 447) - top - 8) + 'px'; if (off) return;
-      var cl = !(S.ui && S.ui['dpsRClosed' + side] === false); /* 기본은 접힘 (사용자 결정 2026-11-24) */ box.classList.toggle('closed', cl); box.querySelector('.dpsh em').textContent = cl ? (side === 'A' ? '▸' : '◂') : '▾'; if (cl) return;
-      var mx = Math.max(1, list.reduce(function(m, s){ var st = s.stats || {}; return Math.max(m, (st.dealt || 0) + (st.healed || 0) + (st.shield || 0)); }, 0));
-      box.querySelector('.dpsb').innerHTML = list.slice().sort(function(x, y){ var a = x.stats || {}, b = y.stats || {}; return ((b.dealt || 0) + (b.healed || 0) + (b.shield || 0)) - ((a.dealt || 0) + (a.healed || 0) + (a.shield || 0)); }).map(function(s){ var st = s.stats || {}, d = s.def || E.skillById(D, s.id), v = [], tot = (st.dealt || 0) + (st.healed || 0) + (st.shield || 0), key = 'R' + side + (d && d.id), w = Math.round(100 * tot / mx), w0 = DPSW[key] == null ? w : DPSW[key]; DPSW[key] = w;
-          if (st.dealt > 0) v.push('⚔' + dpsFmt(st.dealt)); if (st.healed > 0) v.push('💚' + dpsFmt(st.healed)); if (st.shield > 0) v.push('🔷' + dpsFmt(st.shield));
-          return '<div class="dr drel"><span class="dav rav" style="--sg:' + skG(d.id).col + '">' + skIconHtml(d) + '</span><div class="dm"><div class="dn"><b>' + (v.join(' ') || '–') + '</b><em class="dult">' + (st.casts ? '×' + st.casts : '상시') + '</em></div><i class="dbar rbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i></div></div>'; }).join(''); }); }
-  function renderDps(){ var B = bt || dpsLast; renderRelDps(B); ['A', 'E'].forEach(function(side){ var box = $('dps' + side); if (!box) return; if (!B){ box.hidden = true; return; } box.hidden = false;
+  (function(){ ['A', 'E'].forEach(function(side){ var h = $('dps' + side).querySelector('.dpsh'), m = document.createElement('button'); m.type = 'button'; m.className = 'dpsm'; m.innerHTML = '<i>캐릭터</i><i>유물</i>'; h.parentNode.insertBefore(m, h.nextSibling); m.addEventListener('click', function(){ S.ui = S.ui || {}; S.ui['dpsRel' + side] = !S.ui['dpsRel' + side]; save(); renderDps(); }); }); })(); /* 캐릭터/유물 전환: 같은 창 안에서 바뀜 */
+  function dpsRelHtml(list){ if (!list.length) return '<small class="d2">유물 없음</small>'; var mx = Math.max(1, list.reduce(function(m, s){ var st = s.stats || {}; return Math.max(m, (st.dealt || 0) + (st.healed || 0) + (st.shield || 0)); }, 0));
+    return list.slice().sort(function(x, y){ var a = x.stats || {}, b = y.stats || {}; return ((b.dealt || 0) + (b.healed || 0) + (b.shield || 0)) - ((a.dealt || 0) + (a.healed || 0) + (a.shield || 0)); }).map(function(s){ var st = s.stats || {}, d = s.def || E.skillById(D, s.id), v = [], tot = (st.dealt || 0) + (st.healed || 0) + (st.shield || 0), key = 'R' + (d && d.id), w = Math.round(100 * tot / mx), w0 = DPSW[key] == null ? w : DPSW[key]; DPSW[key] = w;
+      if (st.dealt > 0) v.push('⚔' + dpsFmt(st.dealt)); if (st.healed > 0) v.push('💚' + dpsFmt(st.healed)); if (st.shield > 0) v.push('🔷' + dpsFmt(st.shield));
+      return '<div class="dr drel"><span class="dav rav" style="--sg:' + skG(d.id).col + '">' + skIconHtml(d) + '</span><div class="dm"><div class="dn"><b>' + (v.join(' ') || '–') + '</b><em class="dult">' + (st.casts ? '×' + st.casts : '상시') + '</em></div><i class="dbar rbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i></div></div>'; }).join(''); }
+  function renderDps(){ var B = bt || dpsLast; ['A', 'E'].forEach(function(side){ var box = $('dps' + side); if (!box) return; if (!B){ box.hidden = true; return; } box.hidden = false;
     var off = !!(S.ui && S.ui.dpsOff); box.classList.toggle('off', off); if (side === 'A') $('dpsX').textContent = off ? 'DPS 보기' : 'DPS 숨기기'; if (off) return;
     var cl = dpsClosed(side); box.classList.toggle('closed', cl); box.querySelector('.dpsh em').textContent = cl ? (side === 'A' ? '▸' : '◂') : '▾';
+    var rel = !!(S.ui && S.ui['dpsRel' + side]); box.querySelectorAll('.dpsm i').forEach(function(i, k){ i.classList.toggle('on', !!k === rel); });
     if (cl) return;
+    if (rel){ box.querySelector('.dpsb').innerHTML = dpsRelHtml((side === 'A' ? B.skills : B.enemySkills) || []); return; }
     var list = (side === 'A' ? B.A : B.E).filter(function(u){ return !u.h.mob || u.stats.dealt > 0; }).slice().sort(function(x, y){ return y.stats.dealt - x.stats.dealt; });
     var mx = Math.max(1, list.reduce(function(m, u){ return Math.max(m, u.stats.dealt); }, 0));
     function row(ic, dealt, sub, dead){ return '<div class="dr' + (dead ? ' dead' : '') + '"><span class="dav">' + ic + '</span><div class="dm"><div class="dn"><b>' + Math.round(dealt).toLocaleString() + '</b></div><i class="dbar"><s style="width:' + Math.round(100 * dealt / mx) + '%"></s></i>' + (sub ? '<small>' + sub + '</small>' : '') + '</div></div>'; }
     box.querySelector('.dpsb').innerHTML = list.map(function(u){ var s = u.stats, sub = [], key = side + u.uid, w = Math.round(100 * s.dealt / mx), w0 = DPSW[key] == null ? w : DPSW[key]; DPSW[key] = w;
       if (s.taken > 0) sub.push('🛡' + dpsFmt(s.taken)); if (s.healed > 0) sub.push('💚' + dpsFmt(s.healed)); if (s.shield > 0) sub.push('🔷' + dpsFmt(s.shield));
-      return '<div class="dr' + (u.alive ? '' : ' dead') + '"><span class="dav">' + heroFr(u.id, u.side === 'A' ? curGrades[u.slot] : 0) + '</span><div class="dm"><div class="dn"><b>' + dpsFmt(s.dealt) + '</b><em class="dult">⚡' + (s.ults || 0) + '</em></div><i class="dbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i>' + (sub.length ? '<small class="d2">' + sub.join(' ') + '</small>' : '') + '</div></div>'; }).join('') +
-      (B.status ? '<div class="dst">' + (function(T){ return '🔥' + (T.burn || 0) + ' · 🐌' + (T.slow || 0) + ' · 💫' + (T.stun || 0); })(B.status[side] || {}) + '</div>' : ''); }); renderRelDps(B); }
+      return '<div class="dr' + (u.alive ? '' : ' dead') + '"><span class="dav">' + heroFr(u.id, 0) + '</span><div class="dm"><div class="dn"><b>' + dpsFmt(s.dealt) + '</b><em class="dult">⚡' + (s.ults || 0) + '</em></div><i class="dbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i>' + (sub.length ? '<small class="d2">' + sub.join(' ') + '</small>' : '') + '</div></div>'; }).join(''); }); }
   $('dpsX').addEventListener('click', function(){ S.ui = S.ui || {}; S.ui.dpsOff = !S.ui.dpsOff; save(); renderDps(); });
   document.querySelectorAll('.dpsh[data-dps]').forEach(function(h){ h.addEventListener('click', function(){ var side = h.dataset.dps; S.ui = S.ui || {}; S.ui['dpsClosed' + side] = !dpsClosed(side); save(); renderDps(); }); });
   function stepMarch(el){ if (!march) return; march.t += el; var k = Math.min(1, march.t / march.dur), e = k * k * (3 - 2 * k);
@@ -3720,7 +3720,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     if (h && h.t > 0){ h.t = Math.max(h.t, dur); h.max = Math.max(h.max, h.t); h.flash = Math.max(h.flash, flash); return; } // 겹치면 타이머만 갱신
     hitStop[uid] = { t: dur, max: dur, flash: flash, frz: performance.now() }; }
   var ATK_IDS = ['bear', 'rain', 'candle', 'wolf', 'drum', 'harpy', 'imp', 'boar', 'squire', 'sprout', 'pup', 'mudgolem', 'slinger', 'batling', 'frog', 'piper', 'mossguard']; // 공격 자세 그림이 온 영웅 (img/p/<id>_atk.png)
-  var ANIM_IDS = ['knight', 'bear'], ANIM_ATK = .4; /* 프레임 시트(img/p/<id>_anim.png, 64x64 8칸): 1~4 대기, 5~8 공격 (0.4초) */
+  var ANIM_IDS = ['knight', 'bear', 'rain', 'wolf', 'drum', 'harpy', 'imp', 'boar'], ANIM_ATK = .4; /* 프레임 시트(img/p/<id>_anim.png, 64x64 8칸): 1~4 대기, 5~8 공격 (0.4초) */
   ANIM_IDS.forEach(function(id){ var sh = new Image(); sh.onload = function(){ for (var i = 0; i < 8; i++){ var c = document.createElement('canvas'); c.width = c.height = 64; c.getContext('2d').drawImage(sh, i * 64, 0, 64, 64, 0, 0, 64, 64); IMGS[id + '_a' + (i + 1)] = c; PIX[id + '_a' + (i + 1)] = true; } }; sh.src = 'img/p/' + id + '_anim.png'; });
   var atkT = {}; ATK_IDS.forEach(function(id){ var im = new Image(); im.onload = function(){ IMGS[id + '_atk'] = im; }; im.src = 'img/p/' + id + '_atk.png'; });
   function blinkStep(u){ var bk = blinks[u.uid]; if (!bk || !bk.t0) return; if (!u.alive){ delete blinks[u.uid]; return; }
