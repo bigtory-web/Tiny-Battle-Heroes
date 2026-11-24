@@ -3515,7 +3515,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
       var bk = blinks[a.uid]; if (bk && ev.t === bk.t && bk.pts.length < bk.n){ bk.pts.push([b.x + bk.f * 30, b.y, -bk.f]); bk.f = -bk.f; if (!bk.t0) bk.t0 = performance.now(); } // 엔진과 같은 자리: 적 등 뒤 30
       if (ev.mag && a.h.ult && a.h.ult.kind === 'barrage'){ var bp2 = posOf(b); bolts.push({ x: bp2[0], y: bp2[1], t: .28, c: ELC[a.el] || '#ffd34d', seed: Math.random() }); }
       if (ev.burn){ var bp = posOf(b); pops.push({ x: bp[0] + (Math.random() - .5) * 16, y: bp[1] - 22, s: '' + ev.amt, c: '#ff9a3a', life: .6, max: .6, size: 12 }); return; } // 화상 틱
-      atkT[a.uid] = .2;
+      atkT[a.uid] = ANIM_IDS.indexOf(a.id) >= 0 ? ANIM_ATK : .2;
       if (a.range === 'melee'){ lunges[a.uid] = .18; fxAt('slash', b, { scale: 1, flip: a.x > b.x, speed: 1.4 }); }
       else shots.push({ from: posOf(a), to: posOf(b), t: 0, c: ELC[a.el] });
       var p = posOf(b); pops.push({ x: p[0] + (Math.random() - .5) * 20, y: p[1] - 30, s: '' + ev.amt + (ev.crit ? '!' : ''), c: ev.crit ? '#ffe14d' : ev.mag ? '#c99bff' : a.side === 'A' ? '#fff' : '#ffb3a8', mag: !!ev.mag, life: ev.crit ? .9 : .7, max: ev.crit ? .9 : .7, size: (ev.crit ? 24 : ev.amt > a.atk * 2 ? 20 : 14) + (ev.mag ? 3 : 0) }); // 스킬 피해 = 보라
@@ -3525,7 +3525,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     } else if (ev.kind === 'heal'){
       var hu = unitByUid(ev.to), hp = posOf(hu); if (ev.amt > 0) pops.push({ x: hp[0], y: hp[1] - 34, s: '+' + ev.amt, c: '#7ee08a', life: .8, max: .8, size: 15 });
     } else if (ev.kind === 'ult'){
-      var u = unitByUid(ev.uid); ultPops.push({ u: u, t: 0, max: .85 }); atkT[u.uid] = .25;
+      var u = unitByUid(ev.uid); ultPops.push({ u: u, t: 0, max: .85 }); atkT[u.uid] = ANIM_IDS.indexOf(u.id) >= 0 ? ANIM_ATK : .25;
       var uk = u.h.ult && u.h.ult.kind; if (uk === 'teamShield') fxTeam('shield', u.side, { scale: 1.2 }); else if (uk === 'healAll') fxTeam('heal', u.side, { scale: .9 }); else if (uk === 'chain') fxAt('chain', u, { scale: 1.2, flip: u.side === 'E' }); else if (uk === 'aoe' && u.h.ult.slow) fxTeam('frost', u.side === 'A' ? 'E' : 'A', { scale: 1 });
       fxs.push({ x: posOf(u)[0], y: posOf(u)[1], t: .5, c: ELC[u.el], big: 1 });
       var bkb = uk === 'blink' && u.h.ult.back; if (bkb){ blinks[u.uid] = { t: ev.t, f: u.face || (u.side === 'A' ? 1 : -1), pts: [], n: u.h.ult.chain || 1 }; fxAt('poof', u, { scale: .6 }); }
@@ -3720,6 +3720,8 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     if (h && h.t > 0){ h.t = Math.max(h.t, dur); h.max = Math.max(h.max, h.t); h.flash = Math.max(h.flash, flash); return; } // 겹치면 타이머만 갱신
     hitStop[uid] = { t: dur, max: dur, flash: flash, frz: performance.now() }; }
   var ATK_IDS = ['bear', 'rain', 'candle', 'wolf', 'drum', 'harpy', 'imp', 'boar', 'squire', 'sprout', 'pup', 'mudgolem', 'slinger', 'batling', 'frog', 'piper', 'mossguard']; // 공격 자세 그림이 온 영웅 (img/p/<id>_atk.png)
+  var ANIM_IDS = ['knight'], ANIM_ATK = .4; /* 프레임 시트(img/p/<id>_anim.png, 64x64 8칸): 1~4 대기, 5~8 공격 (0.4초) */
+  ANIM_IDS.forEach(function(id){ var sh = new Image(); sh.onload = function(){ for (var i = 0; i < 8; i++){ var c = document.createElement('canvas'); c.width = c.height = 64; c.getContext('2d').drawImage(sh, i * 64, 0, 64, 64, 0, 0, 64, 64); IMGS[id + '_a' + (i + 1)] = c; PIX[id + '_a' + (i + 1)] = true; } }; sh.src = 'img/p/' + id + '_anim.png'; });
   var atkT = {}; ATK_IDS.forEach(function(id){ var im = new Image(); im.onload = function(){ IMGS[id + '_atk'] = im; }; im.src = 'img/p/' + id + '_atk.png'; });
   function blinkStep(u){ var bk = blinks[u.uid]; if (!bk || !bk.t0) return; if (!u.alive){ delete blinks[u.uid]; return; }
     var k = Math.floor((performance.now() - bk.t0) / (360 / speed)); // 한 자리에 0.36초(배속 반영)
@@ -3738,7 +3740,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     blinkStep(u);
     if (!u.alive){ if (!u.escaped) drawGrave(u, el); u._dead = true; return; }
     if (u._dead){ u._dead = false; delete graves[u.uid]; u._rev = .6; } // 되살아남
-    var p = posOf(u), x = p[0], y = p[1], dir = (blinks[u.uid] && blinks[u.uid].cur ? blinks[u.uid].cur[2] : u.face) || (u.side === 'A' ? 1 : -1), sid = atkT[u.uid] > 0 && IMGS[u.id + '_atk'] ? u.id + '_atk' : u.id, im = IMGS[sid]; if (atkT[u.uid] > 0) atkT[u.uid] -= el;
+    var p = posOf(u), x = p[0], y = p[1], dir = (blinks[u.uid] && blinks[u.uid].cur ? blinks[u.uid].cur[2] : u.face) || (u.side === 'A' ? 1 : -1), sid = atkT[u.uid] > 0 && IMGS[u.id + '_atk'] ? u.id + '_atk' : u.id, im = IMGS[sid]; if (atkT[u.uid] > 0) atkT[u.uid] -= el; if (IMGS[u.id + '_a1']){ sid = u.id + '_a' + (atkT[u.uid] > 0 ? 5 + Math.min(3, Math.floor((ANIM_ATK - atkT[u.uid]) / (ANIM_ATK / 4))) : 1 + Math.floor(performance.now() / 180 + u.uid) % 4); im = IMGS[sid]; } /* 프레임 시트가 있는 영웅: 대기·이동 1~4 반복, 공격 5~8 */
     var hs = hitStop[u.uid], stop = hs && hs.t > 0; if (stop) hs.t -= el;
     var now = stop ? hs.frz : performance.now(); if (!stop && hs) hs.frz = 0;
     var S = u.h.mob === 'chest' ? unitPx(false) * CHEST_K : MOBSZ[u.h.mob] ? Math.round(79 * uScale() * MOBSZ[u.h.mob]) : unitPx(u.boss), foot = y + 26; if (u.h.mob === 'chest'){ var ck = chestImgKey(chestGrade(), chestStage(u.hp / u.maxHp)); if (u._ckey && u._ckey !== ck) u._cfl = .35; u._ckey = ck; sid = ck; im = IMGS[sid]; if (u._cfl > 0) u._cfl -= el; } /* 보물상자: 영웅의 CHEST_K배 */ // 36px 그림을 약 2.2배(보스 3.3배)로: 사용자 요청으로 10% 키움
