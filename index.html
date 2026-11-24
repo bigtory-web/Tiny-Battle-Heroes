@@ -2247,10 +2247,30 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
 /* 유물 DPS 창: 영웅 창 옆, 폭 132 */
 .dps.rel{width:132px!important}
 .dps.rel.closed{width:auto!important} /* 접힌 유물 창은 머리만큼만 */
-.dps .dav:not(.rav){width:36px!important;height:36px!important} /* 영웅 얼굴 키움 (유물 아이콘은 그대로) */
-.dps .dpsm{position:absolute;top:3px;right:24px;display:flex;gap:0;height:18px;padding:0;border:0;background:#17141d;cursor:pointer;box-shadow:0 0 0 1px #5d5470}
-.dps.e .dpsm{right:auto;left:24px}
-.dps .dpsm i{font:600 10px/18px var(--body);font-style:normal;padding:0 5px;color:#a99f90}
+/* ───── DPS 창 2차 디자인 (2026-11-25) ───── */
+.dps,.dps.rel{width:244px!important} /* 유물 4번째 칸 오른쪽 끝(약 248px)까지 */
+.dps{background:#2a2533!important;box-shadow:inset 0 0 0 3px #17141d,inset 0 0 0 5px #5d5470!important;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d}
+.dps .dpsh{background:#3b3546!important;box-shadow:inset 0 -3px 0 #17141d;padding:7px 10px!important;font:400 14px var(--display)!important;color:#fff}
+.dps .dpsh em{display:none!important} /* 위쪽 화살표 뺌 */
+.dps .dpsb{max-height:300px!important;padding:5px 6px 6px!important}
+.dps .dr{padding:4px;margin-bottom:4px;gap:8px;background:#1d1a24;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 3px #3b3546}
+.dps .dav{width:36px!important;height:36px!important;box-shadow:inset 0 0 0 2px #17141d} /* 영웅·유물 아이콘 같은 크기 */
+.dps .dav .av.pic{background-size:var(--fs,190%)!important;background-position:var(--fp,50% 22%)!important} /* 백팩 칸처럼 얼굴 쪽만 */
+.dps.e .dav .av{transform:scaleX(-1)} /* 상대는 보는 방향 반대 */
+.dps .rav img,.dps .rav .uic{width:28px!important;height:28px!important}
+.dps .dn b{font:400 15px var(--display);color:#fff}
+.dps .dult{font:400 12px var(--display)!important;color:#ffd34d!important}
+.dps .dbar{height:8px;margin-top:3px;background:#17141d;box-shadow:0 0 0 1px #5d5470}
+.dps .dbar s{background:#f2b53a!important;box-shadow:inset 0 2px 0 #ffe08a,inset 0 -2px 0 #9a6416}
+.dps.e .dbar s{background:#e0554f!important;box-shadow:inset 0 2px 0 #ff9a8a,inset 0 -2px 0 #8a1f26}
+.dps .rbar s{background:#a77bff!important;box-shadow:inset 0 2px 0 #d4b8ff,inset 0 -2px 0 #6b3fc4}
+.dps .d2{margin-top:3px;font:400 11px/1.4 var(--display);color:#f3e6c4}
+.dt{display:inline-block;margin-right:2px;padding:0 3px;font:400 10px/14px var(--display);font-style:normal;color:#fff;background:var(--tc,#5d5470);box-shadow:0 0 0 1px #17141d;text-shadow:none}
+.dt.r{--tc:#c84a4a}.dt.g{--tc:#3f8a4a}.dt.b{--tc:#3f6fc2}.dt.o{--tc:#d96a2a}
+.dps .dpsx{background:#3b3546;color:#fff;font:400 12px var(--display);padding:5px 6px;border-top:2px solid #17141d}
+.dps .dpsm{position:absolute;top:6px;right:8px;display:flex;gap:0;height:18px;padding:0;border:0;background:#17141d;cursor:pointer;box-shadow:0 0 0 1px #5d5470}
+.dps.e .dpsm{right:auto;left:8px}
+.dps .dpsm i{font:400 11px/18px var(--display);text-shadow:none;font-style:normal;padding:0 5px;color:#a99f90}
 .dps .dpsm i.on{background:#6a4fb0;color:#fff}
 .dps.closed .dpsm{display:none}
 .dps.off .dpsm{display:none!important}
@@ -3384,7 +3404,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   (function(){ ['A', 'E'].forEach(function(side){ var h = $('dps' + side).querySelector('.dpsh'), m = document.createElement('button'); m.type = 'button'; m.className = 'dpsm'; m.innerHTML = '<i>캐릭터</i><i>유물</i>'; h.parentNode.insertBefore(m, h.nextSibling); m.addEventListener('click', function(){ S.ui = S.ui || {}; S.ui['dpsRel' + side] = !S.ui['dpsRel' + side]; save(); renderDps(); }); }); })(); /* 캐릭터/유물 전환: 같은 창 안에서 바뀜 */
   function dpsRelHtml(list){ if (!list.length) return '<small class="d2">유물 없음</small>'; var mx = Math.max(1, list.reduce(function(m, s){ var st = s.stats || {}; return Math.max(m, (st.dealt || 0) + (st.healed || 0) + (st.shield || 0)); }, 0));
     return list.slice().sort(function(x, y){ var a = x.stats || {}, b = y.stats || {}; return ((b.dealt || 0) + (b.healed || 0) + (b.shield || 0)) - ((a.dealt || 0) + (a.healed || 0) + (a.shield || 0)); }).map(function(s){ var st = s.stats || {}, d = s.def || E.skillById(D, s.id), v = [], tot = (st.dealt || 0) + (st.healed || 0) + (st.shield || 0), key = 'R' + (d && d.id), w = Math.round(100 * tot / mx), w0 = DPSW[key] == null ? w : DPSW[key]; DPSW[key] = w;
-      if (st.dealt > 0) v.push('⚔' + dpsFmt(st.dealt)); if (st.healed > 0) v.push('💚' + dpsFmt(st.healed)); if (st.shield > 0) v.push('🔷' + dpsFmt(st.shield));
+      if (st.dealt > 0) v.push('<i class="dt o">딜</i>' + dpsFmt(st.dealt)); if (st.healed > 0) v.push('<i class="dt g">힐</i>' + dpsFmt(st.healed)); if (st.shield > 0) v.push('<i class="dt b">막</i>' + dpsFmt(st.shield));
       return '<div class="dr drel"><span class="dav rav" style="--sg:' + skG(d.id).col + '">' + skIconHtml(d) + '</span><div class="dm"><div class="dn"><b>' + (v.join(' ') || '–') + '</b><em class="dult">' + (st.casts ? '×' + st.casts : '상시') + '</em></div><i class="dbar rbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i></div></div>'; }).join(''); }
   function renderDps(){ var B = bt || dpsLast; ['A', 'E'].forEach(function(side){ var box = $('dps' + side); if (!box) return; if (!B){ box.hidden = true; return; } box.hidden = false;
     var off = !!(S.ui && S.ui.dpsOff); box.classList.toggle('off', off); if (side === 'A') $('dpsX').textContent = off ? 'DPS 보기' : 'DPS 숨기기'; if (off) return;
@@ -3396,8 +3416,8 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     var mx = Math.max(1, list.reduce(function(m, u){ return Math.max(m, u.stats.dealt); }, 0));
     function row(ic, dealt, sub, dead){ return '<div class="dr' + (dead ? ' dead' : '') + '"><span class="dav">' + ic + '</span><div class="dm"><div class="dn"><b>' + Math.round(dealt).toLocaleString() + '</b></div><i class="dbar"><s style="width:' + Math.round(100 * dealt / mx) + '%"></s></i>' + (sub ? '<small>' + sub + '</small>' : '') + '</div></div>'; }
     box.querySelector('.dpsb').innerHTML = list.map(function(u){ var s = u.stats, sub = [], key = side + u.uid, w = Math.round(100 * s.dealt / mx), w0 = DPSW[key] == null ? w : DPSW[key]; DPSW[key] = w;
-      if (s.taken > 0) sub.push('🛡' + dpsFmt(s.taken)); if (s.healed > 0) sub.push('💚' + dpsFmt(s.healed)); if (s.shield > 0) sub.push('🔷' + dpsFmt(s.shield));
-      return '<div class="dr' + (u.alive ? '' : ' dead') + '"><span class="dav">' + heroFr(u.id, 0) + '</span><div class="dm"><div class="dn"><b>' + dpsFmt(s.dealt) + '</b><em class="dult">⚡' + (s.ults || 0) + '</em></div><i class="dbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i>' + (sub.length ? '<small class="d2">' + sub.join(' ') + '</small>' : '') + '</div></div>'; }).join(''); }); }
+      if (s.taken > 0) sub.push('<i class="dt r">받</i>' + dpsFmt(s.taken)); if (s.healed > 0) sub.push('<i class="dt g">힐</i>' + dpsFmt(s.healed)); if (s.shield > 0) sub.push('<i class="dt b">막</i>' + dpsFmt(s.shield));
+      return '<div class="dr' + (u.alive ? '' : ' dead') + '"><span class="dav">' + heroFr(u.id, 0) + '</span><div class="dm"><div class="dn"><b>' + dpsFmt(s.dealt) + '</b><em class="dult">궁 ' + (s.ults || 0) + '</em></div><i class="dbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i>' + (sub.length ? '<small class="d2">' + sub.join(' ') + '</small>' : '') + '</div></div>'; }).join(''); }); }
   $('dpsX').addEventListener('click', function(){ S.ui = S.ui || {}; S.ui.dpsOff = !S.ui.dpsOff; save(); renderDps(); });
   document.querySelectorAll('.dpsh[data-dps]').forEach(function(h){ h.addEventListener('click', function(){ var side = h.dataset.dps; S.ui = S.ui || {}; S.ui['dpsClosed' + side] = !dpsClosed(side); save(); renderDps(); }); });
   function stepMarch(el){ if (!march) return; march.t += el; var k = Math.min(1, march.t / march.dur), e = k * k * (3 - 2 * k);
