@@ -2843,6 +2843,7 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
     box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); $('rUp').hidden = !upOK(key);
     if (p.type === 'h'){ var id = p.id; pic.innerHTML = IMGS[id] ? '' : AV[id]; pic.style.backgroundImage = IMGS[id] ? 'url(' + outlinedURL(id, gc(id)) + ')' : 'none'; pic.style.setProperty('--gc', gc(id)); if (IMGS[id]){ pic.style.setProperty('--o1', 'url(' + outlinedURL(id, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(id, '#ffffff') + ')'); } /* 결과가 뜨면 외곽선 파랑↔흰색 */ pic.classList.remove('loot'); }
     else { pic.style.backgroundImage = 'none'; pic.innerHTML = lootIcon(key); pic.classList.add('loot'); }
+    rpAnim.id = p.type === 'h' && ANIM_IDS.indexOf(p.id) >= 0 ? p.id : null; /* 프레임 시트 영웅은 룰렛 큰 그림도 대기 1~4 반복 */
     $('rTags').innerHTML = p.type === 'h' ? tagHtml(hero(p.id)) : '';
     var rsk = $('rSk'), hu = p.type === 'h' ? hero(p.id) : null; delete rsk.dataset.tipsk; delete rsk.dataset.tiplv;
     if (hu && hu.ult){ rsk.innerHTML = ultIcon(hu, 28); rsk.dataset.tipt = ultName(hu); rsk.dataset.tiptx = ultDescFull(hu, hu.ult, 1); rsk.hidden = false; }
@@ -3589,6 +3590,10 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   // 그림 모양 그대로 한 가지 색으로 칠한 실루엣 (등급 외곽선용, 영웅마다 한 번만 만들어 둬요)
   var SIL = {};
   var OUTL = {};
+  var rpAnim = { id: null };
+  function rpAnimTick(){ var id = rpAnim.id, box = $('roul'); if (!id || !box || box.hidden || box.classList.contains('spin')) return; var f = id + '_a' + (1 + Math.floor(performance.now() / 180) % 4); if (!IMGS[f]) return; var pic = box.querySelector('.rpic');
+    pic.style.backgroundImage = 'url(' + outlinedURL(f, gc(id)) + ')'; pic.style.setProperty('--o1', 'url(' + outlinedURL(f, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(f, '#ffffff') + ')'); } /* 같은 외곽선 색(등급·파랑·흰색)으로 프레임마다 다시 그려 연출 유지 */
+  setInterval(rpAnimTick, 90);
   function outlinedURL(id, col){ var k = id + col; if (OUTL[k]) return OUTL[k]; var im = IMGS[id], w = im.width, hh = im.height, c = document.createElement('canvas'); c.width = w + 2; c.height = hh + 2; var x = c.getContext('2d'); x.imageSmoothingEnabled = false;
     var s = silhouette(id, col); [[0, 1], [2, 1], [1, 0], [1, 2]].forEach(function(o){ x.drawImage(s, o[0], o[1]); }); x.drawImage(im, 1, 1); return (OUTL[k] = c.toDataURL()); }
   // 발 그림자 자리: 그림 맨 아래 3줄(발)의 좌우 끝(l,r = 그림 폭 비율)과 발 밑 빈 줄 높이(g = 그림 높이 비율)
