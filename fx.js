@@ -1,3 +1,11 @@
+/* 캔버스 픽셀 그림 공통(sharp-bilinear): 배율이 정수가 아니면 원본 조각을 최근접 정수배로 미리 키운 그림을 부드럽게 줄여 그려요. 정수배면 그대로 최근접. (2026-11-25) */
+(function(){ var CACHE = new WeakMap();
+  window.sharpDraw = function(ctx, im, sx, sy, sw, sh, dx, dy, dw, dh){ var k = dw / sw, prev = ctx.imageSmoothingEnabled;
+    if (!(sw > 0) || !(dw > 0) || Math.abs(k - Math.round(k)) < .02){ ctx.imageSmoothingEnabled = false; ctx.drawImage(im, sx, sy, sw, sh, dx, dy, dw, dh); ctx.imageSmoothingEnabled = prev; return; }
+    var N = Math.max(2, Math.min(6, Math.ceil(Math.max(k, 1)) + 1)), key = sx + ',' + sy + ',' + sw + ',' + sh + '@' + N, m = CACHE.get(im); if (!m){ m = {}; CACHE.set(im, m); }
+    var c = m[key]; if (!c){ c = document.createElement('canvas'); c.width = sw * N; c.height = sh * N; var x = c.getContext('2d'); x.imageSmoothingEnabled = false; x.drawImage(im, sx, sy, sw, sh, 0, 0, c.width, c.height); m[key] = c; }
+    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high'; ctx.drawImage(c, 0, 0, c.width, c.height, dx, dy, dw, dh); ctx.imageSmoothingEnabled = prev; };
+})();
 // 전투·화면 이펙트 (이펙트 세션 담당 파일). 전역 FX를 내보내요.
 //
 //   FX.play(name, x, y, opts)   효과 하나 재생. x, y는 전장 논리 좌표(캔버스 720×400, OFF 80 포함 = UI의 posOf 값)
@@ -59,7 +67,7 @@
         var sx = (f % sh.cols) * sh.w, sy = Math.floor(f / sh.cols) * sh.h;
         ctx.save(); ctx.imageSmoothingEnabled = false; ctx.globalAlpha = o.alpha == null ? 1 : o.alpha;
         ctx.translate(R(p[0]), R(p[1])); if (o.flip) ctx.scale(-1, 1);
-        ctx.drawImage(im, sx, sy, sh.w, sh.h, R(-sh.px * k), R(-sh.py * k), R(sh.w * k), R(sh.h * k));
+        sharpDraw(ctx, im, sx, sy, sh.w, sh.h, R(-sh.px * k), R(-sh.py * k), R(sh.w * k), R(sh.h * k));
         ctx.restore();
       }
     };

@@ -2550,6 +2550,20 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
   function smoothAll(root){ if (root.tagName === 'IMG') smoothImg(root); else if (root.querySelectorAll) root.querySelectorAll('img').forEach(smoothImg); }
   new MutationObserver(function(ms){ ms.forEach(function(m){ if (m.type === 'attributes'){ var im = m.target; if (im.tagName === 'IMG' && im.src.indexOf('data:') !== 0){ delete im.dataset.sm; smoothImg(im); } } else m.addedNodes.forEach(function(n){ if (n.nodeType === 1) smoothAll(n); }); }); }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['src'] });
   setTimeout(function(){ smoothAll(document.body); }, 0); window.addEventListener('resize', function(){ setTimeout(function(){ document.querySelectorAll('img[data-sm]').forEach(function(i){ delete i.dataset.sm; i.src = i.dataset.osrc; }); }, 200); });
+  /* CSS 배경 픽셀 그림(sharp-bilinear): 스타일 규칙·인라인 style의 작은 background-image를 정수배로 미리 키운 그림으로 바꾸고 image-set(Nx)로 원래 크기를 지켜요(background-size를 안 건드림).
+     규칙은 같은 선택자로 덮어쓰는 규칙을 새 <style>에 만들어 ::before 같은 것도 처리. 큰 배경(그림 ≥160px)은 그대로. (2026-11-25 기획 세션 요청) */
+  var SMI = {};
+  function smLoad(url, cb){ var e = SMI[url]; if (e){ if (e.im) cb(e); else e.cbs.push(cb); return; } e = SMI[url] = { cbs: [cb], u: {} }; var im = new Image(); im.onload = function(){ e.im = im; e.cbs.splice(0).forEach(function(c){ c(e); }); }; im.onerror = function(){ e.bad = 1; }; im.src = url; }
+  function smSet(e, url){ var nw = e.im.naturalWidth, nh = e.im.naturalHeight; if (nw >= 160 || nh >= 160) return null; var N = Math.max(nw, nh) <= 48 ? 3 : 2; if (!e.u[N]){ var c = document.createElement('canvas'); c.width = nw * N; c.height = nh * N; var x = c.getContext('2d'); x.imageSmoothingEnabled = false; x.drawImage(e.im, 0, 0, c.width, c.height); try { e.u[N] = c.toDataURL(); } catch (er){ return null; } } return '-webkit-image-set(url("' + e.u[N] + '") ' + N + 'x)'; }
+  var SMU = /^url\(\s*["']?([^"')]*img\/[^"')]+\.png)["']?\s*\)$/;
+  function smoothCssRules(){ var st = document.createElement('style'); st.id = 'smcss'; document.head.appendChild(st);
+    function walk(rules){ Array.prototype.forEach.call(rules, function(r){ if (r.cssRules && !r.selectorText){ walk(r.cssRules); return; } if (!r.style || !r.selectorText) return; var bi = r.style.backgroundImage, m = bi && SMU.exec(bi); if (!m) return;
+      var sel = r.selectorText; smLoad(m[1], function(e){ var v = smSet(e, m[1]); if (!v) return; st.appendChild(document.createTextNode(sel + '{background-image:' + v + '!important;image-rendering:auto!important}\n')); }); }); }
+    Array.prototype.forEach.call(document.styleSheets, function(ss){ if (ss.ownerNode && ss.ownerNode.id === 'smcss') return; try { walk(ss.cssRules); } catch (er){} }); }
+  function smoothInline(el){ var bi = el.style && el.style.backgroundImage, m = bi && SMU.exec(bi); if (!m || el.dataset.smb) return; var url = m[1]; smLoad(url, function(e){ if (el.style.backgroundImage !== bi) return; var v = smSet(e, url); if (!v) return; el.dataset.smb = '1'; el.style.backgroundImage = v; el.style.imageRendering = 'auto'; }); }
+  function smoothInlineAll(root){ if (root.style && root.style.backgroundImage) smoothInline(root); if (root.querySelectorAll) root.querySelectorAll('[style*="img/"]').forEach(smoothInline); }
+  new MutationObserver(function(ms){ ms.forEach(function(m){ if (m.type === 'attributes'){ var el = m.target; if (el.style && el.style.backgroundImage && el.style.backgroundImage.indexOf('image-set') < 0){ delete el.dataset.smb; smoothInline(el); } } else m.addedNodes.forEach(function(n){ if (n.nodeType === 1) smoothInlineAll(n); }); }); }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+  setTimeout(function(){ smoothCssRules(); smoothInlineAll(document.body); }, 0);
   var STAGE_FIT = 0.85; /* 2026-11-24: 게임 판을 창보다 작게 (사용자: 전체 화면 크기는 좀 줄여 줘) */
   function fitStage(){ var app = document.querySelector('.app'); if (!app) return; var sw = window.innerWidth, sh = window.innerHeight, k = Math.min(sw / 960, sh / 511) * STAGE_FIT; if (!sw || !sh) return;
     app.style.transform = 'scale(' + k + ')'; app.style.left = Math.round(Math.max(0, (sw - 960 * k) / 2)) + 'px'; app.style.top = Math.round(Math.max(0, (sh - 511 * k) / 2)) + 'px'; /* 소수점 위치는 글씨를 번지게 해서 정수로 */
@@ -3761,7 +3775,7 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
       var dx = s.to[0] - s.from[0], dy0 = s.to[1] - s.from[1], x = s.from[0] + dx * s.t, y = s.from[1] + dy0 * s.t - Math.sin(s.t * Math.PI) * 20, im = s.kind && SHOT_IMGS[s.kind];
       if (!im){ ctx.fillStyle = s.c; ctx.beginPath(); ctx.arc(x, y, 4, 0, 6.29); ctx.fill(); return true; } /* 그림이 없으면 진영 색 동그라미 */
       var fl = dx < 0, ang = Math.atan2(dy0 - Math.cos(s.t * Math.PI) * Math.PI * 20, fl ? -dx : dx), fw = im.width > im.height * 1.5 ? im.width / 2 : im.width, fr = fw < im.width ? Math.floor(performance.now() / 80) % 2 : 0, sc = s.big ? 1.5 : 1, src = s.kind === 'orb' ? tintShot(im, s.c) : im;
-      ctx.save(); ctx.translate(Math.round(x), Math.round(y)); if (fl) ctx.scale(-1, 1); ctx.rotate(ang); ctx.imageSmoothingEnabled = false; ctx.drawImage(src, fr * fw, 0, fw, im.height, -fw * sc / 2, -im.height * sc / 2, fw * sc, im.height * sc); ctx.restore(); return true; });
+      ctx.save(); ctx.translate(Math.round(x), Math.round(y)); if (fl) ctx.scale(-1, 1); ctx.rotate(ang); sharpDraw(ctx, src, fr * fw, 0, fw, im.height, -fw * sc / 2, -im.height * sc / 2, fw * sc, im.height * sc); ctx.restore(); return true; });
     bolts = bolts.filter(function(o){ o.t -= el; if (o.t <= 0) return false; var k = o.t / .28, top = o.y - 150, x0 = Math.round(o.x), y0 = Math.round(o.y - 20), seg = 6, xs = [];
       for (var i = 0; i <= seg; i++) xs.push(x0 + (i === seg ? 0 : Math.round(Math.sin(o.seed * 50 + i * 2.3) * 9)));
       ctx.globalAlpha = Math.min(1, k * 1.6); for (var j = 0; j < seg; j++){ var ya = top + (y0 - top) * j / seg, yb = top + (y0 - top) * (j + 1) / seg;
@@ -3850,7 +3864,7 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
       ctx.save(); ctx.globalAlpha = al;
       ctx.fillStyle = ELC[u.el] || '#f3e6c4'; ctx.fillRect(x0 - 4, y0 - 4, sz + 8, sz + 8);
       ctx.fillStyle = 'rgba(23,20,29,.92)'; ctx.fillRect(x0 - 2, y0 - 2, sz + 4, sz + 4);
-      if (im){ ctx.imageSmoothingEnabled = false; ctx.drawImage(im, x0, y0, sz, sz); }
+      if (im){ sharpDraw(ctx, im, 0, 0, im.width, im.height, x0, y0, sz, sz); }
       else { ctx.font = Math.round(15 * sc) + 'px "Apple Color Emoji","Segoe UI Emoji",sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(ULTEMO[u.h.ult.kind] || '✨', cx, cy + 1); }
       ctx.restore(); return true;
     });
@@ -3901,7 +3915,7 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
   ANIM_IDS.forEach(function(id){ var sh = new Image(); sh.onload = function(){ for (var i = 0; i < 8; i++){ var c = document.createElement('canvas'); c.width = c.height = 64; c.getContext('2d').drawImage(sh, i * 64, 0, 64, 64, 0, 0, 64, 64); IMGS[id + '_a' + (i + 1)] = c; PIX[id + '_a' + (i + 1)] = true; } }; sh.src = 'img/p/' + id + '_anim.png'; });
   var BUBIMG = new Image(); BUBIMG.src = 'img/fx/fx_bubble.png'; /* 보호막 방울: 72x72 8장(4열x2행), 0~3 유지(왔다 갔다 150ms), 4~7 깨짐(60ms, 한 번) */
   function drawBubble(x, foot, S, u){ var k = 1.1 * S / 64, f, now = performance.now(); if (u._brk > 0) f = 4 + Math.min(3, Math.floor((.24 - u._brk) / .06)); else f = [0, 1, 2, 3, 2, 1][Math.floor(now / 150) % 6];
-    ctx.save(); ctx.imageSmoothingEnabled = false; ctx.drawImage(BUBIMG, (f % 4) * 72, Math.floor(f / 4) * 72, 72, 72, Math.round(x - 36 * k), Math.round(foot + 3 - 63 * k), Math.round(72 * k), Math.round(72 * k)); ctx.restore(); } /* 돔 바닥 줄(기준점 y 63)이 발 밑(foot+3)에 닿게 */
+    ctx.save(); sharpDraw(ctx, BUBIMG, (f % 4) * 72, Math.floor(f / 4) * 72, 72, 72, Math.round(x - 36 * k), Math.round(foot + 3 - 63 * k), Math.round(72 * k), Math.round(72 * k)); ctx.restore(); } /* 돔 바닥 줄(기준점 y 63)이 발 밑(foot+3)에 닿게 */
   var SHOT_IMGS = {}, SHOT_TINT = {}; ['arrow', 'stone', 'fire', 'ice', 'bolt', 'orb', 'note'].forEach(function(k){ var im = new Image(); im.onload = function(){ SHOT_IMGS[k] = im; }; im.src = 'img/p/shot_' + k + '.png'; }); /* 원거리 투사체 그림 (16x16, 오른쪽 방향, 2프레임이면 32x16) */
   function tintShot(im, c){ var k = c; if (SHOT_TINT[k]) return SHOT_TINT[k]; var cv2 = document.createElement('canvas'); cv2.width = im.width; cv2.height = im.height; var x = cv2.getContext('2d'); x.drawImage(im, 0, 0); x.globalCompositeOperation = 'source-atop'; x.globalAlpha = .6; x.fillStyle = c; x.fillRect(0, 0, cv2.width, cv2.height); return SHOT_TINT[k] = cv2; } /* orb는 진영 색으로 물들임 */
   var atkT = {}; ATK_IDS.forEach(function(id){ var im = new Image(); im.onload = function(){ IMGS[id + '_atk'] = im; }; im.src = 'img/p/' + id + '_atk.png'; });
