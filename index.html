@@ -2869,7 +2869,7 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
   var QC = { t: -1e9, cs: 1 };
   function sApp(){ var a = document.querySelector('.app'); return a ? a.getBoundingClientRect().width / 960 || 1 : 1; }
   function devPerUnit(){ if (bt && csB) return csB; var now = performance.now(); if (now - QC.t > 250){ var f = $('field'), w = f ? f.clientWidth : 0; QC.cs = w ? w * sApp() / 720 * (window.devicePixelRatio || 1) : (window.devicePixelRatio || 1); QC.t = now; } return QC.cs; }
-  function qK(){ return Math.max(1, Math.round(79 * uScale() * devPerUnit() / 64)); }
+  function qK(){ return Math.max(1, Math.ceil(79 * uScale() * devPerUnit() / 64 - 0.1)); } /* 큰 쪽으로(2026-11-25 사용자): r이 정수를 0.1 넘게 넘으면 한 단계 위 */
   function unitPx(boss){ return 64 * qK() / devPerUnit(); }
   var OUTLN = 0; /* 외곽선 그림을 정수배 N으로 만들 때 쓸 값(0이면 전장 k). 룰렛·도감 큰 그림은 자기 크기에 맞는 k */
   function qCss(target, n){ var sc = sApp() * (window.devicePixelRatio || 1), k = Math.max(1, Math.round(target * sc / n)); return { k: k, css: n * k / sc }; } /* css 크기 target에 가장 가까운, 원본 n px가 장치 px의 정수배가 되는 크기 */
