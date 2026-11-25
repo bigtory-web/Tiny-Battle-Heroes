@@ -1,0 +1,48 @@
+<!doctype html><meta charset="utf-8"><title>데브로그 1화 콘티</title><style>
+body{background:#17141d;color:#e8e4f0;font-family:"Malgun Gothic",sans-serif;margin:0;padding:24px 32px}
+h1{font-size:22px;margin:0 0 4px}.sub{color:#a79fb8;font-size:14px;margin-bottom:20px}
+section{display:grid;grid-template-columns:92px 440px 1fr 190px;gap:16px;align-items:start;padding:14px 0;border-top:2px solid #2e2a3c}
+.no{font-size:26px;font-weight:bold;color:#f2c23c}.no small{display:block;font-size:12px;color:#a79fb8;font-weight:normal;margin-top:2px}
+.scr img{width:440px;height:247.5px;display:block;border:3px solid #000;outline:2px solid #3b3550}
+.ph{width:440px;height:247.5px;border:3px dashed #54496e;display:flex;align-items:center;justify-content:center;color:#6d6482;font-size:15px;box-sizing:border-box}
+.shot{margin-top:6px;font-size:13px;color:#ffd84a;line-height:1.4}
+h3{margin:0 0 6px;font-size:17px}.say{margin:0;font-size:15px;line-height:1.5;color:#fff}
+.st{font-size:13px;color:#a79fb8;line-height:1.5}
+</style><h1>데브로그 1화 콘티 — 덩치 배치, 2시간 반 만에 넣고 뺀 기능</h1>
+<div class="sub">약 5분 · 가로 16:9 · 왼쪽부터 시간 / 화면 미리보기 / 자막·내레이션 / 소스 상태 · 🎬 = 따로 찍거나 만들 화면</div>
+<section><div class="no">01<small>0:00~0:12</small></div>
+<div class="scr"><img src="소스/콘티/장면01.png"><div class="shot">🎬 옛 3×3 화면(덩치 점·회전)에서 컷 → 말풍선</div></div>
+<div class="txt"><h3>훅</h3><p class="say">2시간 반 만들고, 버렸다</p></div><div class="st">말풍선 ✔ / 옛 화면 ✖ 안 열어 봄</div></section>
+<section><div class="no">02<small>0:12~0:35</small></div>
+<div class="scr"><div class="ph">찍을 화면</div><div class="shot">🎬 지금 게임 짧게(편성·전투) + 세션 목록 화면</div></div>
+<div class="txt"><h3>게임 소개</h3><p class="say">혼자 + AI 세션 팀으로 만드는 픽셀 오토배틀러. 오늘은 기획 세션과의 대화 하나</p></div><div class="st">바로 찍음 가능(8766)</div></section>
+<section><div class="no">03<small>0:35~1:15</small></div>
+<div class="scr"><img src="소스/콘티/장면03.png"><div class="shot">🎬 덩치 표 카드(기사 3 / 전사·마법사 2 / 나머지 1) — 이 칸에 겹쳐 넣기</div></div>
+<div class="txt"><h3>아이디어</h3><p class="say">출전 인원 대신 "덩치"로 제한해 보자</p></div><div class="st">말풍선 ✔ / 덩치 표 카드 ✖ 아직</div></section>
+<section><div class="no">04<small>1:15~2:00</small></div>
+<div class="scr"><img src="소스/콘티/장면04.png"><div class="shot">🎬 옛 화면(3×3) 플레이: 끌기 미리 보기, 회전, 덩치 점</div></div>
+<div class="txt"><h3>불편한데 계속</h3><p class="say">불편한데… 일단 보면서 고쳐 보자. 스위치는 남겨 두고</p></div><div class="st">말풍선 ✔ / 옛 화면 ✖ 안 열어 봄</div></section>
+<section><div class="no">05<small>2:00~2:20</small></div>
+<div class="scr"><img src="소스/콘티/장면05.png"></div>
+<div class="txt"><h3>핵심 질문</h3><p class="say">배치의 즐거움이 크게 없어. 왜 그럴까?</p></div><div class="st">✔ 완성</div></section>
+<section><div class="no">06<small>2:20~2:45</small></div>
+<div class="scr"><img src="소스/콘티/장면06.png"></div>
+<div class="txt"><h3>AI의 첫 답</h3><p class="say">(자막만)</p></div><div class="st">✔ 완성</div></section>
+<section><div class="no">07<small>2:45~3:05</small></div>
+<div class="scr"><img src="소스/콘티/장면07.png"></div>
+<div class="txt"><h3>반박 1·2</h3><p class="say">(자막만)</p></div><div class="st">✔ 완성</div></section>
+<section><div class="no">08<small>3:05~3:20</small></div>
+<div class="scr"><img src="소스/콘티/장면08.png"></div>
+<div class="txt"><h3>반박 3 → 인정</h3><p class="say">(자막만)</p></div><div class="st">✔ 완성</div></section>
+<section><div class="no">09<small>3:20~3:45</small></div>
+<div class="scr"><img src="소스/콘티/장면09.png"><div class="shot">🎬 → 지금 육각 화면으로 컷</div></div>
+<div class="txt"><h3>롤백</h3><p class="say">롤백. 3×3까지 전부</p></div><div class="st">말풍선 ✔ / 지금 화면 바로 가능</div></section>
+<section><div class="no">10<small>3:45~4:20</small></div>
+<div class="scr"><img src="소스/콘티/장면10.png"><div class="shot">🎬 지금 게임: 배치를 바꿀 때 열 유물 켜짐·꺼짐 표시</div></div>
+<div class="txt"><h3>다음 방향</h3><p class="say">칸 모양 대신 "어느 열에 섰나"에 효과를 붙였다</p></div><div class="st">말풍선 ✔ / 지금 화면 바로 가능</div></section>
+<section><div class="no">11<small>4:20~4:50</small></div>
+<div class="scr"><img src="소스/콘티/장면11.png"><div class="shot">🎬 기획결정기록.md 열어 1번 항목 스크롤</div></div>
+<div class="txt"><h3>기록</h3><p class="say">버린 기획도 기록한다. 비슷한 아이디어가 다시 나오면 AI가 먼저 이 기록을 꺼낸다</p></div><div class="st">말풍선 ✔ / 파일 화면 바로 가능</div></section>
+<section><div class="no">12<small>4:50~5:00</small></div>
+<div class="scr"><div class="ph">찍을 화면</div><div class="shot">🎬 타이틀 카드 "제약은 그 자체로는 재미가 아니다" + 다음 화 예고 + 게임 이름</div></div>
+<div class="txt"><h3>마무리</h3><p class="say">제약은 그 자체로는 재미가 아니다</p></div><div class="st">카드 ✖ 아직</div></section>
