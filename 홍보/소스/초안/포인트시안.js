@@ -22,7 +22,7 @@ html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-fam
 .say .in{background:${bev('#6a5d8c','#463e60','#2a2539',5,7)};padding:14px 18px 20px;font-size:22px;line-height:1.55;position:relative}
 .say .in::after,.pi .in::after{content:'';position:absolute;inset:5px 5px 7px;border:2px dashed rgba(255,255,255,.13);pointer-events:none}
 .hl{color:#ffd84a}
-.tag .in{background:${bev('#ffe08a','#f2c23c','#c99a1e',6,8)};color:#3a2410;font-size:33px;padding:6px 26px 12px;display:inline-block;font-weight:bold;letter-spacing:2px}.tag{align-self:flex-start}
+.tag{position:relative}.tag .sp{position:absolute;width:6px;height:6px;background:#fff;box-shadow:6px 0 #fff,-6px 0 #fff,0 6px #fff,0 -6px #fff,12px 0 #ffe08a,-12px 0 #ffe08a,0 12px #ffe08a,0 -12px #ffe08a}.tag .in{background:${bev('#ffe08a','#f2c23c','#c99a1e',6,8)};color:#3a2410;font-size:44px;padding:8px 34px 16px;display:inline-block;font-weight:bold;letter-spacing:2px}.tag{align-self:flex-start}
 .pi .in{background:${bev('#8472b0','#52466f','#2a2539',6,8)};padding:10px 16px 16px 12px;display:flex;gap:14px;align-items:center;position:relative}
 .nb{flex:none;width:56px;height:56px;box-sizing:border-box;background:${bev('#ffe08a','#f2c23c','#c99a1e',5,7)};color:#3a2410;font-size:33px;text-align:center;line-height:50px;border:4px solid #000;clip-path:${clip}}
 .pt{display:flex;flex-direction:column;gap:2px}.ph{font-size:33px;color:#ffd84a;text-shadow:${O1};line-height:1.2}.pd{font-size:22px;color:#e8e4f0;line-height:1.35}`;
@@ -40,9 +40,9 @@ ${extra?'<style>.rbg,.R{display:none}.t,.vid,.cap{left:242px}</style>':''}<div c
 const bubble=x=>`<div class="say sh"><div class="o"><div class="in">${x}</div></div></div>`;
 const A=bubble('개발 과정을 <span class="hl">기록</span>으로 남기고 있어요.')+bubble('저도 영상을 보며 도움을 받았거든요.')+bubble('내 글도 누군가에게 <span class="hl">도움</span>이 되면 좋겠어요.');
 const item=(n,h,d)=>`<div class="pi sh"><div class="o"><div class="in"><span class="nb">${n}</span><span class="pt"><span class="ph">${h}</span><span class="pd">${d}</span></span></div></div></div>`;
-const B=`<div class="tag sh"><div class="o"><div class="in">POINT!</div></div></div>`+item(1,'기록','개발 과정을 남겨요')+item(2,'바람','누군가에게 도움이 되면 좋겠어요')+item(3,'다음 화','덩치 배치 이야기');
+const B=`<div class="tag sh"><div class="o"><div class="in">POINT!</div></div><i class="sp" style="right:-26px;top:-12px"></i><i class="sp" style="left:-24px;top:8px;transform:scale(.7)"></i><i class="sp" style="right:-8px;bottom:-14px;transform:scale(.6)"></i></div>`+item(1,'기록','개발 과정을 남겨요')+item(2,'바람','누군가에게 도움이 되면 좋겠어요')+item(3,'다음 화','덩치 배치 이야기');
 fs.mkdirSync(OUT,{recursive:true});
 const X='<div class="bd"><div class="av"></div></div>';
-const PG='<style>.rbg,.t,.vid,.cap{display:none}.R{display:flex!important;left:120px;right:120px;top:30px;gap:18px}</style>';
+const PG='<style>.rbg,.t,.vid,.cap{display:none}.R{display:flex!important;left:210px;right:210px;top:34px;gap:0}.items{gap:18px!important;padding-top:6px!important}.tag{margin-bottom:22px!important}</style><div class="bd"><div class="av"></div></div>';
 for(const [n,h,x] of [['POINT_별도페이지',B,PG],['좌영상_A_이야기',A,''],['좌영상_B_POINT',B,''],['좌영상_C_추가이야기',B,X]]){const f=path.join(OUT,n+'.html');fs.writeFileSync(f,page(h,x));execFileSync(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=1920,1080','--screenshot='+path.join(OUT,n+'.png'),'file:///'+f.split(path.sep).join('/')],{stdio:'ignore'});fs.unlinkSync(f)}
 console.log('ok');
