@@ -37,13 +37,15 @@ background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 7
 .me .i{${bev('#ffe08a','#f2c23c','#c99a1e',4,6)};color:#3a2410}
 .ai .i{${bev('#6a5d8c','#463e60','#2a2539',4,6)};color:#fff}
 .hl{color:#ffd84a;font-weight:bold}
-.pt{position:absolute;bottom:0;width:26px;height:26px;filter:drop-shadow(3px 0 0 #000) drop-shadow(0 3px 0 #000) drop-shadow(0 -3px 0 #000)}
+.pt{position:absolute;bottom:4px;width:26px;height:26px;filter:drop-shadow(4px 0 0 #000) drop-shadow(0 4px 0 #000) drop-shadow(0 -4px 0 #000)}
 .pt::before{content:'';position:absolute;inset:0;clip-path:polygon(0 0,4px 0,4px 4px,8px 4px,8px 8px,12px 8px,12px 12px,16px 12px,16px 16px,20px 16px,20px 20px,24px 20px,24px 24px,26px 24px,26px 26px,0 26px)}
+.pp{position:absolute;bottom:4px;width:10px;height:26px}
+.me .pp{left:calc(100% - 10px);background:#f2c23c}.ai .pp{right:calc(100% - 10px);background:#463e60}
 .me .pt{left:calc(100% - 4px)}.me .pt::before{background:#f2c23c}
 .ai .pt{right:calc(100% - 4px);transform:scaleX(-1)}.ai .pt::before{background:#463e60}
 .ttl{position:absolute;left:22px;top:14px;filter:drop-shadow(0 4px 0 #0a0810)}
-.ttl .ti{${bev('#b4562a','#8f3f1b','#5e2509',5,7)};color:#fff;font-size:24px;font-weight:bold;padding:5px 22px 12px 18px;display:flex;align-items:center;text-shadow:0 2px 0 #2c0f03,2px 0 0 #2c0f03,-2px 0 0 #2c0f03;clip-path:${clip}}
-.sr{display:inline-block;width:6px;height:6px;margin:0 20px 0 8px;background:#ffd9a0;box-shadow:6px 0 #ffd9a0,-6px 0 #ffd9a0,0 6px #ffd9a0,0 -6px #ffd9a0}`;
+.ttl .ti{${bev('#c24f86','#9a3566','#5c1d3c',5,7)};color:#fff;font-size:24px;font-weight:bold;padding:5px 22px 12px 18px;display:flex;align-items:center;text-shadow:0 2px 0 #2c0a1a,2px 0 0 #2c0a1a,-2px 0 0 #2c0a1a;clip-path:${clip}}
+.sr{display:inline-block;width:6px;height:6px;margin:0 20px 0 8px;background:#ffd0e6;box-shadow:6px 0 #ffd0e6,-6px 0 #ffd0e6,0 6px #ffd0e6,0 -6px #ffd0e6}`;
 const u=p=>'file:///'+p.split(path.sep).join('/');
 fs.mkdirSync(OUT,{recursive:true});
 const ANIM=[{dy:20,op:0.35,f:1},{dy:10,op:0.75,f:0.45},{dy:0,op:1,f:0.12}]; // POINT와 같은 올라옴: 새 말풍선이 아래에서 올라오며 선명해짐(f: 스크롤이 필요할 때 남은 이동 비율)
@@ -54,7 +56,7 @@ const dur=[];let fn=0;
 const plainLen=x=>x.replace(/<[^>]+>/g,'').length;
 function typed(x,n,cur){let i=0,out='';const put=()=>cur?'<span class="cur"></span>':'';if(n===0)out+=put();for(const tk of x.split(/(<span class="hl">|<\/span>)/)){if(tk==='<span class="hl">'||tk==='</span>'){out+=tk;continue}for(const ch of tk){if(ch===' '){out+=ch;continue}if(i<n){out+=ch;i++;if(i===n)out+=put()}else{out+='<span class="c" style="visibility:hidden">'+ch+'</span>';i++}}}return out}
 function render(k,an,n,cur,fnum,nx){
-  const items=M.slice(0,k).map(([w,t,x],j)=>{const last=j===k-1;const body=(last&&n!==undefined?typed(x,n,cur):x);return `<div class="m ${w}"><div class="ac"><div class="av" style="background-image:url(${AV[w]})"></div><div class="nm">${NAME[w]}</div></div><div class="b"><div class="o"><div class="i"><div>${body}</div></div></div><div class="pt"></div></div></div>`}).join('');
+  const items=M.slice(0,k).map(([w,t,x],j)=>{const last=j===k-1;const body=(last&&n!==undefined?typed(x,n,cur):x);return `<div class="m ${w}"><div class="ac"><div class="av" style="background-image:url(${AV[w]})"></div><div class="nm">${NAME[w]}</div></div><div class="b"><div class="o"><div class="i"><div>${body}</div></div></div><div class="pt"></div><div class="pp"></div></div></div>`}).join('');
   // 배치: 가운데 근처(START)에서 시작해 아래로 쌓이고, 아래 끝에 닿으면 위로 밀림. an이 있으면 올라오는 중
   const js=`<script>const vp=document.getElementById('vp'),st=document.getElementById('st'),kids=[...st.children],l=kids[kids.length-1],Hv=vp.clientHeight,hh=e=>e.offsetHeight+14;
 const Hc=kids.reduce((a,e)=>a+hh(e),0),Hp=Hc-hh(l),T=H=>${START}+H<=Hv?${START}:Hv-H;
