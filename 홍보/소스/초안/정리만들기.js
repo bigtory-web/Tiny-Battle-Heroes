@@ -10,9 +10,9 @@ const clip=`polygon(0 ${C}px,${C}px ${C}px,${C}px 0,calc(100% - ${C}px) 0,calc(1
 const bev=(hi,mid,lo,t=5,b=7)=>`background:linear-gradient(${hi} 0 ${t}px,${mid} ${t}px calc(100% - ${b}px),${lo} calc(100% - ${b}px))`;
 const css=`html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:"Malgun Gothic",sans-serif;color:#fff;background:#17141d;
 background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%),linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%);background-size:8px 8px;background-position:0 0,4px 4px}
-.rays{position:absolute;inset:0;background:repeating-conic-gradient(from var(--a,0deg) at 82% 76%,#221c30 0 7.5deg,transparent 7.5deg 15deg);opacity:.85}
+.rays{position:absolute;inset:0;background:repeating-conic-gradient(from var(--a,0deg) at 82% 83%,#221c30 0 7.5deg,transparent 7.5deg 15deg);opacity:.85}
 .vig{position:absolute;inset:0;background:radial-gradient(ellipse at 60% 60%,transparent 40%,#0b0910 100%)}
-.hero{position:absolute;right:0;bottom:-70px;height:460px;transform:scaleX(-1);filter:drop-shadow(0 6px 0 #0a0810)}
+.hero{position:absolute;right:-60px;bottom:-130px;height:460px;transform:scaleX(-1);filter:drop-shadow(0 6px 0 #0a0810)}
 .fr{filter:drop-shadow(0 5px 0 #0a0810)}.fr>.o{background:#000;padding:4px;clip-path:${clip}}.fr .i{clip-path:${clip}}
 .tag{position:absolute;left:36px;top:26px}.tag .i{${bev('#ffe08a','#f2c23c','#c99a1e',6,8)};color:#3a2410;font-weight:bold;font-size:28px;padding:6px 26px 12px;letter-spacing:2px}
 .list{position:absolute;left:36px;top:104px;width:560px}
