@@ -2625,7 +2625,7 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
     im.onload = function(){ IMGS[h.id] = im; IMGSRC[h.id] = im.src; PIX[h.id] = im.src.indexOf("img/p/") >= 0; imgReady(); };
     im.onerror = function(){ if (first){ first = false; im.src = 'img/s/' + h.id + '.png'; } };
     im.src = 'img/p/' + h.id + '.png'; });
-  var BG = new Image(); BG.src = 'img/p/bg_field.png';
+  var BG = new Image(); BG.src = 'img/p/bg_field.png'; var BGD = new Image(); BGD.src = 'img/p/bg_field_dusk.png'; /* 노을 배경: 전투 dusk~at초에 낮 배경 위로 서서히 크로스페이드 */
   // 특수 몹·이벤트 그림 (없으면 이모지)
   (D.mobs || []).forEach(function(h){ var im = new Image(); im.onload = function(){ IMGS[h.id] = im; IMGSRC[h.id] = im.src; PIX[h.id] = true; imgReady(); }; im.src = 'img/p/' + h.id + '.png'; });
   var EVIMG = {}; ['merchant', 'mark_merc', 'ev_goblin', 'ev_merchant', 'ev_merc', 'ev_campfire_i', 'ev_chest'].forEach(function(k){ var im = new Image(); im.onload = function(){ EVIMG[k] = im; imgReady(); }; im.src = 'img/p/' + k + '.png'; });
@@ -3814,8 +3814,9 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
     ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
     ctx.imageSmoothingEnabled = false; if (BG.complete && BG.naturalWidth){ // 배경 240×107을 정확히 3배(720×321)로 OFF 위치에. 위쪽 0~OFF는 하늘색
       var bgK = W / BG.naturalWidth; /* 배경 배율 = 화면 폭 ÷ 그림 폭 (240폭이면 3배, 720폭이면 1배) */
-      var bgY = OFF + 321 - BG.naturalHeight * bgK; /* 아래 맞춤: 107줄이면 OFF부터, 134줄이면 맨 위(0)까지 덮어요 */ if (bgY > 0){ ctx.fillStyle = "#b8a0a6"; ctx.fillRect(0, 0, W, bgY + 1); } var bsx = march ? Math.round(march.sx) : 0; ctx.drawImage(BG, -bsx, bgY, BG.naturalWidth * bgK, BG.naturalHeight * bgK); if (bsx) ctx.drawImage(BG, W - bsx, bgY, BG.naturalWidth * bgK, BG.naturalHeight * bgK); }
-    var EN2 = D.battle.enrage, night = !!(EN2 && bt && !bt.result && (bt.time || 0) > EN2.at); nightA += ((night ? 1 : 0) - nightA) * Math.min(1, el * 1.5); if (nightA > .01){ ctx.fillStyle = "rgba(10,14,44," + (.55 * nightA).toFixed(3) + ")"; ctx.fillRect(0, 0, W, H); } /* 광폭화: 배경만 어두운 밤 (캐릭터는 이 뒤에 그려서 그대로) */ var dk = EN2 && EN2.dusk != null && bt && !bt.result ? Math.max(0, Math.min(1, ((bt.time || 0) - EN2.dusk) / Math.max(1, EN2.at - EN2.dusk))) : 0, da = dk * (1 - nightA); if (da > .01){ var dg = ctx.createLinearGradient(0, 0, 0, H); dg.addColorStop(0, 'rgba(110,60,150,' + (.30 * da).toFixed(3) + ')'); dg.addColorStop(1, 'rgba(255,140,60,' + (.34 * da).toFixed(3) + ')'); ctx.fillStyle = dg; ctx.fillRect(0, 0, W, H); } /* 해 질 녘: dusk초부터 at초까지 노을빛(보라→주황)으로 서서히, 밤이 되면 밤 색으로 이어짐 */ if (night && bt && !bt._nightMsg){ bt._nightMsg = 1; nightNotice(); }
+      var bgY = OFF + 321 - BG.naturalHeight * bgK; /* 아래 맞춤: 107줄이면 OFF부터, 134줄이면 맨 위(0)까지 덮어요 */ if (bgY > 0){ ctx.fillStyle = "#b8a0a6"; ctx.fillRect(0, 0, W, bgY + 1); } var bsx = march ? Math.round(march.sx) : 0; ctx.drawImage(BG, -bsx, bgY, BG.naturalWidth * bgK, BG.naturalHeight * bgK); if (bsx) ctx.drawImage(BG, W - bsx, bgY, BG.naturalWidth * bgK, BG.naturalHeight * bgK);
+      var ENd = D.battle.enrage, dk0 = ENd && ENd.dusk != null && bt && !bt.result ? Math.max(0, Math.min(1, ((bt.time || 0) - ENd.dusk) / Math.max(1, ENd.at - ENd.dusk))) : 0; if (dk0 > 0 && BGD.complete && BGD.naturalWidth){ ctx.globalAlpha = dk0; ctx.drawImage(BGD, -bsx, bgY, BGD.naturalWidth * bgK, BGD.naturalHeight * bgK); if (bsx) ctx.drawImage(BGD, W - bsx, bgY, BGD.naturalWidth * bgK, BGD.naturalHeight * bgK); ctx.globalAlpha = 1; } /* 낮 → 노을 크로스페이드 (30~40초). 밤은 이 위에 밤 색을 덮음 */ }
+    var EN2 = D.battle.enrage, night = !!(EN2 && bt && !bt.result && (bt.time || 0) > EN2.at); nightA += ((night ? 1 : 0) - nightA) * Math.min(1, el * 1.5); if (nightA > .01){ ctx.fillStyle = "rgba(10,14,44," + (.55 * nightA).toFixed(3) + ")"; ctx.fillRect(0, 0, W, H); } /* 광폭화: 배경만 어두운 밤 (캐릭터는 이 뒤에 그려서 그대로) */ if (night && bt && !bt._nightMsg){ bt._nightMsg = 1; nightNotice(); }
     // 스테이지 줄은 HUD 오른쪽에 있어요
     if (flash > 0){ flash -= el; ctx.fillStyle = 'rgba(255,255,255,' + Math.max(0, flash) + ')'; ctx.fillRect(0, 0, W, H); }
     updSkillBars(); // 스킬 막대는 전장 위 DOM(왼쪽 위 내 스킬, 오른쪽 위 적 스킬)
