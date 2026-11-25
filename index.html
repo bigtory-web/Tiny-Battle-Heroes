@@ -2398,6 +2398,9 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
 .cdxgrid.hg .cdxc .cdxp .av{background-size:contain!important;background-position:50% 100%!important}
 .cdxgrid.hg .cdxc b{font-size:13px;max-width:104px}
 .cdxgrid.hg .cdxc .alias{display:block;margin:0;font-size:10px;max-width:104px;overflow:hidden;text-overflow:ellipsis}
+.cdxshop{--bb:#3f6fc2;--bh:#8fb4ff;--bl:#26457e;--bt:#ffffff;--bs:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d,0 2px #17141d;margin-top:8px;width:100%;border-radius:0}
+.cdxshop small{font:400 10px var(--display);margin-left:6px;padding:0 4px;background:#17141d;color:#ffd34d}
+.cdxshop:disabled{--bb:#6a6272;--bh:#857d8e;--bl:#4a4452}
 </style>
 </head>
 <body>
@@ -2468,6 +2471,11 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
       <h2>플레이어 레벨 <small>적 편성·상점·영웅 등장 확률·전장 칸이 이 레벨을 따라요</small></h2>
       <div class="row"><button class="ghost" id="plDown">−</button><b id="plVal" style="font:400 20px var(--display);min-width:70px;text-align:center">Lv 1</b><button class="ghost" id="plUp">+</button></div>
       <div class="muted" id="plOdds" style="margin-top:6px"></div>
+    </section>
+    <section class="card">
+      <h2>도감 "상점으로" 버튼 <small>테스트용 · 출시 때 끄기</small></h2>
+      <div class="row"><button class="ghost" id="cdxShopTog" type="button">켜짐</button></div>
+      <div class="muted">도감에서 연 영웅 상세 창에 "상점으로" 버튼이 생겨요. 누르면 상점 영웅 칸 맨 앞이 그 영웅으로 바뀌어요(안 쓰는 영웅도).</div>
     </section>
     <section class="card">
       <h2>이벤트 스테이지 간격 <small>0이면 평소 확률, N이면 스테이지 N개마다 꼭 나와요</small></h2>
@@ -2737,11 +2745,19 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
     var box = $('cdxInfo'); if (cdxTab === 'event' || cdxTab === 'mob' || cdxTab === 'lv'){ box.innerHTML = ''; return; } if (!cdxSel){ box.innerHTML = '<div class="cdxe">' + (cdxTab === 'hero' ? '영웅' : '스킬') + ' 칸을 누르면 여기에 자세한 정보가 나와요.</div>'; return; }
     var p = cdxSel.split(':');
     if (p[0] === 'h'){ var id = p[1], o = owns(id), lv = lvOf(id), st = 1, sm = 1, cnt = S.units.filter(function(u){ return u.id === id; }).length;
-      box.innerHTML = '<div class="hinfo cdxh">' + infoHtml(id, lv, st, { hp: sm, atk: sm }, false, true) + '<div class="cdxst">' + (o ? '보유 ' + cnt + '명' + (teamHasId(id) ? ' · 출전 중' : '') : '아직 만나지 못했어요') + '</div></div>'; }
+      box.innerHTML = '<div class="hinfo cdxh">' + infoHtml(id, lv, st, { hp: sm, atk: sm }, false, true) + '<div class="cdxst">' + (o ? '보유 ' + cnt + '명' + (teamHasId(id) ? ' · 출전 중' : '') : '아직 만나지 못했어요') + '</div>' + (cdxShopOn() ? '<button class="hi-b cdxshop" data-cdxshop="' + id + '" type="button" title="테스트: 상점 영웅 칸 맨 앞을 이 영웅으로 바꿔요"' + (bt ? ' disabled' : '') + '>상점으로 <small>테스트</small></button>' : '') + '</div>'; }
     else { var d = E.skillById(D, p[1]), g = skG(d.id, myLv(d.id)), mine = S.skills.some(function(x){ return x.id === d.id; });
       box.innerHTML = '<div class="hinfo cdxh" style="--sg:' + g.col + '"><div class="hi-top"><span class="hi-av sk">' + skIcon(d) + '</span><div class="hi-tn"><b>' + d.name + '</b>' + cdBox(d) + '</div></div>' +
         '<div class="hi-ult"><div>' + skillDesc(d, myLv(d.id) || 1) + '</div></div>' + synLine(d) + '<div class="cdxst">' + (mine ? '보유 중' + (skMaxed(d.id) ? ' · 최고 등급' : ' · 또 얻으면 ' + upText(d.id)) : '상점이나 전리품에서 얻을 수 있어요') + '</div></div>'; }
   }
+  function cdxShopOn(){ return !(S.ui && S.ui.cdxShop === false); }
+  /* 테스트용: 도감 -> 상점으로. 상점 영웅 칸 맨 앞을 그 영웅으로(원래 상점 가격), 구매는 평소처럼 (2026-11-25 기획 요청) */
+  $('cdxInfo').addEventListener('click', function(e){ var b = e.target.closest('[data-cdxshop]'); if (!b || b.disabled || bt || !cdxShopOn()) return; var id = b.dataset.cdxshop, G = E.heroGrade(D, id);
+    var price = Math.round(((D.shop && D.shop.heroPrice) || 110) * G * Math.pow((D.shop && D.shop.priceGrowth) || 1, S.stage || 0));
+    if (!S.shop) restock(); S.shop.heroes = S.shop.heroes || []; S.shop.hsold = S.shop.hsold || []; S.shop.heroes[0] = { id: id, price: price }; S.shop.hsold = S.shop.hsold.filter(function(x){ return x !== 0; });
+    shopSel = { t: 'hero', i: 0 }; save(); showTab('camp'); setShop(true); renderShop(); });
+  function renderCdxShopTog(){ var b = $('cdxShopTog'); if (b) b.textContent = cdxShopOn() ? '켜짐' : '꺼짐'; }
+  $('cdxShopTog').addEventListener('click', function(){ S.ui = S.ui || {}; S.ui.cdxShop = !cdxShopOn(); save(); renderCdxShopTog(); renderCdxInfo(); }); renderCdxShopTog();
   $('hlist').addEventListener('click', function(e){
     var c = e.target.closest('[data-cdx]'); if (c){ cdxSel = c.dataset.cdx; renderHeroes(); return; }
     var up = e.target.closest('[data-up]'); if (!up) return;
@@ -4420,7 +4436,7 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
       return '<button class="stile sk' + gCls(id, myLv(id) || undefined) + ((synInfo(d) || {}).off ? ' synoff' : '') + (d.tag ? ' syn' : '') + (sold ? ' sold' : '') + (on ? ' sel' : '') + (myLv(id) && !skMaxed(id) ? ' up' : '') + '"' + gAttr(id, myLv(id) || undefined) + ' data-sel="stock:' + i + '"><span class="ic">' + skIcon(d) + '</span>' + synN(d) + (sold ? '<span class="pr">품절</span>' : skMaxed(id) ? '<span class="pr">최고 등급</span>' : costTag(c, !E.canTake(D, mine, id, PK().skillSlots))) + '</button>';
     });
     var rp = E.refreshPrice(D, S.shop.rerolls);
-    var HS = D.shop.heroes ? S.shop.heroes || [] : [], hrow = HS.map(function(it, i){ if ((S.shop.hsold || []).indexOf(i) >= 0) return '<span class="stile empty"></span>'; var on = shopSel && shopSel.t === 'hero' && shopSel.i === i; if (S.gold >= it.price) anyBuy = true;
+    var HS = D.shop.heroes || (S.shop.heroes || []).length ? S.shop.heroes || [] : [], hrow = HS.map(function(it, i){ if ((S.shop.hsold || []).indexOf(i) >= 0) return '<span class="stile empty"></span>'; var on = shopSel && shopSel.t === 'hero' && shopSel.i === i; if (S.gold >= it.price) anyBuy = true;
       return '<button class="stile mhero' + (on ? ' sel' : '') + '" style="--gcol:' + HG(it.id).col + '" data-sel="hero:' + i + '" type="button"><span class="ic">' + heroFr(it.id) + '</span>' + priceTag(it.price, S.gold >= it.price) + '</button>'; });
     var cells = tiles.slice(); for (var ci = cells.length; ci < 6; ci++){ var lv = shopLockLv(ci); cells.push(lv ? '<span class="stile lockd"><em>🔒 Lv' + lv + '</em></span>' : '<span class="stile empty"></span>'); }
     $('stock').innerHTML = (hrow.length ? '<div class="srow2 h"><span class="rowic">' + (HUDOK.gold ? '<img class="mni" src="img/p/hud_gold.png" alt="">' : '🪙') + '</span>' + hrow.join('') + '</div>' : '') + '<div class="srow2 g six"><span class="rowic"></span>' + cells.join('') + '</div>'; /* 2행×3열 */
