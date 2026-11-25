@@ -25,7 +25,7 @@ background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 7
 #st{position:absolute;left:0;right:0;top:0}
 .c{display:inline}
 .cur{display:inline-block;width:3px;height:0.95em;margin-left:1px;vertical-align:-0.12em;background:currentColor}
-.m{display:flex;align-items:flex-start;gap:14px;margin:0 36px 14px}.m.me{flex-direction:row-reverse}
+.m{display:flex;align-items:flex-start;gap:34px;margin:0 36px 14px}.m.me{flex-direction:row-reverse}
 .ac{flex:none;width:72px;display:flex;flex-direction:column;align-items:center}
 .av{width:72px;height:72px;box-sizing:border-box;border:3px solid #000;outline:2px solid #3b3550;background-repeat:no-repeat;overflow:hidden}
 .me .av{transform:scaleX(-1);background-color:#f2c23c;background-size:260%;background-position:53% 50%}
@@ -33,17 +33,17 @@ background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 7
 .nm{margin-top:6px;font-size:14px;font-weight:bold;color:#a79fb8}.me .nm{color:#f2c23c}.ai .nm{color:#ff9a5c}
 .b{position:relative;max-width:780px;filter:drop-shadow(0 4px 0 #0a0810)}
 .o{background:#000;padding:4px;clip-path:${clip}}
-.i{box-sizing:border-box;min-height:64px;display:flex;align-items:center;padding:14px 28px 20px;font-size:20px;line-height:1.5;clip-path:${clip}}
+.i{box-sizing:border-box;min-height:64px;display:flex;align-items:center;padding:14px 28px 20px;font-size:20px;font-weight:bold;line-height:1.5;clip-path:${clip}}
 .me .i{${bev('#ffe08a','#f2c23c','#c99a1e',4,6)};color:#3a2410}
 .ai .i{${bev('#6a5d8c','#463e60','#2a2539',4,6)};color:#fff}
 .hl{color:#ffd84a;font-weight:bold}
-.pt{position:absolute;top:50%;margin-top:-10px;width:22px;height:20px;filter:drop-shadow(3px 0 0 #000) drop-shadow(0 3px 0 #000) drop-shadow(0 -3px 0 #000)}
-.pt::before{content:'';position:absolute;inset:0;clip-path:polygon(0 0,10px 0,10px 3px,14px 3px,14px 6px,22px 6px,22px 14px,14px 14px,14px 17px,10px 17px,10px 20px,0 20px)}
+.pt{position:absolute;bottom:0;width:26px;height:26px;filter:drop-shadow(3px 0 0 #000) drop-shadow(0 3px 0 #000) drop-shadow(0 -3px 0 #000)}
+.pt::before{content:'';position:absolute;inset:0;clip-path:polygon(0 0,4px 0,4px 4px,8px 4px,8px 8px,12px 8px,12px 12px,16px 12px,16px 16px,20px 16px,20px 20px,24px 20px,24px 24px,26px 24px,26px 26px,0 26px)}
 .me .pt{left:calc(100% - 4px)}.me .pt::before{background:#f2c23c}
 .ai .pt{right:calc(100% - 4px);transform:scaleX(-1)}.ai .pt::before{background:#463e60}
 .ttl{position:absolute;left:22px;top:14px;filter:drop-shadow(0 4px 0 #0a0810)}
-.ttl .ti{${bev('#ffb27a','#ff9a5c','#c8612c',5,7)};color:#fff;font-size:24px;font-weight:bold;padding:5px 22px 12px 18px;display:flex;align-items:center;text-shadow:0 2px 0 #7a3510,2px 0 0 #7a3510,-2px 0 0 #7a3510;clip-path:${clip}}
-.sr{display:inline-block;width:6px;height:6px;margin:0 20px 0 8px;background:#fff4c9;box-shadow:6px 0 #fff4c9,-6px 0 #fff4c9,0 6px #fff4c9,0 -6px #fff4c9}`;
+.ttl .ti{${bev('#b4562a','#8f3f1b','#5e2509',5,7)};color:#fff;font-size:24px;font-weight:bold;padding:5px 22px 12px 18px;display:flex;align-items:center;text-shadow:0 2px 0 #2c0f03,2px 0 0 #2c0f03,-2px 0 0 #2c0f03;clip-path:${clip}}
+.sr{display:inline-block;width:6px;height:6px;margin:0 20px 0 8px;background:#ffd9a0;box-shadow:6px 0 #ffd9a0,-6px 0 #ffd9a0,0 6px #ffd9a0,0 -6px #ffd9a0}`;
 const u=p=>'file:///'+p.split(path.sep).join('/');
 fs.mkdirSync(OUT,{recursive:true});
 const ANIM=[{dy:20,op:0.35,f:1},{dy:10,op:0.75,f:0.45},{dy:0,op:1,f:0.12}]; // POINT와 같은 올라옴: 새 말풍선이 아래에서 올라오며 선명해짐(f: 스크롤이 필요할 때 남은 이동 비율)
