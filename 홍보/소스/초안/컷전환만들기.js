@@ -4,7 +4,7 @@
 const {execFileSync}=require('child_process'),path=require('path');
 const D=__dirname;
 const A=process.argv[2]||path.join(D,'채팅/프레임310.png'), B=process.argv[3]||path.join(D,'포인트/프레임10.png'), OUT=process.argv[4]||path.join(D,'컷전환샘플.mp4');
-const COVER=path.join(D,'컷전환/덮개_'+(process.env.COVER||'검정')+'.png'); // COVER=검정(기본) / 보라(게임 UI 타일)
+const COVER=path.join(D,'컷전환/덮개_'+(process.env.COVER||'로고')+'.png'); // COVER=로고(기본: 다 덮였을 때 마크) / 검정 / 보라(게임 UI 타일)
 const HOLD=1.2, T=0.5, MID=+(process.env.MID||(process.env.COVER==='로고'?1.0:0.15));                       // 전환 전 머무름 / 덮는 시간 / 다 덮인 채 머무름
 const expr="if(gte(1-P,(floor(X/W*16)+floor(Y/H*9))/23),B,A)"; // xfade의 P는 1에서 0으로 줄어드는 값이라 1-P를 씀. 칸 (가로+세로 번호)가 작은 것부터 바뀜 = 왼쪽 위에서 오른쪽 아래로 번지는 대각선
 const norm=(i)=>`[${i}:v]scale=1920:1080,format=yuv420p,fps=30,setsar=1`;
