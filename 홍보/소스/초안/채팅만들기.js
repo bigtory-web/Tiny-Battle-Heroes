@@ -19,8 +19,8 @@ const AV={me:'../../채널/개발자_전신.png',ai:'../../채널/클로딩_전�
 const C=+process.env.C||4;
 const clip=`polygon(0 ${C}px,${C}px ${C}px,${C}px 0,calc(100% - ${C}px) 0,calc(100% - ${C}px) ${C}px,100% ${C}px,100% calc(100% - ${C}px),calc(100% - ${C}px) calc(100% - ${C}px),calc(100% - ${C}px) 100%,${C}px 100%,${C}px calc(100% - ${C}px),0 calc(100% - ${C}px))`;
 const bev=(hi,mid,lo,t=5,b=7)=>`background:linear-gradient(${hi} 0 ${t}px,${mid} ${t}px calc(100% - ${b}px),${lo} calc(100% - ${b}px))`;
-const css=`html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:"Malgun Gothic",sans-serif;background:#17141d;
-background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%),linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%);background-size:8px 8px;background-position:0 0,4px 4px}
+const css=`html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:"Malgun Gothic",sans-serif;background:#2b1322;
+background-image:linear-gradient(45deg,#351829 25%,transparent 25%,transparent 75%,#351829 75%),linear-gradient(45deg,#351829 25%,transparent 25%,transparent 75%,#351829 75%);background-size:8px 8px;background-position:0 0,4px 4px}
 #vp{position:absolute;left:0;right:0;top:66px;bottom:16px;overflow:hidden;-webkit-mask-image:linear-gradient(transparent 0,#000 28px)}
 #st{position:absolute;left:0;right:0;top:0}
 .c{display:inline}
@@ -29,7 +29,7 @@ background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 7
 .ac{flex:none;width:72px;display:flex;flex-direction:column;align-items:center}
 .av{width:72px;height:72px;box-sizing:border-box;border:3px solid #000;outline:2px solid #3b3550;background-repeat:no-repeat;overflow:hidden}
 .me .av{transform:scaleX(-1);background-color:#f2c23c;background-size:260%;background-position:53% 50%}
-.ai .av{background-color:#54496e;background-size:210%;background-position:50% 50%}
+.ai .av{background-color:#54496e;background-size:230%;background-position:59% 54%}
 .nm{margin-top:6px;font-size:14px;font-weight:bold;color:#a79fb8}.me .nm{color:#f2c23c}.ai .nm{color:#ff9a5c}
 .b{position:relative;max-width:780px;filter:drop-shadow(0 4px 0 #0a0810)}
 .o{background:#000;padding:4px;clip-path:${clip}}
