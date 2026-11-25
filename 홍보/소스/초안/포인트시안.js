@@ -43,5 +43,6 @@ const item=(n,h,d)=>`<div class="pi sh"><div class="o"><div class="in"><span cla
 const B=`<div class="tag sh"><div class="o"><div class="in">POINT!</div></div></div>`+item(1,'기록','개발 과정을 남겨요')+item(2,'바람','누군가에게 도움이 되면 좋겠어요')+item(3,'다음 화','덩치 배치 이야기');
 fs.mkdirSync(OUT,{recursive:true});
 const X='<div class="bd"><div class="av"></div></div>';
-for(const [n,h,x] of [['좌영상_A_이야기',A,''],['좌영상_B_POINT',B,''],['좌영상_C_추가이야기',B,X]]){const f=path.join(OUT,n+'.html');fs.writeFileSync(f,page(h,x));execFileSync(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=1920,1080','--screenshot='+path.join(OUT,n+'.png'),'file:///'+f.split(path.sep).join('/')],{stdio:'ignore'});fs.unlinkSync(f)}
+const PG='<style>.rbg,.t,.vid,.cap{display:none}.R{display:flex!important;left:120px;right:120px;top:30px;gap:18px}</style>';
+for(const [n,h,x] of [['POINT_별도페이지',B,PG],['좌영상_A_이야기',A,''],['좌영상_B_POINT',B,''],['좌영상_C_추가이야기',B,X]]){const f=path.join(OUT,n+'.html');fs.writeFileSync(f,page(h,x));execFileSync(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=1920,1080','--screenshot='+path.join(OUT,n+'.png'),'file:///'+f.split(path.sep).join('/')],{stdio:'ignore'});fs.unlinkSync(f)}
 console.log('ok');
