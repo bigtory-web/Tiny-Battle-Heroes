@@ -3773,7 +3773,7 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
     // 스테이지 줄은 HUD 오른쪽에 있어요
     if (flash > 0){ flash -= el; ctx.fillStyle = 'rgba(255,255,255,' + Math.max(0, flash) + ')'; ctx.fillRect(0, 0, W, H); }
     updSkillBars(); // 스킬 막대는 전장 위 DOM(왼쪽 위 내 스킬, 오른쪽 위 적 스킬)
-    var allU = bt.A.concat(bt.E).sort(function(a, b){ return posOf(a)[1] - posOf(b)[1]; }); allU.filter(function(u){ return !u.alive; }).forEach(function(u){ drawUnit(u, el); }); allU.filter(function(u){ return u.alive; }).forEach(function(u){ drawUnit(u, el); }); /* 무덤은 항상 살아 있는 캐릭터보다 뒤에, 그 안에서 아래쪽 유닛이 앞에 (2026-11-25 사용자: RIP은 캐릭터보다 뒤에 무조건) */
+    var allU = bt.A.concat(bt.E).sort(function(a, b){ return posOf(a)[1] - posOf(b)[1]; }); allU.filter(function(u){ return !u.alive; }).forEach(function(u){ drawUnit(u, el); }); STARQ = []; allU.filter(function(u){ return u.alive; }).forEach(function(u){ drawUnit(u, el); }); STARQ.forEach(function(q){ drawGradeStar(ctx, q[0], q[1], q[2]); }); STARQ = null; /* 무덤은 항상 살아 있는 캐릭터보다 뒤에, 그 안에서 아래쪽 유닛이 앞에 (2026-11-25 사용자: RIP은 캐릭터보다 뒤에 무조건) */
     if (HAS_FX) FX.draw(ctx, 'front');
     drawUltPops(el); drawArrows(el); drawUx(el);
     shots = shots.filter(function(s){ if (s.wait > 0){ s.wait -= el; return true; } s.t += el * 5; if (s.t >= 1){ if (s.land) s.land(); return false; }
@@ -3894,6 +3894,7 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
   function drawGradeStar(c, cx, cy, n){ var R = 5.4, r = 2.4, gap = 11, x0 = cx - (n - 1) * gap / 2; c.save(); c.lineJoin = 'round';
     for (var k = 0; k < n; k++){ var x = x0 + k * gap; c.beginPath(); for (var i = 0; i < 10; i++){ var a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r : R; c.lineTo(x + Math.cos(a) * rr, cy + 0.5 + Math.sin(a) * rr); } c.closePath(); c.lineWidth = 2; c.strokeStyle = '#17141d'; c.stroke(); c.fillStyle = '#ffd34d'; c.fill(); }
     c.restore(); } /* 성급 = 머리 위 작은 별을 성급 개수만큼 (숫자 없음) (2026-11-25 사용자: "별개수만큼 표시, 숫자는 X") */
+  var STARQ = null; /* 전투: 별은 유닛·막대를 다 그린 뒤 맨 마지막에 (다른 유닛 그림·막대가 별을 덮지 않게) */
   function drawBars(ctx, x, y, o){
     var bw = 44, bx = Math.round(x - bw / 2), by = Math.round(y + 30), rows = 2, fh = 2 + 4 + 2 + (rows - 1) * 4;
     ctx.fillStyle = "#17141d"; ctx.fillRect(bx - 2, by - 2, bw + 4, fh);
@@ -3907,7 +3908,7 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
     if (o.trig){ var tn = o.trig.kind === "start" ? 1 : Math.max(1, o.trig.n || 1), sw = Math.floor((bw - (tn - 1) * 2) / tn), ek = Math.min(1, (o.energy || 0) / 100) * tn, full = (o.energy || 0) >= 99.9; // 발동 타입: n칸 눈금, 칸 안은 연속으로 차요 (start형은 쓰면 회색)
       for (var ti = 0; ti < tn; ti++){ var tx = bx + ti * (sw + 2), fw = Math.round(sw * Math.max(0, Math.min(1, ek - ti))); ctx.fillStyle = o.tdone ? "#6b6478" : "#4a4358"; ctx.fillRect(tx, by + 6, sw, 2); if (!o.tdone && fw > 0){ ctx.fillStyle = full ? "#ffe08a" : "#f2b53a"; ctx.fillRect(tx, by + 6, fw, 2); } } }
     else { ctx.fillStyle = o.energy >= 99.9 ? "#ffe08a" : "#f2b53a"; ctx.fillRect(bx, by + 6, Math.round(bw * Math.min(1, (o.energy || 0) / 100) / 2) * 2, 2); }
-    if (o.star){ if (o.S){ var hy = y + 26 + o.S * .04 - o.S + (o.tf || 0) * o.S; drawGradeStar(ctx, x, hy - 7, o.star); } else drawGradeStar(ctx, bx - 9, by + 4, o.star); } /* 성급 별 하나+숫자를 머리 바로 위(그림 위쪽 빈 줄 기준)에 (2026-11-25 사용자: HP 말고 캐릭터 위로) */
+    if (o.star){ if (o.S){ var hy = y + 26 + o.S * .04 - o.S + (o.tf || 0) * o.S; if (STARQ) STARQ.push([x, hy - 7, o.star]); else drawGradeStar(ctx, x, hy - 7, o.star); } else drawGradeStar(ctx, bx - 9, by + 4, o.star); } /* 성급 별 하나+숫자를 머리 바로 위(그림 위쪽 빈 줄 기준)에 (2026-11-25 사용자: HP 말고 캐릭터 위로) */
     return { bw: bw, bx: bx, by: by, rows: rows, fh: fh };
   }
   // 피격 연출: 맞은 유닛은 dur초 동안 모션을 고정하고 살짝 흔들며 흰 실루엣으로 번쩍여요 (flash 0~1 = 세기)
