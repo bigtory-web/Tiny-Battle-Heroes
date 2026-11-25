@@ -2374,6 +2374,15 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
 /* 그림 깨짐 고침: 외곽선 그림은 정수배로 미리 키웠으니 화면 크기로는 부드럽게. 전투 캔버스는 720→화면 크기로 줄 때 최근접이면 줄이 빠져서 부드럽게 (2026-11-25) */
 .av.pic.olb{image-rendering:auto!important}
 .arena canvas,#cv,#field canvas.fbar{image-rendering:auto!important}
+/* 오른쪽 버튼 줄: 넘치면 위아래 스크롤 + 홍보 펼침 (2026-11-25 홍보 세션 요청) */
+#underBar{overflow-y:auto!important;overflow-x:hidden!important;scrollbar-width:none;min-height:0}
+#underBar::-webkit-scrollbar{display:none}
+.underbar .promopanel{display:flex;flex-direction:column;gap:4px;margin:0;padding:4px 0 4px 6px;background:rgba(23,20,29,.55);box-shadow:inset 3px 0 0 #6a4fb0}
+.underbar .promopanel[hidden]{display:none}
+.underbar .promopanel .abtn{height:46px!important}
+.underbar .promopanel .abtn:disabled{background:#6a6272!important;opacity:1;filter:none;cursor:default}
+.underbar .promopanel .abtn:disabled .ulbl{color:#cfc6d8!important}
+.underbar .promopanel .ulbl{white-space:normal!important;text-align:center;line-height:1.1!important}
 </style>
 </head>
 <body>
@@ -2412,7 +2421,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
             <div class="spRight"><div class="srow" id="stock"></div><button class="go" id="shopBuy" hidden>구매</button></div></div>
           </section>
         </div>
-        <div class="underbar" id="underBar"><div class="ugrp"><button class="abtn shopb" data-go="shop" type="button" title="상점"><img class="uic" src="img/p/ui_shop.png" alt="" onerror="this.outerHTML='🛒'"><i class="dot" id="shopDot" hidden></i><b class="ulbl">상점</b></button><button class="abtn on" id="dpsBtn" type="button" title="DPS 보기/숨기기"><img class="uic" src="img/p/ui_dps.png" alt="" onerror="this.outerHTML='<span class=&quot;uem&quot;>📊</span>'"><b class="ulbl">DPS</b></button><button class="abtn" data-go="hero" type="button" title="도감"><img class="uic" src="img/p/ui_book.png" alt="" onerror="this.outerHTML='📖'"><i class="dot" id="heroDot" hidden></i><b class="ulbl">도감</b></button><button class="abtn idleChip" id="idleBtn" type="button" title="방치 보상 받기" hidden><span>💰</span><b id="idleAmt">0 G</b></button></div><div class="ugrp utest"><button class="abtn" id="autoBtn" type="button" title="자동 편성"><img class="uic" src="img/p/ui_auto.png" alt="" onerror="this.outerHTML='<span class=&quot;uem&quot;>🪄</span>'"><b class="ulbl">자동</b></button><button class="abtn" id="resetBtn" type="button" title="처음부터"><img class="uic" src="img/p/ui_reset.png" alt="" onerror="this.outerHTML='<span class=&quot;uem&quot;>🔄</span>'"><b class="ulbl">처음부터</b></button><button class="abtn" data-go="tool" type="button" title="도구"><img class="uic" src="img/p/ui_tool.png" alt="" onerror="this.outerHTML='⚙️'"><b class="ulbl">도구</b></button></div></div>
+        <div class="underbar" id="underBar"><div class="ugrp"><button class="abtn shopb" data-go="shop" type="button" title="상점"><img class="uic" src="img/p/ui_shop.png" alt="" onerror="this.outerHTML='🛒'"><i class="dot" id="shopDot" hidden></i><b class="ulbl">상점</b></button><button class="abtn on" id="dpsBtn" type="button" title="DPS 보기/숨기기"><img class="uic" src="img/p/ui_dps.png" alt="" onerror="this.outerHTML='<span class=&quot;uem&quot;>📊</span>'"><b class="ulbl">DPS</b></button><button class="abtn idleChip" id="idleBtn" type="button" title="방치 보상 받기" hidden><span>💰</span><b id="idleAmt">0 G</b></button></div><div class="ugrp utest"><button class="abtn" id="promoBtn" type="button" title="홍보(영상 촬영용)"><span class="uem">📣</span><b class="ulbl">홍보</b></button><div class="promopanel" id="promoPanel" hidden><button class="abtn" id="promoSave" type="button" title="지금 게임 상태를 녹화용 칸에 저장"><span class="uem">💾</span><b class="ulbl">장면 저장</b></button><button class="abtn" id="promoLoad" type="button" title="저장한 장면으로 되돌리기" disabled><span class="uem">📂</span><b class="ulbl">장면 불러오기</b></button></div><button class="abtn" data-go="hero" type="button" title="도감"><img class="uic" src="img/p/ui_book.png" alt="" onerror="this.outerHTML='📖'"><i class="dot" id="heroDot" hidden></i><b class="ulbl">도감</b></button><button class="abtn" id="autoBtn" type="button" title="자동 편성"><img class="uic" src="img/p/ui_auto.png" alt="" onerror="this.outerHTML='<span class=&quot;uem&quot;>🪄</span>'"><b class="ulbl">자동</b></button><button class="abtn" id="resetBtn" type="button" title="처음부터"><img class="uic" src="img/p/ui_reset.png" alt="" onerror="this.outerHTML='<span class=&quot;uem&quot;>🔄</span>'"><b class="ulbl">처음부터</b></button><button class="abtn" data-go="tool" type="button" title="도구"><img class="uic" src="img/p/ui_tool.png" alt="" onerror="this.outerHTML='⚙️'"><b class="ulbl">도구</b></button></div></div>
       </div>
       <aside class="rcol" id="rcol"></aside>
     </div>
@@ -4319,10 +4328,19 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
     S.event = ev; S.evOffer = null; S.bell = 0; S.bellGold = 0; save(); scrollPend = true; renderAll(); stageScroll(); } /* 상인 진열(evOffer)이 남으면 다른 이벤트에서 상인 창이 다시 열려요 */
   setInterval(function(){ var dk = $('evDock'); if (!dk || dk.hidden) return; var busy = edBusy(); dk.querySelectorAll('#edList [data-edk]').forEach(function(b){ if (b.disabled !== busy) b.disabled = busy; }); }, 300);
   $('edList').addEventListener('click', function(e){ var b = e.target.closest('[data-edk]'); if (b && !b.disabled) edJump(b.dataset.edk); });
+  function placeEd(){ var b = document.querySelector('#evDock .edbody'), tb = $('edTab'), ap = document.querySelector('.app'); if (!b || !tb || !ap || $('evDock').hidden) return; var ar = ap.getBoundingClientRect(), tr = tb.getBoundingClientRect(), k = ar.width / 960 || 1; b.style.position = 'fixed'; b.style.right = Math.round((ar.right - tr.left) / k + 8) + 'px'; b.style.bottom = Math.round((ar.bottom - tr.bottom) / k) + 'px'; b.style.left = 'auto'; b.style.top = 'auto'; } /* 오른쪽 버튼 줄이 스크롤되어도 목록이 잘리지 않게 */
+  setInterval(placeEd, 200); $('underBar').addEventListener('scroll', placeEd);
   $('edTab').addEventListener('click', function(){ S.ui = S.ui || {}; S.ui.evDockFold = !S.ui.evDockFold; save(); renderDock(); });
   $('edFeDown').addEventListener('click', function(){ setFE(((S.ui && S.ui.forceEvery) || 0) - 1); renderDock(); });
   $('edFeUp').addEventListener('click', function(){ setFE(((S.ui && S.ui.forceEvery) || 0) + 1); renderDock(); });
   $('edToggle').addEventListener('click', function(){ S.ui = S.ui || {}; S.ui.evDock = S.ui.evDock === false; save(); renderDock(); });
+  /* 홍보(영상 촬영용): 누르면 아래로 하위 버튼이 펼쳐짐. 장면 저장 = 게임 상태 통째로 다른 키에 저장, 불러오기 = 그 상태로 되돌리고 새로고침 (2026-11-25 홍보 세션 요청) */
+  (function(){ var PK2 = 'idle-testbed-promo-scene', pb = $('promoBtn'), pp = $('promoPanel'), sv = $('promoSave'), ld = $('promoLoad'); if (!pb) return;
+    pb.addEventListener('click', function(){ pp.hidden = !pp.hidden; pb.classList.toggle('on', !pp.hidden); });
+    sv.addEventListener('click', function(){ try { save(); localStorage.setItem(PK2, JSON.stringify(S)); sv.classList.add('on'); setTimeout(function(){ sv.classList.remove('on'); }, 500); } catch (e) {} upd(); }); /* 저장되면 버튼이 잠깐 노란 테두리 */
+    ld.addEventListener('click', function(){ if (bt) return; var v = null; try { v = localStorage.getItem(PK2); } catch (e) {} if (!v) return; try { localStorage.setItem(KEY, v); } catch (e) { return; } location.reload(); });
+    function upd(){ var has = false; try { has = !!localStorage.getItem(PK2); } catch (e) {} ld.disabled = !has || !!bt; } /* 저장한 게 없거나 전투 중이면 회색 */
+    setInterval(upd, 300); upd(); })();
   (function(){ var ut = document.querySelector('#underBar .utest'), dk = $('evDock'); if (ut && dk) ut.insertBefore(dk, $('autoBtn')); })(); /* 오른쪽 버튼 줄로 */
   (function(){ var sp = $('tab-shop'), sx = $('shopX'); if (sp && sx) sp.appendChild(sx); })(); /* ✕는 창 기준으로 모서리에 */
   var _raDock = renderAll; renderAll = function(){ _raDock(); renderDock(); };
