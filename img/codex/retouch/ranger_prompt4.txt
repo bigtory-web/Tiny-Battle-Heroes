@@ -1,0 +1,11 @@
+Look at the images img/gemini/ref/ranger_bearface_x8.png (a rough draft of the redesigned ranger: the face and head are taken from the bear hero, with the ranger's green hood and yellow plume on top), img/gemini/ref/ranger_x8.png (the original ranger, for the body and the hood design) and img/gemini/ref/bear_x8.png (the bear hero, whose FACE must be kept exactly). All are pixel art chibi heroes shown 8x enlarged on white. Generate ONE new image with your image generation tool and save it as img/codex/retouch/ranger_sheet.png.
+
+Clean up and redraw the rough draft into a finished sprite. Keep the same idea: the bear's face (same round chubby face shape, same big amber eyes with white glints, same blush, same size of head as the bear), blonde hair, elf ears, the original ranger's body, bow, quiver, green leaf cloak and boots. Fix exactly these problems of the draft:
+1. The green hood is pushed to the right of the head. Put the hood centered on the head so that it wraps the whole top of the head symmetrically, with its cream trim line running around the forehead and temples, like the original ranger's hood but scaled to fit the smaller head.
+2. The leaf on the hood and the yellow plume on the left are messy and the hair ends on the left side are scribbly. Draw ONE clean plume (smooth big yellow feather shape with two orange shades) and one leaf, and clean smooth blonde hair locks at the sides of the face.
+3. Where the bear's blonde bangs meet the hood's lower edge it is awkward. Let the hood trim sit cleanly on top of the bangs: the bangs fall in a few clean locks over the forehead right under the trim.
+4. The eyebrows are not clear. Draw clear dark eyebrows just above the eyes like the bear's eyebrows, with bare forehead skin between eyebrows and bangs.
+The character faces the viewer with a slightly downward camera like the bear. Same pixel art style, thick dark 1px outline, no anti-aliasing.
+
+[Format] One character only on a plain solid #FF00FF magenta background, no ground, no shadow, no text, no border. Visible chunky pixels. Fully inside the image with margin, filling about 70 percent of the image height, not cropped.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

@@ -1,7 +1,7 @@
 Look at the image img/gemini/ref/gate_x8.png (the reference character, a pixel art character on a white background). Generate ONE new image with your image generation tool and save it as img/codex/gate_sheet.png. The image request is below; follow it exactly.
 
 첨부한 픽셀 아트 캐릭터(게임 그림을 8배 확대한 것)로 스프라이트 시트 1장을 만들어 줘.
-캐릭터: long brown hair with big dark purple horns, dark gray armor, a purple-glowing iron prison-gate shield. (첨부 그림이 디자인 기준이다. 새로 디자인하지 말 것.)
+캐릭터: long wavy red-brown hair, big curved dark purple horns with gold rings, dark gray armor with gold trim and a gold crest, iron chains across the chest, big keys at the belt, a short dark red cape, a big iron prison-gate shield (첨부 그림이 디자인 기준이다. 새로 디자인하지 말 것.)
 
 [배열]
 - 4칸 x 2줄 = 8프레임. 칸마다 256x256 픽셀(64 격자 x 4배), 전체 1024x512.
