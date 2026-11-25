@@ -2408,6 +2408,12 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
 /* 마지막 처치 금색 네모 별가루 (2026-11-25 사용자) */
 .fdust{position:absolute;z-index:850;width:var(--s,4px);height:var(--s,4px);background:#ffd34d;box-shadow:0 0 0 1px #17141d;pointer-events:none;animation:fdust .7s ease-out both}
 @keyframes fdust{0%{transform:translate(0,0);opacity:1}70%{opacity:1}100%{transform:translate(var(--dx),var(--dy));opacity:0}}
+/* 룰렛·도감 큰 영웅 그림: 원본 66px가 장치 px의 정수배가 되는 크기(--rpq, --cdq는 JS가 계산) (2026-11-25 사용자 1안) */
+#roul:not(.chestpop) .rbox .rstage .rpic:not(.loot){width:var(--rpq,114px)!important;height:var(--rpq,114px)!important;background-size:var(--rpq,114px) var(--rpq,114px)!important}
+.cdxgrid.hg{grid-template-columns:repeat(auto-fill,calc(var(--cdq,100px) + 12px))}
+.cdxgrid.hg .cdxc{width:calc(var(--cdq,100px) + 12px)}
+.cdxgrid.hg .cdxc .cdxp{width:var(--cdq,100px);height:var(--cdq,100px)}
+.av.pic.olb[data-oid]{image-rendering:pixelated!important}
 </style>
 </head>
 <body>
@@ -2615,7 +2621,8 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
   var FACE = {bear:[0.571,0.643,63,0.88],wolf:[0.587,0.619,63],rain:[0.539,0.594,64],drum:[0.508,0.635,63],harpy:[0.556,0.619,63],imp:[0.54,0.651,63],boar:[0.542,0.617,60],squire:[0.516,0.605,62,1.12],sprout:[0.559,0.61,59],pup:[0.484,0.581,62],mudgolem:[0.403,0.61,77,0.75],slinger:[0.542,0.619,59,1.12],candle:[0.507,0.597,67],batling:[0.548,0.629,62],frog:[0.556,0.611,63],piper:[0.532,0.581,62],mossguard:[0.571,0.611,63],knight:[0.539,0.641,64],blades:[0.492,0.627,63],hawk:[0.508,0.585,65],song:[0.554,0.602,83,0.88],bat:[0.576,0.652,66],dancer:[0.548,0.629,62],spark:[0.5,0.629,62],ranger:[0.5,0.591,66],shield:[0.5,0.583,60],fox:[0.554,0.631,65],nun:[0.5,0.613,62],warlock:[0.564,0.618,55,1.12],turtle:[0.524,0.635,63],horn:[0.524,0.603,63],owl:[0.555,0.633,64],icefairy:[0.542,0.633,60],frost:[0.547,0.627,75],flame:[0.541,0.615,61],storm:[0.508,0.61,59],pegasus:[0.517,0.603,58],thorn:[0.492,0.608,60],shaman:[0.508,0.587,63],monk:[0.542,0.585,59],vine:[0.532,0.613,62],gargoyle:[0.532,0.611,63],assassin:[0.529,0.577,52,1.2],druid:[0.533,0.617,60],succubus:[0.542,0.625,60],cannon:[0.509,0.605,57],coral:[0.535,0.606,71],moonarcher:[0.525,0.619,59,1.1],minotaur:[0.426,0.59,61],shadow:[0.581,0.621,62],wyvern:[0.555,0.591,55],gate:[0.508,0.608,60],lion:[0.548,0.619,63,0.9],valkyrie:[0.579,0.627,63],tiger:[0.556,0.619,63],thunderbird:[0.533,0.598,61],necro:[0.508,0.59,61],dragon:[0.56,0.634,67,0.88],archmage:[0.525,0.598,61],worldtree:[0.538,0.538,65],demonlord:[0.569,0.638,65],phoenix:[0.531,0.631,65,0.88],seraph:[0.493,0.613,71,0.9],kraken:[0.533,0.618,76],windlord:[0.486,0.6,70,0.9]}; /* 얼굴 가운데 [x/폭, y/폭, 틀 폭] — img/tools/faces.ps1로 뽑음 */
   function faceCss(id){ var f = FACE[id]; if (!f) return ''; var z = 1.9 * f[2] / 64 * (f[3] || 1); /* 64 틀 기사 190% 기준, 틀이 크면 더 확대. f[3] = 머리가 커/작아 보이는 영웅만 따로 줄이고 키우는 배율 */ return ';--fs:' + (z * 100).toFixed(1) + '%;--fp:' + ((f[0] * z - .5) / (z - 1) * 100).toFixed(1) + '% ' + ((f[1] * z - .5) / (z - 1) * 100).toFixed(1) + '%'; }
   function av(id, gr){ return IMGS[id] ? '<span class="av pic' + (PIX[id] ? ' pix' : '') + '" style="background-image:url(' + IMGSRC[id] + ');--gc:' + gc(id, gr) + faceCss(id) + '"></span>' : '<span class="av">' + AV[id] + '</span>'; }
-  function avO(id, key){ key = key || id; var s = av(id), im = IMGS[key]; if (!im) return s; var w = im.width, h = im.height; /* 외곽선 그림은 위아래좌우 1px씩 커서 칸도 그만큼 키워 원래 그림 자리를 맞춰요 */
+  function avO(id, key){ var o = avO0(id, key); return OUTLN ? o.replace('<span ', '<span data-nk="' + OUTLN + '" ') : o; }
+  function avO0(id, key){ key = key || id; var s = av(id), im = IMGS[key]; if (!im) return s; var w = im.width, h = im.height; /* 외곽선 그림은 위아래좌우 1px씩 커서 칸도 그만큼 키워 원래 그림 자리를 맞춰요 */
     return s.replace('<span class="av pic', (ANIM_IDS.indexOf(id) >= 0 ? '<span data-oid="' + id + '" class="av pic' : '<span class="av pic')).replace('class="av pic', 'class="av pic olb').replace('background-image:url(' + IMGSRC[id] + ')', 'background-image:url(' + outlinedURL(key, gc(id) + 'b3') + ');position:relative;flex:none;align-self:flex-start;top:' + (-100 / h).toFixed(3) + '%;width:' + (100 * (w + 2) / w).toFixed(3) + '%;height:' + (100 * (h + 2) / h).toFixed(3) + '%'); }
   function stars(n){ return ''; } // 성급 별은 그림 위에 보여 주지 않아요 (정보 창에만 ★)
 
@@ -2767,6 +2774,7 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
         top = cur.filter(function(h){ return inPool(h) && heroPass(h); }).sort(gSort), low = cur.filter(function(h){ return !inPool(h) && heroPass(h); }).sort(gSort),
         own = cur.filter(function(h){ return owns(h.id); }).length, all = cur.length,
         cell = function(h){ var o = owns(h.id); return '<button class="cdxc' + (o ? ' own' : ' unk') + (cdxSel === 'h:' + h.id ? ' sel' : '') + '" data-cdx="h:' + h.id + '" style="--el:' + ELC[h.el] + ';--gcol:' + HG(h.id).col + '"><span class="cdxp hic" style="--hg:' + HG(h.id).col + '">' + avO(h.id) + '</span><b>' + h.name + '</b>' + (h.alias ? '<i class="alias">' + h.alias + '</i>' : '') + (teamHasId(h.id) ? '<em>출전</em>' : '') + '</button>'; };
+      var cq = qCss(100, 66); $('hlist').style.setProperty('--cdq', cq.css + 'px'); OUTLN = cq.k; setTimeout(function(){ OUTLN = 0; }, 0);
       html = '<div class="cdxcount">영웅 ' + own + ' / ' + all + '</div><div class="cdxgrid hg">' + top.map(cell).join('') + '</div>' +
         (low.length ? '<div class="cdxsec">안 쓰는 영웅 <small>지금 게임에는 나오지 않아요</small></div><div class="cdxgrid hg">' + low.map(cell).join('') + '</div>' : '');
     } else {
@@ -2855,13 +2863,23 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
   function padTipAttr(el){ return ' data-tipt="' + padName(el) + '" data-tiptx="이 칸에 선 영웅은 ' + D.elements.names[el] + ' 진영이 더해진다."'; }
   (function(){ var cv2 = document.createElement('canvas'); cv2.width = 124; cv2.height = 30; var c = cv2.getContext('2d'); drawDais(c, 62, 11, 116);
     DAISURL = hexDaisURL({ rim: '#e9c46a', top: '#4a4258', top2: '#5d5470', side: '#2a2533', hi: '#ffd98a' }); document.documentElement.style.setProperty('--dais', 'url(' + DAISURL + ')'); })();
-  function unitPx(boss){ return Math.round(79 * uScale()); }
+  /* 캐릭터 선명도(2026-11-25 사용자 1안): 화면에서 원본(64px 프레임) 1px이 장치 px의 정수배(k)가 되게 크기를 맞춤.
+     장치 px/내부 단위 cs = 전장 폭(화면 px)/720 × 화면 배율(dpr). 기본 크기 79×uScale 안의 원본 배율 r = 기본크기×cs/64, k = max(1, 반올림(r)), 크기 = 64k/cs.
+     창 크기·dpr이 바뀌면 다시 계산. 보스·일반 같은 크기(보스는 원래 크기 규칙). */
+  var QC = { t: -1e9, cs: 1 };
+  function sApp(){ var a = document.querySelector('.app'); return a ? a.getBoundingClientRect().width / 960 || 1 : 1; }
+  function devPerUnit(){ if (bt && csB) return csB; var now = performance.now(); if (now - QC.t > 250){ var f = $('field'), w = f ? f.clientWidth : 0; QC.cs = w ? w * sApp() / 720 * (window.devicePixelRatio || 1) : (window.devicePixelRatio || 1); QC.t = now; } return QC.cs; }
+  function qK(){ return Math.max(1, Math.round(79 * uScale() * devPerUnit() / 64)); }
+  function unitPx(boss){ return 64 * qK() / devPerUnit(); }
+  var OUTLN = 0; /* 외곽선 그림을 정수배 N으로 만들 때 쓸 값(0이면 전장 k). 룰렛·도감 큰 그림은 자기 크기에 맞는 k */
+  function qCss(target, n){ var sc = sApp() * (window.devicePixelRatio || 1), k = Math.max(1, Math.round(target * sc / n)); return { k: k, css: n * k / sc }; } /* css 크기 target에 가장 가까운, 원본 n px가 장치 px의 정수배가 되는 크기 */
   function alignBtnCol(){ var ar = $("arena"), bc = document.querySelector(".camp3 > .btncol"), mid = document.querySelector(".camp3 > .mid"); if (!ar || !bc || !mid || !ar.offsetHeight) return;
     var top = ar.getBoundingClientRect().top - mid.getBoundingClientRect().top, k = (document.querySelector(".app").getBoundingClientRect().width / 960) || 1;
     bc.style.marginTop = Math.round(top / k) + "px"; bc.style.height = ar.offsetHeight + "px";
     // 룰렛 팝업: 앱 전체가 아니라 게임 화면(전장) 가운데에 오도록 덮개를 전장 크기에 맞춰요
     var rl = $("roul"), app = document.querySelector(".app"); if (rl && app){ var a2 = ar.getBoundingClientRect(), p2 = app.getBoundingClientRect(); rl.style.inset = "auto"; rl.style.left = Math.round((a2.left - p2.left) / k) + "px"; rl.style.top = Math.round((a2.top - p2.top) / k) + "px"; rl.style.width = Math.round(a2.width / k) + "px"; rl.style.height = Math.round(a2.height / k) + "px"; rl.style.justifyContent = "center"; } }
-  function fitUnit(){ alignBtnCol(); if (!$('field')) return; var fw = $('field').clientWidth; if (fw) $('field').style.setProperty('--u', Math.round(fw * 79 * uScale() / 720) + 'px'); }
+  function fitUnit(){ alignBtnCol(); if (!$('field')) return; var fw = $('field').clientWidth; QC.t = -1e9; if (fw) $('field').style.setProperty('--u', (fw * unitPx(false) / 720).toFixed(3) + 'px'); var qk = qK(); if (QK_last !== null && qk !== QK_last){ QK_last = qk; try { renderAll(); } catch (e) {} } QK_last = qk; }
+  var QK_last = null;
   window.addEventListener('resize', fitUnit);
   // 편성 화면 막대: 전장(720×400 논리 좌표)과 같은 크기의 캔버스를 덮어 그려요. 체력은 가득, 에너지는 0
   function drawFieldBars(list){
@@ -3033,8 +3051,9 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
   function showOffer(key){
     var p = LP(key), box = $('roul'), pic = box.querySelector('.rpic');
     box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); rayFx(key); $('rUp').hidden = !upOK(key);
-    pic.style.imageRendering = p.type === 'h' && IMGS[p.id] ? 'auto' : '';
-    if (p.type === 'h'){ var id = p.id; pic.innerHTML = IMGS[id] ? '' : AV[id]; pic.style.backgroundImage = IMGS[id] ? 'url(' + outlinedURL(id, gc(id)) + ')' : 'none'; pic.style.setProperty('--gc', gc(id)); if (IMGS[id]){ pic.style.setProperty('--o1', 'url(' + outlinedURL(id, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(id, '#ffffff') + ')'); } /* 결과가 뜨면 외곽선 파랑↔흰색 */ pic.classList.remove('loot'); }
+    pic.style.imageRendering = p.type === 'h' && IMGS[p.id] ? 'pixelated' : '';
+    var rq = qCss(114, 66); document.documentElement.style.setProperty('--rpq', (p.type === 'h' && IMGS[p.id] ? rq.css : 114) + 'px'); rpAnim.nk = p.type === 'h' ? rq.k : 0; OUTLN = rpAnim.nk;
+    if (p.type === 'h'){ var id = p.id; pic.innerHTML = IMGS[id] ? '' : AV[id]; pic.style.backgroundImage = IMGS[id] ? 'url(' + outlinedURL(id, gc(id)) + ')' : 'none'; pic.style.setProperty('--gc', gc(id)); if (IMGS[id]){ pic.style.setProperty('--o1', 'url(' + outlinedURL(id, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(id, '#ffffff') + ')'); } OUTLN = 0; /* 결과가 뜨면 외곽선 파랑↔흰색 */ pic.classList.remove('loot'); }
     else { pic.style.backgroundImage = 'none'; pic.innerHTML = lootIcon(key); pic.classList.add('loot'); }
     rpAnim.id = p.type === 'h' && ANIM_IDS.indexOf(p.id) >= 0 ? p.id : null; /* 프레임 시트 영웅은 룰렛 큰 그림도 대기 1~4 반복 */
     $('rTags').innerHTML = p.type === 'h' ? tagHtml(hero(p.id)) : '';
@@ -3763,7 +3782,11 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
     }
   }
   function rr(x, y, w, h, r){ ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+  var csB = 1;
+  function syncCv(){ if (!cv.clientWidth) return; var nw = Math.round(cv.clientWidth * sApp() * (window.devicePixelRatio || 1)); if (nw && nw !== cv.width){ cv.width = nw; cv.height = Math.round(nw * H / W); } csB = cv.width / W; }
+  var cvSyncT = -1e9;
   function draw(el){
+    if (performance.now() - cvSyncT > 250){ cvSyncT = performance.now(); syncCv(); } ctx.setTransform(csB, 0, 0, csB, 0, 0); /* 뒷판 = 화면 장치 해상도 (720을 줄여 늘리지 않음) */
     var bg = ctx.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, '#26304d'); bg.addColorStop(1, '#1a2a1d');
     ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
     ctx.imageSmoothingEnabled = false; if (BG.complete && BG.naturalWidth){ // 배경 240×107을 정확히 3배(720×321)로 OFF 위치에. 위쪽 0~OFF는 하늘색
@@ -3835,13 +3858,13 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
   function silU(key, col, N){ var k = key + col + '@' + N; if (SIL[k]) return SIL[k]; var src = UPS(key, N), c = document.createElement('canvas'); c.width = src.width; c.height = src.height; var x = c.getContext('2d'); x.drawImage(src, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = col; x.fillRect(0, 0, c.width, c.height); return SIL[k] = c; }
   var OUTL = {};
   /* 편성 화면(전투 시작 전) 캐릭터: 프레임 시트 영웅은 대기 1~4칸을 0.18초마다 바꿔 그려요. 외곽선은 avO와 같은 색으로 프레임마다 다시 구움 */
-  setInterval(function(){ var k = 1 + Math.floor(performance.now() / 180) % 4; document.querySelectorAll('#field .av.pic.olb[data-oid], #hlist .av.pic.olb[data-oid]').forEach(function(e){ if (e.dataset.fk === '' + k) return; var id = e.dataset.oid, f = id + '_a' + k; if (!IMGS[f]) return; e.dataset.fk = k; e.style.backgroundImage = 'url(' + outlinedURL(f, gc(id) + 'b3') + ')'; }); }, 60);
+  setInterval(function(){ var k = 1 + Math.floor(performance.now() / 180) % 4; document.querySelectorAll('#field .av.pic.olb[data-oid], #hlist .av.pic.olb[data-oid]').forEach(function(e){ if (e.dataset.fk === '' + k) return; var id = e.dataset.oid, f = id + '_a' + k; if (!IMGS[f]) return; e.dataset.fk = k; OUTLN = +e.dataset.nk || 0; e.style.backgroundImage = 'url(' + outlinedURL(f, gc(id) + 'b3') + ')'; OUTLN = 0; }); }, 60);
   var rpAnim = { id: null };
   function rpAnimTick(){ var id = rpAnim.id, box = $('roul'); if (!id || !box || box.hidden || box.classList.contains('spin')) return; var f = id + '_a' + (1 + Math.floor(performance.now() / 180) % 4); if (!IMGS[f]) return; var pic = box.querySelector('.rpic');
-    pic.style.backgroundImage = 'url(' + outlinedURL(f, gc(id)) + ')'; pic.style.setProperty('--o1', 'url(' + outlinedURL(f, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(f, '#ffffff') + ')'); } /* 같은 외곽선 색(등급·파랑·흰색)으로 프레임마다 다시 그려 연출 유지 */
+    OUTLN = rpAnim.nk || 0; pic.style.backgroundImage = 'url(' + outlinedURL(f, gc(id)) + ')'; pic.style.setProperty('--o1', 'url(' + outlinedURL(f, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(f, '#ffffff') + ')'); OUTLN = 0; } /* 같은 외곽선 색(등급·파랑·흰색)으로 프레임마다 다시 그려 연출 유지 */
   setInterval(rpAnimTick, 90);
-  function outlinedURL(id, col){ var k = id + col; if (OUTL[k]) return OUTL[k]; var im = IMGS[id], w = im.width, hh = im.height, c = document.createElement('canvas'); c.width = w + 2; c.height = hh + 2; var x = c.getContext('2d'); x.imageSmoothingEnabled = false;
-    var s = silhouette(id, col); [[0, 1], [2, 1], [1, 0], [1, 2]].forEach(function(o){ x.drawImage(s, o[0], o[1]); }); x.drawImage(im, 1, 1); var N = Math.max(1, Math.ceil(100 / w)); if (N > 1){ var c2 = document.createElement('canvas'); c2.width = c.width * N; c2.height = c.height * N; var x2 = c2.getContext('2d'); x2.imageSmoothingEnabled = false; x2.drawImage(c, 0, 0, c2.width, c2.height); c = c2; } return (OUTL[k] = c.toDataURL()); }
+  function outlinedURL(id, col){ var k = id + col + '@' + (IMGS[id] && IMGS[id].width === 64 ? (OUTLN || qK()) : 0); if (OUTL[k]) return OUTL[k]; var im = IMGS[id], w = im.width, hh = im.height, c = document.createElement('canvas'); c.width = w + 2; c.height = hh + 2; var x = c.getContext('2d'); x.imageSmoothingEnabled = false;
+    var s = silhouette(id, col); [[0, 1], [2, 1], [1, 0], [1, 2]].forEach(function(o){ x.drawImage(s, o[0], o[1]); }); x.drawImage(im, 1, 1); var N = w === 64 ? (OUTLN || qK()) : Math.max(1, Math.ceil(100 / w)); if (N > 1){ var c2 = document.createElement('canvas'); c2.width = c.width * N; c2.height = c.height * N; var x2 = c2.getContext('2d'); x2.imageSmoothingEnabled = false; x2.drawImage(c, 0, 0, c2.width, c2.height); c = c2; } return (OUTL[k] = c.toDataURL()); }
   // 발 그림자 자리: 그림 맨 아래 3줄(발)의 좌우 끝(l,r = 그림 폭 비율)과 발 밑 빈 줄 높이(g = 그림 높이 비율)
   var FOOTBOX = {};
   function footBox(id){ var im = IMGS[id]; if (!im) return null; if (FOOTBOX[id] !== undefined) return FOOTBOX[id];
@@ -3954,18 +3977,18 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
     var fb = footBox(sid); ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.beginPath(); if (fb) ctx.ellipse(x + (dir < 0 ? -1 : 1) * ((fb.l + fb.r) / 2 - .5) * S, foot - fb.g * S - 1, Math.max(S * .25, (fb.r - fb.l) * S / 2 + 8), 6, 0, 0, 6.29); else ctx.ellipse(x, foot, S * .34, 8, 0, 0, 6.29); ctx.fill(); /* 발 그림자: 그림의 발 너비·자리에 맞춰요 */
 
     var hasSh = u.shield > 1 && u.alive; if (u._hadSh && !hasSh && u.alive) u._brk = .24; u._hadSh = hasSh; if (u._brk > 0) u._brk -= el; if (!u.alive) u._brk = 0;
-    ctx.save(); ctx.translate(Math.round(x), Math.round(foot)); if (dir < 0) ctx.scale(-1, 1);
+    ctx.save(); ctx.translate(Math.round(x * csB) / csB, Math.round(foot * csB) / csB); if (dir < 0) ctx.scale(-1, 1);
     if (u.energy >= 99.9 && u.alive){ ctx.shadowColor = '#ffd34d'; ctx.shadowBlur = 18; }
-    if (im){ var UN = Math.max(1, Math.ceil(S / im.width)), imU = UPS(sid, UN), sil = silU(sid, gc(u.id), UN), o = 1, ga0 = ctx.globalAlpha; // 등급 외곽선: 가장 얇게(1 논리 px), 옅게
-      ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high'; var sx = Math.round(-S / 2), sy = Math.round(-S + S * .04);
-      if (inspect && inspect.uid === u.uid){ var ps = silU(sid, Math.floor(performance.now() / 350) % 2 ? '#fff3b0' : '#ffd34d', UN); [[2, 0], [-2, 0], [0, 2], [0, -2]].forEach(function(d){ ctx.drawImage(ps, sx + d[0], sy + d[1], S, S); }); } /* 전투 중에도 고른 캐릭터(아군·적)에 금색 선택 라인, 0.7초 깜빡임 (편성 화면 .picked와 같은 모양) */
+    if (im){ var UN = Math.max(1, Math.ceil(S / im.width)), EX = im.width === 64 && !u.h.mob && Math.abs(S * csB - 64 * Math.round(S * csB / 64)) < .02, imU = EX ? im : UPS(sid, UN), sl = function(col){ return EX ? silhouette(sid, col) : silU(sid, col, UN); }, sil = sl(gc(u.id)), o = EX ? 1 / csB : 1, ga0 = ctx.globalAlpha; // 등급 외곽선: 가장 얇게(1 논리 px), 옅게
+      ctx.imageSmoothingEnabled = !EX; ctx.imageSmoothingQuality = 'high'; var sx = Math.round(-S / 2 * csB) / csB, sy = Math.round((-S + S * .04) * csB) / csB; /* 정수배(EX)면 최근접 + 장치 px에 딱 맞춤 */
+      if (inspect && inspect.uid === u.uid){ var ps = sl(Math.floor(performance.now() / 350) % 2 ? '#fff3b0' : '#ffd34d'), o2 = EX ? 2 / csB : 2; [[o2, 0], [-o2, 0], [0, o2], [0, -o2]].forEach(function(d){ ctx.drawImage(ps, sx + d[0], sy + d[1], S, S); }); } /* 전투 중에도 고른 캐릭터(아군·적)에 금색 선택 라인, 0.7초 깜빡임 (편성 화면 .picked와 같은 모양) */
       ctx.globalAlpha = ga0 * .65; [[o, 0], [-o, 0], [0, o], [0, -o]].forEach(function(d){ ctx.drawImage(sil, sx + d[0], sy + d[1], S, S); }); ctx.globalAlpha = ga0;
       ctx.drawImage(imU, sx, sy, S, S);
-      if (u._cfl > 0){ ctx.globalAlpha = ga0 * Math.min(1, u._cfl / .25); ctx.drawImage(silU(sid, '#ffffff', UN), sx, sy, S, S); ctx.globalAlpha = ga0; } /* 상자 그림이 바뀌는 순간 반짝 */
-      if (u.chill > 0){ ctx.globalAlpha = ga0 * .45; ctx.drawImage(silU(sid, '#6fc3ff', UN), sx, sy, S, S); ctx.globalAlpha = ga0; } // 얼음 둔화: 파란 틴트
-      if (u.stone > 0){ ctx.globalAlpha = ga0 * .8; ctx.drawImage(silU(sid, '#8d8a92', UN), sx, sy, S, S); ctx.globalAlpha = ga0; } // 돌: 회색
-      if (u._rev > 0){ ctx.globalAlpha = ga0 * Math.min(1, u._rev / .4); ctx.drawImage(silU(sid, '#fff6d6', UN), sx, sy, S, S); ctx.globalAlpha = ga0; } // 되살아남: 흰 번쩍
-      if (stop && hs.flash > 0){ ctx.shadowBlur = 0; ctx.globalAlpha = ga0 * hs.flash * Math.min(1, 1.6 * hs.t / hs.max); ctx.drawImage(silU(sid, '#ffffff', UN), sx, sy, S, S); ctx.globalAlpha = ga0; } }
+      if (u._cfl > 0){ ctx.globalAlpha = ga0 * Math.min(1, u._cfl / .25); ctx.drawImage(sl('#ffffff'), sx, sy, S, S); ctx.globalAlpha = ga0; } /* 상자 그림이 바뀌는 순간 반짝 */
+      if (u.chill > 0){ ctx.globalAlpha = ga0 * .45; ctx.drawImage(sl('#6fc3ff'), sx, sy, S, S); ctx.globalAlpha = ga0; } // 얼음 둔화: 파란 틴트
+      if (u.stone > 0){ ctx.globalAlpha = ga0 * .8; ctx.drawImage(sl('#8d8a92'), sx, sy, S, S); ctx.globalAlpha = ga0; } // 돌: 회색
+      if (u._rev > 0){ ctx.globalAlpha = ga0 * Math.min(1, u._rev / .4); ctx.drawImage(sl('#fff6d6'), sx, sy, S, S); ctx.globalAlpha = ga0; } // 되살아남: 흰 번쩍
+      if (stop && hs.flash > 0){ ctx.shadowBlur = 0; ctx.globalAlpha = ga0 * hs.flash * Math.min(1, 1.6 * hs.t / hs.max); ctx.drawImage(sl('#ffffff'), sx, sy, S, S); ctx.globalAlpha = ga0; } }
     else { ctx.font = (u.boss ? 44 : 34) + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText(AV[u.id], 0, -4); }
     ctx.restore();
     if ((hasSh || u._brk > 0) && BUBIMG.complete && BUBIMG.naturalWidth) drawBubble(x, foot, S, u);
