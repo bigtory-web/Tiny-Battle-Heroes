@@ -1,0 +1,30 @@
+<!doctype html><meta charset="utf-8"><style>
+html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:"Malgun Gothic",sans-serif;
+ background:#17141d;
+ background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%),linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%);
+ background-size:8px 8px;background-position:0 0,4px 4px}
+.t{position:absolute;top:30px;left:0;right:0;text-align:center;color:#a79fb8;font-size:17px;letter-spacing:1px}
+.t span{background:#17141d;padding:3px 12px;border:2px solid #000;outline:2px solid #3b3550}
+.row{position:absolute;left:80px;right:80px;display:flex;flex-direction:column}
+.who{font-size:15px;font-weight:bold;margin-bottom:6px;color:#a79fb8}
+.me .who{text-align:right;color:#f2c23c}
+/* 계단 모서리: 겉(검정) > 안(색), 아래에 단단한 그림자 */
+.b{position:relative;max-width:560px;filter:drop-shadow(0 5px 0 #0a0810)}
+.b .o,.b .i{display:block;
+ clip-path:polygon(0 12px,6px 12px,6px 6px,12px 6px,12px 0,calc(100% - 12px) 0,calc(100% - 12px) 6px,calc(100% - 6px) 6px,calc(100% - 6px) 12px,100% 12px,100% calc(100% - 12px),calc(100% - 6px) calc(100% - 12px),calc(100% - 6px) calc(100% - 6px),calc(100% - 12px) calc(100% - 6px),calc(100% - 12px) 100%,12px 100%,12px calc(100% - 6px),6px calc(100% - 6px),6px calc(100% - 12px),0 calc(100% - 12px))}
+.b .o{background:#000;padding:4px}
+.b .i{padding:14px 20px;font-size:24px;line-height:1.5;
+ clip-path:polygon(0 12px,6px 12px,6px 6px,12px 6px,12px 0,calc(100% - 12px) 0,calc(100% - 12px) 6px,calc(100% - 6px) 6px,calc(100% - 6px) 12px,100% 12px,100% calc(100% - 12px),calc(100% - 6px) calc(100% - 12px),calc(100% - 6px) calc(100% - 6px),calc(100% - 12px) calc(100% - 6px),calc(100% - 12px) 100%,12px 100%,12px calc(100% - 6px),6px calc(100% - 6px),6px calc(100% - 12px),0 calc(100% - 12px))}
+.me{align-items:flex-end}.me .i{background:#f2c23c;color:#3a2410;box-shadow:inset 0 -4px 0 #c99a1e,inset 0 3px 0 #ffe08a}
+.ai .i{background:#3a3450;color:#fff;box-shadow:inset 0 -4px 0 #2a2539,inset 0 3px 0 #54496e}
+/* 꼬리: 도트 계단 삼각형 */
+.tail{position:absolute;bottom:-8px;width:6px;height:6px;background:#000;
+ box-shadow:6px 0 #000,12px 0 #000,0 6px #000,6px 6px #000,0 12px #000}
+.me .tail{right:30px}.ai .tail{left:30px}
+.hl{color:#ffd84a;font-weight:bold}
+</style>
+<div class="t"><span>2026-11-23 12:41</span></div>
+<div class="row me" style="top:100px"><div class="who">사용자</div>
+ <div class="b"><div class="o"><div class="i">불편한 느낌이 크다.. 일단 배치의 즐거움이 크게 없어. 왜 그럴까?</div></div><div class="tail"></div></div></div>
+<div class="row ai" style="top:300px"><div class="who">AI 기획 세션</div>
+ <div class="b"><div class="o"><div class="i">제 생각에 가장 큰 이유는<br><span class="hl">배치를 잘해도 돌아오는 게 거의 없어서</span>예요.</div></div><div class="tail"></div></div></div>
