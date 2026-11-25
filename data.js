@@ -201,7 +201,7 @@ var IDLE_DATA = {
       ult: { kind: 'barrage', every: 0.4, hits: 4, mul: 1.3, win: { kind: 'killEnergy', v: 40, t: 2.5 }, desc: '0.4초마다 망자의 손을 4번 뻗고, 쓰러뜨린 적 1명마다 에너지 40을 돌려받는다.' }, passive: { kind: 'deathEnergy', v: 20 } },
     { id: 'moonarcher', name: '셀레네', alias: '달빛궁수', sex: 'f', race: 'elf', job: 'archer', ultName: '달빛 화살', role: 'ranged', el: 'light', range: 'mid', shot: 'arrow', cost: 2, grade: 3, hp: 1010, atk: 186, def: 60, interval: 1.25,
       ult: { kind: 'snipe', mul: 3, far: true, win: { kind: 'farShot', v: 0.6 }, desc: '가장 먼 적을 쏜다. 거리가 멀수록 피해가 최대 60% 커진다.' }, passive: { kind: 'farShot', v: 0.4 } },
-    { id: 'minotaur', name: '미나', alias: '미노타우로스', sex: 'f', race: 'beast', job: 'guardian', ultName: '대지 강타', role: 'tank', el: 'fire', range: 'melee', cost: 3, grade: 3, hp: 2370, atk: 80, def: 170, interval: 1.6,
+    { id: 'minotaur', name: '힐다', alias: '미노타우로스', sex: 'f', race: 'beast', job: 'guardian', ultName: '대지 강타', role: 'tank', el: 'fire', range: 'melee', cost: 3, grade: 3, hp: 2370, atk: 80, def: 170, interval: 1.6,
       ult: { kind: 'nova', mul: 2, r: 100, stun: 1, desc: '주변 적에게 공격력 200% 피해를 주고 1초 기절시킨다.' }, passive: { kind: 'hitNova', v: 1.5, n: 8, r: 90 } },
     { id: 'dragon', name: '드라코', alias: '용기사', sex: 'm', race: 'human', job: 'warrior', ultName: '용의 일격', role: 'warrior', el: 'fire', range: 'melee', cost: 3, grade: 4, hp: 1488, atk: 150, def: 95, interval: 1.1,
       ult: { kind: 'strike', mul: 3.6, win: { kind: 'ultBurnAmp', v: 2, dur: 4 }, desc: '공격력 360% 피해를 주고, 맞은 적의 화상 피해가 4초 동안 2배가 된다.' }, passive: { kind: 'ultBurnAmp', v: 2, dur: 4 } },
