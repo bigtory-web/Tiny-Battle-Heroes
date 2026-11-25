@@ -25,7 +25,7 @@ background-image:linear-gradient(45deg,#351829 25%,transparent 25%,transparent 7
 #st{position:absolute;left:0;right:0;top:0}
 .c{display:inline}
 .cur{display:inline-block;width:3px;height:0.95em;margin-left:1px;vertical-align:-0.12em;background:currentColor}
-.m{display:flex;align-items:flex-start;gap:34px;margin:0 36px 14px}.m.me{flex-direction:row-reverse}
+.m{display:flex;align-items:flex-start;gap:34px;margin:0 36px 14px}.m.me{flex-direction:row-reverse}.m.ai{margin-left:52px}
 .ac{flex:none;width:72px;display:flex;flex-direction:column;align-items:center}
 .av{width:72px;height:72px;box-sizing:border-box;border:3px solid #000;outline:2px solid #3b3550;background-repeat:no-repeat;overflow:hidden}
 .me .av{transform:scaleX(-1);background-color:#f2c23c;background-size:260%;background-position:53% 50%}
