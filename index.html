@@ -2535,6 +2535,21 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
     var ar = a.getBoundingClientRect(), cr = c.getBoundingClientRect(), k = cr.height / (c.offsetHeight || 1); if (!k) return;
     b.style.top = Math.round((ar.top - cr.top) / k) + 'px'; b.style.bottom = Math.round((cr.bottom - ar.bottom) / k) + 'px'; }
   window.addEventListener('resize', function(){ setTimeout(fitBag, 30); }); setTimeout(fitBag, 60); setTimeout(fitBag, 600);
+  /* 픽셀 그림 공통 처리(sharp-bilinear): img 태그의 작은 픽셀 그림(≤72px)은 원본을 최근접으로 정수배(N) 미리 키운 그림으로 바꾸고 화면에서는 부드럽게(auto) 그려요.
+     소수 배율(1.81배, 0.907배 등)에서 pixelated로 그리면 점 크기가 들쭉날쭉하거나 줄이 빠져서 깨져 보임. N은 화면에 그려지는 크기(무대 배율×dpr 포함)에 맞춰 2~6배.
+     새로 생기는 img(화면을 다시 그릴 때)와 src가 바뀌는 img도 따라가요. (2026-11-25 기획 세션 요청) */
+  var SMc = {};
+  function smoothImg(im){ if (im.dataset.sm) return; var src = im.currentSrc || im.src; if (!src || src.indexOf('data:') === 0 || src.indexOf('img/') < 0) return;
+    if (!im.complete || !im.naturalWidth){ if (!im._smw){ im._smw = 1; im.addEventListener('load', function(){ im._smw = 0; smoothImg(im); }, { once: true }); } return; }
+    var nw = im.naturalWidth, nh = im.naturalHeight; if (nw > 72 || nh > 72) return;
+    var cs = getComputedStyle(im); if (cs.imageRendering !== 'pixelated' && cs.imageRendering !== 'crisp-edges') return;
+    var r = im.getBoundingClientRect(), disp = r.width || nw * 1.5, N = Math.max(2, Math.min(6, Math.ceil(disp / nw) + 1)), key = src + '@' + N, u = SMc[key];
+    if (!u){ var c = document.createElement('canvas'); c.width = nw * N; c.height = nh * N; var x = c.getContext('2d'); x.imageSmoothingEnabled = false; x.drawImage(im, 0, 0, c.width, c.height); try { u = SMc[key] = c.toDataURL(); } catch (e){ return; } }
+    if (parseFloat(cs.width) === nw && parseFloat(cs.height) === nh){ im.style.width = nw + 'px'; im.style.height = nh + 'px'; } /* 따로 크기를 안 준 그림은 원래 크기를 고정 */
+    im.dataset.sm = '1'; im.dataset.osrc = src; im.src = u; im.style.imageRendering = 'auto'; }
+  function smoothAll(root){ if (root.tagName === 'IMG') smoothImg(root); else if (root.querySelectorAll) root.querySelectorAll('img').forEach(smoothImg); }
+  new MutationObserver(function(ms){ ms.forEach(function(m){ if (m.type === 'attributes'){ var im = m.target; if (im.tagName === 'IMG' && im.src.indexOf('data:') !== 0){ delete im.dataset.sm; smoothImg(im); } } else m.addedNodes.forEach(function(n){ if (n.nodeType === 1) smoothAll(n); }); }); }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['src'] });
+  setTimeout(function(){ smoothAll(document.body); }, 0); window.addEventListener('resize', function(){ setTimeout(function(){ document.querySelectorAll('img[data-sm]').forEach(function(i){ delete i.dataset.sm; i.src = i.dataset.osrc; }); }, 200); });
   var STAGE_FIT = 0.85; /* 2026-11-24: 게임 판을 창보다 작게 (사용자: 전체 화면 크기는 좀 줄여 줘) */
   function fitStage(){ var app = document.querySelector('.app'); if (!app) return; var sw = window.innerWidth, sh = window.innerHeight, k = Math.min(sw / 960, sh / 511) * STAGE_FIT; if (!sw || !sh) return;
     app.style.transform = 'scale(' + k + ')'; app.style.left = Math.round(Math.max(0, (sw - 960 * k) / 2)) + 'px'; app.style.top = Math.round(Math.max(0, (sh - 511 * k) / 2)) + 'px'; /* 소수점 위치는 글씨를 번지게 해서 정수로 */
