@@ -37,6 +37,6 @@ const A=bubble('개발 과정을 <span class="hl">기록</span>으로 남기고 
 const item=(n,h,d)=>`<div class="pi sh"><div class="o"><div class="in"><span class="nb">${n}</span><span class="pt"><span class="ph">${h}</span><span class="pd">${d}</span></span></div></div></div>`;
 const B=`<div class="tag sh"><div class="o"><div class="in">POINT!</div></div></div>`+item(1,'기록','개발 과정을 남겨요')+item(2,'바람','누군가에게 도움이 되면 좋겠어요')+item(3,'다음 화','덩치 배치 이야기');
 fs.mkdirSync(OUT,{recursive:true});
-const X='<div class="bb sh"><div class="o"><div class="in">사실 이 세 가지 말고도 쓸 말이 많았어요. 다음 화부터 하나씩 풀게요.</div></div><div class="pt"></div></div><div class="bd"><div class="av"></div><div class="nm">빅토리</div></div>';
+const X='<div class="bd"><div class="av"></div></div>';
 for(const [n,h,x] of [['좌영상_A_이야기',A,''],['좌영상_B_POINT',B,''],['좌영상_C_추가이야기',B,X]]){const f=path.join(OUT,n+'.html');fs.writeFileSync(f,page(h,x));execFileSync(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=1920,1080','--screenshot='+path.join(OUT,n+'.png'),'file:///'+f.split(path.sep).join('/')],{stdio:'ignore'});fs.unlinkSync(f)}
 console.log('ok');
