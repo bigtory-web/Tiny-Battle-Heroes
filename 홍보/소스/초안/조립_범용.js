@@ -3,7 +3,7 @@ const {execFileSync}=require('child_process'),fs=require('fs');
 const [dir,out]=process.argv.slice(2);
 const dur=JSON.parse(fs.readFileSync(`${dir}/길이.json`,'utf8'));
 const a=[];let f='';
-dur.forEach((d,i)=>{a.push('-loop','1','-t',String(+d.toFixed(2)),'-i',`${dir}/프레임${String(i+1).padStart(2,'0')}.png`);f+=`[${i}:v]scale=1920:1080,format=yuv420p,fps=30[v${i}];`});
+dur.forEach((d,i)=>{a.push('-loop','1','-t',String(+d.toFixed(2)),'-i',`${dir}/프레임${String(i+1).padStart(String(dur.length).length>2?3:2,'0')}.png`);f+=`[${i}:v]scale=1920:1080,format=yuv420p,fps=30[v${i}];`});
 f+=dur.map((_,i)=>`[v${i}]`).join('')+`concat=n=${dur.length}:v=1:a=0[out]`;
 execFileSync('ffmpeg',['-y','-v','error',...a,'-filter_complex',f,'-map','[out]','-c:v','libx264','-pix_fmt','yuv420p',out],{stdio:'inherit'});
 console.log('ok',dur.reduce((x,y)=>x+y,0).toFixed(1)+'s');

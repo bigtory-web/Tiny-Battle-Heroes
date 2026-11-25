@@ -1,6 +1,6 @@
 // 채팅 말풍선 v2: 글자 또렷(zoom:2), 모서리 2픽셀, 새 말풍선이 아래에서 위로 밀려 올라옴, 사용자 얼굴 = 프로필 캐릭터.
 // 사용: node 채팅만들기.js → 채팅/프레임NN.png + 채팅/길이.json (조립: node 조립_범용.js 채팅 뼈대_채팅.mp4)
-const fs=require('fs'),path=require('path'),{execFileSync}=require('child_process');
+const fs=require('fs'),path=require('path'),{execFile}=require('child_process');
 const E='C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',D=__dirname,OUT=path.join(D,'채팅');
 const hl=s=>`<span class="hl">${s}</span>`;
 const M=[
@@ -24,6 +24,14 @@ background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 7
 #vp{position:absolute;left:0;right:0;top:56px;bottom:20px;overflow:hidden;-webkit-mask-image:linear-gradient(transparent 0,#000 28px)}
 #st{position:absolute;left:0;right:0;top:0}
 .c{display:inline}
+.b{position:relative}
+.pt1,.pt2{position:absolute;top:50%}
+.pt1{width:18px;height:30px;margin-top:-17px;background:#000;clip-path:polygon(0 0,6px 0,6px 6px,12px 6px,12px 10px,18px 10px,18px 20px,12px 20px,12px 24px,6px 24px,6px 30px,0 30px)}
+.pt2{width:14px;height:20px;margin-top:-11px;clip-path:polygon(0 0,4px 0,4px 3px,8px 3px,8px 6px,14px 6px,14px 14px,8px 14px,8px 17px,4px 17px,4px 20px,0 20px)}
+.me .pt1{left:100%;margin-left:-3px}.me .pt2{left:100%;margin-left:-2px;background:#f2c23c}
+.ai .pt1{right:100%;margin-right:-3px;transform:scaleX(-1)}.ai .pt2{right:100%;margin-right:-2px;background:#463e60;transform:scaleX(-1)}
+
+.cur{display:inline-block;width:3px;height:0.95em;margin-left:1px;vertical-align:-0.12em;background:currentColor}
 .m{display:flex;align-items:flex-end;gap:12px;margin:0 36px 16px}.m.me{flex-direction:row-reverse}
 .av{flex:none;width:58px;height:58px;box-sizing:border-box;border:3px solid #000;outline:2px solid #3b3550;background-repeat:no-repeat;overflow:hidden}
 .me .av{transform:scaleX(-1);background-color:#f2c23c;background-size:260%;background-position:53% 50%}.ai .av{background-color:#54496e;background-size:100%;background-position:50% 50%;image-rendering:pixelated}
@@ -31,7 +39,7 @@ background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 7
 .who{font-size:12px;font-weight:bold;color:#a79fb8;margin-bottom:3px}.me .who{color:#f2c23c}
 .who i{font-style:normal;font-weight:normal;color:#6d6482;margin-left:6px}
 .b{filter:drop-shadow(0 4px 0 #0a0810)}.o{background:#000;padding:4px;clip-path:${clip}}
-.i{padding:10px 16px 14px;font-size:20px;line-height:1.45;clip-path:${clip}}
+.i{position:relative;padding:20px 28px 26px 28px;font-size:20px;line-height:1.5;clip-path:${clip}}
 .me .i{${bev('#ffe08a','#f2c23c','#c99a1e',4,6)};color:#3a2410}
 .ai .i{${bev('#6a5d8c','#463e60','#2a2539',4,6)};color:#fff}
 .hl{color:#ffd84a;font-weight:bold}
@@ -44,27 +52,27 @@ const START=150; // 첫 말풍선 시작 높이(작은 화면 px, 가운데 근�
 const dur=[];let fn=0;
 // 글자 수(마크업 제외) 세기와 n글자까지만 보이게 하기(나머지는 자리만 차지하고 안 보임)
 const plainLen=x=>x.replace(/<[^>]+>/g,'').length;
-function typed(x,n){let i=0,out='';for(const tk of x.split(/(<span class="hl">|<\/span>)/)){if(tk==='<span class="hl">'||tk==='</span>'){out+=tk;continue}for(const ch of tk){out+=(ch===' '||i<n)?ch:'<span class="c" style="visibility:hidden">'+ch+'</span>';if(ch!==' ')i++}}return out}
-function render(k,an,n){
-  fn++;
-  const items=M.slice(0,k).map(([w,t,x],j)=>{const last=j===k-1;const body=last&&n!==undefined?typed(x,n):x;return `<div class="m ${w}"><div class="av" style="background-image:url(${AV[w]})"></div><div class="col"><div class="who">${NAME[w]}<i>${t}</i></div><div class="b"><div class="o"><div class="i">${body}</div></div></div></div></div>`}).join('');
+function typed(x,n,cur){let i=0,out='';const put=()=>cur?'<span class="cur"></span>':'';if(n===0)out+=put();for(const tk of x.split(/(<span class="hl">|<\/span>)/)){if(tk==='<span class="hl">'||tk==='</span>'){out+=tk;continue}for(const ch of tk){if(ch===' '){out+=ch;continue}if(i<n){out+=ch;i++;if(i===n)out+=put()}else{out+='<span class="c" style="visibility:hidden">'+ch+'</span>';i++}}}return out}
+function render(k,an,n,cur,fnum,nx){
+  const items=M.slice(0,k).map(([w,t,x],j)=>{const last=j===k-1;const body=(last&&n!==undefined?typed(x,n,cur):x);return `<div class="m ${w}"><div class="av" style="background-image:url(${AV[w]})"></div><div class="col"><div class="who">${NAME[w]}<i>${t}</i></div><div class="b"><div class="o"><div class="i">${body}</div></div><div class="pt1"></div><div class="pt2"></div></div></div></div>`}).join('');
   // 배치: 가운데 근처(START)에서 시작해 아래로 쌓이고, 아래 끝에 닿으면 위로 밀림. an이 있으면 올라오는 중
   const js=`<script>const vp=document.getElementById('vp'),st=document.getElementById('st'),kids=[...st.children],l=kids[kids.length-1],Hv=vp.clientHeight,hh=e=>e.offsetHeight+16;
 const Hc=kids.reduce((a,e)=>a+hh(e),0),Hp=Hc-hh(l),T=H=>${START}+H<=Hv?${START}:Hv-H;
 const A=${an?JSON.stringify(an):'{dy:0,op:1,f:0}'};const tf=T(Hc),tp=kids.length>1?T(Hp):tf;
 st.style.top=(tf+(tp-tf)*A.f)+'px';l.style.transform='translateY('+A.dy+'px)';l.style.opacity=A.op;</script>`;
   const html=`<!doctype html><meta charset="utf-8"><style>${css}</style><div class="t"><span>2026-11-23 · ${M[k-1][1]}</span></div><div id="vp"><div id="st">${items}</div></div>${js}`;
-  const nn=String(fn).padStart(2,'0'),h=path.join(OUT,`f${nn}.html`),big=path.join(OUT,`프레임${nn}.png`);
+  const nn=String(fnum).padStart(3,'0'),h=path.join(OUT,`f${nn}.html`),big=path.join(OUT,`프레임${nn}.png`);
   fs.writeFileSync(h,html);
-  execFileSync(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=1920,1080','--screenshot='+big,u(h)],{stdio:'ignore'});
-  fs.unlinkSync(h);
+  return new Promise(res=>execFile(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=1920,1080','--screenshot='+big,u(h)],()=>{fs.unlinkSync(h);res()}));
 }
+const jobs=[];
 M.forEach((m,k)=>{
   const L=plainLen(m[2]);
   const hold=Math.min(6,Math.max(2.2,1+L*0.09));
-  for(const an of ANIM){render(k+1,an,0);dur.push(0.07)}          // 올라옴(글자는 아직 없음)
-  for(let i=1;i<=STEPS;i++){render(k+1,null,Math.ceil(L*i/STEPS));dur.push(0.1)} // 한 글자씩 나타남
-  dur[dur.length-1]=hold; // 다 나타난 프레임이 유지 시간
+  for(const an of ANIM){jobs.push([k+1,an,0,false]);dur.push(0.07)}   // 올라옴(글자는 아직 없음)
+  for(let i=1;i<L;i++){jobs.push([k+1,null,i,true]);dur.push(0.055)}   // 한 글자씩 + 커서
+  jobs.push([k+1,null,L,false]);dur.push(hold); // 다 나온 상태가 유지 시간
 });
+(async()=>{let next=0;const worker=async()=>{while(next<jobs.length){const j=next++;{const q=jobs[j];await render(q[0],q[1],q[2],q[3],j+1,q[4])}}};await Promise.all(Array.from({length:5},worker));
 fs.writeFileSync(path.join(OUT,'길이.json'),JSON.stringify(dur));
-console.log('frames',dur.length,'sec',dur.reduce((a,b)=>a+b,0).toFixed(1));
+console.log('frames',dur.length,'sec',dur.reduce((a,b)=>a+b,0).toFixed(1));})();
