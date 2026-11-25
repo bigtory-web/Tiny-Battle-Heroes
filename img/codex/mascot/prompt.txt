@@ -1,0 +1,5 @@
+Look at the image img/codex/mascot/dev_sheet_v3.png (our approved pixel art mascot on a magenta background). Generate ONE new image with your image generation tool and save it as img/codex/mascot/dev_sheet.png.
+
+Make it the SAME character, same pose, same size, same position in the frame, same art style, same black permed hair, glasses, no mouth, black hoodie, same magenta background. The ONLY change: add a hair highlight streak (a "bridge" dye) in bright yellow (#f2c23c with a lighter yellow highlight pixel) on ONE side of the hair: a few curled locks at the front right side of the hair near the face, about 1/5 of the hair volume, clearly visible as a distinctive feature. Keep it pixel art with the same dark outline, no anti-aliasing, no blur. Everything else must stay identical.
+
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item, and keep the image exactly as generated (do not resize or edit it). Do not modify or create any other file.
