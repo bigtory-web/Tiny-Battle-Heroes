@@ -2832,6 +2832,7 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
   // 편성 전장의 그림 크기 = 전장 폭 × 108/480 (전투 캔버스와 같은 배율)
   // 캐릭터 크기 배율 (도구 화면에서 조절, 100% = 79 논리 px = 36px 그림 × 2.2)
   function uScale(){ return (S.ui && S.ui.unitScale) || 1.1; } // 기본 캐릭터 크기 110% (2026-11-25 사용자: 80%에서 110%로)
+  (function(){ if (S && S.ui && !S.ui.kReset){ delete S.ui.unitPct; delete S.ui.unitK; S.ui.kReset = 1; } })(); /* 새 기본 크기: 한 번만 눌러 본 크기 설정을 지움 */
   (function(){ if (S && S.ui){ if (S.ui.unitScale === 0.8 && !S.ui.us110) delete S.ui.unitScale; S.ui.us110 = 1; } })(); /* 예전 기본값 0.8이 저장돼 있으면 한 번만 새 기본값 110%로 */
   function drawDais(c, x, foot, w, pal){ // 윗면 가운데가 foot에 오는 타원형 단상
     pal = pal || { rim: '#e9c46a', top: '#4a4258', top2: '#5d5470', side: '#2a2533', hi: '#ffd98a' };
@@ -2888,7 +2889,7 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
   var QC = { t: -1e9, cs: 1 };
   function sApp(){ var a = document.querySelector('.app'); return a ? a.getBoundingClientRect().width / 960 || 1 : 1; }
   function devPerUnit(){ if (bt && csB) return csB; var now = performance.now(); if (now - QC.t > 250){ var f = $('field'), w = f ? f.clientWidth : 0; QC.cs = w ? w * sApp() / 720 * (window.devicePixelRatio || 1) : (window.devicePixelRatio || 1); QC.t = now; } return QC.cs; }
-  function qKauto(){ return Math.max(1, Math.ceil(79 * uScale() * devPerUnit() / 64 - 0.1)); }
+  function qKauto(){ return Math.max(1, Math.round(79 * uScale() * devPerUnit() / 64)); } /* 가장 가까운 정수배 (2026-11-25 사용자: 2배. 1920×950에서 r 2.34 -> k 2) */
   function unitPct(){ var p = S && S.ui && S.ui.unitPct; return p >= -50 && p <= 50 ? p : 0; } /* 도구 탭에서 고른 자동 크기 대비 % (−30~+30, 0이면 정수배 그대로) */
   function qR(){ return unitPx(false) * devPerUnit() / 64; } /* 원본 1px이 장치 px 몇 개인지(소수 가능) */
   function qN(){ var r = qR(); return Math.abs(r - Math.round(r)) < .02 ? Math.max(1, Math.round(r)) : Math.max(2, Math.ceil(r) + 1); } /* 외곽선 그림을 키울 정수배: 정수 크기면 그 배율, 아니면 한 단계 위(부드럽게 줄임) */
