@@ -25,7 +25,7 @@ background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 7
 #st{position:absolute;left:0;right:0;bottom:0}
 .m{display:flex;align-items:flex-end;gap:12px;margin:0 36px 16px}.m.me{flex-direction:row-reverse}
 .av{flex:none;width:58px;height:58px;box-sizing:border-box;border:3px solid #000;outline:2px solid #3b3550;background-repeat:no-repeat;overflow:hidden}
-.me .av{background-color:#f2c23c;background-size:300%;background-position:36% 38%}.ai .av{background-color:#54496e;background-size:100%;background-position:50% 50%;image-rendering:pixelated}
+.me .av{background-color:#f2c23c;background-size:260%;background-position:53% 50%}.ai .av{background-color:#54496e;background-size:100%;background-position:50% 50%;image-rendering:pixelated}
 .col{display:flex;flex-direction:column;max-width:760px}.me .col{align-items:flex-end}
 .who{font-size:12px;font-weight:bold;color:#a79fb8;margin-bottom:3px}.me .who{color:#f2c23c}
 .who i{font-style:normal;font-weight:normal;color:#6d6482;margin-left:6px}
