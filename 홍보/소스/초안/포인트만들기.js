@@ -36,11 +36,17 @@ h1{margin:0 0 16px;font-size:44px;text-shadow:${O1}}
 const u=p=>'file:///'+p.split(path.sep).join('/');
 fs.mkdirSync(OUT,{recursive:true});
 const dur=[];let fn=0;
+if(process.env.MODE==='clip'){
+  fs.mkdirSync(OUT,{recursive:true});
+  const html=`<!doctype html><meta charset="utf-8"><style>${css}.rbg{display:none}.L{left:40px;right:40px;width:auto}.media{height:330px;margin-top:18px}.d{display:inline}.d::after{content:" "}</style><div class="L"><h1>${T.title}</h1><div>${T.detail.map(x=>`<span class="d">${x}</span>`).join('')}</div><div class="media">${T.media}</div></div>`;
+  const h=path.join(OUT,'p01.html');fs.writeFileSync(h,html);
+  execFileSync(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=1920,1080','--screenshot='+path.join(OUT,'프레임01.png'),u(h)],{stdio:'ignore'});fs.unlinkSync(h);
+  fs.writeFileSync(path.join(OUT,'길이.json'),JSON.stringify([T.total||5]));console.log('clip frame');process.exit(0)}
 const ANIM=[{dy:20,op:0.35},{dy:10,op:0.75},{dy:0,op:1}]; // 새 항목: 아래에서 위로 밀려 올라옴
 function render(k,anim){
   fn++;
   const items=T.points.slice(0,k).map((p,j)=>{const a=(anim&&j===k-1)?` style="transform:translateY(${anim.dy}px);opacity:${anim.op}"`:'';return `<div class="pi fr"${a}><div class="o"><div class="i"><span class="pt"><span class="ph">${p.h}</span><span class="pd">${p.d}</span></span></div></div></div>`}).join('');
-  const html=`<!doctype html><meta charset="utf-8"><style>${css}</style>
+  const html=`<!doctype html><meta charset="utf-8"><style>${css}${process.env.MODE==='point'?'.rbg,.L{display:none}.R{left:90px;right:90px}.tag{margin-bottom:20px}.items{gap:22px}':''}</style>
 <div class="rbg"></div><div class="L"><h1>${T.title}</h1>${T.detail.map(x=>`<p class="d">${x}</p>`).join('')}<div class="media">${T.media}</div></div>
 <div class="R"><div class="tag fr"><div class="o"><div class="i">POINT!</div></div></div><div class="items">${items}</div></div>`;
   const n=String(fn).padStart(2,'0'),h=path.join(OUT,`p${n}.html`),big=path.join(OUT,`프레임${n}.png`);
