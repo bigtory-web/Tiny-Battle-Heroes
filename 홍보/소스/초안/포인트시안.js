@@ -47,5 +47,22 @@ const B=`<div class="tag sh"><div class="o"><div class="in">POINT!</div></div><i
 fs.mkdirSync(OUT,{recursive:true});
 const X='<div class="bd"><div class="av"></div></div>';
 const PG=`<style>.pi .o,.tag .o{background:#4a4658!important}.tag .sp{display:none!important}.tag .in{-webkit-text-stroke:1.5px #fff;text-shadow:2px 0 0 #4a1230,-2px 0 0 #4a1230,0 2px 0 #4a1230,0 -2px 0 #4a1230,2px 2px 0 #4a1230,-2px 2px 0 #4a1230,2px -2px 0 #4a1230,-2px -2px 0 #4a1230!important}html,body{background-color:#0a0810!important;background-image:linear-gradient(45deg,#100d17 25%,transparent 25%,transparent 75%,#100d17 75%),linear-gradient(45deg,#100d17 25%,transparent 25%,transparent 75%,#100d17 75%)!important}.pi .in::after{display:none!important}.pi .in{background:linear-gradient(#a28fd6 0 8px,#52466f 8px calc(100% - 14px),#1f1a33 calc(100% - 14px))!important}.tag .o{clip-path:${pill(16)}}.tag .in{clip-path:${pill(12)}}.tag{align-self:flex-start!important}.tag .in{background:linear-gradient(#ff9fbf 0 6px,#e8668f 6px calc(100% - 8px),#a63a66 calc(100% - 8px))!important;color:#fff!important;text-shadow:1px 0 0 #4a1230,-1px 0 0 #4a1230,0 1px 0 #4a1230,0 -1px 0 #4a1230,1px 1px 0 #4a1230,-1px 1px 0 #4a1230,1px -1px 0 #4a1230,-1px -1px 0 #4a1230}.tag .sp{background:#fff;box-shadow:6px 0 #fff,-6px 0 #fff,0 6px #fff,0 -6px #fff,12px 0 #ffc2d6,-12px 0 #ffc2d6,0 12px #ffc2d6,0 -12px #ffc2d6}.pi .in{height:96px;box-sizing:border-box;padding:10px 22px 18px 16px!important;align-items:center}.rbg,.t,.vid,.cap{display:none}.R{display:flex!important;left:210px;right:210px;top:34px;gap:13px}.items{gap:26px!important;padding-top:6px!important}.tag{margin-bottom:13px!important}</style><div class="bd"><div class="av"></div></div>`;
+if(process.env.VIDEO){ // POINT 페이지 샘플 영상 프레임(10fps, 7초): 태그 깜빡 → 항목 1·2·3 순서로 올라옴 → 글자 타이핑, 배지는 위아래로 천천히 바운스
+  const {execFile}=require('child_process');const TX=['개발 과정을 남겨요','누군가에게 도움이 되면 좋겠어요','다음 화는 덩치 배치 이야기'];
+  const dir=path.join(OUT,'영상프레임');fs.mkdirSync(dir,{recursive:true});
+  const hid=(x,n)=>[...x].map((c,i)=>i<n||c===' '?c:'<span style="visibility:hidden">'+c+'</span>').join('');
+  const dyn=t=>{const u=(v,a,b)=>Math.min(1,Math.max(0,(v-a)/(b-a)));
+    const tg=t<0.2?0:1,br=Math.floor(t/0.5)%2?1.2:1;
+    const tag='<div class="tag sh" style="opacity:'+tg+';filter:brightness('+br+')"><div class="o"><div class="in">POINT!</div></div></div>';
+    const its=TX.map((x,i)=>{const st=0.6+i*2,k=u(t,st,st+0.3),n=Math.floor(Math.max(0,t-(st+0.4))/0.06);
+      return '<div class="pi sh" style="opacity:'+k+';transform:translateY('+((1-k)*20)+'px)"><div class="o"><div class="in"><span class="nb">'+(i+1)+'</span><span class="pt"><span class="pd">'+hid(x,n)+'</span></span></div></div></div>'}).join('');
+    return tag+its};
+  const bounce=t=>-Math.abs(Math.sin(t*Math.PI/1.2))*8;
+  const jobs=[...Array(70).keys()];let nx=0;
+  const one=i=>new Promise(r=>{const t=i/10,f=path.join(dir,'f'+String(i+1).padStart(2,'0')+'.html'),png=path.join(dir,'프레임'+String(i+1).padStart(2,'0')+'.png');
+    fs.writeFileSync(f,page(dyn(t),PG+'<style>.bd{transform:translateY('+bounce(t).toFixed(1)+'px)}</style>'));
+    execFile(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=1920,1080','--screenshot='+png,'file:///'+f.split(path.sep).join('/')],()=>{fs.unlinkSync(f);r()})});
+  (async()=>{await Promise.all(Array.from({length:4},async()=>{while(nx<jobs.length)await one(jobs[nx++])}));fs.writeFileSync(path.join(dir,'길이.json'),JSON.stringify(jobs.map(()=>0.1)));console.log('video frames',jobs.length)})();
+} else {
 for(const [n,h,x] of [['POINT_별도페이지',B,PG],['좌영상_A_이야기',A,''],['좌영상_B_POINT',B,''],['좌영상_C_추가이야기',B,X]]){const f=path.join(OUT,n+'.html');fs.writeFileSync(f,page(h,x));execFileSync(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=1920,1080','--screenshot='+path.join(OUT,n+'.png'),'file:///'+f.split(path.sep).join('/')],{stdio:'ignore'});fs.unlinkSync(f)}
-console.log('ok');
+console.log('ok');}
