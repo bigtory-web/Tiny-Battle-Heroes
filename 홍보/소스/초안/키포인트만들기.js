@@ -5,7 +5,7 @@ const E='C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',D=__dirna
 const IMG='../../../../img/p/';
 const KW=['더 바자르','덩치','롤백'];
 const FONT=process.env.FONT||'galmuri';
-const TXT=process.env.TXT||'shadow'; // 글자 외곽: shadow(밑 그림자) / outline(외곽 1px) / both(외곽 1px + 밑 그림자)
+const TXT=process.env.TXT||'outline'; // 글자 외곽: shadow(밑 그림자) / outline(외곽 1px) / both(외곽 1px + 밑 그림자)
 const O1='1px 0 0 #000,-1px 0 0 #000,0 1px 0 #000,0 -1px 0 #000,1px 1px 0 #000,-1px 1px 0 #000,1px -1px 0 #000,-1px -1px 0 #000';
 const TS={shadow:'0 3px 0 rgba(0,0,0,.75),1px 0 0 rgba(0,0,0,.6),-1px 0 0 rgba(0,0,0,.6)',outline:O1,both:O1+',0 3px 0 #000'}[TXT]; // malgun / galmuri / pretendard
 const FF={galmuri_reg:'"GalmuriR",sans-serif',malgun:'"Malgun Gothic",sans-serif',galmuri:'"GalmuriX",sans-serif',pretendard:'"PretX",sans-serif'}[FONT];

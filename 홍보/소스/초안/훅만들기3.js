@@ -7,14 +7,16 @@ const clip='polygon(0 16px,8px 16px,8px 8px,16px 8px,16px 0,calc(100% - 16px) 0,
 // 장식: [파일, 가로위치, 세로위치, 높이(px), 뒤집기, 흔들림방향]  (영웅은 크게·모서리에 걸쳐서, 유물은 작게)
 const HEROES=[['knight','left:-24px','bottom:-44px',300,0,1],['bear','right:-24px','bottom:-44px',290,1,-1],['ev_fairy','left:34px','top:14px',150,0,-1],['hawk','right:34px','top:6px',170,1,1],['blades','left:-16px','top:200px',130,0,1],['candle','right:-10px','top:210px',140,1,-1]];
 const RELICS=[['skill_starcrown',214,22],['skill_meteor',300,66],['skill_bulwark',610,24],['skill_drums',690,64],['skill_arcane',36,192],['skill_warhorn',852,196],['skill_grace',330,452],['skill_kindle',560,454],['skill_frost',246,404],['skill_volley',690,410]];
-const css=`html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:"Malgun Gothic",sans-serif;background:#241a2e}
+const FACE='@font-face{font-family:"GalmuriX";src:url("../../폰트/Galmuri11-Bold.ttf");font-weight:700}'; // 갈무리 볼드(영상 공통 폰트, 크기는 11의 배수)
+const O1='1px 0 0 #000,-1px 0 0 #000,0 1px 0 #000,0 -1px 0 #000,1px 1px 0 #000,-1px 1px 0 #000,1px -1px 0 #000,-1px -1px 0 #000'; // 외곽 라인 1px
+const css=`${FACE}html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:"GalmuriX",sans-serif;background:#241a2e}
 .bg{position:absolute;left:50%;top:50%;width:1080px;height:603px;margin:-301px 0 0 -540px;image-rendering:pixelated}
 .dim{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(20,12,30,.25),rgba(12,8,20,.7))}
 .st{position:absolute;background:#ffe08a;display:block}
 .dc{position:absolute;image-rendering:pixelated;filter:drop-shadow(0 5px 0 rgba(10,8,16,.8))}
 .pl{position:absolute;left:50%;top:50%;width:max-content;filter:drop-shadow(0 7px 0 #0a0810);transform-origin:50% 50%}
 .pl .o{background:#000;padding:8px;clip-path:${clip}}
-.pl .i{width:690px;box-sizing:border-box;background:linear-gradient(#ffe08a 0 7px,#f2c23c 7px calc(100% - 11px),#c99a1e calc(100% - 11px));color:#3a2410;padding:30px 54px 40px;font-size:58px;font-weight:bold;-webkit-text-stroke:2.5px currentColor;line-height:1.3;text-align:center;white-space:nowrap;clip-path:${clip}}
+.pl .i{width:690px;box-sizing:border-box;background:linear-gradient(#ffe08a 0 7px,#f2c23c 7px calc(100% - 11px),#c99a1e calc(100% - 11px));color:#3a2410;padding:30px 54px 40px;font-size:55px;font-weight:bold;line-height:1.3;text-align:center;white-space:nowrap;clip-path:${clip}}
 .red{color:#b3261e}.dim2{color:#a8842a}`;
 const star=(x,y,s=6)=>`<i class="st" style="left:${x}px;top:${y}px;width:${s}px;height:${s}px;box-shadow:${s}px 0 #ffe08a,-${s}px 0 #ffe08a,0 ${s}px #ffe08a,0 -${s}px #ffe08a"></i>`;
 const STARS=[[120,120,6],[840,110,6],[100,330,5],[870,330,6],[480,70,5],[480,480,5]];

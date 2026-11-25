@@ -10,13 +10,15 @@ const C=+process.env.C||4;
 const clip=`polygon(0 ${C}px,${C}px ${C}px,${C}px 0,calc(100% - ${C}px) 0,calc(100% - ${C}px) ${C}px,100% ${C}px,100% calc(100% - ${C}px),calc(100% - ${C}px) calc(100% - ${C}px),calc(100% - ${C}px) 100%,${C}px 100%,${C}px calc(100% - ${C}px),0 calc(100% - ${C}px))`;
 // 3단 입체: 위 밝은 띠 / 몸통 / 아래 어두운 띠 (게임 버튼과 같은 방식)
 const bev=(hi,mid,lo,t=5,b=7)=>`background:linear-gradient(${hi} 0 ${t}px,${mid} ${t}px calc(100% - ${b}px),${lo} calc(100% - ${b}px))`;
-const css=`html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:"Malgun Gothic",sans-serif;color:#fff;background:#17141d;
+const FACE='@font-face{font-family:"GalmuriX";src:url("../../폰트/Galmuri11-Bold.ttf");font-weight:700}'; // 갈무리 볼드(영상 공통 폰트, 크기는 11의 배수)
+const O1='1px 0 0 #000,-1px 0 0 #000,0 1px 0 #000,0 -1px 0 #000,1px 1px 0 #000,-1px 1px 0 #000,1px -1px 0 #000,-1px -1px 0 #000'; // 외곽 라인 1px
+const css=`${FACE}html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:"GalmuriX",sans-serif;color:#fff;background:#17141d;
 background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%),linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%);background-size:8px 8px;background-position:0 0,4px 4px}
 .rbg{position:absolute;left:488px;right:0;top:0;bottom:0;background:#0d0b12;background-image:linear-gradient(45deg,#131019 25%,transparent 25%,transparent 75%,#131019 75%),linear-gradient(45deg,#131019 25%,transparent 25%,transparent 75%,#131019 75%);background-size:8px 8px;background-position:0 0,4px 4px}
 .L{position:absolute;left:30px;top:28px;width:440px;bottom:28px}
 .R{position:absolute;left:512px;right:26px;top:28px;bottom:28px;display:flex;flex-direction:column}
-h1{margin:0 0 16px;font-size:38px;text-shadow:0 4px 0 #000,3px 0 #000,-3px 0 #000,0 -3px 0 #000}
-.d{font-size:21px;line-height:1.5;color:#e8e4f0;margin:0 0 6px}
+h1{margin:0 0 16px;font-size:44px;text-shadow:${O1}}
+.d{font-size:22px;line-height:1.5;color:#e8e4f0;margin:0 0 6px}
 .media{margin-top:22px;height:196px;border:3px solid #000;outline:3px solid #3b3550;background:#221d2c;display:flex;align-items:center;justify-content:center}
 .mt{display:flex;flex-direction:column;gap:8px;width:80%}.mt div{display:flex;justify-content:space-between;font-size:22px;background:#3a3450;border:3px solid #000;padding:6px 14px;box-shadow:inset 0 3px 0 #54496e}.mt span{color:#f2c23c;letter-spacing:4px}
 .fr{filter:drop-shadow(0 5px 0 #0a0810)}.fr>.o{background:#000;padding:4px;clip-path:${clip}}.fr .i{clip-path:${clip}}
@@ -26,8 +28,8 @@ h1{margin:0 0 16px;font-size:38px;text-shadow:0 4px 0 #000,3px 0 #000,-3px 0 #00
 .pi .i{${bev('#6a5d8c','#463e60','#2a2539',6,8)};padding:10px 16px 16px 12px;display:flex;gap:14px;align-items:center}
 .nb{flex:none;width:40px;height:40px;${bev('#ffe08a','#f2c23c','#c99a1e',4,5)};color:#3a2410;font-weight:bold;font-size:24px;text-align:center;line-height:34px;border:3px solid #000;box-sizing:border-box}
 .pt{display:flex;flex-direction:column;gap:2px}
-.ph{font-size:30px;font-weight:bold;color:#ffd84a;text-shadow:0 3px 0 #000,2px 0 #000,-2px 0 #000;line-height:1.15}
-.pd{font-size:18px;color:#d8d2e6;line-height:1.35}`;
+.ph{font-size:33px;font-weight:bold;color:#ffd84a;text-shadow:${O1};line-height:1.15}
+.pd{font-size:22px;color:#d8d2e6;line-height:1.35}`;
 const u=p=>'file:///'+p.split(path.sep).join('/');
 fs.mkdirSync(OUT,{recursive:true});
 const dur=[];let fn=0;
