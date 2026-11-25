@@ -7,7 +7,7 @@ const clip='polygon(0 16px,8px 16px,8px 8px,16px 8px,16px 0,calc(100% - 16px) 0,
 // 장식: [파일, 가로위치, 세로위치, 높이(px), 뒤집기, 흔들림방향]  (영웅은 크게·모서리에 걸쳐서, 유물은 작게)
 const HEROES=[['knight','left:-24px','bottom:-44px',300,0,1],['bear','right:-24px','bottom:-44px',290,1,-1],['ev_fairy','left:34px','top:14px',150,0,-1],['hawk','right:34px','top:6px',170,1,1],['blades','left:-16px','top:200px',130,0,1],['candle','right:-10px','top:210px',140,1,-1]];
 const RELICS=[['skill_starcrown',214,22],['skill_meteor',300,66],['skill_bulwark',610,24],['skill_drums',690,64],['skill_arcane',36,192],['skill_warhorn',852,196],['skill_grace',330,452],['skill_kindle',560,454],['skill_frost',246,404],['skill_volley',690,410]];
-const FACE='@font-face{font-family:"GalmuriX";src:url("../../폰트/Galmuri11-Bold.ttf");font-weight:700}'; // 갈무리 볼드(영상 공통 폰트, 크기는 11의 배수)
+const FACE='@font-face{font-family:"GalmuriX";src:url("../../폰트/Galmuri11.ttf");font-weight:100 900}'; // 갈무리 일반(영상 공통 폰트, 크기는 11의 배수, 외곽 1px로 또렷하게)
 const O1='1px 0 0 #000,-1px 0 0 #000,0 1px 0 #000,0 -1px 0 #000,1px 1px 0 #000,-1px 1px 0 #000,1px -1px 0 #000,-1px -1px 0 #000'; // 외곽 라인 1px
 const css=`${FACE}html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:"GalmuriX",sans-serif;background:#241a2e}
 .bg{position:absolute;left:50%;top:50%;width:1080px;height:603px;margin:-301px 0 0 -540px;image-rendering:pixelated}

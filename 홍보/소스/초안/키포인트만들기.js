@@ -4,12 +4,12 @@ const fs=require('fs'),path=require('path'),{execFile}=require('child_process');
 const E='C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',D=__dirname,OUT=path.join(D,process.env.OUTDIR||'키포인트');
 const IMG='../../../../img/p/';
 const KW=['더 바자르','덩치','롤백'];
-const FONT=process.env.FONT||'galmuri';
+const FONT=process.env.FONT||'galmuri_reg';
 const TXT=process.env.TXT||'outline'; // 글자 외곽: shadow(밑 그림자) / outline(외곽 1px) / both(외곽 1px + 밑 그림자)
 const O1='1px 0 0 #000,-1px 0 0 #000,0 1px 0 #000,0 -1px 0 #000,1px 1px 0 #000,-1px 1px 0 #000,1px -1px 0 #000,-1px -1px 0 #000';
 const TS={shadow:'0 3px 0 rgba(0,0,0,.75),1px 0 0 rgba(0,0,0,.6),-1px 0 0 rgba(0,0,0,.6)',outline:O1,both:O1+',0 3px 0 #000'}[TXT]; // malgun / galmuri / pretendard
 const FF={galmuri_reg:'"GalmuriR",sans-serif',malgun:'"Malgun Gothic",sans-serif',galmuri:'"GalmuriX",sans-serif',pretendard:'"PretX",sans-serif'}[FONT];
-const FACE={galmuri_reg:'@font-face{font-family:"GalmuriR";src:url("../../폰트/Galmuri11.ttf");font-weight:400}',malgun:'',galmuri:'@font-face{font-family:"GalmuriX";src:url("../../폰트/Galmuri11-Bold.ttf");font-weight:700}',pretendard:'@font-face{font-family:"PretX";src:url("../../폰트/Pretendard-Bold.otf");font-weight:700}'}[FONT];
+const FACE={galmuri_reg:'@font-face{font-family:"GalmuriR";src:url("../../폰트/Galmuri11.ttf");font-weight:100 900}',malgun:'',galmuri:'@font-face{font-family:"GalmuriX";src:url("../../폰트/Galmuri11-Bold.ttf");font-weight:700}',pretendard:'@font-face{font-family:"PretX";src:url("../../폰트/Pretendard-Bold.otf");font-weight:700}'}[FONT];
 const clip=`polygon(0 18px,6px 18px,6px 12px,12px 12px,12px 6px,18px 6px,18px 0,calc(100% - 18px) 0,calc(100% - 18px) 6px,calc(100% - 12px) 6px,calc(100% - 12px) 12px,calc(100% - 6px) 12px,calc(100% - 6px) 18px,100% 18px,100% calc(100% - 18px),calc(100% - 6px) calc(100% - 18px),calc(100% - 6px) calc(100% - 12px),calc(100% - 12px) calc(100% - 12px),calc(100% - 12px) calc(100% - 6px),calc(100% - 18px) calc(100% - 6px),calc(100% - 18px) 100%,18px 100%,18px calc(100% - 6px),12px calc(100% - 6px),12px calc(100% - 12px),6px calc(100% - 12px),6px calc(100% - 18px),0 calc(100% - 18px))`;
 const bev=(hi,mid,lo,t=5,b=7)=>`background:linear-gradient(${hi} 0 ${t}px,${mid} ${t}px calc(100% - ${b}px),${lo} calc(100% - ${b}px))`;
 const css=`${FACE}html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:${FF};color:#fff;background:#0a0e2c}

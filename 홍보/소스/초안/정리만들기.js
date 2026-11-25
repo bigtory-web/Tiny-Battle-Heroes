@@ -8,7 +8,7 @@ const ITEMS=['재밌다고 내 게임에서도 '+hl('재밌진 않았다'),'제�
 const C=+process.env.C||4;
 const clip=`polygon(0 ${C}px,${C}px ${C}px,${C}px 0,calc(100% - ${C}px) 0,calc(100% - ${C}px) ${C}px,100% ${C}px,100% calc(100% - ${C}px),calc(100% - ${C}px) calc(100% - ${C}px),calc(100% - ${C}px) 100%,${C}px 100%,${C}px calc(100% - ${C}px),0 calc(100% - ${C}px))`;
 const bev=(hi,mid,lo,t=5,b=7)=>`background:linear-gradient(${hi} 0 ${t}px,${mid} ${t}px calc(100% - ${b}px),${lo} calc(100% - ${b}px))`;
-const FACE='@font-face{font-family:"GalmuriX";src:url("../../폰트/Galmuri11-Bold.ttf");font-weight:700}'; // 갈무리 볼드(영상 공통 폰트, 크기는 11의 배수)
+const FACE='@font-face{font-family:"GalmuriX";src:url("../../폰트/Galmuri11.ttf");font-weight:100 900}'; // 갈무리 일반(영상 공통 폰트, 크기는 11의 배수, 외곽 1px로 또렷하게)
 const O1='1px 0 0 #000,-1px 0 0 #000,0 1px 0 #000,0 -1px 0 #000,1px 1px 0 #000,-1px 1px 0 #000,1px -1px 0 #000,-1px -1px 0 #000'; // 외곽 라인 1px
 const css=`${FACE}html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:"GalmuriX",sans-serif;color:#fff;background:#17141d;
 background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%),linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%);background-size:8px 8px;background-position:0 0,4px 4px}

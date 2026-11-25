@@ -19,7 +19,7 @@ const AV={me:'../../채널/개발자_전신.png',ai:'../../채널/클로딩_전�
 const C=+process.env.C||4;
 const clip=`polygon(0 ${C}px,${C}px ${C}px,${C}px 0,calc(100% - ${C}px) 0,calc(100% - ${C}px) ${C}px,100% ${C}px,100% calc(100% - ${C}px),calc(100% - ${C}px) calc(100% - ${C}px),calc(100% - ${C}px) 100%,${C}px 100%,${C}px calc(100% - ${C}px),0 calc(100% - ${C}px))`;
 const bev=(hi,mid,lo,t=5,b=7)=>`background:linear-gradient(${hi} 0 ${t}px,${mid} ${t}px calc(100% - ${b}px),${lo} calc(100% - ${b}px))`;
-const FACE='@font-face{font-family:"GalmuriX";src:url("../../폰트/Galmuri11-Bold.ttf");font-weight:700}'; // 갈무리 볼드(영상 공통 폰트, 크기는 11의 배수)
+const FACE='@font-face{font-family:"GalmuriX";src:url("../../폰트/Galmuri11.ttf");font-weight:100 900}'; // 갈무리 일반(영상 공통 폰트, 크기는 11의 배수, 외곽 1px로 또렷하게)
 const O1='1px 0 0 #000,-1px 0 0 #000,0 1px 0 #000,0 -1px 0 #000,1px 1px 0 #000,-1px 1px 0 #000,1px -1px 0 #000,-1px -1px 0 #000'; // 외곽 라인 1px
 const css=`${FACE}html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:"GalmuriX",sans-serif;background:#2b1322;
 background-image:linear-gradient(45deg,#351829 25%,transparent 25%,transparent 75%,#351829 75%),linear-gradient(45deg,#351829 25%,transparent 25%,transparent 75%,#351829 75%);background-size:8px 8px;background-position:0 0,4px 4px}
@@ -35,7 +35,7 @@ background-image:linear-gradient(45deg,#351829 25%,transparent 25%,transparent 7
 .nm{margin-top:6px;font-size:11px;font-weight:bold;color:#a79fb8}.me .nm{color:#f2c23c}.ai .nm{color:#ff9a5c}
 .b{position:relative;max-width:840px;filter:drop-shadow(0 4px 0 #0a0810)}
 .o{background:#000;padding:4px;clip-path:${clip}}
-.i{box-sizing:border-box;min-height:64px;display:flex;align-items:center;padding:14px 28px 20px;font-size:22px;font-weight:bold;line-height:1.5;clip-path:${clip}}
+.i{box-sizing:border-box;min-height:64px;display:flex;align-items:center;padding:14px 28px 20px;font-size:22px;font-weight:bold;line-height:1.5;text-wrap:balance;word-break:keep-all;clip-path:${clip}}
 .me .i{${bev('#ffe08a','#f2c23c','#c99a1e',4,6)};color:#3a2410}
 .ai .i{${bev('#6a5d8c','#463e60','#2a2539',4,6)};color:#fff}
 .hl{color:#ffd84a;font-weight:bold}
