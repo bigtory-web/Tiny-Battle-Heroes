@@ -7,6 +7,8 @@ const T={title:'배치와 덩치',
  media:'<div class="mt"><div><b>기사</b><span>●●●</span></div><div><b>전사 · 마법사</b><span>●●</span></div><div><b>나머지</b><span>●</span></div></div>',
  points:[{h:'배치',d:'칸 수로 고민하게 하자'},{h:'덩치',d:'영웅마다 크기를 줌'},{h:'직업별 구분',d:'기사 3 · 전사·마법사 2 · 기타 1'}]};
 const C=+process.env.C||4;
+// 장면별 내용: SCENE=<json 경로>(title·detail·points·mediaLabel·total). total이 있으면 항목이 그 시간에 맞춰 고르게 나타남
+if(process.env.SCENE){const J=JSON.parse(fs.readFileSync(process.env.SCENE,'utf8'));Object.assign(T,J);if(J.mediaLabel)T.media=`<div class="ph">클립 자리<small>${J.mediaLabel}</small></div>`}
 const clip=`polygon(0 ${C}px,${C}px ${C}px,${C}px 0,calc(100% - ${C}px) 0,calc(100% - ${C}px) ${C}px,100% ${C}px,100% calc(100% - ${C}px),calc(100% - ${C}px) calc(100% - ${C}px),calc(100% - ${C}px) 100%,${C}px 100%,${C}px calc(100% - ${C}px),0 calc(100% - ${C}px))`;
 // 3단 입체: 위 밝은 띠 / 몸통 / 아래 어두운 띠 (게임 버튼과 같은 방식)
 const bev=(hi,mid,lo,t=5,b=7)=>`background:linear-gradient(${hi} 0 ${t}px,${mid} ${t}px calc(100% - ${b}px),${lo} calc(100% - ${b}px))`;
@@ -20,6 +22,7 @@ background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 7
 h1{margin:0 0 16px;font-size:44px;text-shadow:${O1}}
 .d{font-size:22px;line-height:1.5;color:#e8e4f0;margin:0 0 6px}
 .media{margin-top:22px;height:196px;border:3px solid #000;outline:3px solid #3b3550;background:#221d2c;display:flex;align-items:center;justify-content:center}
+.ph{width:86%;box-sizing:border-box;border:3px dashed #54496e;padding:26px 20px;text-align:center;color:#a79fb8;font-size:22px;line-height:1.7}.ph small{display:block;color:#f2c23c;font-size:22px}
 .mt{display:flex;flex-direction:column;gap:8px;width:80%}.mt div{display:flex;justify-content:space-between;font-size:22px;background:#3a3450;border:3px solid #000;padding:6px 14px;box-shadow:inset 0 3px 0 #54496e}.mt span{color:#f2c23c;letter-spacing:4px}
 .fr{filter:drop-shadow(0 5px 0 #0a0810)}.fr>.o{background:#000;padding:4px;clip-path:${clip}}.fr .i{clip-path:${clip}}
 .tag{display:inline-block;align-self:flex-start;margin-bottom:12px}
@@ -45,10 +48,10 @@ function render(k,anim){
   execFileSync(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=1920,1080','--screenshot='+big,u(h)],{stdio:'ignore'});
   fs.unlinkSync(h);
 }
-render(0,null);dur.push(2);
+render(0,null);dur.push(T.total?T.total/(T.points.length+2):2);
 for(let k=1;k<=T.points.length;k++){
   for(const an of ANIM){render(k,an);dur.push(0.1)}
-  dur[dur.length-1]=k===T.points.length?3.5:2.2; // 마지막 연출 프레임이 유지 시간
+  if(T.total){const n=T.points.length,a=j=>T.total*(j+1)/(n+2),next=k===n?T.total:a(k);dur[dur.length-1]=Math.max(0.5,next-a(k-1)-0.2)}else dur[dur.length-1]=k===T.points.length?3.5:2.2; // 마지막 연출 프레임이 유지 시간
 }
 fs.writeFileSync(path.join(OUT,'길이.json'),JSON.stringify(dur));
 console.log('frames',dur.length);
