@@ -2418,6 +2418,9 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
 #ukRow .ghost i{font:400 10px var(--display);font-style:normal;color:#c9bfae}
 #ukRow .ghost small{font:400 10px var(--display);color:#c9bfae}
 #ukRow .ghost.on{box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #ffd34d!important}
+#ukRow .ghost{min-width:70px;padding:5px 6px}
+#ukRow .ghost i.ok{color:#9fe07a}#ukRow .ghost i.bl{color:#ffb07a}
+html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
 </style>
 </head>
 <body>
@@ -2490,7 +2493,7 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
       <div class="muted" id="plOdds" style="margin-top:6px"></div>
     </section>
     <section class="card">
-      <h2>캐릭터 크기 <small>정수배만 · 원본 1px = 화면 k칸</small></h2>
+      <h2>캐릭터 크기 <small>지금(자동) 크기 기준 ±%</small></h2>
       <div class="row" id="ukRow"></div>
       <div class="muted" id="ukInfo"></div>
     </section>
@@ -2803,12 +2806,12 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
       box.innerHTML = '<div class="hinfo cdxh" style="--sg:' + g.col + '"><div class="hi-top"><span class="hi-av sk">' + skIcon(d) + '</span><div class="hi-tn"><b>' + d.name + '</b>' + cdBox(d) + '</div></div>' +
         '<div class="hi-ult"><div>' + skillDesc(d, myLv(d.id) || 1) + '</div></div>' + synLine(d) + '<div class="cdxst">' + (mine ? '보유 중' + (skMaxed(d.id) ? ' · 최고 등급' : ' · 또 얻으면 ' + upText(d.id)) : '상점이나 전리품에서 얻을 수 있어요') + '</div></div>'; }
   }
-  /* 캐릭터 크기 고르기(도구 탭, 2026-11-25 기획 요청): 자동(올림) / 1~4배. 정수배라 깨지지 않음. 각 칸에 지금 화면 기준 기본 크기 대비 %와 화면 px 표시. S.ui.unitK에 저장(처음부터에도 유지) */
-  function renderUk(){ var row = $('ukRow'); if (!row) return; var cs = devPerUnit(), dp = window.devicePixelRatio || 1, B = 79 * uScale(), cur = S.ui && S.ui.unitK ? S.ui.unitK : 0, au = qKauto();
-    function lab(k){ var sz = 64 * k / cs; var pc = Math.round((sz / B - 1) * 100); return (pc > 0 ? '+' : '') + pc + '% · ' + Math.round(64 * k / dp) + 'px'; }
-    row.innerHTML = '<button class="ghost' + (!cur ? ' on' : '') + '" data-uk="0" type="button">자동 <small>(' + au + '배)</small><i>' + lab(au) + '</i></button>' + [1, 2, 3, 4].map(function(k){ return '<button class="ghost' + (cur === k ? ' on' : '') + '" data-uk="' + k + '" type="button">' + k + '배<i>' + lab(k) + '</i></button>'; }).join('');
-    $('ukInfo').textContent = '기본 크기(110%) 대비 % · 화면에 그려지는 캐릭터 가로 px (지금 창 기준, 창 크기가 바뀌면 값도 바뀌어요)'; }
-  $('ukRow').addEventListener('click', function(e){ var b = e.target.closest('[data-uk]'); if (!b) return; S.ui = S.ui || {}; var v = +b.dataset.uk; if (v) S.ui.unitK = v; else delete S.ui.unitK; save(); QC.t = -1e9; fitUnit(); renderAll(); renderUk(); });
+  /* 캐릭터 크기 고르기(도구 탭, 2026-11-25 기획 요청): 지금(자동) 크기 기준 −30/−20/−10/현재/+10/+20/+30%. 정수배에 딱 맞으면 최근접(또렷), 아니면 정수배로 키운 뒤 부드럽게 줄임(살짝 흐림). S.ui.unitPct에 저장(처음부터에도 유지) */
+  function renderUk(){ var row = $('ukRow'); if (!row) return; var cs = devPerUnit(), dp = window.devicePixelRatio || 1, B = 79 * uScale(), r0 = qKauto(), cur = unitPct();
+    row.innerHTML = [-30, -20, -10, 0, 10, 20, 30].map(function(p){ var r = r0 * (1 + p / 100), sz = 64 * r / cs, near = Math.abs(r - Math.round(r)) < .02, pc = Math.round((sz / B - 1) * 100), ni = Math.abs(r - Math.round(r)) <= .12 && Math.round(r) >= 1;
+      return '<button class="ghost' + (cur === p ? ' on' : '') + '" data-up="' + p + '" type="button">' + (p === 0 ? '현재' : (p > 0 ? '+' : '−') + Math.abs(p) + '%') + '<i>' + Math.round(64 * r / dp) + 'px · 기본 ' + (pc > 0 ? '+' : '') + pc + '%</i><i class="' + (near ? 'ok' : 'bl') + '">' + (near ? '또렷 (' + Math.round(r) + '배)' : '살짝 흐림' + (ni ? ' · ' + Math.round(r) + '배 근처' : '')) + '</i></button>'; }).join('');
+    $('ukInfo').textContent = '현재(자동) = 정수배 ' + r0 + '배. 퍼센트는 현재 크기 기준, px는 지금 창에서 캐릭터 가로 화면 px, 기본 = 기본 크기(110%) 대비. 창 크기가 바뀌면 값도 바뀌어요.'; }
+  $('ukRow').addEventListener('click', function(e){ var b = e.target.closest('[data-up]'); if (!b) return; S.ui = S.ui || {}; var v = +b.dataset.up; delete S.ui.unitK; if (v) S.ui.unitPct = v; else delete S.ui.unitPct; save(); QC.t = -1e9; fitUnit(); renderAll(); renderUk(); });
   setInterval(function(){ if (!$('tab-tool').hidden) renderUk(); }, 600);
   function cdxShopOn(){ return !(S.ui && S.ui.cdxShop === false); }
   /* 테스트용: 도감 -> 상점으로. 상점 영웅 칸 맨 앞을 그 영웅으로(원래 상점 가격), 구매는 평소처럼 (2026-11-25 기획 요청) */
@@ -2886,8 +2889,11 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
   function sApp(){ var a = document.querySelector('.app'); return a ? a.getBoundingClientRect().width / 960 || 1 : 1; }
   function devPerUnit(){ if (bt && csB) return csB; var now = performance.now(); if (now - QC.t > 250){ var f = $('field'), w = f ? f.clientWidth : 0; QC.cs = w ? w * sApp() / 720 * (window.devicePixelRatio || 1) : (window.devicePixelRatio || 1); QC.t = now; } return QC.cs; }
   function qKauto(){ return Math.max(1, Math.ceil(79 * uScale() * devPerUnit() / 64 - 0.1)); }
-  function qK(){ var u = S && S.ui && S.ui.unitK; return u >= 1 && u <= 6 ? Math.floor(u) : qKauto(); } /* 도구 탭에서 고른 정수배(없으면 자동) */ /* 큰 쪽으로(2026-11-25 사용자): r이 정수를 0.1 넘게 넘으면 한 단계 위 */
-  function unitPx(boss){ return 64 * qK() / devPerUnit(); }
+  function unitPct(){ var p = S && S.ui && S.ui.unitPct; return p >= -50 && p <= 50 ? p : 0; } /* 도구 탭에서 고른 자동 크기 대비 % (−30~+30, 0이면 정수배 그대로) */
+  function qR(){ return unitPx(false) * devPerUnit() / 64; } /* 원본 1px이 장치 px 몇 개인지(소수 가능) */
+  function qN(){ var r = qR(); return Math.abs(r - Math.round(r)) < .02 ? Math.max(1, Math.round(r)) : Math.max(2, Math.ceil(r) + 1); } /* 외곽선 그림을 키울 정수배: 정수 크기면 그 배율, 아니면 한 단계 위(부드럽게 줄임) */
+  function qK(){ return qKauto(); } /* 큰 쪽으로(2026-11-25 사용자): r이 정수를 0.1 넘게 넘으면 한 단계 위 */
+  function unitPx(boss){ return 64 * qKauto() / devPerUnit() * (1 + unitPct() / 100); }
   var OUTLN = 0; /* 외곽선 그림을 정수배 N으로 만들 때 쓸 값(0이면 전장 k). 룰렛·도감 큰 그림은 자기 크기에 맞는 k */
   function qCss(target, n){ var sc = sApp() * (window.devicePixelRatio || 1), k = Math.max(1, Math.round(target * sc / n)); return { k: k, css: n * k / sc }; } /* css 크기 target에 가장 가까운, 원본 n px가 장치 px의 정수배가 되는 크기 */
   function alignBtnCol(){ var ar = $("arena"), bc = document.querySelector(".camp3 > .btncol"), mid = document.querySelector(".camp3 > .mid"); if (!ar || !bc || !mid || !ar.offsetHeight) return;
@@ -2895,7 +2901,7 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
     bc.style.marginTop = Math.round(top / k) + "px"; bc.style.height = ar.offsetHeight + "px";
     // 룰렛 팝업: 앱 전체가 아니라 게임 화면(전장) 가운데에 오도록 덮개를 전장 크기에 맞춰요
     var rl = $("roul"), app = document.querySelector(".app"); if (rl && app){ var a2 = ar.getBoundingClientRect(), p2 = app.getBoundingClientRect(); rl.style.inset = "auto"; rl.style.left = Math.round((a2.left - p2.left) / k) + "px"; rl.style.top = Math.round((a2.top - p2.top) / k) + "px"; rl.style.width = Math.round(a2.width / k) + "px"; rl.style.height = Math.round(a2.height / k) + "px"; rl.style.justifyContent = "center"; } }
-  function fitUnit(){ alignBtnCol(); if (!$('field')) return; var fw = $('field').clientWidth; QC.t = -1e9; if (fw) $('field').style.setProperty('--u', (fw * unitPx(false) / 720).toFixed(3) + 'px'); var qk = qK(); if (QK_last !== null && qk !== QK_last){ QK_last = qk; try { renderAll(); } catch (e) {} } QK_last = qk; }
+  function fitUnit(){ alignBtnCol(); if (!$('field')) return; var fw = $('field').clientWidth; QC.t = -1e9; if (fw) $('field').style.setProperty('--u', (fw * unitPx(false) / 720).toFixed(3) + 'px'); var qk = Math.round(unitPx(false) * 100); document.documentElement.dataset.smooth = Math.abs(qR() - Math.round(qR())) < .02 ? '' : '1'; if (QK_last !== null && qk !== QK_last){ QK_last = qk; try { renderAll(); } catch (e) {} } QK_last = qk; }
   var QK_last = null;
   window.addEventListener('resize', fitUnit);
   // 편성 화면 막대: 전장(720×400 논리 좌표)과 같은 크기의 캔버스를 덮어 그려요. 체력은 가득, 에너지는 0
@@ -3069,7 +3075,7 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
     var p = LP(key), box = $('roul'), pic = box.querySelector('.rpic');
     box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); rayFx(key); $('rUp').hidden = !upOK(key);
     pic.style.imageRendering = p.type === 'h' && IMGS[p.id] ? 'pixelated' : '';
-    var rk = qK(), rq = { k: rk, css: 66 * rk / (sApp() * (window.devicePixelRatio || 1)) }; document.documentElement.style.setProperty('--rpq', (p.type === 'h' && IMGS[p.id] ? rq.css : 114) + 'px'); rpAnim.nk = p.type === 'h' ? rq.k : 0; OUTLN = rpAnim.nk;
+    var rk = qN(), rq = { k: rk, css: 66 * qR() / (sApp() * (window.devicePixelRatio || 1)) }; document.documentElement.style.setProperty('--rpq', (p.type === 'h' && IMGS[p.id] ? rq.css : 114) + 'px'); rpAnim.nk = p.type === 'h' ? rq.k : 0; OUTLN = rpAnim.nk;
     if (p.type === 'h'){ var id = p.id; pic.innerHTML = IMGS[id] ? '' : AV[id]; pic.style.backgroundImage = IMGS[id] ? 'url(' + outlinedURL(id, gc(id)) + ')' : 'none'; pic.style.setProperty('--gc', gc(id)); if (IMGS[id]){ pic.style.setProperty('--o1', 'url(' + outlinedURL(id, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(id, '#ffffff') + ')'); } OUTLN = 0; /* 결과가 뜨면 외곽선 파랑↔흰색 */ pic.classList.remove('loot'); }
     else { pic.style.backgroundImage = 'none'; pic.innerHTML = lootIcon(key); pic.classList.add('loot'); }
     rpAnim.id = p.type === 'h' && ANIM_IDS.indexOf(p.id) >= 0 ? p.id : null; /* 프레임 시트 영웅은 룰렛 큰 그림도 대기 1~4 반복 */
@@ -3880,8 +3886,8 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
   function rpAnimTick(){ var id = rpAnim.id, box = $('roul'); if (!id || !box || box.hidden || box.classList.contains('spin')) return; var f = id + '_a' + (1 + Math.floor(performance.now() / 180) % 4); if (!IMGS[f]) return; var pic = box.querySelector('.rpic');
     OUTLN = rpAnim.nk || 0; pic.style.backgroundImage = 'url(' + outlinedURL(f, gc(id)) + ')'; pic.style.setProperty('--o1', 'url(' + outlinedURL(f, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(f, '#ffffff') + ')'); OUTLN = 0; } /* 같은 외곽선 색(등급·파랑·흰색)으로 프레임마다 다시 그려 연출 유지 */
   setInterval(rpAnimTick, 90);
-  function outlinedURL(id, col){ var k = id + col + '@' + (IMGS[id] && IMGS[id].width === 64 ? (OUTLN || qK()) : 0); if (OUTL[k]) return OUTL[k]; var im = IMGS[id], w = im.width, hh = im.height, c = document.createElement('canvas'); c.width = w + 2; c.height = hh + 2; var x = c.getContext('2d'); x.imageSmoothingEnabled = false;
-    var s = silhouette(id, col); [[0, 1], [2, 1], [1, 0], [1, 2]].forEach(function(o){ x.drawImage(s, o[0], o[1]); }); x.drawImage(im, 1, 1); var N = w === 64 ? (OUTLN || qK()) : Math.max(1, Math.ceil(100 / w)); if (N > 1){ var c2 = document.createElement('canvas'); c2.width = c.width * N; c2.height = c.height * N; var x2 = c2.getContext('2d'); x2.imageSmoothingEnabled = false; x2.drawImage(c, 0, 0, c2.width, c2.height); c = c2; } return (OUTL[k] = c.toDataURL()); }
+  function outlinedURL(id, col){ var k = id + col + '@' + (IMGS[id] && IMGS[id].width === 64 ? (OUTLN || qN()) : 0); if (OUTL[k]) return OUTL[k]; var im = IMGS[id], w = im.width, hh = im.height, c = document.createElement('canvas'); c.width = w + 2; c.height = hh + 2; var x = c.getContext('2d'); x.imageSmoothingEnabled = false;
+    var s = silhouette(id, col); [[0, 1], [2, 1], [1, 0], [1, 2]].forEach(function(o){ x.drawImage(s, o[0], o[1]); }); x.drawImage(im, 1, 1); var N = w === 64 ? (OUTLN || qN()) : Math.max(1, Math.ceil(100 / w)); if (N > 1){ var c2 = document.createElement('canvas'); c2.width = c.width * N; c2.height = c.height * N; var x2 = c2.getContext('2d'); x2.imageSmoothingEnabled = false; x2.drawImage(c, 0, 0, c2.width, c2.height); c = c2; } return (OUTL[k] = c.toDataURL()); }
   // 발 그림자 자리: 그림 맨 아래 3줄(발)의 좌우 끝(l,r = 그림 폭 비율)과 발 밑 빈 줄 높이(g = 그림 높이 비율)
   var FOOTBOX = {};
   function footBox(id){ var im = IMGS[id]; if (!im) return null; if (FOOTBOX[id] !== undefined) return FOOTBOX[id];
