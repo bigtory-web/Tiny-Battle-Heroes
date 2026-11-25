@@ -4,7 +4,7 @@ const fs=require('fs'),path=require('path'),{execFile}=require('child_process');
 const E='C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',D=__dirname,OUT=path.join(D,'목차');
 const IMG='../../../../img/p/';
 const KW=['더 바자르','덩치','롤백'];
-const clip=`polygon(0 12px,6px 12px,6px 6px,12px 6px,12px 0,calc(100% - 12px) 0,calc(100% - 12px) 6px,calc(100% - 6px) 6px,calc(100% - 6px) 12px,100% 12px,100% calc(100% - 12px),calc(100% - 6px) calc(100% - 12px),calc(100% - 6px) calc(100% - 6px),calc(100% - 12px) calc(100% - 6px),calc(100% - 12px) 100%,12px 100%,12px calc(100% - 6px),6px calc(100% - 6px),6px calc(100% - 12px),0 calc(100% - 12px))`;
+const clip=`polygon(0 18px,6px 18px,6px 12px,12px 12px,12px 6px,18px 6px,18px 0,calc(100% - 18px) 0,calc(100% - 18px) 6px,calc(100% - 12px) 6px,calc(100% - 12px) 12px,calc(100% - 6px) 12px,calc(100% - 6px) 18px,100% 18px,100% calc(100% - 18px),calc(100% - 6px) calc(100% - 18px),calc(100% - 6px) calc(100% - 12px),calc(100% - 12px) calc(100% - 12px),calc(100% - 12px) calc(100% - 6px),calc(100% - 18px) calc(100% - 6px),calc(100% - 18px) 100%,18px 100%,18px calc(100% - 6px),12px calc(100% - 6px),12px calc(100% - 12px),6px calc(100% - 12px),6px calc(100% - 18px),0 calc(100% - 18px))`;
 const bev=(hi,mid,lo,t=5,b=7)=>`background:linear-gradient(${hi} 0 ${t}px,${mid} ${t}px calc(100% - ${b}px),${lo} calc(100% - ${b}px))`;
 const css=`html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:"Malgun Gothic",sans-serif;color:#fff;background:#0a0e2c}
 .bg{position:absolute;left:50%;top:50%;width:1080px;height:603px;margin:-301px 0 0 -540px;image-rendering:pixelated}
@@ -15,11 +15,12 @@ const css=`html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidd
 .card{width:252px;position:relative}
 .card .sh{filter:drop-shadow(0 8px 0 rgba(4,6,18,.9))}
 .card .o{background:#000;padding:6px;clip-path:${clip}}
-.card .g{padding:5px;${bev('#ffe08a','#f2c23c','#c99a1e',4,5)};clip-path:${clip}}
-.card .i{${bev('#6a5d8c','#463e60','#2a2539',8,12)};height:278px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;clip-path:${clip}}
-.kw{font-size:46px;font-weight:bold;-webkit-text-stroke:1.5px currentColor;text-shadow:0 5px 0 #000,4px 0 #000,-4px 0 #000,0 -4px 0 #000,3px 3px 0 #000,-3px 3px 0 #000;text-align:center;line-height:1.15;padding:0 10px;margin-top:24px}
-.nb{position:absolute;left:50%;top:-30px;margin-left:-34px;width:68px;height:68px;box-sizing:border-box;${bev('#ffe08a','#f2c23c','#c99a1e',6,8)};color:#3a2410;font-weight:bold;font-size:40px;text-align:center;line-height:56px;border:5px solid #000;clip-path:polygon(0 8px,4px 8px,4px 4px,8px 4px,8px 0,calc(100% - 8px) 0,calc(100% - 8px) 4px,calc(100% - 4px) 4px,calc(100% - 4px) 8px,100% 8px,100% calc(100% - 8px),calc(100% - 4px) calc(100% - 8px),calc(100% - 4px) calc(100% - 4px),calc(100% - 8px) calc(100% - 4px),calc(100% - 8px) 100%,8px 100%,8px calc(100% - 4px),4px calc(100% - 4px),4px calc(100% - 8px),0 calc(100% - 8px));z-index:2}
-.orn{position:absolute;left:50%;bottom:34px;margin-left:-5px;width:10px;height:10px;background:#f2c23c;box-shadow:-24px 0 #8a7fb0,24px 0 #8a7fb0,-48px 0 #54496e,48px 0 #54496e}`;
+.card .g{padding:5px;background:#fff6e6;clip-path:${clip}}
+.card .i{position:relative;height:278px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;clip-path:${clip}}
+.c1 .i{${bev('#ffc1d1','#ff8fae','#cf5576',8,12)}}.c2 .i{${bev('#fff0a8','#ffd65a','#d3a21f',8,12)}}.c3 .i{${bev('#b9f3e6','#74dcc9','#3a9d8e',8,12)}}
+.kw{font-size:46px;font-weight:bold;-webkit-text-stroke:1.8px currentColor;text-shadow:0 4px 0 #000,3px 0 #000,-3px 0 #000,0 -3px 0 #000,3px 3px 0 #000,-3px 3px 0 #000;text-align:center;line-height:1.15;padding:0 10px;margin-top:24px}
+.nb{position:absolute;left:50%;top:-20px;margin-left:-22px;width:44px;height:44px;box-sizing:border-box;background:#fff6e6;color:#4a2a14;font-weight:bold;font-size:26px;text-align:center;line-height:36px;border:4px solid #000;box-shadow:inset 0 -4px 0 #ead9bd;clip-path:polygon(0 6px,4px 6px,4px 4px,6px 4px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 4px,calc(100% - 4px) 4px,calc(100% - 4px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 4px) calc(100% - 6px),calc(100% - 4px) calc(100% - 4px),calc(100% - 6px) calc(100% - 4px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 4px),4px calc(100% - 4px),4px calc(100% - 6px),0 calc(100% - 6px));z-index:2};color:#3a2410;font-weight:bold;font-size:40px;text-align:center;line-height:56px;border:5px solid #000;clip-path:polygon(0 8px,4px 8px,4px 4px,8px 4px,8px 0,calc(100% - 8px) 0,calc(100% - 8px) 4px,calc(100% - 4px) 4px,calc(100% - 4px) 8px,100% 8px,100% calc(100% - 8px),calc(100% - 4px) calc(100% - 8px),calc(100% - 4px) calc(100% - 4px),calc(100% - 8px) calc(100% - 4px),calc(100% - 8px) 100%,8px 100%,8px calc(100% - 4px),4px calc(100% - 4px),4px calc(100% - 8px),0 calc(100% - 8px));z-index:2}
+.orn{position:absolute;left:50%;bottom:30px;margin-left:-5px;width:10px;height:10px;background:#fff6e6;box-shadow:-24px 0 rgba(255,246,230,.6),24px 0 rgba(255,246,230,.6),-48px 0 rgba(255,246,230,.3),48px 0 rgba(255,246,230,.3)}`;
 const star=(x,y,s=6)=>`<i class="st" style="left:${x}px;top:${y}px;width:${s}px;height:${s}px;box-shadow:${s}px 0 #ffe08a,-${s}px 0 #ffe08a,0 ${s}px #ffe08a,0 -${s}px #ffe08a"></i>`;
 const STARS=[[80,70,6],[870,60,8],[60,300,5],[900,300,6],[470,40,5],[250,60,4],[700,40,4]];
 const u=p=>'file:///'+p.split(path.sep).join('/');
@@ -27,9 +28,9 @@ fs.mkdirSync(OUT,{recursive:true});
 const RISE=[{dy:26,op:0.35},{dy:13,op:0.75},{dy:0,op:1}];
 const BLUR=[{b:14,o:0.25},{b:8,o:0.55},{b:3,o:0.85},{b:0,o:1}];
 function html(tw,cards){
-  const stars=STARS.map(([x,y,s],i)=>(i+tw)%2?star(x,y,s):'').join('');
+  const stars=STARS.map(([x,y,s],i)=>star(x,y,(i+tw)%2?s:Math.max(3,Math.round(s*0.5)))).join('');
   const cs=cards.map((c,j)=>{if(!c)return `<div class="card" style="visibility:hidden"><div class="sh"><div class="o"><div class="g"><div class="i"></div></div></div></div></div>`;
-    return `<div class="card" style="transform:translateY(${c.rise.dy}px);opacity:${c.rise.op}"><div class="nb">${j+1}</div><div class="sh"><div class="o"><div class="g"><div class="i"><div class="kw" style="filter:blur(${c.blur.b}px);opacity:${c.blur.o}">${KW[j]}</div><div class="orn"></div></div></div></div></div></div>`}).join('');
+    return `<div class="card c${j+1}" style="transform:translateY(${c.rise.dy}px);opacity:${c.rise.op}"><div class="nb">${j+1}</div><div class="sh"><div class="o"><div class="g"><div class="i"><div class="kw" style="filter:blur(${c.blur.b}px);opacity:${c.blur.o}">${KW[j]}</div><div class="orn"></div></div></div></div></div></div>`}).join('');
   return `<!doctype html><meta charset="utf-8"><style>${css}</style><img class="bg" src="${IMG}bg_field_dusk.png"><div class="night"></div><div class="vig"></div>${stars}<div class="row">${cs}</div>`;
 }
 const jobs=[],dur=[];
