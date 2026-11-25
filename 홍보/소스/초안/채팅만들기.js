@@ -32,7 +32,7 @@ background-image:linear-gradient(45deg,#351829 25%,transparent 25%,transparent 7
 .av{width:72px;height:72px;box-sizing:border-box;border:3px solid #000;outline:2px solid #3b3550;background-repeat:no-repeat;overflow:hidden}
 .me .av{transform:scaleX(-1);background-color:#f2c23c;background-size:260%;background-position:53% 50%}
 .ai .av{background-color:#54496e;background-size:210%;background-position:62% 40%}
-.nm{margin-top:6px;font-size:11px;font-weight:bold;color:#a79fb8}.me .nm{color:#f2c23c}.ai .nm{color:#ff9a5c}
+.nm{margin-top:6px;font-size:11px;font-weight:bold;color:#a79fb8}.me .nm{color:#f2c23c}.ai .nm{color:#ff8fae}
 .b{position:relative;max-width:840px;filter:drop-shadow(0 4px 0 #0a0810)}
 .o{background:#000;padding:4px;clip-path:${clip}}
 .i{box-sizing:border-box;min-height:64px;display:flex;align-items:center;padding:14px 28px 20px;font-size:22px;font-weight:bold;line-height:1.5;text-wrap:balance;word-break:keep-all;clip-path:${clip}}
