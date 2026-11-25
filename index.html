@@ -2734,7 +2734,7 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
       var cur = D.heroes.filter(function(h){ return h.art !== false; }), gSort = function(x, y){ return E.heroGrade(D, x.id) - E.heroGrade(D, y.id); }, /* 등급 → 데이터 순서 (보유 여부와 상관없이) */
         top = cur.filter(function(h){ return inPool(h) && heroPass(h); }).sort(gSort), low = cur.filter(function(h){ return !inPool(h) && heroPass(h); }).sort(gSort),
         own = cur.filter(function(h){ return owns(h.id); }).length, all = cur.length,
-        cell = function(h){ var o = owns(h.id); return '<button class="cdxc' + (o ? ' own' : ' unk') + (cdxSel === 'h:' + h.id ? ' sel' : '') + '" data-cdx="h:' + h.id + '" style="--el:' + ELC[h.el] + ';--gcol:' + HG(h.id).col + '"><span class="cdxp hic" style="--hg:' + HG(h.id).col + '">' + avO(h.id) + '</span><b>' + h.name + '</b>' + (h.alias ? '<i class="alias">' + h.alias + '</i>' : '') + (teamHasId(h.id) ? '<em>출전</em>' : '') + '</button>'; };
+        cell = function(h){ var o = owns(h.id); return '<button class="cdxc' + (o ? ' own' : ' unk') + (cdxSel === 'h:' + h.id ? ' sel' : '') + '" data-cdx="h:' + h.id + '" style="--el:' + ELC[h.el] + ';--gcol:' + HG(h.id).col + '"><span class="cdxp hic" style="--hg:' + HG(h.id).col + '">' + avO(h.id) + '</span><b>' + h.name + '</b>' + (teamHasId(h.id) ? '<em>출전</em>' : '') + '</button>'; };
       html = '<div class="cdxcount">영웅 ' + own + ' / ' + all + '</div><div class="cdxgrid hg">' + top.map(cell).join('') + '</div>' +
         (low.length ? '<div class="cdxsec">안 쓰는 영웅 <small>지금 게임에는 나오지 않아요</small></div><div class="cdxgrid hg">' + low.map(cell).join('') + '</div>' : '');
     } else {
@@ -2935,7 +2935,7 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
   });
   // ───── 영입 룰렛: 이긴 판의 적들이 오른쪽에서 돌다가 1명에 멈추고, 영입할지 보낼지 골라요 ─────
   function LP(key){ return E.lootParse(key || ''); }
-  function nmH(h){ return h.name + (h.alias ? '<i class="alias">' + h.alias + '</i>' : ''); } /* 넓은 자리(상세 창·룰렛·상점): 큰 이름 + 작은 별칭. 좁은 자리는 h.name만 (2026-11-25) */
+  function nmH(h){ return h.name + (h.alias ? '<i class="alias">' + h.alias + '</i>' : ''); } /* 별칭은 상세 창에서만 (2026-11-25 사용자: 서브 이름은 상세 정보창에서만) */
   function lootName(key){ var p = LP(key); return p.type === 'p' ? padName(p.id) : p.type === 'm' ? manaName() : p.type === 'g' ? '골드 주머니' : p.type === 's' ? E.skillById(D, p.id).name : hero(p.id).name; }
   function lootColor(key){ var p = LP(key); return p.type === 'p' ? ELC[p.id] : p.type === 'm' ? '#a77bff' : p.type === 'g' ? GR(1).col : p.type === 's' ? skG(p.id).col : HG(p.id).col; } // 영웅·스킬은 등급 색 (data.js heroGrades / skills.grades) }
   function stripColor(key){ var p = LP(key); return p.type === 'm' ? '#8a8296' : lootColor(key); } // 전리품 띠: 마나스톤은 중립색, 골드는 일반 등급 색
@@ -3011,7 +3011,7 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
     else { rsk.innerHTML = ''; delete rsk.dataset.tipt; delete rsk.dataset.tiptx; rsk.hidden = true; if (tipEl === rsk) hideTip(); } if (p.type === 'h') $('rTags').style.setProperty('--tg', HG(p.id).col); // 꼬리표 묶음 테두리 = 영웅 등급색
     if (p.type === 's'){ pic.dataset.tipsk = p.id; pic.dataset.tiplv = 1; } else { delete pic.dataset.tipsk; if (tipEl === pic) hideTip(); }
     if (p.type === 'p'){ pic.dataset.tipt = padName(p.id); pic.dataset.tiptx = '이 칸에 선 영웅은 ' + D.elements.names[p.id] + ' 진영이 더해진다.'; } else { delete pic.dataset.tipt; delete pic.dataset.tiptx; } // 큰 스킬 아이콘도 툴팁 // 종족·직업·진영 꼬리표
-    box.querySelector('.rname').innerHTML = p.type === 'g' ? '골드 ' + p.amt.toLocaleString() + 'G' : p.type === 'm' ? manaName() + ' · ' + p.amt + '개' : p.type === 'h' ? nmH(hero(p.id)) : lootName(key);
+    box.querySelector('.rname').innerHTML = p.type === 'g' ? '골드 ' + p.amt.toLocaleString() + 'G' : p.type === 'm' ? manaName() + ' · ' + p.amt + '개' : lootName(key);
     // 종류 꼬리표: 영웅 · 스킬 · 골드 (카드 위 제목 줄)
     box.querySelector('.rt').innerHTML = (S.offerMode === 'camp' ? '모닥불' : S.offerMode === 'fairy' ? '요정' : S.offerMode === 'lvpick' ? '레벨업' : '전리품') + ' <span class="ltag ' + p.type + '">' + (p.type === 'g' ? '골드' : p.type === 'm' ? '마나' : p.type === 's' ? '스킬' : p.type === 'p' ? '발판' : '영웅') + '</span>';
     var spinning = box.querySelector('.rbox').classList.contains('spin'); box.querySelectorAll('.rstrip span').forEach(function(sp){ sp.classList.toggle('on', sp.dataset.id === key); sp.classList.toggle('res', !spinning && (sp.dataset.id === S.offer || S.offerMode === 'mobs')); });
@@ -4481,12 +4481,12 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
       if (it2.type === 's'){ var d2 = E.skillById(D, it2.id), own2 = mine.filter(function(x){ return x.id === it2.id; })[0], maxed2 = own2 && skMaxed(it2.id), lv2 = own2 ? own2.level + 1 : 1;
         ok2 = E.canTake(D, mine, it2.id, PK().skillSlots); if (!ok2) why2 = own2 ? '최고 등급' : '유물 칸이 꽉 찼어요';
         nm.innerHTML = d2.name + ' <small>' + '<i class="sgn" style="color:' + skG(it2.id, maxed2 ? own2.level : lv2).col + '">' + skG(it2.id, maxed2 ? own2.level : lv2).name + '</i> · ' + (maxed2 ? '최고 등급' : own2 ? '등급업 · ' + upText(it2.id) : '새 유물') + '</small>' + cdBox(d2); ds.innerHTML = skillDesc(d2, maxed2 ? own2.level : lv2, own2 && !maxed2 ? own2.level : 0) + synLine(d2) + synFaces(d2); }
-      else { var h4 = hero(it2.id); nm.innerHTML = nmH(h4) + ' <small>' + GR(E.heroGrade(D, it2.id)).name + '</small>'; ds.innerHTML = '<div class="hi-tags">' + tagHtml(h4) + '</div>' + (h4.ult ? '<b>' + ultName(h4) + '</b> ' + ultDescFull(h4, h4.ult, 1) : ''); }
+      else { var h4 = hero(it2.id); nm.innerHTML = h4.name + ' <small>' + GR(E.heroGrade(D, it2.id)).name + '</small>'; ds.innerHTML = '<div class="hi-tags">' + tagHtml(h4) + '</div>' + (h4.ult ? '<b>' + ultName(h4) + '</b> ' + ultDescFull(h4, h4.ult, 1) : ''); }
       var lack2 = done2 ? '' : lackText(mana2 ? { mana: it2.price } : { gold: it2.price });
       bt2.hidden = false; bt2.classList.toggle('mana', mana2 && !done2); bt2.innerHTML = done2 ? '구매 완료' : why2 || lack2 || '구매'; bt2.disabled = done2 || !ok2 || !!lack2; return; }
     if (shopSel.t === 'hero'){ var hi = (S.shop.heroes || [])[shopSel.i]; if (!hi || (S.shop.hsold || []).indexOf(shopSel.i) >= 0){ shopSel = null; return renderShopInfo(); }
       var h3 = hero(hi.id), lackH = lackText({ gold: hi.price }); bt2.classList.remove('sell', 'arm', 'mana');
-      nm.innerHTML = nmH(h3) + ' <small>' + GR(E.heroGrade(D, hi.id)).name + '</small>'; ds.innerHTML = '<div class="hi-tags">' + tagHtml(h3) + '</div>' + (h3.ult ? '<b>' + ultName(h3) + '</b> ' + ultDescFull(h3, h3.ult, 1) : '');
+      nm.innerHTML = h3.name + ' <small>' + GR(E.heroGrade(D, hi.id)).name + '</small>'; ds.innerHTML = '<div class="hi-tags">' + tagHtml(h3) + '</div>' + (h3.ult ? '<b>' + ultName(h3) + '</b> ' + ultDescFull(h3, h3.ult, 1) : '');
       bt2.hidden = false; bt2.innerHTML = lackH || '구매'; bt2.disabled = !!lackH; return; }
     var i = shopSel.i, id = S.shop.stock[i]; if (id == null){ shopSel = null; return renderShopInfo(); }
     bt2.classList.remove('sell', 'arm');
