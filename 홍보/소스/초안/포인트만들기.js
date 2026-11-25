@@ -12,8 +12,7 @@ const clip=`polygon(0 ${C}px,${C}px ${C}px,${C}px 0,calc(100% - ${C}px) 0,calc(1
 const bev=(hi,mid,lo,t=5,b=7)=>`background:linear-gradient(${hi} 0 ${t}px,${mid} ${t}px calc(100% - ${b}px),${lo} calc(100% - ${b}px))`;
 const css=`html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:"Malgun Gothic",sans-serif;color:#fff;background:#17141d;
 background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%),linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%);background-size:8px 8px;background-position:0 0,4px 4px}
-.sep{position:absolute;left:487px;top:28px;bottom:28px;width:2px;background:#54496e;border-left:1px solid #000;border-right:1px solid #000}
-.rbg{position:absolute;left:490px;right:0;top:0;bottom:0;background:#0d0b12}
+.rbg{position:absolute;left:488px;right:0;top:0;bottom:0;background:#0d0b12;background-image:linear-gradient(45deg,#131019 25%,transparent 25%,transparent 75%,#131019 75%),linear-gradient(45deg,#131019 25%,transparent 25%,transparent 75%,#131019 75%);background-size:8px 8px;background-position:0 0,4px 4px}
 .L{position:absolute;left:30px;top:28px;width:440px;bottom:28px}
 .R{position:absolute;left:512px;right:26px;top:28px;bottom:28px;display:flex;flex-direction:column}
 h1{margin:0 0 16px;font-size:38px;text-shadow:0 4px 0 #000,3px 0 #000,-3px 0 #000,0 -3px 0 #000}
@@ -37,7 +36,7 @@ function render(k,anim){
   fn++;
   const items=T.points.slice(0,k).map((p,j)=>{const a=(anim&&j===k-1)?` style="transform:translateY(${anim.dy}px);opacity:${anim.op}"`:'';return `<div class="pi fr"${a}><div class="o"><div class="i"><span class="nb">${j+1}</span><span class="pt"><span class="ph">${p.h}</span><span class="pd">${p.d}</span></span></div></div></div>`}).join('');
   const html=`<!doctype html><meta charset="utf-8"><style>${css}</style>
-<div class="rbg"></div><div class="sep"></div><div class="L"><h1>${T.title}</h1>${T.detail.map(x=>`<p class="d">${x}</p>`).join('')}<div class="media">${T.media}</div></div>
+<div class="rbg"></div><div class="L"><h1>${T.title}</h1>${T.detail.map(x=>`<p class="d">${x}</p>`).join('')}<div class="media">${T.media}</div></div>
 <div class="R"><div class="tag fr"><div class="o"><div class="i">POINT!</div></div></div><div class="items">${items}</div></div>`;
   const n=String(fn).padStart(2,'0'),h=path.join(OUT,`p${n}.html`),big=path.join(OUT,`프레임${n}.png`);
   fs.writeFileSync(h,html);
