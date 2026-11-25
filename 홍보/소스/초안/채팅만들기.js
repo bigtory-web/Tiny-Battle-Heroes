@@ -22,10 +22,11 @@ const bev=(hi,mid,lo,t=5,b=7)=>`background:linear-gradient(${hi} 0 ${t}px,${mid}
 const css=`html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:"Malgun Gothic",sans-serif;background:#17141d;
 background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%),linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%);background-size:8px 8px;background-position:0 0,4px 4px}
 #vp{position:absolute;left:0;right:0;top:56px;bottom:20px;overflow:hidden;-webkit-mask-image:linear-gradient(transparent 0,#000 28px)}
-#st{position:absolute;left:0;right:0;bottom:0}
+#st{position:absolute;left:0;right:0;top:0}
+.c{display:inline}
 .m{display:flex;align-items:flex-end;gap:12px;margin:0 36px 16px}.m.me{flex-direction:row-reverse}
 .av{flex:none;width:58px;height:58px;box-sizing:border-box;border:3px solid #000;outline:2px solid #3b3550;background-repeat:no-repeat;overflow:hidden}
-.me .av{background-color:#f2c23c;background-size:260%;background-position:53% 50%}.ai .av{background-color:#54496e;background-size:100%;background-position:50% 50%;image-rendering:pixelated}
+.me .av{transform:scaleX(-1);background-color:#f2c23c;background-size:260%;background-position:53% 50%}.ai .av{background-color:#54496e;background-size:100%;background-position:50% 50%;image-rendering:pixelated}
 .col{display:flex;flex-direction:column;max-width:760px}.me .col{align-items:flex-end}
 .who{font-size:12px;font-weight:bold;color:#a79fb8;margin-bottom:3px}.me .who{color:#f2c23c}
 .who i{font-style:normal;font-weight:normal;color:#6d6482;margin-left:6px}
@@ -37,23 +38,33 @@ background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 7
 .t{position:absolute;top:16px;left:0;right:0;text-align:center;color:#a79fb8;font-size:15px}.t span{background:#17141d;padding:2px 10px;border:2px solid #000;outline:2px solid #3b3550}`;
 const u=p=>'file:///'+p.split(path.sep).join('/');
 fs.mkdirSync(OUT,{recursive:true});
-const ANIM=[{f:1,op:0.3},{f:0.45,op:0.7},{f:0.12,op:1}]; // f: 새 말풍선 높이만큼 스택을 아래로 내려 둔 비율(0이면 제자리)
+const ANIM=[{dy:20,op:0.35,f:1},{dy:10,op:0.75,f:0.45},{dy:0,op:1,f:0.12}]; // POINT와 같은 올라옴: 새 말풍선이 아래에서 올라오며 선명해짐(f: 스크롤이 필요할 때 남은 이동 비율)
+const STEPS=5; // 글자가 나타나는 단계 수(한 글자씩 나타나는 느낌)
+const START=150; // 첫 말풍선 시작 높이(작은 화면 px, 가운데 근처)
 const dur=[];let fn=0;
-function render(k,an){
+// 글자 수(마크업 제외) 세기와 n글자까지만 보이게 하기(나머지는 자리만 차지하고 안 보임)
+const plainLen=x=>x.replace(/<[^>]+>/g,'').length;
+function typed(x,n){let i=0,out='';for(const tk of x.split(/(<span class="hl">|<\/span>)/)){if(tk==='<span class="hl">'||tk==='</span>'){out+=tk;continue}for(const ch of tk){out+=(ch===' '||i<n)?ch:'<span class="c" style="visibility:hidden">'+ch+'</span>';if(ch!==' ')i++}}return out}
+function render(k,an,n){
   fn++;
-  const items=M.slice(0,k).map(([w,t,x])=>`<div class="m ${w}"><div class="av" style="background-image:url(${AV[w]})"></div><div class="col"><div class="who">${NAME[w]}<i>${t}</i></div><div class="b"><div class="o"><div class="i">${x}</div></div></div></div></div>`).join('');
-  const js=an?`<script>const st=document.getElementById('st'),l=st.lastElementChild,h=l.offsetHeight+16;st.style.transform='translateY('+h*${an.f}+'px)';l.style.opacity=${an.op}</script>`:'';
+  const items=M.slice(0,k).map(([w,t,x],j)=>{const last=j===k-1;const body=last&&n!==undefined?typed(x,n):x;return `<div class="m ${w}"><div class="av" style="background-image:url(${AV[w]})"></div><div class="col"><div class="who">${NAME[w]}<i>${t}</i></div><div class="b"><div class="o"><div class="i">${body}</div></div></div></div></div>`}).join('');
+  // 배치: 가운데 근처(START)에서 시작해 아래로 쌓이고, 아래 끝에 닿으면 위로 밀림. an이 있으면 올라오는 중
+  const js=`<script>const vp=document.getElementById('vp'),st=document.getElementById('st'),kids=[...st.children],l=kids[kids.length-1],Hv=vp.clientHeight,hh=e=>e.offsetHeight+16;
+const Hc=kids.reduce((a,e)=>a+hh(e),0),Hp=Hc-hh(l),T=H=>${START}+H<=Hv?${START}:Hv-H;
+const A=${an?JSON.stringify(an):'{dy:0,op:1,f:0}'};const tf=T(Hc),tp=kids.length>1?T(Hp):tf;
+st.style.top=(tf+(tp-tf)*A.f)+'px';l.style.transform='translateY('+A.dy+'px)';l.style.opacity=A.op;</script>`;
   const html=`<!doctype html><meta charset="utf-8"><style>${css}</style><div class="t"><span>2026-11-23 · ${M[k-1][1]}</span></div><div id="vp"><div id="st">${items}</div></div>${js}`;
-  const n=String(fn).padStart(2,'0'),h=path.join(OUT,`f${n}.html`),big=path.join(OUT,`프레임${n}.png`);
+  const nn=String(fn).padStart(2,'0'),h=path.join(OUT,`f${nn}.html`),big=path.join(OUT,`프레임${nn}.png`);
   fs.writeFileSync(h,html);
   execFileSync(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=1920,1080','--screenshot='+big,u(h)],{stdio:'ignore'});
   fs.unlinkSync(h);
 }
 M.forEach((m,k)=>{
-  const plain=m[2].replace(/<[^>]+>/g,'');
-  const hold=Math.min(7,Math.max(3,1.5+plain.length*0.1));
-  for(const an of ANIM){render(k+1,an);dur.push(0.07)}
-  dur[dur.length-1]=hold; // 마지막 연출 프레임이 유지 시간
+  const L=plainLen(m[2]);
+  const hold=Math.min(6,Math.max(2.2,1+L*0.09));
+  for(const an of ANIM){render(k+1,an,0);dur.push(0.07)}          // 올라옴(글자는 아직 없음)
+  for(let i=1;i<=STEPS;i++){render(k+1,null,Math.ceil(L*i/STEPS));dur.push(0.1)} // 한 글자씩 나타남
+  dur[dur.length-1]=hold; // 다 나타난 프레임이 유지 시간
 });
 fs.writeFileSync(path.join(OUT,'길이.json'),JSON.stringify(dur));
 console.log('frames',dur.length,'sec',dur.reduce((a,b)=>a+b,0).toFixed(1));

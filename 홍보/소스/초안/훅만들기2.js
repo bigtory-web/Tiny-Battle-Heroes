@@ -8,10 +8,10 @@ const clip=`polygon(0 ${C}px,${C}px ${C}px,${C}px 0,calc(100% - ${C}px) 0,calc(1
 const star=(x,y,s=6)=>`<i class="st" style="left:${x}px;top:${y}px;width:${s}px;height:${s}px;box-shadow:${s}px 0 #ffe08a,-${s}px 0 #ffe08a,0 ${s}px #ffe08a,0 -${s}px #ffe08a"></i>`;
 const STARS=[[70,60,6],[860,70,8],[150,420,6],[780,330,6],[470,40,5],[40,250,5],[900,230,6],[330,480,5]];
 const css=`html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:"Malgun Gothic",sans-serif;background:#17141d}
-.rays{position:absolute;inset:0;background:repeating-conic-gradient(from var(--a,0deg) at ${SIDE==='left'?25:75}% 69%,#221c30 0 7.5deg,#17141d 7.5deg 15deg)}
+.rays{position:absolute;inset:0;background:repeating-conic-gradient(from var(--a,0deg) at ${SIDE==='left'?27:73}% 70%,#221c30 0 7.5deg,#17141d 7.5deg 15deg)}
 .vig{position:absolute;inset:0;background:radial-gradient(ellipse at 60% 60%,transparent 40%,#0b0910 100%)}
 .st{position:absolute;background:#ffe08a;display:block}
-.hero{position:absolute;${SIDE}:30px;bottom:-12px;height:400px;filter:drop-shadow(0 6px 0 #0a0810)}
+.hero{position:absolute;${SIDE}:0px;bottom:-70px;height:460px;transform:scaleX(${SIDE==='right'?-1:1});filter:drop-shadow(0 6px 0 #0a0810)}
 .bub{position:absolute;${SIDE==='left'?'right':'left'}:120px;top:88px;width:max-content;filter:drop-shadow(0 6px 0 #0a0810);transform-origin:90% 100%}
 .bub .o{background:#000;padding:5px;clip-path:${clip}}
 .bub .i{background:linear-gradient(#ffe08a 0 6px,#f2c23c 6px calc(100% - 10px),#c99a1e calc(100% - 10px));color:#3a2410;padding:26px 32px 34px;font-size:48px;font-weight:bold;line-height:1.3;white-space:nowrap;clip-path:${clip}}
