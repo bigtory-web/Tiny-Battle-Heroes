@@ -2387,6 +2387,10 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
 .alias{font:400 11px var(--display)!important;font-style:normal;color:#c9bfae;margin-left:6px;letter-spacing:.02em;white-space:nowrap}
 /* 상세 창이 열려 있는 동안 이벤트 목록 펼침은 숨김: 상세 창(전장 칸 안)은 목록(오른쪽 버튼 줄)보다 층이 낮아 z-index로는 못 이겨서(전장이 깎은 모서리라 따로 층을 만듦) (2026-11-25) */
 body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
+/* 도감 영웅: 못 만난 영웅도 그림을 그대로 보여 줌(옛 까만 그림자 뺌), 아래 '안 쓰는 영웅' 구역 (2026-11-25 사용자) */
+.cdxc.unk .cdxp .av{filter:none!important;opacity:.8}
+.cdxsec{margin:12px 0 6px;padding:4px 8px;font:400 14px var(--display);color:#f3e6c4;background:#2a2533;box-shadow:inset 0 0 0 2px #17141d}
+.cdxsec small{font:400 11px var(--display);color:#c9bfae;margin-left:8px}
 </style>
 </head>
 <body>
@@ -2684,7 +2688,7 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
     function row(kind, map, col){ return '<div class="frow">' + Object.keys(map || {}).map(function(k){ return btn(kind + ':' + k, map[k], typeof col === 'function' ? col(k) : col); }).join('') + '</div>'; }
     var html = '<div class="frow">' + btn('all', '전체') + btn('own', '보유') + '</div>';
     if (cdxTab === 'event' || cdxTab === 'mob' || cdxTab === 'lv') html = '';
-    else if (cdxTab === 'hero') html += row('job', D.jobs, TAGC.job) + row('race', D.races, TAGC.race) + row('el', D.elements.names, function(k){ return ELC[k]; });
+    else if (cdxTab === 'hero') html += row('job', D.jobs, TAGC.job) + '<div class="frow">' + row('race', D.races, TAGC.race).replace(/^<div class="frow">|<\/div>$/g, '') + row('el', D.elements.names, function(k){ return ELC[k]; }).replace(/^<div class="frow">|<\/div>$/g, '') + '</div>'; /* 속성 필터는 종족 옆 (2026-11-25 사용자) */
     else { var G = D.skills.grades || {}; html += row('g', Object.keys(G).reduce(function(o, k){ o[k] = G[k].name; return o; }, {}), function(k){ return G[k].color; }); }
     $('filters').innerHTML = html;
     document.querySelectorAll('#cdxTabs [data-ct]').forEach(function(x){ x.classList.toggle('on', x.dataset.ct === cdxTab); });
@@ -2708,10 +2712,12 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
     } else if (cdxTab === 'event'){ var EI2 = (D.events && D.events.info) || {}, off = (D.events && D.events.off) || [];
       html = '<div class="evlist">' + Object.keys(EI2).map(function(k){ return '<div class="evrow' + (off.indexOf(k) >= 0 ? ' off' : '') + '"><span class="evic">' + evIcon(k) + '</span><div><b>' + EI2[k].name + '</b><p>' + EI2[k].desc + '</p></div></div>'; }).join('') + '</div>';
     } else if (cdxTab === 'hero'){
-      var list = D.heroes.filter(function(h){ return h.art !== false && inPool(h) && heroPass(h); }).slice().sort(function(a, b){ return (owns(b.id) - owns(a.id)) || (E.heroGrade(D, a.id) - E.heroGrade(D, b.id)); });
-      var own = D.heroes.filter(function(h){ return h.art !== false && inPool(h) && owns(h.id); }).length, all = D.heroes.filter(function(h){ return h.art !== false && inPool(h); }).length;
-      html = '<div class="cdxcount">영웅 ' + own + ' / ' + all + '</div><div class="cdxgrid">' + list.map(function(h){ var o = owns(h.id);
-        return '<button class="cdxc' + (o ? ' own' : ' unk') + (cdxSel === 'h:' + h.id ? ' sel' : '') + '" data-cdx="h:' + h.id + '" style="--el:' + ELC[h.el] + ';--gcol:' + HG(h.id).col + '"><span class="cdxp hic" style="--hg:' + HG(h.id).col + '">' + av(h.id) + '</span><b>' + h.name + '</b>' + (teamHasId(h.id) ? '<em>출전</em>' : '') + '</button>'; }).join('') + '</div>';
+      var cur = D.heroes.filter(function(h){ return h.art !== false; }), gSort = function(x, y){ return E.heroGrade(D, x.id) - E.heroGrade(D, y.id); }, /* 등급 → 데이터 순서 (보유 여부와 상관없이) */
+        top = cur.filter(function(h){ return inPool(h) && heroPass(h); }).sort(gSort), low = cur.filter(function(h){ return !inPool(h) && heroPass(h); }).sort(gSort),
+        own = cur.filter(function(h){ return owns(h.id); }).length, all = cur.length,
+        cell = function(h){ var o = owns(h.id); return '<button class="cdxc' + (o ? ' own' : ' unk') + (cdxSel === 'h:' + h.id ? ' sel' : '') + '" data-cdx="h:' + h.id + '" style="--el:' + ELC[h.el] + ';--gcol:' + HG(h.id).col + '"><span class="cdxp hic" style="--hg:' + HG(h.id).col + '">' + av(h.id) + '</span><b>' + h.name + '</b>' + (teamHasId(h.id) ? '<em>출전</em>' : '') + '</button>'; };
+      html = '<div class="cdxcount">영웅 ' + own + ' / ' + all + '</div><div class="cdxgrid">' + top.map(cell).join('') + '</div>' +
+        (low.length ? '<div class="cdxsec">안 쓰는 영웅 <small>지금 게임에는 나오지 않아요</small></div><div class="cdxgrid">' + low.map(cell).join('') + '</div>' : '');
     } else {
       var sl = D.skills.list.filter(skillPass), ownS = D.skills.list.filter(function(d){ return S.skills.some(function(x){ return x.id === d.id; }); }).length;
       html = '<div class="cdxcount">스킬 ' + ownS + ' / ' + D.skills.list.length + '</div><div class="cdxgrid">' + sl.map(function(d){ var o = S.skills.some(function(x){ return x.id === d.id; }), g = skG(d.id, myLv(d.id));
