@@ -6,7 +6,7 @@
 <title>타이니 배틀 히어로즈</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gothic+A1:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gothic+A1:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#12131f; --panel:#1c1e30; --panel-2:#262940; --line:#363a5a; --text:#eef0fa; --muted:#a3a8c6;
@@ -2405,6 +2405,9 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
 #underBar .ugrp.utest{margin-top:18px!important}
 #hud .hudbtns{padding-right:12px!important}
 #hud .stgit{border-left:3px solid #17141d;padding-left:12px!important;margin-left:0}
+/* 마지막 처치 금색 네모 별가루 (2026-11-25 사용자) */
+.fdust{position:absolute;z-index:850;width:var(--s,4px);height:var(--s,4px);background:#ffd34d;box-shadow:0 0 0 1px #17141d;pointer-events:none;animation:fdust .7s ease-out both}
+@keyframes fdust{0%{transform:translate(0,0);opacity:1}70%{opacity:1}100%{transform:translate(var(--dx),var(--dy));opacity:0}}
 </style>
 </head>
 <body>
@@ -2865,7 +2868,8 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
     var fd = $('field'); if (!fd) return; var c = fd.querySelector('canvas.fbar');
     if (!c){ c = document.createElement('canvas'); c.className = 'fbar'; fd.appendChild(c); }
     var k = Math.min(2, window.devicePixelRatio || 1); c.width = W * k; c.height = H * k; var cx = c.getContext('2d'); cx.setTransform(k, 0, 0, k, 0, 0); cx.clearRect(0, 0, W, H); cx.imageSmoothingEnabled = false;
-    list.forEach(function(b){ drawBars(cx, b.x, b.y + OFF, { hpk: 1, ally: b.ally, energy: 0, star: b.star, S: unitPx(false), tf: imgTopFrac(IMGS[b.id]) }); });
+    list.forEach(function(b){ drawBars(cx, b.x, b.y + OFF, { hpk: 1, ally: b.ally, energy: 0, star: 0, S: unitPx(false), tf: imgTopFrac(IMGS[b.id]) }); });
+    list.forEach(function(b){ if (!b.star) return; var S0 = unitPx(false), hy = b.y + OFF + 26 + S0 * .04 - S0 + imgTopFrac(IMGS[b.id]) * S0; drawGradeStar(cx, b.x, hy - 7, b.star); }); /* 별은 막대를 다 그린 뒤 맨 위에: 위 칸 영웅의 HP 막대가 아래 칸 영웅의 별을 덮던 문제(적 녹스·꽃 소녀) */
     var cr = c.getBoundingClientRect(); if (!cr.width) return;
     fd.querySelectorAll('.unit .fst').forEach(function(s){ var fe = s.offsetParent, un = fe && fe.offsetParent; if (!un || !un.offsetWidth) return;
       var ur = un.getBoundingClientRect(), q = ur.width / un.offsetWidth, sx = W / cr.width, sy = H / cr.height;
@@ -3633,7 +3637,8 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
     setTimeout(function(){ // 쾅
       ar.classList.remove('finshk'); void ar.offsetWidth; ar.classList.add('finshk');
       var fl = document.createElement('i'); fl.className = 'finflash'; ar.appendChild(fl); setTimeout(function(){ fl.remove(); }, 450);
-      /* 마지막 처치의 퍼지는 흰·금색 고리 3겹은 뺌 (2026-11-25 사용자: 흰 원 연출 별로) */
+      /* 마지막 처치의 퍼지는 흰·금색 고리 3겹은 뺌 (2026-11-25 사용자: 흰 원 연출 별로) -> 금색 네모 별가루 */
+      for (var di = 0; di < 16; di++){ var dn = document.createElement('i'), da = di / 16 * 6.283 + Math.random() * .4, dd = 34 + Math.random() * 44; dn.className = 'fdust'; dn.style.cssText = 'left:calc(6px + (100% - 12px) * ' + ox / 100 + ');top:calc(6px + (100% - 12px) * ' + oy / 100 + ');--dx:' + Math.round(Math.cos(da) * dd) + 'px;--dy:' + Math.round(Math.sin(da) * dd * .8 - 14) + 'px;--s:' + (3 + Math.floor(Math.random() * 3)) + 'px;animation-delay:' + (Math.random() * .08).toFixed(2) + 's'; ar.appendChild(dn); (function(n){ setTimeout(function(){ n.remove(); }, 900); })(dn); }
       if (HAS_FX) fxAt('hit', u, { scale: 2.6 }); hitStopOn && hitStopOn(u.uid, .12, 1);
     }, 150);
     setTimeout(function(){ cv.style.transition = 'transform .3s ease-in-out'; cv.style.transform = ''; }, 780);
