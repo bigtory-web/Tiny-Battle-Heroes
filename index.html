@@ -2391,6 +2391,13 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
 .cdxc.unk .cdxp .av{filter:none!important;opacity:.8}
 .cdxsec{margin:12px 0 6px;padding:4px 8px;font:400 14px var(--display);color:#f3e6c4;background:#2a2533;box-shadow:inset 0 0 0 2px #17141d}
 .cdxsec small{font:400 11px var(--display);color:#c9bfae;margin-left:8px}
+/* 도감 영웅 칸: 전신이 보이게 칸을 키움(한 줄 개수는 줄어듦). 이름 아래 작은 별칭 (2026-11-25 사용자: 도감은 캐릭터 전체 모습 보여 주는 공간) */
+.cdxgrid.hg{grid-template-columns:repeat(auto-fill,112px);gap:8px}
+.cdxgrid.hg .cdxc{width:112px;padding:6px 4px 5px;gap:2px}
+.cdxgrid.hg .cdxc .cdxp{width:100px;height:100px;align-items:flex-end}
+.cdxgrid.hg .cdxc .cdxp .av{background-size:contain!important;background-position:50% 100%!important}
+.cdxgrid.hg .cdxc b{font-size:13px;max-width:104px}
+.cdxgrid.hg .cdxc .alias{display:block;margin:0;font-size:10px;max-width:104px;overflow:hidden;text-overflow:ellipsis}
 </style>
 </head>
 <body>
@@ -2715,9 +2722,9 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
       var cur = D.heroes.filter(function(h){ return h.art !== false; }), gSort = function(x, y){ return E.heroGrade(D, x.id) - E.heroGrade(D, y.id); }, /* 등급 → 데이터 순서 (보유 여부와 상관없이) */
         top = cur.filter(function(h){ return inPool(h) && heroPass(h); }).sort(gSort), low = cur.filter(function(h){ return !inPool(h) && heroPass(h); }).sort(gSort),
         own = cur.filter(function(h){ return owns(h.id); }).length, all = cur.length,
-        cell = function(h){ var o = owns(h.id); return '<button class="cdxc' + (o ? ' own' : ' unk') + (cdxSel === 'h:' + h.id ? ' sel' : '') + '" data-cdx="h:' + h.id + '" style="--el:' + ELC[h.el] + ';--gcol:' + HG(h.id).col + '"><span class="cdxp hic" style="--hg:' + HG(h.id).col + '">' + av(h.id) + '</span><b>' + h.name + '</b>' + (teamHasId(h.id) ? '<em>출전</em>' : '') + '</button>'; };
-      html = '<div class="cdxcount">영웅 ' + own + ' / ' + all + '</div><div class="cdxgrid">' + top.map(cell).join('') + '</div>' +
-        (low.length ? '<div class="cdxsec">안 쓰는 영웅 <small>지금 게임에는 나오지 않아요</small></div><div class="cdxgrid">' + low.map(cell).join('') + '</div>' : '');
+        cell = function(h){ var o = owns(h.id); return '<button class="cdxc' + (o ? ' own' : ' unk') + (cdxSel === 'h:' + h.id ? ' sel' : '') + '" data-cdx="h:' + h.id + '" style="--el:' + ELC[h.el] + ';--gcol:' + HG(h.id).col + '"><span class="cdxp hic" style="--hg:' + HG(h.id).col + '">' + avO(h.id) + '</span><b>' + h.name + '</b>' + (h.alias ? '<i class="alias">' + h.alias + '</i>' : '') + (teamHasId(h.id) ? '<em>출전</em>' : '') + '</button>'; };
+      html = '<div class="cdxcount">영웅 ' + own + ' / ' + all + '</div><div class="cdxgrid hg">' + top.map(cell).join('') + '</div>' +
+        (low.length ? '<div class="cdxsec">안 쓰는 영웅 <small>지금 게임에는 나오지 않아요</small></div><div class="cdxgrid hg">' + low.map(cell).join('') + '</div>' : '');
     } else {
       var sl = D.skills.list.filter(skillPass), ownS = D.skills.list.filter(function(d){ return S.skills.some(function(x){ return x.id === d.id; }); }).length;
       html = '<div class="cdxcount">스킬 ' + ownS + ' / ' + D.skills.list.length + '</div><div class="cdxgrid">' + sl.map(function(d){ var o = S.skills.some(function(x){ return x.id === d.id; }), g = skG(d.id, myLv(d.id));
@@ -3774,7 +3781,7 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
   function silU(key, col, N){ var k = key + col + '@' + N; if (SIL[k]) return SIL[k]; var src = UPS(key, N), c = document.createElement('canvas'); c.width = src.width; c.height = src.height; var x = c.getContext('2d'); x.drawImage(src, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = col; x.fillRect(0, 0, c.width, c.height); return SIL[k] = c; }
   var OUTL = {};
   /* 편성 화면(전투 시작 전) 캐릭터: 프레임 시트 영웅은 대기 1~4칸을 0.18초마다 바꿔 그려요. 외곽선은 avO와 같은 색으로 프레임마다 다시 구움 */
-  setInterval(function(){ var k = 1 + Math.floor(performance.now() / 180) % 4; document.querySelectorAll('#field .av.pic.olb[data-oid]').forEach(function(e){ if (e.dataset.fk === '' + k) return; var id = e.dataset.oid, f = id + '_a' + k; if (!IMGS[f]) return; e.dataset.fk = k; e.style.backgroundImage = 'url(' + outlinedURL(f, gc(id) + 'b3') + ')'; }); }, 60);
+  setInterval(function(){ var k = 1 + Math.floor(performance.now() / 180) % 4; document.querySelectorAll('#field .av.pic.olb[data-oid], #hlist .av.pic.olb[data-oid]').forEach(function(e){ if (e.dataset.fk === '' + k) return; var id = e.dataset.oid, f = id + '_a' + k; if (!IMGS[f]) return; e.dataset.fk = k; e.style.backgroundImage = 'url(' + outlinedURL(f, gc(id) + 'b3') + ')'; }); }, 60);
   var rpAnim = { id: null };
   function rpAnimTick(){ var id = rpAnim.id, box = $('roul'); if (!id || !box || box.hidden || box.classList.contains('spin')) return; var f = id + '_a' + (1 + Math.floor(performance.now() / 180) % 4); if (!IMGS[f]) return; var pic = box.querySelector('.rpic');
     pic.style.backgroundImage = 'url(' + outlinedURL(f, gc(id)) + ')'; pic.style.setProperty('--o1', 'url(' + outlinedURL(f, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(f, '#ffffff') + ')'); } /* 같은 외곽선 색(등급·파랑·흰색)으로 프레임마다 다시 그려 연출 유지 */
