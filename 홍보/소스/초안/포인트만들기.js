@@ -10,7 +10,7 @@ const C=+process.env.C||4;
 const clip=`polygon(0 ${C}px,${C}px ${C}px,${C}px 0,calc(100% - ${C}px) 0,calc(100% - ${C}px) ${C}px,100% ${C}px,100% calc(100% - ${C}px),calc(100% - ${C}px) calc(100% - ${C}px),calc(100% - ${C}px) 100%,${C}px 100%,${C}px calc(100% - ${C}px),0 calc(100% - ${C}px))`;
 // 3단 입체: 위 밝은 띠 / 몸통 / 아래 어두운 띠 (게임 버튼과 같은 방식)
 const bev=(hi,mid,lo,t=5,b=7)=>`background:linear-gradient(${hi} 0 ${t}px,${mid} ${t}px calc(100% - ${b}px),${lo} calc(100% - ${b}px))`;
-const css=`html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:"Malgun Gothic",sans-serif;color:#fff;background:#17141d;
+const css=`html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:"Malgun Gothic",sans-serif;color:#fff;background:#17141d;
 background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%),linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%);background-size:8px 8px;background-position:0 0,4px 4px}
 .sep{position:absolute;left:484px;top:28px;bottom:28px;width:6px;background:repeating-linear-gradient(#54496e 0 12px,#2e2a3c 12px 18px);border-left:3px solid #000;border-right:3px solid #000}
 .L{position:absolute;left:30px;top:28px;width:440px;bottom:28px}
@@ -39,10 +39,8 @@ for(let k=0;k<=T.points.length;k++){
 <div class="R"><div class="tag fr"><div class="o"><div class="i">POINT!</div></div></div><div class="items">${items}</div></div>`;
   const n=String(k+1).padStart(2,'0'),h=path.join(OUT,`p${n}.html`),s=path.join(OUT,`p${n}_s.png`),big=path.join(OUT,`프레임${n}.png`),kk=path.join(OUT,'k.html');
   fs.writeFileSync(h,html);
-  execFileSync(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=960,540','--screenshot='+s,u(h)],{stdio:'ignore'});
-  fs.writeFileSync(kk,`<!doctype html><style>html,body{margin:0}img{width:1920px;height:1080px;image-rendering:pixelated;display:block}</style><img src="p${n}_s.png">`);
-  execFileSync(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=1920,1080','--screenshot='+big,u(kk)],{stdio:'ignore'});
-  for(const f of [h,s,kk])fs.unlinkSync(f);
+  execFileSync(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=1920,1080','--screenshot='+big,u(h)],{stdio:'ignore'});
+  fs.unlinkSync(h);
 }
 fs.writeFileSync(path.join(OUT,'길이.json'),JSON.stringify(dur));
 console.log('frames',dur.length);
