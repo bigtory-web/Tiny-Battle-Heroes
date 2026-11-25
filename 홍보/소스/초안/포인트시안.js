@@ -31,7 +31,7 @@ const page=(right,extra='')=>`<!doctype html><meta charset="utf-8"><style>${css}
 <div class="t sh"><div class="o"><div class="in">이 영상은 개발일지</div></div></div>
 <div class="vid"><div>게임 녹화 영상 자리</div></div>
 <div class="cap sh"><div class="o"><div class="in">저도 영상을 보며 도움을 받아서,<br>내 글도 누군가에게 도움이 될까 해서요.</div></div></div>
-<div class="R">${right}</div>${extra}`;
+${extra?'<style>.rbg,.R{display:none}.t,.vid,.cap{left:242px}</style>':''}<div class="R">${right}</div>${extra}`;
 const bubble=x=>`<div class="say sh"><div class="o"><div class="in">${x}</div></div></div>`;
 const A=bubble('개발 과정을 <span class="hl">기록</span>으로 남기고 있어요.')+bubble('저도 영상을 보며 도움을 받았거든요.')+bubble('내 글도 누군가에게 <span class="hl">도움</span>이 되면 좋겠어요.');
 const item=(n,h,d)=>`<div class="pi sh"><div class="o"><div class="in"><span class="nb">${n}</span><span class="pt"><span class="ph">${h}</span><span class="pd">${d}</span></span></div></div></div>`;
