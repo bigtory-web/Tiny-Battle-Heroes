@@ -21,15 +21,22 @@ html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-fam
 .pi .in{background:${bev('#8472b0','#52466f','#2a2539',6,8)};padding:10px 16px 16px 12px;display:flex;gap:14px;align-items:center;position:relative}
 .nb{flex:none;width:56px;height:56px;box-sizing:border-box;background:${bev('#ffe08a','#f2c23c','#c99a1e',5,7)};color:#3a2410;font-size:33px;text-align:center;line-height:50px;border:4px solid #000;clip-path:${clip}}
 .pt{display:flex;flex-direction:column;gap:2px}.ph{font-size:33px;color:#ffd84a;text-shadow:${O1};line-height:1.2}.pd{font-size:22px;color:#e8e4f0;line-height:1.35}`;
-const page=(right)=>`<!doctype html><meta charset="utf-8"><style>${css}</style><div class="rbg"></div>
+const AV='file:///'+path.join(D,'..','채널','개발자_전신.png').split(path.sep).join('/');
+const css2=`.dim .pi,.dim .tag{filter:brightness(.45)}
+.bd{position:absolute;right:24px;bottom:22px;width:84px}.bd .av{width:84px;height:84px;box-sizing:border-box;border:4px solid #000;outline:3px solid #f2c23c;background:#f2c23c url(${AV}) no-repeat;background-size:260%;background-position:53% 50%;transform:scaleX(-1)}
+.bd .nm{margin-top:8px;text-align:center;font-size:11px;color:#f2c23c}
+.bb{position:absolute;right:124px;bottom:44px;width:300px}.bb .in{background:${bev('#ffe08a','#f2c23c','#c99a1e',4,6)};color:#3a2410;padding:14px 20px 20px;font-size:22px;line-height:1.5}
+.bb .pt{position:absolute;right:-22px;bottom:8px;width:26px;height:26px;background:#f2c23c;clip-path:polygon(0 0,100% 100%,0 100%)}`;
+const page=(right,extra='')=>`<!doctype html><meta charset="utf-8"><style>${css}${css2}</style><div class="rbg"></div>
 <div class="t sh"><div class="o"><div class="in">이 영상은 개발일지</div></div></div>
 <div class="vid"><div>게임 녹화 영상 자리</div></div>
 <div class="cap sh"><div class="o"><div class="in">저도 영상을 보며 도움을 받아서,<br>내 글도 누군가에게 도움이 될까 해서요.</div></div></div>
-<div class="R">${right}</div>`;
+<div class="R${extra?' dim':''}">${right}</div>${extra}`;
 const bubble=x=>`<div class="say sh"><div class="o"><div class="in">${x}</div></div></div>`;
 const A=bubble('개발 과정을 <span class="hl">기록</span>으로 남기고 있어요.')+bubble('저도 영상을 보며 도움을 받았거든요.')+bubble('내 글도 누군가에게 <span class="hl">도움</span>이 되면 좋겠어요.');
 const item=(n,h,d)=>`<div class="pi sh"><div class="o"><div class="in"><span class="nb">${n}</span><span class="pt"><span class="ph">${h}</span><span class="pd">${d}</span></span></div></div></div>`;
 const B=`<div class="tag sh"><div class="o"><div class="in">POINT!</div></div></div>`+item(1,'기록','개발 과정을 남겨요')+item(2,'바람','누군가에게 도움이 되면 좋겠어요')+item(3,'다음 화','덩치 배치 이야기');
 fs.mkdirSync(OUT,{recursive:true});
-for(const [n,h] of [['좌영상_A_이야기',A],['좌영상_B_POINT',B]]){const f=path.join(OUT,n+'.html');fs.writeFileSync(f,page(h));execFileSync(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=1920,1080','--screenshot='+path.join(OUT,n+'.png'),'file:///'+f.split(path.sep).join('/')],{stdio:'ignore'});fs.unlinkSync(f)}
+const X='<div class="bb sh"><div class="o"><div class="in">사실 이 세 가지 말고도 쓸 말이 많았어요. 다음 화부터 하나씩 풀게요.</div></div><div class="pt"></div></div><div class="bd"><div class="av"></div><div class="nm">빅토리</div></div>';
+for(const [n,h,x] of [['좌영상_A_이야기',A,''],['좌영상_B_POINT',B,''],['좌영상_C_추가이야기',B,X]]){const f=path.join(OUT,n+'.html');fs.writeFileSync(f,page(h,x));execFileSync(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=1920,1080','--screenshot='+path.join(OUT,n+'.png'),'file:///'+f.split(path.sep).join('/')],{stdio:'ignore'});fs.unlinkSync(f)}
 console.log('ok');
