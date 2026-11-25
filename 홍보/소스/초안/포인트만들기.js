@@ -12,7 +12,8 @@ const clip=`polygon(0 ${C}px,${C}px ${C}px,${C}px 0,calc(100% - ${C}px) 0,calc(1
 const bev=(hi,mid,lo,t=5,b=7)=>`background:linear-gradient(${hi} 0 ${t}px,${mid} ${t}px calc(100% - ${b}px),${lo} calc(100% - ${b}px))`;
 const css=`html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:"Malgun Gothic",sans-serif;color:#fff;background:#17141d;
 background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%),linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%);background-size:8px 8px;background-position:0 0,4px 4px}
-.sep{position:absolute;left:484px;top:28px;bottom:28px;width:6px;background:repeating-linear-gradient(#54496e 0 12px,#2e2a3c 12px 18px);border-left:3px solid #000;border-right:3px solid #000}
+.sep{position:absolute;left:487px;top:28px;bottom:28px;width:2px;background:#54496e;border-left:1px solid #000;border-right:1px solid #000}
+.rbg{position:absolute;left:490px;right:0;top:0;bottom:0;background:#0d0b12}
 .L{position:absolute;left:30px;top:28px;width:440px;bottom:28px}
 .R{position:absolute;left:512px;right:26px;top:28px;bottom:28px;display:flex;flex-direction:column}
 h1{margin:0 0 16px;font-size:38px;text-shadow:0 4px 0 #000,3px 0 #000,-3px 0 #000,0 -3px 0 #000}
@@ -22,7 +23,7 @@ h1{margin:0 0 16px;font-size:38px;text-shadow:0 4px 0 #000,3px 0 #000,-3px 0 #00
 .fr{filter:drop-shadow(0 5px 0 #0a0810)}.fr>.o{background:#000;padding:4px;clip-path:${clip}}.fr .i{clip-path:${clip}}
 .tag{display:inline-block;align-self:flex-start;margin-bottom:12px}
 .tag .i{${bev('#ffe08a','#f2c23c','#c99a1e',6,8)};color:#3a2410;font-weight:bold;font-size:30px;padding:6px 26px 12px;letter-spacing:2px}
-.items{flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px;padding-bottom:12px}
+.items{flex:1;position:relative;display:flex;flex-direction:column;justify-content:flex-start;gap:16px;padding-top:44px}
 .pi .i{${bev('#6a5d8c','#463e60','#2a2539',6,8)};padding:10px 16px 16px 12px;display:flex;gap:14px;align-items:center}
 .nb{flex:none;width:40px;height:40px;${bev('#ffe08a','#f2c23c','#c99a1e',4,5)};color:#3a2410;font-weight:bold;font-size:24px;text-align:center;line-height:34px;border:3px solid #000;box-sizing:border-box}
 .pt{display:flex;flex-direction:column;gap:2px}
@@ -30,17 +31,23 @@ h1{margin:0 0 16px;font-size:38px;text-shadow:0 4px 0 #000,3px 0 #000,-3px 0 #00
 .pd{font-size:18px;color:#d8d2e6;line-height:1.35}`;
 const u=p=>'file:///'+p.split(path.sep).join('/');
 fs.mkdirSync(OUT,{recursive:true});
-const dur=[];
-for(let k=0;k<=T.points.length;k++){
-  dur.push(k===0?2:k===T.points.length?3.5:2.2);
-  const items=T.points.slice(0,k).map((p,j)=>`<div class="pi fr"><div class="o"><div class="i"><span class="nb">${j+1}</span><span class="pt"><span class="ph">${p.h}</span><span class="pd">${p.d}</span></span></div></div></div>`).join('');
+const dur=[];let fn=0;
+const ANIM=[{dy:20,op:0.35},{dy:10,op:0.75},{dy:0,op:1}]; // 새 항목: 아래에서 위로 밀려 올라옴
+function render(k,anim){
+  fn++;
+  const items=T.points.slice(0,k).map((p,j)=>{const a=(anim&&j===k-1)?` style="transform:translateY(${anim.dy}px);opacity:${anim.op}"`:'';return `<div class="pi fr"${a}><div class="o"><div class="i"><span class="nb">${j+1}</span><span class="pt"><span class="ph">${p.h}</span><span class="pd">${p.d}</span></span></div></div></div>`}).join('');
   const html=`<!doctype html><meta charset="utf-8"><style>${css}</style>
-<div class="sep"></div><div class="L"><h1>${T.title}</h1>${T.detail.map(x=>`<p class="d">${x}</p>`).join('')}<div class="media">${T.media}</div></div>
+<div class="rbg"></div><div class="sep"></div><div class="L"><h1>${T.title}</h1>${T.detail.map(x=>`<p class="d">${x}</p>`).join('')}<div class="media">${T.media}</div></div>
 <div class="R"><div class="tag fr"><div class="o"><div class="i">POINT!</div></div></div><div class="items">${items}</div></div>`;
-  const n=String(k+1).padStart(2,'0'),h=path.join(OUT,`p${n}.html`),s=path.join(OUT,`p${n}_s.png`),big=path.join(OUT,`프레임${n}.png`),kk=path.join(OUT,'k.html');
+  const n=String(fn).padStart(2,'0'),h=path.join(OUT,`p${n}.html`),big=path.join(OUT,`프레임${n}.png`);
   fs.writeFileSync(h,html);
   execFileSync(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=1920,1080','--screenshot='+big,u(h)],{stdio:'ignore'});
   fs.unlinkSync(h);
+}
+render(0,null);dur.push(2);
+for(let k=1;k<=T.points.length;k++){
+  for(const an of ANIM){render(k,an);dur.push(0.1)}
+  dur[dur.length-1]=k===T.points.length?3.5:2.2; // 마지막 연출 프레임이 유지 시간
 }
 fs.writeFileSync(path.join(OUT,'길이.json'),JSON.stringify(dur));
 console.log('frames',dur.length);
