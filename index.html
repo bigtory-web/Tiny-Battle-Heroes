@@ -2631,7 +2631,12 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
     im.onload = function(){ IMGS[h.id] = im; IMGSRC[h.id] = im.src; PIX[h.id] = im.src.indexOf("img/p/") >= 0; imgReady(); };
     im.onerror = function(){ if (first){ first = false; im.src = 'img/s/' + h.id + '.png'; } };
     im.src = 'img/p/' + h.id + '.png'; });
-  var BG = new Image(); BG.src = 'img/p/bg_field.png'; var BGD = new Image(); BGD.src = 'img/p/bg_field_dusk.png'; /* 노을 배경: 전투 dusk~at초에 낮 배경 위로 서서히 크로스페이드 */
+  var BG = new Image(), BGD = new Image(); /* 낮·노을 배경 */
+  /* 배경을 BGUP px 위로 올림(2026-11-26 사용자: 9칸이 뒷배경 바위와 겹쳐 보임). 아래 빈 띠는 맨 아래 땅을 뒤집어 이어 붙임. 전투 캔버스와 편성 화면이 같은 합성 그림을 씀 */
+  var BGUP = 30;
+  function bgRaise(src, done){ var im = new Image(); im.onload = function(){ var c = document.createElement('canvas'); c.width = im.width; c.height = im.height; var x = c.getContext('2d'); x.drawImage(im, 0, -BGUP); x.translate(0, im.height); x.scale(1, -1); x.drawImage(im, 0, im.height - BGUP, im.width, BGUP, 0, 0, im.width, BGUP); c.complete = true; c.naturalWidth = c.width; c.naturalHeight = c.height; done(c); }; im.src = src; }
+  bgRaise('img/p/bg_field.png', function(c){ BG = c; try { var st = document.createElement('style'); st.textContent = '.field{background:url(' + c.toDataURL() + ') 50% 100% / 100% auto no-repeat,#b8a0a6}'; document.head.appendChild(st); } catch (e) {} });
+  bgRaise('img/p/bg_field_dusk.png', function(c){ BGD = c; });
   // 특수 몹·이벤트 그림 (없으면 이모지)
   (D.mobs || []).forEach(function(h){ var im = new Image(); im.onload = function(){ IMGS[h.id] = im; IMGSRC[h.id] = im.src; PIX[h.id] = true; imgReady(); }; im.src = 'img/p/' + h.id + '.png'; });
   var EVIMG = {}; ['merchant', 'mark_merc', 'ev_goblin', 'ev_merchant', 'ev_merc', 'ev_campfire_i', 'ev_chest'].forEach(function(k){ var im = new Image(); im.onload = function(){ EVIMG[k] = im; imgReady(); }; im.src = 'img/p/' + k + '.png'; });
