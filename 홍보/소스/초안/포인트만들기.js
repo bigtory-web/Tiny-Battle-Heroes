@@ -8,7 +8,7 @@ const T={title:'배치와 덩치',
  points:[{h:'배치',d:'칸 수로 고민하게 하자'},{h:'덩치',d:'영웅마다 크기를 줌'},{h:'직업별 구분',d:'기사 3 · 전사·마법사 2 · 기타 1'}]};
 const C=+process.env.C||4;
 // 장면별 내용: SCENE=<json 경로>(title·detail·points·mediaLabel·total). total이 있으면 항목이 그 시간에 맞춰 고르게 나타남
-if(process.env.SCENE){const J=JSON.parse(fs.readFileSync(process.env.SCENE,'utf8'));Object.assign(T,J);if(J.mediaLabel)T.media=`<div class="ph">클립 자리<small>${J.mediaLabel}</small></div>`}
+if(process.env.SCENE){const J=JSON.parse(fs.readFileSync(process.env.SCENE,'utf8'));Object.assign(T,J);if(J.mediaLabel)T.media=`<div class="clip">클립 자리<small>${J.mediaLabel}</small></div>`}
 const clip=`polygon(0 ${C}px,${C}px ${C}px,${C}px 0,calc(100% - ${C}px) 0,calc(100% - ${C}px) ${C}px,100% ${C}px,100% calc(100% - ${C}px),calc(100% - ${C}px) calc(100% - ${C}px),calc(100% - ${C}px) 100%,${C}px 100%,${C}px calc(100% - ${C}px),0 calc(100% - ${C}px))`;
 // 3단 입체: 위 밝은 띠 / 몸통 / 아래 어두운 띠 (게임 버튼과 같은 방식)
 const bev=(hi,mid,lo,t=5,b=7)=>`background:linear-gradient(${hi} 0 ${t}px,${mid} ${t}px calc(100% - ${b}px),${lo} calc(100% - ${b}px))`;
@@ -22,7 +22,7 @@ background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 7
 h1{margin:0 0 16px;font-size:44px;text-shadow:${O1}}
 .d{font-size:22px;line-height:1.5;color:#e8e4f0;margin:0 0 6px}
 .media{margin-top:22px;height:196px;border:3px solid #000;outline:3px solid #3b3550;background:#221d2c;display:flex;align-items:center;justify-content:center}
-.ph{width:86%;box-sizing:border-box;border:3px dashed #54496e;padding:26px 20px;text-align:center;color:#a79fb8;font-size:22px;line-height:1.7}.ph small{display:block;color:#f2c23c;font-size:22px}
+.clip{width:86%;box-sizing:border-box;border:3px dashed #54496e;padding:26px 20px;text-align:center;color:#a79fb8;font-size:22px;line-height:1.7}.clip small{display:block;color:#f2c23c;font-size:22px}
 .mt{display:flex;flex-direction:column;gap:8px;width:80%}.mt div{display:flex;justify-content:space-between;font-size:22px;background:#3a3450;border:3px solid #000;padding:6px 14px;box-shadow:inset 0 3px 0 #54496e}.mt span{color:#f2c23c;letter-spacing:4px}
 .fr{filter:drop-shadow(0 5px 0 #0a0810)}.fr>.o{background:#000;padding:4px;clip-path:${clip}}.fr .i{clip-path:${clip}}
 .tag{display:inline-block;align-self:flex-start;margin-bottom:12px}
@@ -39,7 +39,7 @@ const dur=[];let fn=0;
 const ANIM=[{dy:20,op:0.35},{dy:10,op:0.75},{dy:0,op:1}]; // 새 항목: 아래에서 위로 밀려 올라옴
 function render(k,anim){
   fn++;
-  const items=T.points.slice(0,k).map((p,j)=>{const a=(anim&&j===k-1)?` style="transform:translateY(${anim.dy}px);opacity:${anim.op}"`:'';return `<div class="pi fr"${a}><div class="o"><div class="i"><span class="nb">${j+1}</span><span class="pt"><span class="ph">${p.h}</span><span class="pd">${p.d}</span></span></div></div></div>`}).join('');
+  const items=T.points.slice(0,k).map((p,j)=>{const a=(anim&&j===k-1)?` style="transform:translateY(${anim.dy}px);opacity:${anim.op}"`:'';return `<div class="pi fr"${a}><div class="o"><div class="i"><span class="pt"><span class="ph">${p.h}</span><span class="pd">${p.d}</span></span></div></div></div>`}).join('');
   const html=`<!doctype html><meta charset="utf-8"><style>${css}</style>
 <div class="rbg"></div><div class="L"><h1>${T.title}</h1>${T.detail.map(x=>`<p class="d">${x}</p>`).join('')}<div class="media">${T.media}</div></div>
 <div class="R"><div class="tag fr"><div class="o"><div class="i">POINT!</div></div></div><div class="items">${items}</div></div>`;
