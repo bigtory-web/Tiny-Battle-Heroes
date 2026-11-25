@@ -84,12 +84,12 @@ var IDLE_DATA = {
   // ult: 궁극기 종류와 수치, ultName: 궁극기 이름(아이콘은 img/p/ult_<id>.png)
   // passive: 패시브 { kind, v } (종류는 passives 표). 영웅 효과는 궁극기·패시브 2개이고, 각각 레벨이 있어요 (gradeEffects)
   // 2026-11-22: 프로토 24명 체력·공격을 등급 계단(역할 안 1 / 1.12 / 1.25 / 1.4)에 맞춰 조정. 피리소년·크라켄은 그대로
-  // name·alias·sex(2026-11-25): name = 캐릭터 이름(사람 이름처럼), alias = 별칭(하는 일이 보이는 옛 이름, 넓은 자리에 작게), sex = f/m. 65명 전부(2026-11-25)
+  // name·alias·sex(2026-11-25): name = 캐릭터 이름(사람 이름처럼), alias = 별칭(하는 일이 보이는 옛 이름, 상세 창에서만 작게), sex = f/m. 65명 전부(2026-11-25)
   heroes: [
     // shot(2026-11-25): 원거리 평타 투사체 그림 종류. arrow 화살 · stone 돌(포격수는 크게) · fire 불덩이 · ice 얼음 · bolt 번개 · orb 마법 구슬(진영 색) · note 음표. 없으면 진영 색 동그라미
     { id: 'bear',   name: '록시', alias: '바위곰', sex: 'f', race: 'beast', job: 'guardian', ultName: '바위 포효',   role: 'tank',    el: 'forest', range: 'melee', cost: 1, grade: 1,  hp: 1700, atk: 61, def: 160, interval: 1.6,
       ult: { trig: { kind: 'struck', n: 10 }, kind: 'taunt', dur: 4, shieldPct: 0.05, win: { kind: 'attackShield', v: 0.05, dur: 1, t: 4 }, desc: '10번 맞을 때마다 4초 동안 도발하고, 그동안 평타를 칠 때마다 최대 체력 5% 보호막을 얻는다.' }, passive: { kind: 'attackShield', v: 0.05, dur: 1 } },
-    { id: 'knight', name: '에이건', alias: '철갑기사', sex: 'm', race: 'human', job: 'guardian', ultName: '수호의 방패', role: 'tank',    el: 'light',  range: 'melee', cost: 2, grade: 2,  hp: 2060, atk: 75, def: 180, interval: 1.6,
+    { id: 'knight', name: '안셀름', alias: '철갑기사', sex: 'm', race: 'human', job: 'guardian', ultName: '수호의 방패', role: 'tank',    el: 'light',  range: 'melee', cost: 2, grade: 2,  hp: 2060, atk: 75, def: 180, interval: 1.6,
       ult: { kind: 'teamShield', mul: 1.6, win: { kind: 'shieldGuard', v: 0.2, t: 5 }, desc: '아군 전체에게 보호막을 씌우고, 5초 동안 보호막이 있는 아군이 받는 피해가 20% 줄어든다.' }, passive: { kind: 'shieldGuard', v: 0.2 } },
     { id: 'blades', name: '블레이크', alias: '쌍검', sex: 'm', race: 'human', job: 'warrior', ultName: '화염 일섬',     role: 'warrior', el: 'fire',   range: 'melee', cost: 2, grade: 2,  hp: 1400, atk: 150, def: 90,  interval: 1.2,
       ult: { kind: 'strike', mul: 3.5, boost: 0.5, boostN: 3, desc: '공격력 350% 피해를 주고, 다음 평타 3번의 피해가 50% 커진다.' }, passive: { kind: 'secondHit', v: 0.6 } },
