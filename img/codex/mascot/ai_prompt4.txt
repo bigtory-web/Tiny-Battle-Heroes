@@ -1,0 +1,10 @@
+Look at the image img/codex/mascot/ai_sheet_v6_star.png (the approved AI mascot: KEEP EVERYTHING about it: the coral-orange hair shape with the cowlick, the pointed ears, the big amber eyes, the blush, no mouth, the coral hooded robe with cream trim, the cream boots, the pose, the head turn, the camera angle, the size and position in the frame, the same pixel style and outline) and the image img/codex/mascot/dev_sheet.png (only for pixel style and size reference). Generate ONE new image with your image generation tool and save it as img/codex/mascot/ai_sheet.png.
+
+Make exactly TWO changes and nothing else:
+1. Remove the big eight-pointed starburst ornament on top of the head completely. In its place put a small ANTENNA standing up from the top of the hair: a thin dark brown pixel stem (about 2 pixels wide, 7 to 9 pixels tall in the 64-grid look) that is straight or very slightly curved, with a small ROUND LIGHT BULB at its tip: the bulb is a round pixel circle in yellow (#f2c23c with a lighter yellow highlight pixel and a darker orange-yellow shade on one side), with a thin dark outline like the rest of the character. NO rays, NO glow lines, NO sparkle, NO radial shape.
+2. Replace the small starburst brooch on the chest of the robe with a small round yellow light bulb badge (a tiny round yellow circle with a dark outline and one highlight pixel). NO star shape and no radial shape anywhere on the character.
+
+Every other part must stay identical to the reference (colors, face, hair, robe, boots, pose). The hair where the star was must look natural.
+
+[Format] One character only, standing, full body with feet visible, on a plain solid #FF00FF magenta background, no ground, no shadow, no text, no border. Visible chunky pixels, thick dark outline, no anti-aliasing, no blur.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

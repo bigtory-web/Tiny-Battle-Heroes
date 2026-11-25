@@ -1,0 +1,13 @@
+Look at the image img/codex/mascot/ai_sheet_v7_antenna_coral.png (the approved AI mascot: KEEP its shapes exactly: the hair shape with the cowlick, the small antenna with the yellow round bulb on top of the head, the pointed ears, the big brown eyes, the blush, no mouth, the hooded robe shape with cream-colored trim, the small round yellow bulb badge on the chest, the boots, the pose, the head turn, the camera angle, the size and the position in the frame, the same pixel style) and img/codex/mascot/dev_sheet.png (only for pixel style and size reference). Generate ONE new image with your image generation tool and save it as img/codex/mascot/ai_sheet.png.
+
+Change ONLY the COLORS, to a mint / teal palette, with no orange or coral anywhere:
+- HAIR: mint (#4fd1c5 as the main tone) painted with 3 to 4 tones: a light mint highlight (#9be8de), the main mint (#4fd1c5), a darker teal (#2fa89d) and a deep teal shade (#1f7d78) for the shadows.
+- ROBE and hood: light sky blue to light teal (main #8fd6e8 or #7fd8d0, with a lighter highlight and a slightly darker shade), the trim and the ties stay cream/off-white (#f4efe3), the skirt frill stays cream with a light teal line.
+- BOOTS: cream, as in the reference.
+- OUTLINES: dark teal (#16403f to #1d4a4a), NOT brown, NOT orange.
+- SKIN: the same warm apricot skin color as the reference. EYES: the same brown eyes with white glints as the reference. BLUSH: soft light pink.
+- The antenna stem is dark teal and the bulb and the bulb badge stay yellow (#f2c23c with a lighter yellow highlight and a darker yellow shade): the yellow is the only warm accent. No large orange or red areas.
+Everything else must stay identical to the reference.
+
+[Format] One character only, standing, full body with feet visible, on a plain solid #FF00FF magenta background, no ground, no shadow, no text, no border. Visible chunky pixels, no anti-aliasing, no blur.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

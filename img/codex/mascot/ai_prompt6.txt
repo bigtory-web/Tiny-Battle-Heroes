@@ -1,0 +1,13 @@
+Look at the image img/codex/mascot/ai_sheet_v7_antenna_coral.png (the approved AI mascot: KEEP its shapes exactly: the hair shape with the cowlick, the small antenna with the yellow round bulb on top of the head, the pointed ears, the big brown eyes, the blush, no mouth, the hooded robe shape with cream-colored trim, the small round yellow bulb badge on the chest, the boots, the pose, the head turn, the camera angle, the size and the position in the frame, the same pixel style) and img/codex/mascot/dev_sheet.png (only for pixel style and size reference). Generate ONE new image with your image generation tool and save it as img/codex/mascot/ai_sheet_rose.png.
+
+Change ONLY the COLORS, to a ROSE-PINK palette (she is a cute girl character), with no orange and no mint:
+- HAIR: rose pink (#e8668f as the main tone) painted with 3 to 4 tones: a light pink highlight (#ff8fae), the main rose (#e8668f), a deeper rose (#c94a78) and a dark berry shade (#a63a66) for the shadows. The hair must stay fairly light so it does not get lost on a dark purple background.
+- ROBE and hood: very light pink to cream (#ffd6e0 as the main tone, a lighter highlight and a slightly darker shade), with rose accents on the frills, trim lines and ties (#e8668f). Keep the cream trim shapes of the reference.
+- BOOTS: cream, as in the reference.
+- OUTLINES: dark wine (#5c1d3c), NOT brown, NOT orange, NOT black.
+- SKIN: the same warm apricot skin color as the reference. EYES: the same brown eyes with white glints as the reference. BLUSH: soft light pink.
+- The antenna stem is wine/rose and the bulb and the bulb badge on the chest stay yellow (#f2c23c with a lighter yellow highlight and a darker yellow shade): the yellow is the only warm accent. No orange anywhere, no star shapes, no radial shapes. Keep the cute feminine impression.
+Everything else must stay identical to the reference.
+
+[Format] One character only, standing, full body with feet visible, on a plain solid #FF00FF magenta background, no ground, no shadow, no text, no border. Visible chunky pixels, no anti-aliasing, no blur.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
