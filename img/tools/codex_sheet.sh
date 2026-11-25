@@ -11,7 +11,7 @@ run() { local id="$1" out="img/codex/$1_sheet.png"
   sed -n "/^## .*(\`$id\`)/,/^---/p" "${DOC:-img/gemini/요청문_1등급.md}" | sed -n '/^```text/,/^```$/p' | sed '1d;$d' > "img/codex/${id}_prompt_block.txt"
   [ -s "img/codex/${id}_prompt_block.txt" ] || { echo "$id: no prompt block"; return; }
   { printf 'Look at the image img/gemini/ref/%s_x8.png (the reference character, a pixel art character on a white background). Generate ONE new image with your image generation tool and save it as %s. The image request is below; follow it exactly.\n\n' "$id" "$out"; cat "img/codex/${id}_prompt_block.txt"; printf '\n\nPython is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item, and keep the image exactly as generated (do not resize or edit it). Do not modify or create any other file.\n'; } > "img/codex/${id}_prompt.txt"
-  "$CODEX" exec --skip-git-repo-check -s workspace-write - < "img/codex/${id}_prompt.txt" > "img/codex/${id}_codex.log" 2>&1
+  "$CODEX" exec --skip-git-repo-check -s workspace-write -m "${CODEX_MODEL:-gpt-6.2-sol}" -c model_reasoning_effort=medium - < "img/codex/${id}_prompt.txt" > "img/codex/${id}_codex.log" 2>&1
   if [ ! -f "$out" ]; then # 저장이 안 됐으면 로그에 찍힌 코덱스 보관 경로에서 가져온다
     src="$(grep -o 'C:\\Users\\Home\\.codex\\generated_images\\[^'"'"' "]*\.png' "img/codex/${id}_codex.log" | tail -1 | sed 's/\\/\/g')"
     [ -n "$src" ] && cp "$(cygpath -u "$src")" "$out"
