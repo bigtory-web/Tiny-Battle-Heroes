@@ -3571,7 +3571,7 @@ body:has(#hinfo:not([hidden])) #evDock .edbody{display:none!important}
     setTimeout(function(){ // 쾅
       ar.classList.remove('finshk'); void ar.offsetWidth; ar.classList.add('finshk');
       var fl = document.createElement('i'); fl.className = 'finflash'; ar.appendChild(fl); setTimeout(function(){ fl.remove(); }, 450);
-      for (var r = 0; r < 3; r++) fxs.push({ x: p[0], y: p[1], t: .5 + r * .12, c: r ? '#fff6d6' : '#ffd34d', big: 1 });
+      /* 마지막 처치의 퍼지는 흰·금색 고리 3겹은 뺌 (2026-11-25 사용자: 흰 원 연출 별로) */
       if (HAS_FX) fxAt('hit', u, { scale: 2.6 }); hitStopOn && hitStopOn(u.uid, .12, 1);
     }, 150);
     setTimeout(function(){ cv.style.transition = 'transform .3s ease-in-out'; cv.style.transform = ''; }, 780);
