@@ -3,8 +3,7 @@
 const fs=require('fs'),path=require('path'),{execFile}=require('child_process');
 const E='C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',D=__dirname,OUT=path.join(D,'훅3');
 const IMG='../../../../img/p/';
-const C=4;
-const clip=`polygon(0 ${C}px,${C}px ${C}px,${C}px 0,calc(100% - ${C}px) 0,calc(100% - ${C}px) ${C}px,100% ${C}px,100% calc(100% - ${C}px),calc(100% - ${C}px) calc(100% - ${C}px),calc(100% - ${C}px) 100%,${C}px 100%,${C}px calc(100% - ${C}px),0 calc(100% - ${C}px))`;
+const clip='polygon(0 16px,8px 16px,8px 8px,16px 8px,16px 0,calc(100% - 16px) 0,calc(100% - 16px) 8px,calc(100% - 8px) 8px,calc(100% - 8px) 16px,100% 16px,100% calc(100% - 16px),calc(100% - 8px) calc(100% - 16px),calc(100% - 8px) calc(100% - 8px),calc(100% - 16px) calc(100% - 8px),calc(100% - 16px) 100%,16px 100%,16px calc(100% - 8px),8px calc(100% - 8px),8px calc(100% - 16px),0 calc(100% - 16px))';
 // 장식: [파일, 가로위치, 세로위치, 높이(px), 뒤집기, 흔들림방향]  (영웅은 크게·모서리에 걸쳐서, 유물은 작게)
 const HEROES=[['knight','left:-24px','bottom:-44px',300,0,1],['bear','right:-24px','bottom:-44px',290,1,-1],['ev_fairy','left:34px','top:14px',150,0,-1],['hawk','right:34px','top:6px',170,1,1],['blades','left:-16px','top:200px',130,0,1],['candle','right:-10px','top:210px',140,1,-1]];
 const RELICS=[['skill_starcrown',214,22],['skill_meteor',300,66],['skill_bulwark',610,24],['skill_drums',690,64],['skill_arcane',36,192],['skill_warhorn',852,196],['skill_grace',330,452],['skill_kindle',560,454],['skill_frost',246,404],['skill_volley',690,410]];
@@ -14,8 +13,8 @@ const css=`html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidd
 .st{position:absolute;background:#ffe08a;display:block}
 .dc{position:absolute;image-rendering:pixelated;filter:drop-shadow(0 5px 0 rgba(10,8,16,.8))}
 .pl{position:absolute;left:50%;top:50%;width:max-content;filter:drop-shadow(0 7px 0 #0a0810);transform-origin:50% 50%}
-.pl .o{background:#000;padding:5px;clip-path:${clip}}
-.pl .i{background:linear-gradient(#ffe08a 0 7px,#f2c23c 7px calc(100% - 11px),#c99a1e calc(100% - 11px));color:#3a2410;padding:30px 54px 40px;font-size:58px;font-weight:bold;line-height:1.3;text-align:center;white-space:nowrap;clip-path:${clip}}
+.pl .o{background:#000;padding:8px;clip-path:${clip}}
+.pl .i{background:linear-gradient(#ffe08a 0 7px,#f2c23c 7px calc(100% - 11px),#c99a1e calc(100% - 11px));color:#3a2410;padding:30px 54px 40px;font-size:58px;font-weight:bold;-webkit-text-stroke:2.5px currentColor;line-height:1.3;text-align:center;white-space:nowrap;clip-path:${clip}}
 .red{color:#b3261e}.dim2{color:#a8842a}`;
 const star=(x,y,s=6)=>`<i class="st" style="left:${x}px;top:${y}px;width:${s}px;height:${s}px;box-shadow:${s}px 0 #ffe08a,-${s}px 0 #ffe08a,0 ${s}px #ffe08a,0 -${s}px #ffe08a"></i>`;
 const STARS=[[120,120,6],[840,110,6],[100,330,5],[870,330,6],[480,70,5],[480,480,5]];
@@ -30,7 +29,7 @@ function html(tw,bob,pop,f,F){
   const stars=STARS.map(([x,y,s],i)=>(i+tw)%2?star(x,y,s):'').join('');
   const hs=HEROES.map(([n,x,y,h,fl,d])=>`<img class="dc" src="${IMG}${n}.png" style="${x};${y};height:${h}px;${fl?'transform:scaleX(-1);':''}margin-top:${bob?d*6:0}px">`).join('');
   const rs=RELICS.map(([n,x,y],i)=>`<img class="dc" src="${IMG}${n}.png" style="left:${x}px;top:${y}px;width:72px;height:72px;margin-top:${bob?((i%2)?-5:5):0}px">`).join('');
-  const pl=pop?`<div class="pl" style="transform:translate(-50%,-50%) scale(${pop.s});opacity:${pop.o}"><div class="o"><div class="i">${scr(f,F)}</div></div></div>`:'';
+  const pl=pop?`<div class="pl" style="transform:translate(-50%,-50%) scale(${pop.s});opacity:${pop.o}"><div class="o"><div class="i"><div style="position:relative">${scr(f,F)}</div><div style="height:0;overflow:hidden;visibility:hidden">${L1}<br>${L2}</div></div></div></div>`:'';
   return `<!doctype html><meta charset="utf-8"><style>${css}</style><img class="bg" src="${IMG}bg_field_dusk.png"><div class="dim"></div>${stars}${hs}${rs}${pl}`;
 }
 fs.mkdirSync(OUT,{recursive:true});
