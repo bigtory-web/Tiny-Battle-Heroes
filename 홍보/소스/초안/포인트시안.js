@@ -23,7 +23,7 @@ html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-fam
 .pt{display:flex;flex-direction:column;gap:2px}.ph{font-size:33px;color:#ffd84a;text-shadow:${O1};line-height:1.2}.pd{font-size:22px;color:#e8e4f0;line-height:1.35}`;
 const AV='file:///'+path.join(D,'..','채널','배지_원.png').split(path.sep).join('/');
 const css2=`.dim .pi,.dim .tag{filter:brightness(.45)}
-.bd{position:absolute;right:24px;bottom:22px;width:96px}.bd .av{width:96px;height:96px;background:url(${AV}) center/100% no-repeat;image-rendering:pixelated}
+.bd{position:absolute;right:12px;bottom:8px;width:132px}.bd .av{width:132px;height:132px;transform:scaleX(-1);background:url(${AV}) center/100% no-repeat;image-rendering:pixelated}
 .bd .nm{margin-top:4px;text-align:center;font-size:11px;color:#f2c23c;text-shadow:${O1}}
 .bb{position:absolute;right:136px;bottom:44px;width:300px}.bb .in{background:${bev('#ffe08a','#f2c23c','#c99a1e',4,6)};color:#3a2410;padding:14px 20px 20px;font-size:22px;line-height:1.5}
 .bb .pt{position:absolute;right:-22px;bottom:8px;width:26px;height:26px;background:#f2c23c;clip-path:polygon(0 0,100% 100%,0 100%)}`;
