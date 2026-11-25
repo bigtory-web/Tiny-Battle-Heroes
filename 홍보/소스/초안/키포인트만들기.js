@@ -38,7 +38,7 @@ function html(tw,cards,chars){
   const stars=STARS.map(([x,y,s],i)=>star(x,y,(i+tw)%2?s:Math.max(3,Math.round(s*0.5)))).join('');
   const cs=cards.map((c,j)=>{if(!c)return `<div class="card" style="visibility:hidden"><div class="sh"><div class="o"><div class="g"><div class="i"></div></div></div></div></div>`;
     return `<div class="card c${j+1}" style="transform:translateY(${c.rise.dy}px);opacity:${c.rise.op}"><div class="nb">${j+1}</div><div class="sh"><div class="o"><div class="g"><div class="i"><div class="kw" style="filter:blur(${c.blur.b}px);opacity:${c.blur.o}">${KW[j]}</div><div class="orn"></div></div></div></div></div></div>`}).join('');
-  return `<!doctype html><meta charset="utf-8"><style>${css}</style><img class="bg" src="${IMG}bg_field_dusk.png"><div class="night"></div><div class="vig"></div>${stars}${chars?`<img class="ch cha" src="../../채널/클로딩_전신.png" style="transform:translateY(${chars.dy-(chars.bob?0:0)+(chars.bob?-10:0)}px);opacity:${chars.op}"><img class="ch chu" src="../../채널/개발자_전신.png" style="transform:translateY(${chars.dy+(chars.bob?0:-0)}px) scaleX(-1);opacity:${chars.op}">`:''}<div class="row">${cs}</div>`;
+  return `<!doctype html><meta charset="utf-8"><style>${css}</style><img class="bg" src="${IMG}bg_field_dusk.png"><div class="night"></div><div class="vig"></div>${stars}${chars?`<img class="ch cha" src="../../채널/클로딩_전신.png" style="transform:translateY(${chars.dy+(chars.alt&&chars.bob?-10:0)}px);opacity:${chars.op}"><img class="ch chu" src="../../채널/개발자_전신.png" style="transform:translateY(${chars.dy+(chars.alt&&!chars.bob?-10:0)}px) scaleX(-1);opacity:${chars.op}">`:''}<div class="row">${cs}</div>`;
 }
 const jobs=[],dur=[];
 const state=[null,null,null];
@@ -49,7 +49,7 @@ for(let j=0;j<3;j++){
 }
 const CR=[{dy:80,op:0.3},{dy:40,op:0.75},{dy:0,op:1}];
 for(const c of CR){jobs.push([0,state.map(x=>({...x})),{...c,bob:0}]);dur.push(0.07)}   // 카드 3장이 다 나오면 양쪽에서 캐릭터가 올라옴
-for(let r=0;r<6;r++){jobs.push([r%2,state.map(x=>({...x})),{dy:0,op:1,bob:r%2}]);dur.push(r<5?0.5:2.5)}   // 다 나온 뒤 별이 반짝, 캐릭터가 번갈아 통통      // 다 나온 뒤 별이 반짝
+for(let r=0;r<6;r++){jobs.push([r%2,state.map(x=>({...x})),{dy:0,op:1,bob:r%2,alt:1}]);dur.push(r<5?0.5:2.5)}   // 다 나온 뒤 별이 반짝, 캐릭터가 번갈아 통통      // 다 나온 뒤 별이 반짝
 if(process.env.FINAL_ONLY){const last=jobs[jobs.length-2];jobs.length=0;jobs.push(last);dur.length=0;dur.push(1)}
 fs.writeFileSync(path.join(OUT,'길이.json'),JSON.stringify(dur));
 (async()=>{let next=0;const worker=async()=>{while(next<jobs.length){const j=next++;const q=jobs[j];const n=String(j+1).padStart(3,'0'),h=path.join(OUT,`m${n}.html`);fs.writeFileSync(h,html(...q));
