@@ -38,7 +38,7 @@ function html(tw,cards,chars){
   const stars=STARS.map(([x,y,s],i)=>star(x,y,(i+tw)%2?s:Math.max(3,Math.round(s*0.5)))).join('');
   const cs=cards.map((c,j)=>{if(!c)return `<div class="card" style="visibility:hidden"><div class="sh"><div class="o"><div class="g"><div class="i"></div></div></div></div></div>`;
     return `<div class="card c${j+1}" style="transform:translateY(${c.rise.dy}px);opacity:${c.rise.op}"><div class="nb">${j+1}</div><div class="sh"><div class="o"><div class="g"><div class="i"><div class="kw" style="filter:blur(${c.blur.b}px);opacity:${c.blur.o}">${KW[j]}</div><div class="orn"></div></div></div></div></div></div>`}).join('');
-  return `<!doctype html><meta charset="utf-8"><style>${css}</style><img class="bg" src="${IMG}bg_field_dusk.png"><div class="night"></div><div class="vig"></div>${stars}${chars?`<img class="ch cha" src="../../채널/클로딩_전신.png" style="transform:translateY(${chars.dy+(chars.alt&&chars.bob?-10:0)}px);opacity:${chars.op}"><img class="ch chu" src="../../채널/개발자_전신.png" style="transform:translateY(${chars.dy+(chars.alt&&!chars.bob?-10:0)}px) scaleX(-1);opacity:${chars.op}">`:''}<div class="row">${cs}</div>`;
+  return `<!doctype html><meta charset="utf-8"><style>${css}</style><img class="bg" src="${IMG}bg_field_dusk.png"><div class="night"></div><div class="vig"></div>${stars}${chars?`<img class="ch cha" src="../../채널/아이리_전신.png" style="transform:translateY(${chars.dy+(chars.alt&&chars.bob?-10:0)}px);opacity:${chars.op}"><img class="ch chu" src="../../채널/개발자_전신.png" style="transform:translateY(${chars.dy+(chars.alt&&!chars.bob?-10:0)}px) scaleX(-1);opacity:${chars.op}">`:''}<div class="row">${cs}</div>`;
 }
 const jobs=[],dur=[];
 const state=[null,null,null];

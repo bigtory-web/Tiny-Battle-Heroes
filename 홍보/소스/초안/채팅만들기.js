@@ -15,7 +15,7 @@ const M=[
  ['me','12:49','덩치 그거는 빼자. 다시 롤백.']
 ];
 // 사용자 = 프로필 캐릭터 얼굴 확대, AI = 요정
-const AV={me:'../../채널/개발자_전신.png',ai:'../../채널/클로딩_전신.png'}, NAME={me:'빅토리',ai:'클로딩'};
+const AV={me:'../../채널/개발자_전신.png',ai:'../../채널/아이리_전신.png'}, NAME={me:'빅토리',ai:'아이리'};
 const C=+process.env.C||4;
 const clip=`polygon(0 ${C}px,${C}px ${C}px,${C}px 0,calc(100% - ${C}px) 0,calc(100% - ${C}px) ${C}px,100% ${C}px,100% calc(100% - ${C}px),calc(100% - ${C}px) calc(100% - ${C}px),calc(100% - ${C}px) 100%,${C}px 100%,${C}px calc(100% - ${C}px),0 calc(100% - ${C}px))`;
 const bev=(hi,mid,lo,t=5,b=7)=>`background:linear-gradient(${hi} 0 ${t}px,${mid} ${t}px calc(100% - ${b}px),${lo} calc(100% - ${b}px))`;
@@ -64,7 +64,7 @@ function render(k,an,n,cur,fnum,nx){
 const Hc=kids.reduce((a,e)=>a+hh(e),0),Hp=Hc-hh(l),T=H=>${START}+H<=Hv?${START}:Hv-H;
 const A=${an?JSON.stringify(an):'{dy:0,op:1,f:0}'};const tf=T(Hc),tp=kids.length>1?T(Hp):tf;
 st.style.top=(tf+(tp-tf)*A.f)+'px';l.style.transform='translateY('+A.dy+'px)';l.style.opacity=A.op;</script>`;
-  const html=`<!doctype html><meta charset="utf-8"><style>${css}</style><div class="ttl"><div class="o"><div class="ti"><i class="sr"></i>클로딩톡</div></div></div><div id="vp"><div id="st">${items}</div></div>${js}`;
+  const html=`<!doctype html><meta charset="utf-8"><style>${css}</style><div class="ttl"><div class="o"><div class="ti"><i class="sr"></i>아이리톡</div></div></div><div id="vp"><div id="st">${items}</div></div>${js}`;
   const nn=String(fnum).padStart(3,'0'),h=path.join(OUT,`f${nn}.html`),big=path.join(OUT,`프레임${nn}.png`);
   fs.writeFileSync(h,html);
   return new Promise(res=>execFile(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=1920,1080','--screenshot='+big,u(h)],()=>{fs.unlinkSync(h);res()}));
