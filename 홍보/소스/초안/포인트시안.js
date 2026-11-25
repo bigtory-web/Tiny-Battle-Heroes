@@ -5,7 +5,10 @@ const F='file:///'+path.join(D,'..','폰트','Galmuri11.ttf').split(path.sep).jo
 const C=4,clip=`polygon(0 ${C}px,${C}px ${C}px,${C}px 0,calc(100% - ${C}px) 0,calc(100% - ${C}px) ${C}px,100% ${C}px,100% calc(100% - ${C}px),calc(100% - ${C}px) calc(100% - ${C}px),calc(100% - ${C}px) 100%,${C}px 100%,${C}px calc(100% - ${C}px),0 calc(100% - ${C}px))`;
 const O1='1px 0 0 #000,-1px 0 0 #000,0 1px 0 #000,0 -1px 0 #000,1px 1px 0 #000,-1px 1px 0 #000,1px -1px 0 #000,-1px -1px 0 #000';
 const bev=(hi,mid,lo,t=5,b=7)=>`linear-gradient(${hi} 0 ${t}px,${mid} ${t}px calc(100% - ${b}px),${lo} calc(100% - ${b}px))`;
-const css=`@font-face{font-family:G;src:url("${F}");font-weight:100 900}
+const FB='file:///'+path.join(D,'..','폰트','Galmuri11-Bold.ttf').split(path.sep).join('/');
+const rnd=r=>{const P=[];for(let k=0;k<r/4;k++){const x=k*4,y=r-k*4;P.push([x,y],[x,y-4]);}return P}; // 계단 모서리 점(좌상)
+const pill=r=>{const T=rnd(r),L=T.map(([x,y])=>`${x}px ${y}px`),R=[...T].reverse().map(([x,y])=>`calc(100% - ${x}px) ${y}px`),BR=T.map(([x,y])=>`calc(100% - ${x}px) calc(100% - ${y}px)`),BL=[...T].reverse().map(([x,y])=>`${x}px calc(100% - ${y}px)`);return `polygon(${[...L,...R,...BR,...BL].join(',')})`}; // 둥근 계단 모서리(r px, 4px 단계)
+const css=`@font-face{font-family:G;src:url("${F}");font-weight:100 600}@font-face{font-family:G;src:url("${FB}");font-weight:700 900}
 html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:G;color:#fff;background:#17141d;background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%),linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%);background-size:8px 8px;background-position:0 0,4px 4px}
 .rbg{position:absolute;left:520px;right:0;top:0;bottom:0;background:#0d0b12;background-image:linear-gradient(45deg,#131019 25%,transparent 25%,transparent 75%,#131019 75%),linear-gradient(45deg,#131019 25%,transparent 25%,transparent 75%,#131019 75%);background-size:8px 8px;background-position:0 0,4px 4px}
 .in{word-break:keep-all;text-wrap:balance}.sh{filter:drop-shadow(0 5px 0 #0a0810)}.o{background:#000;padding:4px;clip-path:${clip}}.in{clip-path:${clip}}
@@ -20,15 +23,15 @@ html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-fam
 .cap{position:absolute;left:24px;top:404px;width:476px}.cap .in{background:${bev('#3a3450','#2a2539','#1d1926',4,6)};padding:10px 16px 14px;font-size:22px;line-height:1.5;color:#e8e4f0}
 .R{position:absolute;left:544px;right:24px;top:22px;bottom:24px;display:flex;flex-direction:column;gap:14px}
 .say .in{background:${bev('#6a5d8c','#463e60','#2a2539',5,7)};padding:14px 18px 20px;font-size:22px;line-height:1.55;position:relative}
-.say .in::after,.pi .in::after{content:'';position:absolute;inset:5px 5px 7px;border:2px dashed rgba(255,255,255,.13);pointer-events:none}
+.say .in::after,
 .hl{color:#ffd84a}
-.tag{position:relative}.tag .sp{position:absolute;width:6px;height:6px;background:#fff;box-shadow:6px 0 #fff,-6px 0 #fff,0 6px #fff,0 -6px #fff,12px 0 #ffe08a,-12px 0 #ffe08a,0 12px #ffe08a,0 -12px #ffe08a}.tag .in{background:${bev('#ffe08a','#f2c23c','#c99a1e',6,8)};color:#3a2410;font-size:44px;padding:8px 34px 16px;display:inline-block;font-weight:bold;letter-spacing:2px}.tag{align-self:flex-start}
-.pi .in{background:${bev('#8472b0','#52466f','#2a2539',6,8)};padding:10px 16px 16px 12px;display:flex;gap:14px;align-items:center;position:relative}
-.nb{flex:none;width:56px;height:56px;box-sizing:border-box;background:${bev('#ffe08a','#f2c23c','#c99a1e',5,7)};color:#3a2410;font-size:33px;text-align:center;line-height:50px;border:4px solid #000;clip-path:${clip}}
-.pt{display:flex;flex-direction:column;gap:2px}.ph{font-size:33px;color:#ffd84a;text-shadow:${O1};line-height:1.2}.pd{font-size:22px;color:#e8e4f0;line-height:1.35}`;
+.tag{position:relative}.tag .sp{position:absolute;width:6px;height:6px;background:#fff;box-shadow:6px 0 #fff,-6px 0 #fff,0 6px #fff,0 -6px #fff,12px 0 #ffe08a,-12px 0 #ffe08a,0 12px #ffe08a,0 -12px #ffe08a}.tag .in{background:${bev('#ffe08a','#f2c23c','#c99a1e',6,8)};color:#3a2410;font-size:44px;padding:8px 34px 16px;display:inline-block;font-weight:700;letter-spacing:2px}.tag{align-self:flex-start}
+.pi .o{clip-path:${pill(16)}}.pi .in::after{content:'';position:absolute;inset:8px;border:2px dashed rgba(255,255,255,.12);pointer-events:none}.pi .in{clip-path:${pill(12)};background:${bev('#8472b0','#52466f','#2a2539',6,8)};padding:10px 16px 16px 12px;display:flex;gap:14px;align-items:center;position:relative}
+.nb{flex:none;width:66px;height:66px;box-sizing:border-box;background:${bev('#ffe08a','#f2c23c','#c99a1e',5,7)};color:#3a2410;font-size:44px;font-weight:700;text-align:center;line-height:58px;border:4px solid #000;box-shadow:4px 4px 0 #000}
+.pt{display:flex;flex-direction:column;gap:2px}.ph{font-size:33px;color:#ffd84a;text-shadow:${O1};line-height:1.2}.pd{font-size:33px;color:#fff;line-height:1.35;text-shadow:${O1}}`;
 const AV='file:///'+path.join(D,'..','채널','배지_원.png').split(path.sep).join('/');
 const css2=`.dim .pi,.dim .tag{filter:brightness(.45)}
-.bd{position:absolute;right:12px;bottom:8px;width:132px}.bd .av{width:132px;height:132px;transform:scaleX(-1);background:url(${AV}) center/100% no-repeat;image-rendering:pixelated}
+.bd{position:absolute;right:44px;bottom:36px;width:176px}.bd .av{width:176px;height:176px;transform:scaleX(-1);background:url(${AV}) center/100% no-repeat;image-rendering:pixelated}
 .bd .nm{margin-top:4px;text-align:center;font-size:11px;color:#f2c23c;text-shadow:${O1}}
 .bb{position:absolute;right:136px;bottom:44px;width:300px}.bb .in{background:${bev('#ffe08a','#f2c23c','#c99a1e',4,6)};color:#3a2410;padding:14px 20px 20px;font-size:22px;line-height:1.5}
 .bb .pt{position:absolute;right:-22px;bottom:8px;width:26px;height:26px;background:#f2c23c;clip-path:polygon(0 0,100% 100%,0 100%)}`;
@@ -39,10 +42,10 @@ const page=(right,extra='')=>`<!doctype html><meta charset="utf-8"><style>${css}
 ${extra?'<style>.rbg,.R{display:none}.t,.vid,.cap{left:242px}</style>':''}<div class="R">${right}</div>${extra}`;
 const bubble=x=>`<div class="say sh"><div class="o"><div class="in">${x}</div></div></div>`;
 const A=bubble('개발 과정을 <span class="hl">기록</span>으로 남기고 있어요.')+bubble('저도 영상을 보며 도움을 받았거든요.')+bubble('내 글도 누군가에게 <span class="hl">도움</span>이 되면 좋겠어요.');
-const item=(n,h,d)=>`<div class="pi sh"><div class="o"><div class="in"><span class="nb">${n}</span><span class="pt"><span class="ph">${h}</span><span class="pd">${d}</span></span></div></div></div>`;
-const B=`<div class="tag sh"><div class="o"><div class="in">POINT!</div></div><i class="sp" style="right:-26px;top:-12px"></i><i class="sp" style="left:-24px;top:8px;transform:scale(.7)"></i><i class="sp" style="right:-8px;bottom:-14px;transform:scale(.6)"></i></div>`+item(1,'기록','개발 과정을 남겨요')+item(2,'바람','누군가에게 도움이 되면 좋겠어요')+item(3,'다음 화','덩치 배치 이야기');
+const item=(n,h,d)=>`<div class="pi sh"><div class="o"><div class="in"><span class="nb">${n}</span><span class="pt"><span class="pd">${d}</span></span></div></div></div>`;
+const B=`<div class="tag sh"><div class="o"><div class="in">POINT!</div></div><i class="sp" style="right:-26px;top:-12px"></i><i class="sp" style="left:-24px;top:8px;transform:scale(.7)"></i><i class="sp" style="right:-8px;bottom:-14px;transform:scale(.6)"></i></div>`+item(1,'','개발 과정을 남겨요')+item(2,'','누군가에게 도움이 되면 좋겠어요')+item(3,'','다음 화는 덩치 배치 이야기');
 fs.mkdirSync(OUT,{recursive:true});
 const X='<div class="bd"><div class="av"></div></div>';
-const PG='<style>.rbg,.t,.vid,.cap{display:none}.R{display:flex!important;left:210px;right:210px;top:34px;gap:0}.items{gap:18px!important;padding-top:6px!important}.tag{margin-bottom:22px!important}</style><div class="bd"><div class="av"></div></div>';
+const PG='<style>.rbg,.t,.vid,.cap{display:none}.R{display:flex!important;left:150px;right:290px;top:34px;gap:0}.items{gap:18px!important;padding-top:6px!important}.tag{margin-bottom:22px!important}</style><div class="bd"><div class="av"></div></div>';
 for(const [n,h,x] of [['POINT_별도페이지',B,PG],['좌영상_A_이야기',A,''],['좌영상_B_POINT',B,''],['좌영상_C_추가이야기',B,X]]){const f=path.join(OUT,n+'.html');fs.writeFileSync(f,page(h,x));execFileSync(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=1920,1080','--screenshot='+path.join(OUT,n+'.png'),'file:///'+f.split(path.sep).join('/')],{stdio:'ignore'});fs.unlinkSync(f)}
 console.log('ok');
