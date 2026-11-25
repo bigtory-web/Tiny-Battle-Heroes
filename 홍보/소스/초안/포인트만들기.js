@@ -12,7 +12,7 @@ if(process.env.SCENE){const J=JSON.parse(fs.readFileSync(process.env.SCENE,'utf8
 const clip=`polygon(0 ${C}px,${C}px ${C}px,${C}px 0,calc(100% - ${C}px) 0,calc(100% - ${C}px) ${C}px,100% ${C}px,100% calc(100% - ${C}px),calc(100% - ${C}px) calc(100% - ${C}px),calc(100% - ${C}px) 100%,${C}px 100%,${C}px calc(100% - ${C}px),0 calc(100% - ${C}px))`;
 // 3단 입체: 위 밝은 띠 / 몸통 / 아래 어두운 띠 (게임 버튼과 같은 방식)
 const bev=(hi,mid,lo,t=5,b=7)=>`background:linear-gradient(${hi} 0 ${t}px,${mid} ${t}px calc(100% - ${b}px),${lo} calc(100% - ${b}px))`;
-const FACE='@font-face{font-family:"GalmuriX";src:url("../../폰트/Galmuri11.ttf");font-weight:100 900}'; // 갈무리 일반(영상 공통 폰트, 크기는 11의 배수, 외곽 1px로 또렷하게)
+const FACE='@font-face{font-family:"GalmuriX";src:url("file:///'+path.join(D,"..","폰트","Galmuri11.ttf").split(path.sep).join("/")+'");font-weight:100 900}'; // 갈무리 일반(영상 공통 폰트, 크기는 11의 배수, 외곽 1px로 또렷하게)
 const O1='1px 0 0 #000,-1px 0 0 #000,0 1px 0 #000,0 -1px 0 #000,1px 1px 0 #000,-1px 1px 0 #000,1px -1px 0 #000,-1px -1px 0 #000'; // 외곽 라인 1px
 const css=`${FACE}html{zoom:2}html,body{margin:0;width:960px;height:540px;overflow:hidden;font-family:"GalmuriX",sans-serif;color:#fff;background:#17141d;
 background-image:linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%),linear-gradient(45deg,#1d1926 25%,transparent 25%,transparent 75%,#1d1926 75%);background-size:8px 8px;background-position:0 0,4px 4px}
@@ -45,10 +45,16 @@ if(process.env.MODE==='clip'){
 const ANIM=[{dy:20,op:0.35},{dy:10,op:0.75},{dy:0,op:1}]; // 새 항목: 아래에서 위로 밀려 올라옴
 function render(k,anim){
   fn++;
-  const items=T.points.slice(0,k).map((p,j)=>{const a=(anim&&j===k-1)?` style="transform:translateY(${anim.dy}px);opacity:${anim.op}"`:'';return `<div class="pi fr"${a}><div class="o"><div class="i"><span class="pt"><span class="ph">${p.h}</span><span class="pd">${p.d}</span></span></div></div></div>`}).join('');
-  const html=`<!doctype html><meta charset="utf-8"><style>${css}${process.env.MODE==='point'?'.rbg,.L{display:none}.R{left:90px;right:90px}.tag{margin-bottom:20px}.items{gap:22px}':''}</style>
+  const items=T.points.slice(0,k).map((p,j)=>{const a=(anim&&j===k-1)?` style="transform:translateY(${anim.dy}px);opacity:${anim.op}"`:'';return `<div class="pi fr"${a}><div class="o"><div class="i">${process.env.MODE==='point'?`<span class="nb">${j+1}</span>`:''}<span class="pt"><span class="ph">${p.h}</span><span class="pd">${p.d}</span></span></div></div></div>`}).join('');
+  const html=`<!doctype html><meta charset="utf-8"><style>${css}${process.env.MODE==='point'?`.rbg,.L{display:none}.R{left:150px;right:150px;top:24px}.tag{margin-bottom:16px}.tag .i{font-size:33px;padding:6px 30px 12px}
+.items{gap:16px;padding-top:0}
+.pi .i{padding:10px 26px 16px 16px;gap:22px;background:linear-gradient(#8472b0 0 6px,#52466f 6px calc(100% - 8px),#2a2539 calc(100% - 8px));position:relative}
+.pi .i::after{content:'';position:absolute;inset:6px 6px 8px 6px;border:2px dashed rgba(255,255,255,.12);pointer-events:none}
+.nb{width:66px;height:66px;font-size:44px;line-height:60px;border:4px solid #000;box-shadow:inset 0 5px 0 #ffe9a0,inset 0 -6px 0 #b98a14,4px 4px 0 #000;clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px));text-shadow:none}
+.ph{font-size:44px}.pd{font-size:33px;color:#e8e4f0}.pt{gap:4px}
+.bk .ph{color:#fff}.bk .tag .i{filter:brightness(1.25)}`:''}</style>
 <div class="rbg"></div><div class="L"><h1>${T.title}</h1>${T.detail.map(x=>`<p class="d">${x}</p>`).join('')}<div class="media">${T.media}</div></div>
-<div class="R"><div class="tag fr"><div class="o"><div class="i">POINT!</div></div></div><div class="items">${items}</div></div>`;
+<div class="R${process.env.BLINK?' bk':''}"><div class="tag fr"><div class="o"><div class="i">POINT!</div></div></div><div class="items">${items}</div></div>`;
   const n=String(fn).padStart(2,'0'),h=path.join(OUT,`p${n}.html`),big=path.join(OUT,`프레임${n}.png`);
   fs.writeFileSync(h,html);
   execFileSync(E,['--headless','--disable-gpu','--hide-scrollbars','--force-device-scale-factor=1','--window-size=1920,1080','--screenshot='+big,u(h)],{stdio:'ignore'});
