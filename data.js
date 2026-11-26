@@ -247,12 +247,33 @@ var IDLE_DATA = {
     loseStepBack: 1,          // 지면 이만큼 앞 스테이지로 돌아가요 (0이면 그대로). 코스트 상한은 가장 멀리 간 기록 기준이라 줄지 않아요
     // 적 팀 스킬: from 스테이지부터 count개 (팀 스킬 목록에서 스테이지마다 정해져요). 레벨 = 1 + floor(스테이지 / levelEvery). 보스 스테이지는 +bossExtra개
     enemySkills: { table: [{ from: 4, count: 1 }, { from: 12, count: 2 }, { from: 22, count: 3 }], levelEvery: 10, bossExtra: 0 }, // 보스 판에 스킬을 더 주면 3-10이 거의 못 깨는 벽이 돼서 0
+    // 2026-11-26 장(챕터): 장마다 처음부터(플레이어 레벨 1) 10판. E.chapterData(data, 장 번호)가 이 표로 그 장의 data를 만들어요(판 번호는 0~9 그대로, 이름만 "2-1"처럼)
+    //   lvPlus: 적 레벨 +N(1장 표에 더함) · swamp: 적 쪽 늪 칸 { cells: 판마다 칸 수, perSec: 늪에 선 적 공격력 1초마다 +비율(최대 없음) } · bellTiers: 그 장의 분노 단계 · groups: 같은 그룹 이벤트를 장별 확률로(키 = 굴려 나온 이벤트, 값 = 그룹 안 가중치)
+    chapterDefs: [
+      { name: '초원', bg: 'img/p/bg_field.png', bgDusk: 'img/p/bg_field_dusk.png' },
+      { name: '늪지대', bg: 'img/p/bg_swamp.png', bgDusk: 'img/p/bg_swamp_dusk.png', lvPlus: 1, swamp: { cells: 1, perSec: 0.05 }, bellTiers: [['more'], ['relic'], ['swamp']], groups: { merchant: { merchant: 3, swampShop: 7 } } }
+    ],
     idle: { enabled: false, base: 8, growth: 1.2, maxHours: 8 } // 방치 보상 (꺼짐: 방치형 게임이 아니에요). 골드는 스테이지 보상과 전리품으로만 들어와요
   },
 
   // 영웅 레벨업 가격 = base × growth^(레벨 − 1)
   // enabled: false → 골드로 레벨업하지 않아요 (레벨은 다른 방식으로 풀 예정). 골드는 상점 전용
   levelCost: { enabled: false, base: 60, growth: 1.17, maxLevel: 60 },
+
+  // ───── 물약(2026-11-26, 2장 늪지 상인): 마시면 그 전투 동안만. 끝나면 이기든 지든 사라져요. kind는 열 유물 효과를 그대로 써요(대상만 다름)
+  //   target: 'team' 아군 전체 · 'rand' 무작위 아군 1명(마실 때 정해져 머리 위에 표시) · kind 'swamp' = 늪 칸과 같은 1초마다 공격력 +amount
+  potions: {
+    list: [
+      { id: 'p_steel',  name: '강철 물약',   icon: '🛡️', kind: 'lineGuard',  target: 'team', amount: 0.1,  price: 40, desc: '이번 전투 동안 아군 전체가 받는 피해가 {a}% 줄어든다.' },
+      { id: 'p_thorn',  name: '가시 물약',   icon: '🦔', kind: 'lineThorns', target: 'team', amount: 0.1,  price: 40, desc: '이번 전투 동안 아군 전체가 맞으면 받은 피해의 {a}%를 되돌려 준다.' },
+      { id: 'p_energy', name: '기운 물약',   icon: '⚡', kind: 'lineEnergy', target: 'team', amount: 20,   price: 40, desc: '이번 전투에서 아군 전체가 궁극기 에너지 {a}을 들고 시작한다.' },
+      { id: 'p_life',   name: '생명 물약',   icon: '💚', kind: 'lineCare',   target: 'team', amount: 0.2,  price: 40, desc: '이번 전투 동안 아군 전체가 받는 회복과 보호막이 {a}% 커진다.' },
+      { id: 'p_swift',  name: '날쌘 물약',   icon: '💨', kind: 'lineHaste',  target: 'rand', amount: 0.4,  price: 50, desc: '이번 전투 동안 무작위 아군 1명의 공격 속도가 {a}% 빨라진다.' },
+      { id: 'p_shadow', name: '그림자 물약', icon: '🌑', kind: 'lineHide',   target: 'rand', amount: 5,    price: 40, desc: '이번 전투에서 무작위 아군 1명은 처음 {a}초 동안 적의 목표가 되지 않는다.' },
+      { id: 'p_wolf',   name: '늑대 물약',   icon: '🐺', kind: 'lineAtk',    target: 'rand', amount: 0.4,  price: 50, desc: '이번 전투 동안 무작위 아군 1명의 공격력이 {a}% 오른다.' },
+      { id: 'p_swamp',  name: '늪 물',       icon: '🫧', kind: 'swamp',      target: 'rand', amount: 0.05, price: 60, desc: '이번 전투 동안 무작위 아군 1명의 공격력이 살아 있는 1초마다 {a}%씩 오른다.' }
+    ]
+  },
 
   // ───── 팀 스킬 (상점에서 사요). 팀 전체에 적용되고, 스킬마다 자기 쿨타임(cd초)이 돌면 자동 발동 ─────
   // 레벨 효과: 수치 × (1 + perLevel × (레벨 − 1)). 같은 스킬을 또 사면 레벨 +1
@@ -355,7 +376,8 @@ var IDLE_DATA = {
       relic:  { name: '적 유물', icon: '📜', v: 1,    desc: '적 팀이 유물 1개를 더 갖는다.' },
       energy: { name: '선제', icon: '⚡', v: 50,   desc: '적 전체가 궁극기 에너지 50을 들고 시작한다.' },
       elite:  { name: '강적 출현', icon: '👑', v: 1, desc: '한 등급 위 영웅 1명이 더 나온다.' },
-      curse:  { name: '저주', icon: '🕯️', v: 0.3, desc: '우리 팀의 회복량과 보호막이 30% 줄어든다.' }
+      curse:  { name: '저주', icon: '🕯️', v: 0.3, desc: '우리 팀의 회복량과 보호막이 30% 줄어든다.' },
+      swamp:  { name: '늪 확장', icon: '🌿', v: 1, desc: '적 쪽 늪 칸이 1개 늘어난다.' } // 2026-11-26: 2장 분노 3단계(정예 대신)
     } },
 
   // ───── 특수 몹 이벤트 ─────
@@ -368,7 +390,7 @@ var IDLE_DATA = {
     //   atStart: true면 게임(그리고 체력 0 뒤 새 판)을 이 모닥불로 시작해요. 시작 영웅이 매번 달라져요(recruit.startHero는 꺼졌을 때만 써요)
     //   이벤트 스테이지(2026-11-18 바뀜): 모닥불·방랑상인·보물상자는 스테이지 수를 쓰지 않아요. 스테이지를 깨고 다음으로 올라갈 때 n과 n+1 사이(1-1.5처럼)에 들러요
     //   시작 모닥불은 1-0.5이고 첫 전투는 1-1이에요. 들른 뒤에는 그 다음 스테이지 전투로 가요(다시 도전할 때는 안 나와요). 목록 = stageKinds
-    stageKinds: ['campfire', 'merchant', 'chest', 'altar', 'mobs', 'fairy', 'groll', 'mimic', 'dais'], /* 2026-11-26: dais 단상 */ // 2026-11-26: 홀짝(oddeven) 뺌(사용자: 이벤트에서 홀짝은 제거해). 되돌리려면 'oddeven'을 넣고 weights에 oddeven 추가
+    stageKinds: ['campfire', 'merchant', 'chest', 'altar', 'mobs', 'fairy', 'groll', 'mimic', 'dais', 'swampShop'], /* 2026-11-26: swampShop 늪지 상인(2장, 방랑상인 그룹) */ /* 2026-11-26: dais 단상 */ // 2026-11-26: 홀짝(oddeven) 뺌(사용자: 이벤트에서 홀짝은 제거해). 되돌리려면 'oddeven'을 넣고 weights에 oddeven 추가
     fixed: { 1: 'fairy' }, // 2026-11-22 몹 판 끔(예전 2: 'mobs') // 2026-11-21: 1-2 앞엔 요정, 1-3 앞엔 몹이 꼭 나와요 { 스테이지 번호(0부터): 이벤트 }
     fork: false, // 2026-11-22 끔(사용자: 우측 선택지는 하나만). 갈림길: 이벤트 스테이지가 나오면 2개 중 골라요 (fixed 판은 그대로)
     off: [], // 도구: 여기 적은 이벤트 종류는 안 나와요(예: ['chest']). campfire를 끄면 시작 모닥불도 없어요 (2026-11-18)
@@ -378,6 +400,7 @@ var IDLE_DATA = {
     info: {
       campfire: { name: '모닥불', desc: '모닥불에 둘러앉은 영웅 중 1명이 룰렛으로 동료가 된다. 전투는 없다.' },
       merchant: { name: '방랑상인', desc: '희귀 이상 유물과 영웅을 싸게 파는 특별 상점이 열린다. 전투는 없다.' },
+      swampShop: { name: '늪지 상인', desc: '그 전투에서만 힘이 되는 물약을 판다. 물약은 2개까지 들 수 있다. 전투는 없다.' },
       chest:    { name: '보물상자', desc: '정해진 시간 동안 상자를 때린다. 많이 깎을수록 골드·마나스톤·유물 보상이 쌓인다. 지지 않는다.' },
       altar:    { name: '초월 제단', desc: '백팩 영웅을 재료로 넣어 전장 영웅을 초월시킨다. 초월은 여기서만 할 수 있다.' },
       fairy:    { name: '요정', desc: '요정이 유물 룰렛을 돌려 1개를 준다. 전투는 없다.' },
@@ -398,6 +421,7 @@ var IDLE_DATA = {
     lines: {
       campfire: { enter: ['어서 와! 여행을 해 보자!', '어서 와, 같이 갈 사람을 찾고 있었어!', '반가워! 불 좀 쬐고 가!'], done: ['좋은 여행 되길!', '잘 부탁해!', '조심히 다녀와!'] }, // 2026-11-26: 모닥불 오른쪽 자리(둘레 2번째, CF_POS[1]) 영웅이 말해요(사용자: "말풍선은 이 위에 넣어 줘. 어서 와 여행을 해 보자! 이런 걸로"). 예전 '... ...'
       merchant: { enter: ['오늘만 이 가격!', '어서 오세요~', '귀한 물건 있어요.'], done: ['또 오세요~', '좋은 거래였어요!', '길 조심해요.'] },
+      swampShop: { enter: ['개굴, 물약 사 가!', '늪에선 이게 최고지.', '한 모금이면 힘이 나!'], done: ['쭉 들이켜!', '개굴~ 또 와!', '늪 조심해!'] },
       groll:    { enter: ['한 판 해 볼 텨?', '운 좀 시험해 봐!', '골드 있지? 히히.'], done: ['다음엔 대박이야!', '또 와, 히히.', '재밌었지?'] },
       fairy:    { enter: ['반짝반짝, 선물 줄게!', '어머, 손님이네?', '반짝! 기다렸어~'], done: ['잘 다녀와!', '조심히 다녀와~', '또 놀러 와!'] }, // 사용자: "요정이면 반짝반짝 선물줄게! 버튼 누른뒤 잘 다녀와! 이런느낌"
       dais:     { enter: ['음매~ 별빛 털 보여 줄까?', '밤하늘로 짠 깔개야.', '포근한 힘이 필요해?'], done: ['깔개 잘 써 줘~', '별빛이 함께하길.', '음매, 또 봐!'] }, // 2026-11-26: 단상 캐릭터 = 밤하늘 털 양(자기 마법 털로 짠 깔개를 깔아 힘을 줌)
@@ -406,6 +430,7 @@ var IDLE_DATA = {
     goblin:   { goldMul: 2.5, flee: 10, speed: 90 },
     // merchant 방랑상인(2026-11-18 바뀜): 전투 없는 이벤트 스테이지예요(번호는 직전 그대로). 들르면 특별 상점만 열리고, 나가면 다음 스테이지로 가요
     //   battle: false = 전투 없음. 진열 = 희귀 이상 스킬 skills개 + 영웅 heroes명. 값은 원래 값(스킬은 상점 값·재화 그대로, 영웅은 heroPrice 식) × discount, 최소 minPrice
+    swampShop: { count: 4, hold: 2 }, // 2026-11-26 늪지 상인: 물약 count개를 팔아요(겹치지 않게). 들고 있을 수 있는 물약 hold개(사는 개수 제한은 없음)
     merchant: { battle: false, skills: 2, minGrade: 3, discount: 0.5, minPrice: 1, heroes: 1, heroPrice: 110, offMin: 0.5, offStep: 5, reroll: { cost: 50, max: [1] } }, // 2026-11-26: 상품마다 할인율 다름(최대 할인율×offMin ~ 최대, 5% 단위, 1개는 최대). reroll: 방랑상점 다시 돌리기 비용·횟수(플레이어 레벨별 표, 지금 모든 레벨 1번)
     // chest 보물상자(2026-11-18 새로): 그 판에는 보물상자 1마리만 나와요. 공격도 이동도 안 하고 단단하기만 해요. dur초가 지나면 사라져요
     //   입힌 피해 비율(최대 체력 대비)이 tiers의 at을 넘을 때마다 그 칸 보상을 더해 받아요(누적). gold는 그 스테이지 클리어 보상 × 값, mana는 마나스톤 개수, scroll은 스킬 두루마리 개수
