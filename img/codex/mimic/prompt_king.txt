@@ -1,0 +1,9 @@
+Look at these images:
+- img/codex/mimic/mimic_g3_x16.png = our game's mimic (pixel art 16x enlarged, purple version). Match its pixel size, outline, shading and cute style.
+- img/codex/mimic/king_ref.webp = the DESIGN the user wants for the KING mimic: purple chest with gold frame, a big pointed gold crown with red gems, wide open mouth with big teeth, long curled red tongue, glowing yellow eyes, two small paws, a red-gem gold lock.
+
+Generate ONE new image with your image generation tool and save it as img/codex/mimic/king_a.png
+The KING MIMIC following king_ref, redrawn in our simpler chunky pixel style. Playful, not scary. 3/4 view facing the RIGHT, camera looking down about 20 degrees.
+- LOW RESOLUTION: a bit bigger than our normal mimic: the whole king mimic with crown is at most 44 art pixels wide and 46 tall. One art pixel = 26 image pixels, image 1254x1254, centered. Big chunky square blocks, eyes at least 3x3 pixels, big simple teeth. 1 art pixel dark outline (#1c1024), no gaps, no anti-aliasing, no gradients, nothing smaller than one block.
+[Format] Plain solid #FF00FF magenta background, no text, no shadow.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
