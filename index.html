@@ -2564,6 +2564,10 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 #hinfo .hi-btns{position:relative}
 #hinfo .hi-btns .lvwarn.tap2{position:absolute;left:0;right:0;bottom:calc(100% + 8px);max-width:none;text-align:center}
 #hinfo .hi-btns .lvwarn.tap2::after{right:auto;left:calc(50% - 6px)}
+.shopPop .spHead #shopReroll{display:flex;align-items:center;gap:6px}
+#shopReroll #shopRRn{position:static;transform:none;font:400 12px var(--display);color:#ffd34d;text-shadow:0 2px 0 #17141d;white-space:nowrap}
+#shopReroll #shopRRn.z{color:#8a8296}
+#shopReroll #shopRRn[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -4752,7 +4756,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     var cells = tiles.slice(); for (var ci = cells.length; ci < 6; ci++){ var lv = shopLockLv(ci); cells.push(lv ? '<span class="stile lockd"><em>🔒 Lv' + lv + '</em></span>' : '<span class="stile empty"></span>'); }
     $('stock').innerHTML = (hrow.length ? '<div class="srow2 h"><span class="rowic">' + (HUDOK.gold ? '<img class="mni" src="img/p/hud_gold.png" alt="">' : '🪙') + '</span>' + hrow.join('') + '</div>' : '') + '<div class="srow2 g six"><span class="rowic"></span>' + cells.join('') + '</div>'; /* 2행×3열 */
     var rMax = D.shop.refreshMax || Infinity, rLeft = Math.max(0, rMax - (S.shop.rerolls || 0)), rOff = !rLeft || S.gold < rp, rDis = rOff || battleOn();
-    $('shopReroll').innerHTML = '<button class="spRe' + (rOff ? ' no' : '') + '" data-reroll="1" type="button"' + (rDis ? ' disabled' : '') + ' title="리셋 · 열린 칸을 모두 새로 뽑아요"><img class="uic" src="img/p/ui_reroll.png" alt="" onerror="this.outerHTML=&quot;🎲&quot;">' + rp.toLocaleString() + 'G' + (isFinite(rMax) ? ' (' + rLeft + ')' : '') + '</button>'; /* 2026-11-23: 상점 오른쪽 위 주사위 버튼으로 되돌림 */
+    $('shopReroll').innerHTML = '<button class="spRe' + (rOff ? ' no' : '') + '" data-reroll="1" type="button"' + (rDis ? ' disabled' : '') + ' title="리셋 · 열린 칸을 모두 새로 뽑아요">' + '리셋 ' + rp.toLocaleString() + 'G</button>'; rrCount(isFinite(rMax) ? rLeft : null, rMax); /* 2026-11-23: 상점 오른쪽 위 주사위 버튼으로 되돌림 */
     $('shopReroll').hidden = !D.shop.refresh; // 새로고침 없음(refresh 0)
     $('shopDot').hidden = !anyBuy;
     renderShopInfo();
@@ -4767,7 +4771,9 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     var MS = (D.player && D.player.merchantSlots) || [], open = MS[Math.min(MS.length, plv()) - 1] || 0, max = MS.length ? Math.max.apply(null, MS) : 6; /* 3칸 x 2줄, 왼쪽부터. 레벨로 안 열린 칸은 일반 상점과 같은 잠금 표시 (2026-11-26 사용자) */
     while (t.length < max){ var ci = t.length, L = 0; if (ci >= open) for (var q = 0; q < MS.length && !L; q++) if (MS[q] > ci) L = q + 1; t.push(L ? '<span class="stile lockd"><em>🔒 Lv' + L + '</em></span>' : '<span class="stile empty keep"></span>'); }
     $('stock').innerHTML = '<div class="srow2 g six"><span class="rowic"></span>' + t.join('') + '</div>';
-    var MR = D.events.merchant.reroll, rr = $('shopReroll'); if (MR){ var left = Math.max(0, merchRRMax() - (o.rerolls || 0)), off2 = !left || S.gold < MR.cost; rr.innerHTML = '<button class="spRe' + (off2 ? ' no' : '') + '" data-reroll="1" type="button"' + (off2 || battleOn() ? ' disabled' : '') + ' title="리셋 · 상품을 모두 새로 뽑아요"><img class="uic" src="img/p/ui_reroll.png" alt="">' + MR.cost + 'G (' + left + ')</button>'; } rr.hidden = !MR; renderShopInfo(); }
+    var MR = D.events.merchant.reroll, rr = $('shopReroll'); if (MR){ var left = Math.max(0, merchRRMax() - (o.rerolls || 0)), off2 = !left || S.gold < MR.cost; rr.innerHTML = '<button class="spRe' + (off2 ? ' no' : '') + '" data-reroll="1" type="button"' + (off2 || battleOn() ? ' disabled' : '') + ' title="리셋 · 상품을 모두 새로 뽑아요">' + '리셋 ' + MR.cost + 'G</button>'; rrCount(left, merchRRMax()); } rr.hidden = !MR; if (!MR) rrCount(null); renderShopInfo(); }
+  /* 남은 횟수는 버튼 왼쪽 바깥에 "리셋 1/1" (룰렛과 같은 글) */
+  function rrCount(left, max){ var rr = $('shopReroll'), el = $('shopRRn'); if (!el){ el = document.createElement('span'); el.id = 'shopRRn'; el.className = 'rleft'; } if (el.nextSibling !== rr.firstChild) rr.insertBefore(el, rr.firstChild); el.hidden = left == null; el.textContent = left == null ? '' : '리셋 ' + left + '/' + max; el.classList.toggle('z', left === 0); }
   function merchRRMax(){ var m = (D.events.merchant.reroll || {}).max || [0]; return m[Math.min(m.length, plv()) - 1] || 0; }
   // 상점이 열려 있을 때 전장 왼쪽 위 '내 유물' 아이콘: 고른 것 표시 (누르면 팔기)
   function shopAutoSel(){ if (!shopOpen()) return false;
