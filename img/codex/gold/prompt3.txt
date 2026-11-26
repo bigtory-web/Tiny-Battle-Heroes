@@ -1,0 +1,12 @@
+Look at these images from our pixel art game: img/codex/gold/gold2_b.png (the approved gold pouch: keep exactly this art style, gold coin design with an engraved star, shading and dark outline #2a1409), img/gemini/ref/skill_drums_x8.png (item icon style, 8x enlarged).
+Generate ONE new image with your image generation tool and save it as img/codex/gold/gold3.png
+
+Three GOLD COIN BASKETS in one row, left to right showing a growing amount of money. The three baskets are the SAME small simple woven wicker basket (same shape, same size, same position of the rim), only the amount of coins differs. Modest and humble, not a treasure hoard.
+1. LEFT "a little": only a few coins (3 to 4) peeking just above the rim, one coin lying beside the basket.
+2. MIDDLE "medium": a low rounded heap of coins filling the basket.
+3. RIGHT "a bundle": a taller heap of coins (still tidy and modest), a few coins at the base, one small white sparkle.
+- ONLY gold coins. No gems, no jewels, no banknotes, no other colors of treasure.
+- Slightly viewed from above (about 20 degrees), rich but clean shading, highlight upper left.
+- Pixel grid: one art pixel = 16 image pixels; each basket about 40 art pixels wide. Crisp square pixels, no anti-aliasing, no gradients, no finer detail than the grid. Image 2304x768, wide clear gaps between the three baskets, all bottoms on the same line.
+[Format] Plain solid #FF00FF magenta background, no text, no numbers, no shadow.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
