@@ -2439,6 +2439,10 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
 @keyframes cellhl{50%{opacity:.65}}
 /* 구름 그림자: 겹침 모드(multiply)를 뺌. 검정+투명도는 곱하기와 결과가 같고, 겹침 모드는 전장을 따로 합성해 그림이 번질 수 있음 */
 #field > .cloudsh{mix-blend-mode:normal!important}
+/* 전투 시작 버튼 줄을 8px 아래로: 맨 아랫줄 칸 밑 띠의 가운데에 (2026-11-26 사용자: 약간 위임). 이벤트 판 버튼(말 걸기 등)·떠나기도 같이 */
+#arena .abar{bottom:10px!important}
+#arena.evstage .evacts,#arena.evstage #altGoBtn{bottom:11px!important}
+#arena.evstage #fightBtn{bottom:1px!important}
 </style>
 </head>
 <body>
