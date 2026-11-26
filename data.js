@@ -561,6 +561,7 @@ var IDLE_DATA = {
         { id: 'shopSlot', req: ['start'], name: '상점 칸', key: 'shopSlots', add: 1, cap: 6, cost: [8, 16] },
         { id: 'shopReset', req: ['shopSlot'], name: '상점 리셋', path: 'shop.refreshMax', add: 1, cost: [6, 12] },
         { id: 'merchSlot', req: ['shopSlot'], name: '상인 상품 수', key: 'merchantSlots', add: 1, cap: 6, cost: [6, 12] },
+        { id: 'swampSlot', req: ['merchSlot'], name: '늪지 상인 물약 수', key: 'swampSlots', add: 1, cap: 6, cost: [6, 12] }, // 2026-11-27 (사용자: "말했지 내가? 플레이어레벨 그거 해당하는거 이미.")
         { id: 'merchHero', req: ['merchSlot'], name: '상인 영웅 수', key: 'merchantHeroes', add: 1, cap: 2, cost: [10] },
         { id: 'merchOff', req: ['merchSlot'], name: '상인 할인', key: 'merchantOff', add: 5, cap: 60, cost: [6, 12] },
         { id: 'shopGrade', req: ['shopReset'], name: '상점 등급 확률', shift: 'shopGrade', cost: [8, 16] } ] },
