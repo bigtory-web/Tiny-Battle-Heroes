@@ -350,7 +350,11 @@ img.lic.padic{object-fit:contain}
 .bfrow{display:flex;justify-content:center;gap:6px;margin-top:6px}
 .bfc{width:56px;padding:4px 0 3px;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;background:#17141d;box-shadow:inset 0 0 0 2px #5d5470;color:#f3e6c4;cursor:help;filter:grayscale(1);opacity:.45}
 .bfc.on{filter:none;opacity:1} .bfc.sel{box-shadow:inset 0 0 0 2px #ffd34d;opacity:1} /* 노란 테두리 = 지금 설명이 보이는 카드 */
-.bfc i{font-style:normal;font-size:20px;line-height:24px} .bfc em{font-style:normal;font:400 10px var(--display);white-space:nowrap}
+.bfc i{font-style:normal;font-size:20px;line-height:24px;position:relative;display:flex;align-items:center;justify-content:center;width:34px;height:28px}
+.bfc i img{width:24px;height:24px;image-rendering:pixelated} .bfc i .bfsil{filter:brightness(0) invert(.8)} .bfc i .bfstar{width:27px;height:27px}
+.bfc i .bfring{width:20px;height:20px;border-radius:50%;box-shadow:inset 0 0 0 3px #c9c3d6,inset 0 0 0 5px #17141d;background:#3b3546}
+.bfc i s{position:absolute;right:-2px;bottom:-3px;text-decoration:none;font:400 15px/1 var(--display);color:#fff;text-shadow:1px 0 #17141d,-1px 0 #17141d,0 1px #17141d,0 -1px #17141d}
+.bfc em{font-style:normal;font:400 10px var(--display);white-space:nowrap}
 .bfdesc{margin-top:5px;min-height:34px;font:400 11px/1.5 var(--body)}
 .nightmsg{position:absolute;left:50%;top:50%;z-index:900;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;white-space:nowrap;animation:nightmsg 2.8s ease-out both}
 .nightmsg b{font:400 34px/1 var(--display);letter-spacing:2px;color:#c9b8ff;text-shadow:-2px 0 #17141d,2px 0 #17141d,0 -2px #17141d,0 2px #17141d,0 4px 0 #3a1f66,0 0 16px rgba(150,110,255,.8)}
@@ -5853,6 +5857,8 @@ img.rimg{image-rendering:auto!important}
   function updEvActs(){ var box = $('evActs'); if (!box) return; var ok = !bt && !isLvPick() && !isFork(), tk = ok && (isCamp() || isFairy() || isMerch() || isDais()), busy = !!S.offer || !!S.pending;
     $('evTalk').hidden = !tk; var dsv = tk && isDais() ? S.event : null; $('evTalk').querySelector('b').textContent = '말 걸기'; if (dsv) busy = busy || !!dsv.dsDone; $('evTalk').disabled = busy; $('evTalk').classList.toggle('busyhide', busy); $('evBet').classList.toggle('busyhide', oeBusy); var oe = ok && isOddEven(), k = oeK(), mx = oeMax(), gr = ok && isGroll(); $('evBet').hidden = !oe && !gr; box.hidden = !tk && !oe && !gr; grollBtn(gr);
     if (oe){ $('evBet').disabled = oeBusy || k >= mx || S.gold < E.oddEvenBet(D, S.stage); $('evBet').querySelectorAll('.oedots i').forEach(function(d, i){ d.classList.toggle('on', i < k); d.hidden = i >= mx; }); } } /* 말 걸기: 위 가운데(종·초월 자리) */
+  /* 분노 카드 아이콘 = 실루엣 + 작은 "+" 고정 (2026-11-26 사용자: "실루엣으로 하자"): 증원 사람, 적 유물 빈 유물 원, 정예 별 */
+  function bfIcon(k, d){ var a = k === 'more' ? '<img class="bfsil" src="img/p/hud_team.png" alt="">' : k === 'relic' ? '<u class="bfring"></u>' : k === 'star' ? '<img class="bfstar" src="' + starSpr('#c9c3d6').toDataURL() + '" alt="">' : null; return a ? a + '<s>+</s>' : d.icon; }
   function renderBell(){ renderTalk(); var b = $('bellBtn'); if (!b || !D.bell) { if (b) b.hidden = true; return; } if ((bt && curEv && curEv.kind === 'chest') || (!bt && S.event && S.event.kind === 'chest')){ b.hidden = true; return; } /* 보물상자 판: 용 버튼 없음 */
     var B = D.bell, mx = bellMax(), n = Math.min((bt ? curBell : S.bell) || 0, mx), bStg = bt ? curStage : S.stage, bEv = bt ? curEv : S.event, /* 전투 중엔 시작할 때 값 */ im = BELLIMG[Math.max(1, n)];
     b.hidden = (!bt && noFight()) || bStg >= E.stageCount(D) || !!(bEv && (bEv.kind === 'mobs' || bEv.kind === 'mimic' || bEv.kind === 'oddeven')); b.className = 'bell b' + n + (mx ? '' : ' lock') + (bt ? ' inbt' : ''); b.disabled = !mx;
@@ -5866,7 +5872,7 @@ img.rimg{image-rendering:auto!important}
     var cand = !bt && n < mx && B.tiers && B.tiers[n] ? B.tiers[n] : null; /* 전투 중엔 다음 단계 안내 없음 */
     var fxL = function(id){ var d = BF[id] || { name: id, icon: '', desc: '' }; return d.icon + ' <b class="fxn">' + d.name + '</b> · ' + d.desc; };
     if (B.tiers && !chestEv && mx){ b.dataset.tipt = '분노 ' + n + '단계'; var sel = Math.max(0, n - 1), selId = (sel < n && got[sel]) || B.tiers[sel][0], selG = cand && sel === n && bg1 > 0 ? ' (+' + bg1.toLocaleString() + 'G)' : ''; b.dataset.tipg = n + 1; /* 테두리 = 등급색: 기본 일반 · 1 고급 · 2 희귀 · 3 전설 (2026-11-26 사용자) */
-      b.dataset.tiptx = '<div class="bfrow">' + B.tiers.map(function(t, i){ var id = (i < n && got[i]) || t[0], d = BF[id] || { name: id, icon: '' }; return '<button type="button" class="bfc' + (i < n ? ' on' : '') + (i === sel ? ' sel' : '') + '" data-bfx="' + id + '"' + (cand && i === n && bg1 > 0 ? ' data-bfg="' + bg1.toLocaleString() + '"' : '') + '><i>' + d.icon + '</i><em>' + d.name + '</em></button>'; }).join('') + '</div><div class="bfdesc">' + ((BF[selId] || {}).desc || '') + selG + '</div>'; }
+      b.dataset.tiptx = '<div class="bfrow">' + B.tiers.map(function(t, i){ var id = (i < n && got[i]) || t[0], d = BF[id] || { name: id, icon: '' }; return '<button type="button" class="bfc' + (i < n ? ' on' : '') + (i === sel ? ' sel' : '') + '" data-bfx="' + id + '"' + (cand && i === n && bg1 > 0 ? ' data-bfg="' + bg1.toLocaleString() + '"' : '') + '><i>' + bfIcon(t[0], d) + '</i><em>' + d.name + '</em></button>'; }).join('') + '</div><div class="bfdesc">' + ((BF[selId] || {}).desc || '') + selG + '</div>'; }
     else { delete b.dataset.tipt; delete b.dataset.tiptx; }
     if (tipEl === b){ if (b.dataset.tiptx) showTip(b); else hideTip(); } // 열려 있는 종 툴팁도 새 값으로
     if (nx && B.tiers){ nx.hidden = true; } else if (nx){ nx.hidden = !mx || n >= mx; nx.innerHTML = chestEv ? '다음 단계: <b>상자 강화</b> (체력 +' + Math.round((D.events.chest.bell || {}).hp * 100) + '% · 보상 +' + Math.round((D.events.chest.bell || {}).reward * 100) + '%)' : '다음 단계: 적 영웅 ' + (B.enemy || 1) + '명 추가 · <b>+' + bg1.toLocaleString() + 'G</b>' + ''; }
