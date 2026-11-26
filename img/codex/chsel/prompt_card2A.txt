@@ -1,0 +1,10 @@
+Look at:
+- img/codex/chsel/card1_raw.png : our chapter 1 card illustration. Match ONLY its drawing style and pixel size. The composition must be COMPLETELY DIFFERENT from it (no winding path to the horizon, no big tree on the right, no open sky on top).
+- img/p/bg_swamp.png : the chapter 2 swamp battle background (colors: teal water, green mangrove foliage, brown trunks, olive-brown mud).
+
+Generate ONE new image with your image generation tool and save it as img/codex/chsel/card2A_raw.png.
+
+A chapter illustration for "chapter 2 - crocodile swamp, shrouded in mist": portrait picture (width:height = 204:230), chunky pixel art on a 204 x 230 canvas.
+COMPOSITION A - "the crocodile gate", centered and symmetrical-ish, NO path: two giant mangrove root systems from left and right meet overhead into a big dark arch that frames the whole picture; through the arch a pale misty distance; in the lower half, calm dark swamp water, and in the centre foreground the huge head of a giant crocodile half-submerged, looking at the viewer with glowing yellow eyes. Moody, a bit dangerous.
+Keep the top-left corner calm and dim (medal icons are placed there). No people or heroes, no text, no frame, no UI. Clear square pixels, flat cel shading, dark outlines, no gradients or blur.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

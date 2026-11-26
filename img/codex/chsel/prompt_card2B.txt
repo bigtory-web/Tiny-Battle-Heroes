@@ -1,0 +1,10 @@
+Look at:
+- img/codex/chsel/card1_raw.png : our chapter 1 card illustration. Match ONLY its drawing style and pixel size. The composition must be COMPLETELY DIFFERENT from it (no winding path to the horizon, no big tree on the right, no open sky on top).
+- img/p/bg_swamp.png : the chapter 2 swamp battle background (colors: teal water, green mangrove foliage, brown trunks, olive-brown mud).
+
+Generate ONE new image with your image generation tool and save it as img/codex/chsel/card2B_raw.png.
+
+A chapter illustration for "chapter 2 - crocodile swamp, shrouded in mist": portrait picture (width:height = 204:230), chunky pixel art on a 204 x 230 canvas.
+COMPOSITION B - "the stilt hut", vertical zig-zag: a crooked wooden boardwalk on posts climbs from the bottom up to a small round stilt hut with warm lit windows and hanging lanterns and potion bottles in the middle of the picture (the home of a frog potion merchant); long curtains of hanging moss and vines come down from the top edge; layers of mist between the water and the far trees; fireflies. Mysterious, cozy but eerie. No big tree on the right side.
+Keep the top-left corner calm and dim (medal icons are placed there). No people or heroes, no text, no frame, no UI. Clear square pixels, flat cel shading, dark outlines, no gradients or blur.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
