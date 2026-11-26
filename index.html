@@ -2823,6 +2823,10 @@ img.rimg{image-rendering:auto!important}
 #roster .chip.trpkm > .trlab{background:#5ab4ff;color:#0e2238}
 #trWin .trres{display:flex;align-items:center;justify-content:center;gap:10px;min-height:66px;background:#1d1a24;color:#ffd34d;font:400 18px var(--display);animation:fadeup .3s both}
 #trWin .trres[hidden],#trWin .trlist[hidden],#trWin .spX[hidden]{display:none!important}
+/* 잠긴 칸: 자물쇠 없이 열리는 조건만, 상점 칸은 파인 홈을 더 어둡게 (2026-11-26 사용자) */
+#tab-shop .stile.lockd em::before,.baglock em::before{display:none!important}
+#tab-shop .srow2 .stile.lockd{background:linear-gradient(#08070b 0 3px,#0e0c13 3px 6px,#131019 6px calc(100% - 3px),#2e2938 calc(100% - 3px))!important;box-shadow:inset 3px 0 0 #08070b,inset -2px 0 0 #2a2533!important}
+#tab-shop .stile.lockd em{color:#f3e6c4!important}
 </style>
 </head>
 <body>
