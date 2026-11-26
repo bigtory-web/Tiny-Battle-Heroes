@@ -39,7 +39,7 @@
         maxHp: hp, hp: hp, atk: h.atk * g * (m.atk || 1), def: h.def * g, interval: h.interval / (spec.spd || 1), range: h.range, el: spec.el || h.el, el2: spec.el2 && spec.el2 !== (spec.el || h.el) ? spec.el2 : null, // el2: 진영 발판으로 더해진 진영 // spec.el: 진영 발판 위면 그 진영
         energy: h.ult && h.ult.trig ? (h.ult.trig.kind === 'start' ? B.energyMax : 0) : Math.min(B.energyMax, SE.value + (spec.energy || 0)), trig: h.ult && h.ult.trig || null, timer: rand() * B.startJitter, alive: true, shield: 0, taunt: 0, slow: 0, slowAmt: 0, haste: 0, hasteAmt: 0,
         grade: h.grade || 1, ultLv: 0, pasLv: 0, uk: 1, pas: null, pv: 0, crit: critChance(data, h),
-        boss: !!spec.boss, merc: !!spec.merc, endureOnce: !!spec.endure, stats: { dealt: 0, taken: 0, healed: 0, ults: 0, shield: 0 } };
+        boss: !!spec.boss, merc: !!spec.merc, blue: !!spec.blue, endureOnce: !!spec.endure, stats: { dealt: 0, taken: 0, healed: 0, ults: 0, shield: 0 } };
     }
     var A = ally.map(function (s) { return makeUnit(s, 'A'); }), E = enemy.map(function (s) { return makeUnit(s, 'E'); });
     // 영웅 효과 2개: 궁극기·패시브. 레벨 = spec.ultLv / spec.pasLv (없으면 등급 기본 레벨). 성급은 능력치만 올려요
@@ -389,13 +389,14 @@
             if (!alive(E).length) { result = 'win'; break; } if (!alive(A).length) { result = 'lose'; break; } } }
         if (u.castT > 0) { u.castT -= B.dt; u.moving = false; if (u.castT <= 0) { u.castT = 0; var hc = u.stats.healed; ultimate(u); (u.extra || []).forEach(function (e) { if (u.alive) ultimate(u, e.ult, e.k, e.el); }); afterUlt(u, u.stats.healed - hc); // 주문 끝: 스킬이 나가요 (기절하면 멈췄다가 이어서 외워요)
             if (!alive(E).length) { result = 'win'; break; } if (!alive(A).length) { result = 'lose'; break; } } continue; } // 넉백으로 잠깐 멈춤
-        if (u.h.mob === 'mimic') { /* 미믹(2026-11-26): every초마다 영웅 1명 방해(일반 둔화, 왕관 밀치기) + 고정 피해 dmg. dur초가 지나면 도망 */
+        if (u.h.mob === 'mimic') { /* 미믹(2026-11-26): every초마다 영웅 1명 방해(갈색 둔화, 파랑 실명, 왕관 밀치기) + 고정 피해 dmg. dur초가 지나면 도망 */
           var MM = data.events.mimic || {}; u.age = (u.age || 0) + B.dt; u.moving = false;
           if (t >= (MM.dur || 20)) { /* 전투 시간 기준(기절해도 흘러요) */ u.alive = false; u.escaped = true; if (rec) log.push({ t: t, kind: 'escape', uid: u.uid }); if (!alive(E).length) { result = 'win'; break; } continue; }
           if (u.stun > 0) continue; u.dis = (u.dis == null ? (MM.first || 2) + rand() * 1.5 : u.dis) - B.dt;
           if (u.dis <= 0) { u.dis += MM.every || 4.5; var MF = alive(foes(u)); if (MF.length) { var mv2 = MF[Math.floor(rand() * MF.length)];
             if (MM.dmg) { var mab = Math.min(mv2.shield || 0, MM.dmg); mv2.shield -= mab; mv2.hp -= MM.dmg - mab; u.stats.dealt += MM.dmg; mv2.stats.taken += MM.dmg; if (rec) log.push({ t: t, kind: 'hit', from: u.uid, to: mv2.uid, amt: MM.dmg }); if (mv2.hp <= 0) die(mv2, u); } /* 2026-11-26: 방해할 때 고정 피해(사용자: 1의 피해) */
             if (u.h.king) { var kdx = (mv2.side === 'A' ? -1 : 1) * (MM.knock || 40); mv2.x += kdx; mv2.stun = Math.max(mv2.stun || 0, MM.knockStun || 0.4); if (rec) { log.push({ t: t, kind: 'knock', uid: mv2.uid, dx: kdx }); log.push({ t: t, kind: 'mimicFx', uid: u.uid, to: mv2.uid, fx: 'knock' }); } }
+            else if (u.blue) { mv2.blind = Math.max(mv2.blind || 0, MM.blindDur || 2); mv2.blindAmt = Math.max(mv2.blindAmt || 0, MM.blindAmt || 0.5); if (rec) log.push({ t: t, kind: 'mimicFx', uid: u.uid, to: mv2.uid, fx: 'blind' }); } /* 파랑 = 실명(2026-11-26: 색깔별 방해) */
             else { mv2.slow = Math.max(mv2.slow || 0, MM.slowDur || 2); mv2.slowAmt = Math.max(mv2.slowAmt || 0, MM.slowAmt || 0.4); if (rec) log.push({ t: t, kind: 'mimicFx', uid: u.uid, to: mv2.uid, fx: 'slow' }); } } }
           continue; }
         if (u.h.mob === 'chest') { // 보물상자: 아무것도 안 해요. dur초가 지나면 사라져요(그때까지 입힌 피해로 보상)
@@ -629,7 +630,7 @@
       team: ev.ids.map(function (id, i) { var hm = ((data.events.mobs || {}).hp || 1) * (heroById(data, id).hpMul || 1); return { id: id, level: lv, slot: i, mul: { hp: em * hm, atk: em }, mob: true, drop: ev.drops[i] || [] }; }) };
     if (ev && ev.kind === 'mimic') { var MS = (data.events.mimic || {}).slots || [0, 1, 2, 3], MC = { w: 0, b: 0, k: 0 }; return { n: n, name: stageName(data, n), level: lv, boss: false, wall: false, skills: [], event: ev, bell: 0, /* 미믹 판: 적 스킬·종 없음, 공격력 0 */
       team: ev.ids.map(function (id, i) { var k = id === 'mimicKing' ? 'k' : ev.blue && ev.blue[i] ? 'b' : 'w', sl = Array.isArray(MS) ? MS[i] : (MS[k] || [])[MC[k]++]; /* 예전 저장(ev.blue 없음)은 모두 갈색 자리 */
-        return { id: id, level: lv, slot: sl != null ? sl : i, mul: { hp: em * (k === 'b' ? (data.events.mimic.blueHp || 1) : 1), atk: 0 }, mob: true, drop: ev.drops[i] || [] }; }) }; }
+        return { id: id, level: lv, slot: sl != null ? sl : i, mul: { hp: em * (k === 'b' ? (data.events.mimic.blueHp || 1) : 1), atk: 0 }, mob: true, blue: k === 'b', drop: ev.drops[i] || [] }; }) }; }
     if (ev && ev.kind === 'chest') { // 보물상자 판: 상자 1마리만, 적 스킬 없음. 종을 울릴 때마다 체력이 늘어요
       var CB = data.events.chest.bell || {}, CG = chestGrade(data, plv), hm = CG ? data.events.chest.grades[CG - 1].hp : 1 + (CB.hp || 0) * bell;
       return { n: n, name: stageName(data, n), level: lv, boss: false, wall: false, team: [{ id: 'chest', level: lv, slot: 3, /* 2026-11-24: 가운데 줄 가운데(화면 5번 칸) */ mul: { hp: em * hm, atk: 0 }, mob: true }], skills: [], event: ev, bell: bell }; }

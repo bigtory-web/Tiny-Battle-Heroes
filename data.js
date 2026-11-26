@@ -381,7 +381,7 @@ var IDLE_DATA = {
       altar:    { name: '초월 제단', desc: '백팩 영웅을 재료로 넣어 전장 영웅을 초월시킨다. 초월은 여기서만 할 수 있다.' },
       fairy:    { name: '요정', desc: '요정이 유물 룰렛을 돌려 1개를 준다. 전투는 없다.' },
       mobs:     { name: '몹', desc: '몹 1마리가 나온다. 쓰러뜨리면 그 몹의 전리품 중 1개를 룰렛으로 얻는다. 져도 체력이 닳지 않는다.' },
-      mimic:    { name: '미믹', desc: '미믹 여러 마리가 나온다. 미믹은 둔화·밀치기로 방해하며 그때 피해 1을 준다. 시간 안에 잡은 미믹마다 보상을 받는다. 지지 않는다.' },
+      mimic:    { name: '미믹', desc: '미믹 여러 마리가 나온다. 미믹은 색깔별로 방해한다(갈색 둔화, 파랑 실명, 왕관 밀치기). 방해할 때 피해 1을 준다. 시간 안에 잡은 미믹마다 보상을 받는다. 지지 않는다.' },
       groll:    { name: '돈고블린 룰렛', desc: '돈고블린에게 골드를 내고 룰렛을 돌린다. 나온 것을 받거나 포기한다. 골드 칸은 낸 골드의 2배. 전투는 없다.' },
       oddeven:  { name: '돈고블린 홀짝', desc: '돈고블린과 홀짝 내기를 한다. 맞히면 건 골드의 2배를 받고, 틀리면 건 골드를 잃는다. 전투는 없다.' },
       merc:     { name: '떠돌이 용병', desc: '용병이 적 편에서 함께 싸운다. 이기면 골드를 내고 바로 영입할 수 있다.' }
@@ -401,8 +401,8 @@ var IDLE_DATA = {
     //   일반 = 둔화(slowDur초, slowAmt), 왕관 = 밀치기(knock px + knockStun초 기절). dur초가 지나면 남은 미믹은 도망. 잡은 미믹마다 보상(구간 보상·말풍선 없음)
     //   보상: 일반 = 클리어 골드 × gold, 왕관 = 유물 1개 + 클리어 골드 × kingGold. 체력 = mobs의 mimic·mimicKing hp × 스테이지 배율. slots = 적 쪽 칸 번호
     // 2026-11-26 배치: 1열(우리 쪽에 가까운 줄) 갈색, 2열 파랑, 3열 가운데 왕관. 칸 번호는 battle.arena.pos 순서(0 = 1열 가운데, 2 = 1열 위, 3 = 2열 가운데, 5 = 2열 위, 6 = 3열 가운데). 갈색 짝수·파랑 홀수 칸은 화면 색 고르기(slot % 2)와 맞춤
-    //   blueHp: 파랑 미믹 체력 배율(갈색보다 셈). dmg: 방해할 때 그 영웅에게 주는 고정 피해
-    mimic: { dur: 20, kingFrom: 7, every: 4.5, first: 2, slowDur: 2, slowAmt: 0.4, knock: 40, knockStun: 0.4, gold: 0.3, kingGold: 0.5, blueHp: 1.5, dmg: 1, slots: { w: [0, 2, 1], b: [3, 5, 4], k: [6] } },
+    //   blueHp: 파랑 미믹 체력 배율(갈색보다 셈). dmg: 방해할 때 그 영웅에게 주는 고정 피해. 방해는 색깔별: 갈색 둔화(slow*), 파랑 실명(blind*: blindDur초 동안 평타가 blindAmt 확률로 빗나감), 왕관 밀치기(knock*)
+    mimic: { dur: 20, kingFrom: 7, every: 4.5, first: 2, slowDur: 2, slowAmt: 0.4, knock: 40, knockStun: 0.4, gold: 0.3, kingGold: 0.5, blueHp: 1.5, dmg: 1, blindDur: 2, blindAmt: 0.5, slots: { w: [0, 2, 1], b: [3, 5, 4], k: [6] } },
     chest: { dur: 15, // 체력·방어는 mobs의 chest 값 (스테이지 레벨·초반 배율을 똑같이 받아요)
       tiers: [ { at: 0.25, gold: 0.5 }, { at: 0.5, gold: 1 }, { at: 0.75, gold: 0.5, scroll: 1 }, { at: 1, gold: 1.5 } ],
       bell: { hp: 0.5, reward: 0.7 }, // grades가 있으면 안 써요 (2026-11-24: 보물상자 판에는 용 버튼 없음)
