@@ -2714,6 +2714,9 @@ img.rimg{image-rendering:auto!important}
 #trWin .trc b{position:absolute;left:0;right:0;bottom:0;font:400 11px var(--display);line-height:13px;color:#3a2208;background:#ffd34d}
 #trWin .trc:disabled{filter:grayscale(1) brightness(.5);cursor:default}
 #trWin .rbtns{display:flex;justify-content:center}
+/* 돈고블린 = 카지노 딜러 아이들 8칸 (방랑상인과 같은 틀, 좌우 반전은 .oegob .cfslot이 함) */
+.oegob .cfslot{display:flex;align-items:flex-end;justify-content:center}
+.oegob .dlr{display:block;flex:none;height:100%;aspect-ratio:1;background:url(img/p/ev_dealer_anim.png) 0 0/800% 100% no-repeat;image-rendering:pixelated;animation:trader 2s steps(8,jump-none) infinite}
 </style>
 </head>
 <body>
@@ -5086,7 +5089,7 @@ img.rimg{image-rendering:auto!important}
     sp.hidden = false; sp.textContent = '돌리기 ' + cost.toLocaleString() + 'G'; sp.disabled = !left || S.gold < cost;
     var rl = $('rLeft'); rl.hidden = false; rl.textContent = left + '/' + mx; rl.classList.toggle('z', !left); $('rX').hidden = false; $('rX').disabled = false; }
   function grollClose(){ grOpen = false; S.offerMode = null; save(); $('roul').hidden = true; var b = $('roul').querySelector('.rbox'); delete b.dataset.grs; if ($('rSpin')) $('rSpin').hidden = true; renderAll(); }
-  function grollHtml(){ var gx = 506, gy = 184; return '<div class="unit cfh oegob" style="left:' + (100 * gx / W) + '%;top:' + (100 * (gy + OFF + FOOT) / H) + '%;z-index:' + gy + '"><div class="cfslot">' + av('goblin') + '</div></div>'; }
+  function grollHtml(){ var gx = 506, gy = 184; return '<div class="unit cfh oegob" style="left:' + (100 * gx / W) + '%;top:' + (100 * (gy + OFF + FOOT) / H) + '%;z-index:' + gy + '"><div class="cfslot"><i class="dlr" role="img" aria-label="돈고블린"></i></div></div>'; }
   function grollSpin(){ if (!isGroll() || S.offer || S.pending) return; if ($('rSpin')) $('rSpin').hidden = true; var cost = E.grollCost(D, S.stage, plv()), n = grollUsed(); if (n >= E.grollSpins(D, plv()) || S.gold < cost) return;
     var c = grollPool(); if (!c || !c.length) return;
     
