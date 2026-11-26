@@ -3725,7 +3725,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     vsBarInit(); tpw.last = { A: -1, E: -1 };
     bt = E.createBattle(D, teamSpec().map(function(sp){ var pe = padOf(sp.tuid); if (pe) sp.el2 = pe; return sp; }), foeTeamAt(st.team), { seed: (Math.random() * 1e9) | 0, modules: S.modules, record: true, skills: S.skills, enemySkills: st.skills });
     bt.E.forEach(function(u){ if (MOBSZ[u.h.mob]) tpw.E[u.slot] = mobPw(u); }); // 몹 전투력은 능력치로
-    logI = 0; acc = 0; fxs = []; shots = []; arrows = []; uxs = []; UC = {}; bolts = []; skArrowSrc = null; pops = []; knocks = {}; hitStop = {}; blinks = {}; skDmg = { A: 0, E: 0 }; if (HAS_FX) FX.clear(); banners = []; ultPops = []; graves = {}; lunges = {}; flash = 0; done = false;
+    logI = 0; acc = 0; fxs = []; shots = []; combos = {}; ultAt = {}; arrows = []; uxs = []; UC = {}; bolts = []; skArrowSrc = null; pops = []; knocks = {}; hitStop = {}; blinks = {}; skDmg = { A: 0, E: 0 }; if (HAS_FX) FX.clear(); banners = []; ultPops = []; graves = {}; lunges = {}; flash = 0; done = false;
     $('res').hidden = true; $('field').style.visibility = 'hidden'; cv.hidden = false; $('skipBtn').disabled = false;
     $('tab-camp').classList.add('busy'); $('fightBtn').disabled = true; dpsLast = null; DPSW = {}; /* 새 전투: DPS 기록 새로 */ $('fightBtn').classList.add('busyhide'); /* 전투 중에는 숨김 */ $('spdBtn').disabled = false;
     cancelAnimationFrame(raf); last = performance.now(); raf = requestAnimationFrame(loop);
@@ -3852,18 +3852,39 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     else if (C.k === 'mark') uxAdd('mark', x, y, {}, .9);
     else if (C.k === 'zigzag'){ if (C.prev) uxAdd('zig', C.prev[0], C.prev[1], { x2: x, y2: y, c: c }, .3); C.prev = [x, y]; } }
   /* 데미지 숫자 (2026-11-26 사용자: "팍 꽂히는"): hit=크게 나타나 0.1초에 박히고 흔들린 뒤 뜸, crit=더 크게·기울임·잠깐 멈춤, skill=옆으로 튕김, dot=작고 옅게 */
-  var ultAt = {}, skCol = '';
+  var ultAt = {}, skCol = '', combos = {};
+  /* 연타(2026-11-26 사용자): 숫자가 아래에서 하나씩 생기며 앞 숫자를 위로 밀어 올리고, 끝나면 합계. 얼음 스킬 피해는 얼었다 깨짐 */
+  function comboPop(g, n, amt, x, y, o, frost){
+    if (frost && o.fx === 'skill'){ o.fx = 'frost'; o.c = '#dff6ff'; o.c2 = '#6fc4ff'; o.max = .95; }
+    g.sum += amt; if (n === 1){ dmgPop(x, y, o); g.pops = [o]; g.x = x; g.y = y; return; }
+    var mk = function(q){ q.fx = 'combo'; if (!q.crit){ q.c = '#ffc4ee'; q.c2 = '#ff4fb0'; } q.max = 1; q.life = 1; };
+    g.pops.forEach(function(q){ if (q.fx !== 'combo'){ q.crit = q.fx === 'crit'; q.rot = 0; mk(q); q.life = .8; } q.y -= o.size * .95; q.life = Math.max(q.life, .8); });
+    o.crit = o.fx === 'crit'; o.rot = 0; mk(o); o.x0 = g.x; o.x = g.pops[0].x; o.y = g.y; if (pops.indexOf(g.pops[0]) < 0) o.x = g.x; pops.push(o); g.pops.push(o);
+    clearTimeout(g.timer); g.timer = setTimeout(function(){ if (!bt) return; var top = g.pops[0]; pops.push({ fx: 'sum', s: '=' + g.sum, x: g.x, x0: g.x, y: Math.min(top.y, g.y) - 20, c: '#ffffff', c2: '#ffd34d', max: .8, life: .8, size: 17 }); }, 420); }
   function dmgPop(x, y, o){ var n = pops.filter(function(q){ return q.fx && q.max - q.life < .35 && Math.abs(q.x0 - x) < 26 && Math.abs(q.y - y) < 18; }).length; /* 겹치면 좌우로 번갈아 흩음 */
     o.x0 = x; o.x = x + (n ? (n % 2 ? 1 : -1) * 24 * Math.ceil(n / 2) : 0) + (Math.random() - .5) * 8; o.y = y - (n % 3) * 9; o.dir = o.x < x ? -1 : o.x > x ? 1 : Math.random() < .5 ? -1 : 1; o.life = o.max; pops.push(o); }
-  function drawDmg(p){ var a = p.max - p.life, slam = p.fx !== 'dot', hold = p.fx === 'crit' ? .42 : .24, k = Math.max(0, Math.min(1, (a - hold) / (p.max - hold))), sc = 1, x = p.x, y = p.y;
-    if (slam){ if (a < .1) sc = 1 + (p.fx === 'crit' ? .9 : .6) * (1 - a / .1); else if (a < .22) x += Math.sin(a * 110) * 3 * (1 - (a - .1) / .12); }
-    if (p.fx === 'skill'){ var m = Math.min(1, a / .45); x += p.dir * 20 * (1 - (1 - m) * (1 - m)); y -= Math.sin(m * Math.PI) * 14; }
-    y -= p.fx === 'dot' ? a / p.max * 18 : k * 22;
-    ctx.save(); ctx.globalAlpha = (p.fx === 'dot' ? .75 : 1) * Math.min(1, p.life / p.max * 3); ctx.translate(x, y - p.size * .35); if (p.rot) ctx.rotate(p.rot); ctx.scale(sc, sc);
+  function drawDmg(p){ var f = p.fx, a = p.max - p.life, u = a / p.max, slam = f === 'hit' || f === 'crit' || f === 'skill' || f === 'combo' || f === 'sum', hold = f === 'crit' ? .42 : .24, k = Math.max(0, Math.min(1, (a - hold) / (p.max - hold))), sc = 1, x = p.x, y = p.y, al = Math.min(1, p.life / p.max * 3);
+    if (slam){ if (a < .1) sc = 1 + (f === 'crit' ? .9 : .6) * (1 - a / .1); else if (a < .22 && f !== 'combo') x += Math.sin(a * 110) * 3 * (1 - (a - .1) / .12); }
+    if (f === 'skill'){ var m = Math.min(1, a / .45); x += p.dir * 20 * (1 - (1 - m) * (1 - m)); y -= Math.sin(m * Math.PI) * 14; }
+    if (f === 'dot') y -= u * 18;
+    else if (f === 'combo') y -= k * 8;
+    else if (f === 'heal'){ y -= (1 - (1 - u) * (1 - u)) * 30 - 8; al = Math.min(1, a / .2, p.life / .35); sc = .85 + .15 * Math.min(1, a / .25); } /* 차오르듯 */
+    else if (f === 'burn'){ y -= u * 26; x += Math.sin(a * 22) * 2.5; sc = 1 + Math.sin(a * 30) * .07; }
+    else if (f === 'frost') sc = a < .12 ? 1.35 - a / .12 * .35 : 1;
+    else y -= k * 22;
+    var ty = y - p.size * .35;
+    ctx.save(); ctx.globalAlpha = (f === 'dot' ? .75 : 1) * al; ctx.translate(x, ty); if (p.rot) ctx.rotate(p.rot); ctx.scale(sc, sc); if (f === 'combo') ctx.transform(1, 0, -.22, 1, 0, 0);
     ctx.font = '400 ' + p.size + 'px ' + CF(); if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round';
-    ctx.lineWidth = p.fx === 'dot' ? 3 : p.fx === 'hit' ? 4 : 6; ctx.strokeStyle = p.fx === 'crit' ? '#5a1500' : '#17141d'; ctx.strokeText(p.s, 0, 0);
+    var lw = f === 'dot' ? 3 : f === 'hit' || f === 'burn' || f === 'heal' ? 4 : 6, line = f === 'crit' ? '#5a1500' : f === 'combo' ? '#3a0a34' : f === 'burn' ? '#4a0d00' : f === 'heal' ? '#0f3a1c' : f === 'frost' ? '#123a6a' : '#17141d';
     var fill = p.c; if (p.c2){ fill = ctx.createLinearGradient(0, -p.size / 2, 0, p.size / 2); fill.addColorStop(.35, p.c); fill.addColorStop(1, p.c2); }
-    ctx.fillStyle = fill; ctx.fillText(p.s, 0, 0); ctx.restore(); }
+    var word = function(){ ctx.lineWidth = lw; ctx.strokeStyle = line; ctx.strokeText(p.s, 0, 0); ctx.fillStyle = fill; ctx.fillText(p.s, 0, 0); };
+    if (f === 'frost' && a > .4){ var br = (a - .4) / (p.max - .4), w = ctx.measureText(p.s).width + 8; [-1, 1].forEach(function(d){ ctx.save(); ctx.translate(d * br * 9, br * br * 16); ctx.rotate(d * br * .35); ctx.beginPath(); ctx.moveTo(0, -p.size); ctx.lineTo(d * w, -p.size); ctx.lineTo(d * w, p.size); ctx.lineTo(-d * 3, p.size); ctx.lineTo(d * 3, 0); ctx.closePath(); ctx.clip(); word(); ctx.restore(); }); } /* 반으로 깨져 떨어짐 */
+    else word();
+    ctx.restore();
+    if (f === 'heal' || f === 'burn' || f === 'frost'){ var half = p.s.length * p.size * .32 + 5; ctx.save(); for (var q = 0; q < 6; q++){ var ph = (a * (f === 'burn' ? 2.2 : 1.6) + q * .37) % 1, side = q % 2 ? 1 : -1, px = Math.round(x + side * (half - (q % 3) * 5) + (f === 'burn' ? Math.sin(a * 14 + q) * 3 : 0)), py = Math.round(ty + 8 - (q % 3) * 7 - (f === 'frost' ? -ph * 6 : ph * 16));
+        ctx.globalAlpha = al * Math.sin(ph * Math.PI);
+        if (f === 'burn'){ ctx.fillStyle = q % 3 ? '#ff7a1a' : '#ffd04a'; ctx.fillRect(px - 1, py - 1, 3, 3); }
+        else { ctx.fillStyle = f === 'frost' ? '#bfeaff' : q % 3 ? '#fff6b0' : '#b8ffc4'; var r = ph > .25 && ph < .75 ? 4 : 2; ctx.fillRect(px - 1, py - r, 2, r * 2); ctx.fillRect(px - r, py - 1, r * 2, 2); } } ctx.restore(); } } /* 반짝임·불씨 */
   function onEvent(ev){
     if (ev.kind === 'die') killXp(ev.uid);
     if (ev.kind === 'knock'){ var ku = unitByUid(ev.uid); if (ku){ knocks[ku.uid] = { dx: ev.dx, t: .15 }; var kp = posOf(ku), sx0 = kp[0] - ev.dx, sg = ev.dx > 0 ? 1 : -1;
@@ -3875,17 +3896,18 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
       var a = unitByUid(ev.from), b = unitByUid(ev.to); if (!a || !b) return;
       var bk = blinks[a.uid]; if (bk && ev.t === bk.t && bk.pts.length < bk.n){ bk.pts.push([b.x + bk.f * 30, b.y, -bk.f]); bk.f = -bk.f; if (!bk.t0) bk.t0 = performance.now(); } // 엔진과 같은 자리: 적 등 뒤 30
       if (ev.mag && a.h.ult && a.h.ult.kind === 'barrage'){ var bp2 = posOf(b); bolts.push({ x: bp2[0], y: bp2[1], t: .28, c: ELC[a.el] || '#ffd34d', seed: Math.random() }); }
-      if (ev.burn){ var bp = posOf(b); dmgPop(bp[0], bp[1] - 22, { fx: 'dot', s: '' + ev.amt, c: '#ff9a3a', max: .45, size: 11 }); return; } // 화상 틱
+      if (ev.burn){ var bp = posOf(b); dmgPop(bp[0], bp[1] - 22, { fx: 'burn', s: '' + ev.amt, c: '#ffd04a', c2: '#ff3a1a', max: .8, size: 13 }); return; } // 화상 틱
       atkT[a.uid] = ANIM_IDS.indexOf(a.id) >= 0 ? ANIM_ATK : .2; ultHitFx(a, b, ev);
       var isUlt = !!ev.mag || ultAt[a.uid] === ev.t, more = Math.max(0, Math.min(8, Math.round((ev.amt / (a.atk || ev.amt || 1) - 1) * 4))); /* 피해가 클수록 크게 */
-      var land = function(){ var p = posOf(b); dmgPop(p[0], p[1] - 30, ev.crit ? { fx: 'crit', s: ev.amt + '!', c: '#ffd02e', c2: '#ff7a1a', max: 1, size: 24 + more, rot: Math.random() < .5 ? -.2 : .2 } : isUlt ? { fx: 'skill', s: '' + ev.amt, c: ELC[a.el] || '#c99bff', max: .85, size: 18 + more } : { fx: 'hit', s: '' + ev.amt, c: a.side === 'A' ? '#fff' : '#ffb3a8', max: .75, size: 14 + more });
+      var ck = a.uid + '>' + b.uid, cg = combos[ck]; if (!cg || ev.t - cg.t > (ev.mag ? .45 : .01) || ev.t < cg.t) cg = combos[ck] = { n: 0, sum: 0, pops: [], timer: 0 }; cg.t = ev.t; var cn = ++cg.n; /* 두 번째부터 연타 */
+      var land = function(){ var p = posOf(b); comboPop(cg, cn, ev.amt, p[0], p[1] - 30, ev.crit ? { fx: 'crit', s: ev.amt + '!', c: '#ffd02e', c2: '#ff7a1a', max: 1, size: 24 + more, rot: Math.random() < .5 ? -.2 : .2 } : isUlt ? { fx: 'skill', s: '' + ev.amt, c: ELC[a.el] || '#c99bff', max: .85, size: 18 + more } : { fx: 'hit', s: '' + ev.amt, c: a.side === 'A' ? '#fff' : '#ffb3a8', max: .75, size: 14 + more }, !!ev.mag && a.el === 'water');
         fxs.push({ x: p[0], y: p[1], t: .15, c: '#fff' });
         hitStopOn(b.uid, ev.crit ? .18 : .13, 1); if (a.range === 'melee') hitStopOn(a.uid, .07, 0); // 맞은 쪽 멈칫+번쩍, 근접 공격자도 짧게 멈칫
         if (HAS_FX) fxAt('hit', b, { scale: ev.crit ? 1 : .7 }); };
       if (a.range === 'melee'){ lunges[a.uid] = .18; fxAt('slash', b, { scale: 1, flip: a.x > b.x, speed: 1.4 }); land(); }
       else shots.push({ from: posOf(a), to: posOf(b), t: 0, c: ELC[a.el], kind: a.h.shot, big: a.id === 'cannon', wait: ANIM_IDS.indexOf(a.id) >= 0 ? (a.h.shot === 'arrow' ? .2 : .1) : 0, land: land }); /* 시트 영웅은 공격 프레임에 맞춰 출발(화살 7칸, 나머지 6칸), 맞는 연출은 도착할 때 */
     } else if (ev.kind === 'heal'){
-      var hu = unitByUid(ev.to), hp = posOf(hu); if (ev.amt > 0) dmgPop(hp[0], hp[1] - 34, { fx: 'hit', s: '+' + ev.amt, c: '#7ee08a', max: .8, size: 15 });
+      var hu = unitByUid(ev.to), hp = posOf(hu); if (ev.amt > 0) dmgPop(hp[0], hp[1] - 34, { fx: 'heal', s: '+' + ev.amt, c: '#e9ffd8', c2: '#4fd86a', max: 1.1, size: 15 });
     } else if (ev.kind === 'ult'){
       var u = unitByUid(ev.uid); ultPops.push({ u: u, t: 0, max: .85 }); atkT[u.uid] = ANIM_IDS.indexOf(u.id) >= 0 ? ANIM_ATK : .25;
       var uk = u.h.ult && u.h.ult.kind; if (uk === 'teamShield') fxTeam('shield', u.side, { scale: 1.2 }); else if (uk === 'healAll') fxTeam('heal', u.side, { scale: .9 }); else if (uk === 'chain') fxAt('chain', u, { scale: 1.2, flip: u.side === 'E' }); else if (uk === 'aoe' && u.h.ult.slow) fxTeam('frost', u.side === 'A' ? 'E' : 'A', { scale: 1 });
