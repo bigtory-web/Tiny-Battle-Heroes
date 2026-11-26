@@ -10,9 +10,12 @@ assert.strictEqual(M.shop.refreshMax,D.shop.refreshMax+2); assert.strictEqual(M.
 assert.deepStrictEqual(M.recruit.reroll.max,[2]); assert.strictEqual(D.recruit.reroll.max[0],1);
 assert.strictEqual(M.player.clearGold[0],150);
 assert.ok(Math.abs(M.heroBoost.guardian.hp-0.10)>=0 && Math.abs(M.heroBoost.guardian.hp-0.15)<1e-9);
-// 순서대로 찍기
-const st={medals:20,nodes:{}}; assert.strictEqual(E.metaNext(D,st,"bag").node.id,"bag");
-assert.ok(E.metaBuy(D,st,"bag")); assert.ok(E.metaBuy(D,st,"bag")); assert.strictEqual(st.medals,2); assert.strictEqual(E.metaNext(D,st,"bag").node.id,"relic"); assert.ok(!E.metaBuy(D,st,"bag"),"훈장 부족");
+// 자유형 망: 가운데(모닥불)부터, 앞 칸을 찍어야 열림
+const st={medals:20,nodes:{}}; assert.strictEqual(E.metaStatus(D,st,"bag"),"locked"); assert.strictEqual(E.metaStatus(D,st,"start"),"open");
+assert.ok(!E.metaBuy(D,st,"bag"),"앞 칸 안 찍음"); assert.ok(E.metaBuy(D,st,"start")); assert.strictEqual(E.metaStatus(D,st,"start"),"max"); assert.strictEqual(E.metaStatus(D,st,"bag"),"open");
+assert.ok(E.metaBuy(D,st,"bag")); assert.strictEqual(st.medals,9); assert.strictEqual(E.metaStatus(D,st,"potion"),"open");
+st.nodes={start:1,bag:1}; st.medals=0;
+assert.strictEqual(D.events.campfire.startPicks,1); assert.strictEqual(E.metaData(D,{nodes:{start:1}}).events.campfire.startPicks,2); assert.strictEqual(D.events.campfire.startPicks,1,"원본 그대로");
 assert.strictEqual(E.metaExp(D,st),2); assert.strictEqual(E.metaLevel(D,full),1+Math.floor(E.metaExp(D,full)/5));
 assert.strictEqual(E.metaMedals(D,10,false),10+2*2); assert.strictEqual(E.metaMedals(D,10,true),24);
 // 전투: 우리 편만 강해짐
