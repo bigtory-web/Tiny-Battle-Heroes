@@ -1,0 +1,13 @@
+Look at img/p/bg_field.png : the chapter 1 battle background of our pixel art game (evening mauve sky, gray-mauve rocky cliffs, olive trees with twisted roots, red-brown dirt).
+
+Generate ONE new image with your image generation tool and save it as img/codex/chsel/card1_raw.png.
+
+Make a CHAPTER SELECT CARD illustration for "chapter 1 - meadow": a portrait picture (width:height = 204:230), designed as chunky pixel art on a 204 x 230 canvas, same palette and drawing style as the background.
+It should read like a place you want to travel to, filling the whole frame with interest from top to bottom:
+- a winding dirt path starting wide at the bottom and leading into the distance
+- one big twisted-root olive tree on a rocky outcrop as the landmark, off to one side
+- layered rocky cliffs and a warm evening sky with a few clouds behind
+- grass tufts, rocks and small flowers in the foreground corners
+- keep the top-left corner calm open sky (medal icons are placed there)
+No characters, no monsters, no text, no frame, no UI. Clear square pixels, flat cel shading, dark outlines, no gradients or blur.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
