@@ -1,0 +1,16 @@
+Look at two images from our pixel art game, both shown 8x enlarged on white:
+- img/gemini/ref/bear_x8.png : the hero Roxy. THIS IS THE STYLE AND PROPORTION STANDARD (unity standard).
+- img/gemini/ref/ranger_x8.png : the current drawing of the hero to be improved.
+Generate ONE new image with your image generation tool and save it as img/codex/two/robin_b.png
+
+Redraw the hero so that she looks like she was drawn by the same artist, in the same set, as Roxy:
+- Same head-to-body ratio as Roxy (very big head with a big hair mass, small short body, tiny legs), same total volume and chunkiness as Roxy.
+- Same pixel size as the references: one art pixel is one 8x8 block in the references; the whole character is about 46 art pixels tall. Crisp square pixels on that grid, no finer detail.
+- Same outline: 1 art pixel thick dark reddish-brown outline like Roxy. Same flat cel shading with about 3 tones per material. Same warm, slightly muted saturation as Roxy.
+- Same face style as Roxy: same eye shape and size with white glint, eyes low on the face, small face framed by hair, no mouth, same slightly-from-above camera angle and same slight turn to the right.
+- Weapon large and clearly readable, held close to the body, not crossing the face.
+
+Hero Robin (archer girl). Make her look clearly like an ELF: long pointed elf ears that stick out clearly beyond the hair, flowing golden blonde hair, elegant forest-elf outfit in leaf green and brown with gold trim and leaf motifs, a small leaf circlet or the current green hood pushed back so the ears show, her green cape made of leaf shapes, and an elegant curved elven bow decorated with leaves, plus the quiver. Keep her recognisable (blonde, green, bow).
+
+[Format] One character only, standing, full body with feet visible at the bottom, centered, on a plain solid #FF00FF magenta background. No ground, no shadow, no text, no border, no anti-aliasing, no blur. Nothing cropped.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
