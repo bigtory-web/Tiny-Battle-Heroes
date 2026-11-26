@@ -390,7 +390,7 @@ var IDLE_DATA = {
     goblin:   { goldMul: 2.5, flee: 10, speed: 90 },
     // merchant 방랑상인(2026-11-18 바뀜): 전투 없는 이벤트 스테이지예요(번호는 직전 그대로). 들르면 특별 상점만 열리고, 나가면 다음 스테이지로 가요
     //   battle: false = 전투 없음. 진열 = 희귀 이상 스킬 skills개 + 영웅 heroes명. 값은 원래 값(스킬은 상점 값·재화 그대로, 영웅은 heroPrice 식) × discount, 최소 minPrice
-    merchant: { battle: false, skills: 2, minGrade: 3, discount: 0.5, minPrice: 1, heroes: 1, heroPrice: 110 },
+    merchant: { battle: false, skills: 2, minGrade: 3, discount: 0.5, minPrice: 1, heroes: 1, heroPrice: 110, offMin: 0.5, offStep: 5, reroll: { cost: 50, max: [1] } }, // 2026-11-26: 상품마다 할인율 다름(최대 할인율×offMin ~ 최대, 5% 단위, 1개는 최대). reroll: 방랑상점 다시 돌리기 비용·횟수(플레이어 레벨별 표, 지금 모든 레벨 1번)
     // chest 보물상자(2026-11-18 새로): 그 판에는 보물상자 1마리만 나와요. 공격도 이동도 안 하고 단단하기만 해요. dur초가 지나면 사라져요
     //   입힌 피해 비율(최대 체력 대비)이 tiers의 at을 넘을 때마다 그 칸 보상을 더해 받아요(누적). gold는 그 스테이지 클리어 보상 × 값, mana는 마나스톤 개수, scroll은 스킬 두루마리 개수
     //   지는 일이 없어요(체력도 안 닳아요). 판 클리어 골드·경험치는 없고 칸 보상만 받아요

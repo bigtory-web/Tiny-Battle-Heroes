@@ -530,11 +530,15 @@
   function merchantPrice(data, v, plv) { var M = data.events.merchant, d = 1 - merchantOff(data, plv) / 100; return v > 0 ? Math.max(M.minPrice || 1, Math.round(v * d)) : 0; }
   function rollMerchant(data, n, rnd, plv, owned) { var M = data.events.merchant, out = [], PL = data.player, li = Math.max(0, (plv || 1) - 1), nH = PL && PL.merchantHeroes ? PL.merchantHeroes[Math.min(li, PL.merchantHeroes.length - 1)] : M.heroes, nS = PL && PL.merchantSlots ? PL.merchantSlots[Math.min(li, PL.merchantSlots.length - 1)] - nH : M.skills; /* 2026-11-26: 상품 수가 플레이어 레벨 따라 */
     var sk = skillPool(data).filter(function (x) { return (x.grade || 1) >= M.minGrade && canTake(data, owned || [], x.id, 999); }).map(function (x) { return x.id; });
-    for (var i = 0; i < nS && sk.length; i++) { var id = sk.splice(Math.floor(rnd() * sk.length), 1)[0], bp = skillBuyPrice(data, id, n, owned || []), g = merchantPrice(data, bp.gold, plv), mn = bp.gold > 0 ? 0 : merchantPrice(data, bp.mana);
-      out.push({ type: 's', id: id, gold: g, mana: mn, price: g || mn, cur: g ? 'gold' : 'mana' }); }
+    for (var i = 0; i < nS && sk.length; i++) { var id = sk.splice(Math.floor(rnd() * sk.length), 1)[0], bp = skillBuyPrice(data, id, n, owned || []);
+      out.push({ type: 's', id: id, base: bp.gold || bp.mana, cur: bp.gold > 0 ? 'gold' : 'mana' }); }
     var gotH = [];
-    for (var j = 0; j < nH; j++) { var hid = pickHeroByGrade(data, rnd, (plv || 1) + 2, gotH), hp = merchantPrice(data, M.heroPrice * heroGrade(data, hid) * Math.pow(data.shop.priceGrowth, n), plv); gotH.push(hid);
-      out.push({ type: 'h', id: hid, gold: hp, mana: 0, price: hp, cur: 'gold' }); } // 상인은 레벨 +2 확률로 조금 더 좋은 영웅
+    for (var j = 0; j < nH; j++) { var hid = pickHeroByGrade(data, rnd, (plv || 1) + 2, gotH); gotH.push(hid);
+      out.push({ type: 'h', id: hid, base: Math.round(M.heroPrice * heroGrade(data, hid) * Math.pow(data.shop.priceGrowth, n)), cur: 'gold' }); } // 상인은 레벨 +2 확률로 조금 더 좋은 영웅
+    // 2026-11-26: 상품마다 할인율이 달라요(최대 = 레벨 할인율). offMin×최대 ~ 최대 사이 offStep 단위, 한 개는 꼭 최대 ("UP TO 50%")
+    var mx = merchantOff(data, plv), st = M.offStep || 5, lo = Math.ceil(mx * (M.offMin != null ? M.offMin : 0.5) / st) * st, top = out.length ? Math.floor(rnd() * out.length) : -1;
+    out.forEach(function (it, k) { var o = k === top ? mx : Math.min(mx, lo + st * Math.floor(rnd() * (Math.floor((mx - lo) / st) + 1))), p = it.base > 0 ? Math.max(M.minPrice || 1, Math.round(it.base * (1 - o / 100))) : 0;
+      it.off = o; it.price = p; it.gold = it.cur === 'gold' ? p : 0; it.mana = it.cur === 'mana' ? p : 0; });
     return out; }
   function merchantNoBattle(data) { var M = data.events && data.events.merchant; return !!(M && M.battle === false); }
   // 보물상자 보상: frac = 입힌 피해 / 최대 체력(0~1), bell = 울린 횟수. 반환 { tier(넘은 칸 수), gold, mana, scroll(두루마리 개수), next(다음 칸 at, 없으면 null) }
