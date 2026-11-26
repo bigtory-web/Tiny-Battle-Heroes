@@ -2899,6 +2899,7 @@ img.rimg{image-rendering:auto!important}
 #tab-shop .shopInfo{width:310px!important}
 /* 방랑상점 할인 딱지 크게 */
 #shopBuy .boff{font-size:16px!important;line-height:20px!important;left:-3px;top:-8px;padding:0 6px}
+#shopBuy .boff{background:#2f9a3a} /* 할인 % 딱지 = 초록 (2026-11-26 사용자) */
 /* 돈고블린 전구 */
 #roul .rstage > .rbulbs{display:none}
 #roul .rbox.groll .rstage > .rbulbs{display:block;position:absolute;inset:12px;z-index:6;pointer-events:none}
@@ -2989,6 +2990,7 @@ img.rimg{image-rendering:auto!important}
 /* 파랑 일반 미믹: 44칸 (도트 1칸 = 갈색과 같게) */
 .foe > .mhop.g2{background-image:url(img/p/mimic_g2_hop.png)}
 /* 할인된 가격: 주황 + 살짝 기울임 (2026-11-26 사용자) */
+#tab-shop .pr.no b.deal,#shopBuy:disabled .bp b.deal{color:#ff8a80!important} /* 살 수 없으면 할인가도 빨강 (2026-11-26 사용자) */
 #tab-shop b.deal,#shopBuy .bp b.deal{display:inline-block;transform:skewX(-9deg);color:#7dff6a!important; /* 할인가 = 밝은 초록, 구매 불가(빨강)와 구분 */text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d,1px 1px #17141d!important;font-weight:400}
 /* 초월 팝업 = 룰렛 팝업과 같은 값: 틀 400·여백 18/22·간격 6, 큰 칸 200, 띠, 버튼, 깔개 (2026-11-26 사용자) */
 #trWin{background:rgba(10,8,14,.28)!important}
