@@ -2852,10 +2852,9 @@ img.rimg{image-rendering:auto!important}
 #furyRow{position:absolute;top:calc(100% + 4px);display:flex;gap:3px;pointer-events:auto} #furyRow[hidden]{display:none}
 #furyRow i{display:flex;align-items:center;justify-content:center;width:28px;height:28px;background:rgba(23,20,29,.8);box-shadow:inset 0 0 0 2px #17141d;cursor:help}
 #furyRow img{width:24px;height:24px;image-rendering:pixelated;filter:grayscale(1);opacity:.4} #furyRow i.on img{filter:none;opacity:1}
-/* 초월: 보고 있는 영웅 노란 테두리, 정보창 아래 등록 버튼(주 행동 = 노랑, 못 올리면 회색) */
+/* 초월: 보고 있는 영웅 노란 테두리. 아래 줄 [등록/해제](파랑)·[초월](노랑) 같은 너비 */
+#trWin .rbtns{display:flex!important;justify-content:center;gap:8px} #trWin .rbtns button{width:150px!important}
 #trWin .trc.seen,#roster .chip.trsel{outline:3px solid #ffd34d!important;outline-offset:-1px}
-#trWin .trinfo .hi-btns .trreg{flex:1;height:36px;border:0;background:#f2b53a;color:#3a2208;font:400 17px var(--display);box-shadow:inset 0 0 0 2px #17141d,inset 0 4px 0 -2px #ffe08a,inset 0 -5px 0 -2px #b8761c;cursor:pointer;text-shadow:0 1px 0 #ffe9a8}
-#trWin .trinfo .hi-btns .trreg:disabled{background:#6a6272;color:#ece6f2;text-shadow:none;box-shadow:inset 0 0 0 2px #17141d;cursor:default}
 /* 룰렛형 팝업 장식 자리(팝업기준안 2-7): 큰 칸 좌우 끝·세로 가운데·끝이 바깥. 팝업마다 그림(background)만 따로 */
 .dvine{position:absolute;left:21px;top:calc(50% - 26px);width:52px;height:52px;pointer-events:none;z-index:3;transform:rotate(-45deg)} .dvine.r{left:auto;right:21px;transform:rotate(135deg)}
 #roul .rstage > .fdust,#roul .rstage > .fvine{display:none}
@@ -5715,20 +5714,21 @@ img.rimg{image-rendering:auto!important}
   $('altGoBtn').addEventListener('click', function(){ if (TRPOP) trPopOpen(); else altarGo(); });
   /* 초월 팝업 (2026-11-26 사용자, 시험): "초월" -> 팝업에서 영웅을 터치해 메인·재료를 고름. 전장 4·6번 칸 방식은 TRPOP = false로 되돌림 */
   var trOn = false, trSeen = null, trDone = null, trAnim = false; /* trDone: 초월 뒤 결과 화면 */
-  function trInfo(box){ var u = trSeen != null && U(trSeen); if (!u){ box.innerHTML = '<div class="trguide">영웅을 터치하면 정보가 보여요.</div>'; return; } var h = ownInfo(u.uid).replace(/<button class="hi-x"[^>]*>✕<\/button>/g, ''), i = h.indexOf('<div class="hi-st4">'); box.innerHTML = (i < 0 ? h : h.slice(0, i) + '<div class="hi-body">' + h.slice(i) + '</div>') + (trDone ? '' : '<div class="hi-btns"><button class="trreg" type="button" data-tr="reg"' + (!trAnim && trCanReg(u) ? '' : ' disabled') + '>등록</button></div>'); }
+  function trInfo(box){ var u = trSeen != null && U(trSeen); if (!u){ box.innerHTML = '<div class="trguide">영웅을 터치하면 정보가 보여요.</div>'; return; } var h = ownInfo(u.uid).replace(/<button class="hi-x"[^>]*>✕<\/button>/g, ''), i = h.indexOf('<div class="hi-st4">'); box.innerHTML = (i < 0 ? h : h.slice(0, i) + '<div class="hi-body">' + h.slice(i) + '</div>'); }
   function trCan(u){ return !hero(u.id).mob && u.uid !== altA && (altA == null ? E.unitSkills(D, u).length < ((D.transcend || {}).maxSkills || 3) : !!trKind(U(altA), u)); }
   function jong(s){ var c = String(s).charCodeAt(String(s).length - 1) - 0xAC00; return c >= 0 && c % 28 > 0; }
   function trPick(uid){ var u = U(uid); if (!u || trDone || trAnim) return; trSeen = uid; trRender(); } /* 터치는 정보만 (2026-11-26 사용자: "터치하나로 두가지가되니까") */
-  /* 등록 = 빈 단상(메인 먼저, 다음 재료). 빼기는 단상을 누르기 하나 */
+  /* 등록 = 빈 단상(메인 먼저, 다음 재료). 내리는 길도 같은 버튼 하나 */
   function trCanReg(u){ return !!u && u.uid !== altA && u.uid !== altM && (altA == null || altM == null) && trCan(u); }
-  function trReg(){ var u = trSeen != null && U(trSeen); if (!trCanReg(u)) return; if (altA == null) altA = u.uid; else altM = u.uid; trRender(); }
+  /* 보고 있는 영웅이 단상에 있으면 [해제] (2026-11-26 사용자: 자동 교체 없이 해제 후 다시 등록). 메인을 해제하면 재료도 같이 내려감(재료는 메인에 따라 정해짐) */
+  function trReg(){ var u = trSeen != null && U(trSeen); if (!u || trDone || trAnim) return; if (u.uid === altA){ altA = null; altM = null; } else if (u.uid === altM) altM = null; else if (!trCanReg(u)) return; else if (altA == null) altA = u.uid; else altM = u.uid; trRender(); }
   /* 팝업이 열려 있는 동안 백팩 칸 터치 = 초월 고르기 (다른 동작은 막음) */
   ['pointerdown', 'pointerup', 'click'].forEach(function(ev){ window.addEventListener(ev, function(e){ if (!trOn) return; var c = e.target.closest && e.target.closest('#roster .chip[data-uid]'); if (!c) return; e.stopPropagation(); e.preventDefault(); if (ev === 'click') trPick(+c.dataset.uid); }, true); });
   function trBag(){ document.querySelectorAll('#roster .chip[data-uid]').forEach(function(c){ var id = +c.dataset.uid, u = trOn && !trDone && U(id), on = u && (id === altA ? '메인' : id === altM ? '재료' : ''); c.classList.toggle('trpk', !!on); c.classList.toggle('trpkm', on === '재료'); c.classList.toggle('trno', !!u && !on && !trCan(u)); c.classList.toggle('trsel', !!u && id === trSeen); var b = c.querySelector(':scope > .trlab'); if (on){ if (!b){ b = document.createElement('b'); b.className = 'trlab'; c.appendChild(b); } b.textContent = on; } else if (b) b.remove(); }); }
   function trClose(){ if (!trOn) return; trOn = false; trDone = null; trAnim = false; altA = null; altM = null; var w = $('trWin'); if (w) (w.parentNode.classList.contains('popw') ? w.parentNode : w).remove(); trBag(); altMarks(); }
   function trPopOpen(){ if (!isAltar() || altDone() || S.offer || S.pending) return; if (shopOpen()) setShop(false); clearSel(); hideInfo(); hideTip(); trClose(); trOn = true; altA = null; altM = null;
     var w = document.createElement('div'); w.id = 'trWin'; w.className = 'evwin';
-    w.innerHTML = '<div class="rbox"><button class="spX" type="button" data-tr="x" title="닫기">✕</button><div class="trstage"></div><div class="trres" hidden></div><div class="trlist"></div><div class="rbtns"><button class="go" type="button" data-tr="go">초월</button></div></div><div class="hinfo right trinfo"></div>'; /* 3차: 전장 영웅은 초월 버튼 밑 가로 줄, 백팩 영웅은 왼쪽 백팩 칸을 터치 (2026-11-26 사용자) */ /* 시험 2차 (2026-11-26 사용자): 왼쪽 영웅 세로 줄 · 가운데 단상+초월 · 오른쪽 터치한 영웅 상세 */
+    w.innerHTML = '<div class="rbox"><button class="spX" type="button" data-tr="x" title="닫기">✕</button><div class="trstage"></div><div class="trres" hidden></div><div class="trlist"></div><div class="rbtns"><button class="go again trreg" type="button" data-tr="reg">등록</button><button class="go" type="button" data-tr="go">초월</button></div></div><div class="hinfo right trinfo"></div>'; /* 3차: 전장 영웅은 초월 버튼 밑 가로 줄, 백팩 영웅은 왼쪽 백팩 칸을 터치 (2026-11-26 사용자) */ /* 시험 2차 (2026-11-26 사용자): 왼쪽 영웅 세로 줄 · 가운데 단상+초월 · 오른쪽 터치한 영웅 상세 */
     trSeen = null;
     document.body.appendChild(w); popAdd(w, true);
     w.addEventListener('click', function(e){ e.stopPropagation(); var b = e.target.closest('[data-tr]'); if (!b || b.disabled) return; var k = b.dataset.tr, uid = +b.dataset.uid;
@@ -5736,11 +5736,10 @@ img.rimg{image-rendering:auto!important}
       if (trDone || trAnim) return;
       if (k === 'go') return trDo();
       if (k === 'reg') return trReg();
-      if (k === 'A'){ altA = null; altM = null; } else if (k === 'M') altM = null; else return trPick(uid);
-      trRender(); });
+      if (k === 'pick') return trPick(uid); });
     trRender(); }
   function trSlot(k, uid){ var u = uid != null && U(uid), nm = k === 'A' ? '메인' : '재료';
-    return '<button class="trslot s' + k + (!u && !trDone && (k === 'A' ? altA == null : altA != null && altM == null) ? ' next' : '') + (u ? ' full' : '') + '" type="button" data-tr="' + k + '"' + (u && !trDone ? '' : ' disabled') + '><i class="trglow"></i><b class="trtag">' + nm + '</b>' + (u ? '<span class="trfig">' + av(u.id) + starsIn(u.star, u.id, isTr(u)) + '</span><span class="trnm">' + hero(u.id).name + '</span>' : '<span class="trplus">+</span>') + '</button>'; }
+    return '<button class="trslot s' + k + (!u && !trDone && (k === 'A' ? altA == null : altA != null && altM == null) ? ' next' : '') + (u ? ' full' : '') + '" type="button" data-tr="' + k + '"' + ' disabled><i class="trglow"></i><b class="trtag">' + nm + '</b>' + (u ? '<span class="trfig">' + av(u.id) + starsIn(u.star, u.id, isTr(u)) + '</span><span class="trnm">' + hero(u.id).name + '</span>' : '<span class="trplus">+</span>') + '</button>'; }
   function trDust(st, quiet){ var o = quiet ? '' : [[10, 16, ' l'], [88, 24, ' m'], [48, 10, ''], [30, 70, ' m'], [72, 66, ''], [92, 78, ' l']].map(function(s, i){ return '<s class="tw' + s[2] + '" style="left:' + s[0] + '%;top:' + s[1] + '%;animation-delay:-' + (i * .4).toFixed(1) + 's"></s>'; }).join('');
     st.insertAdjacentHTML('beforeend', '<i class="trdust">' + o + '</i><i class="trvine dvine"></i><i class="trvine dvine r"></i>'); }
   /* 초월 뒤: 팝업을 닫지 않고 메인만 남겨 얻은 스킬을 보여 줌. 확인과 X 둘 다 닫기 */
@@ -5749,7 +5748,7 @@ img.rimg{image-rendering:auto!important}
     var r = w.querySelector('.trres'); r.hidden = false; r.innerHTML = skFrame(ultIconEl(hm), HG(trDone.mid).col) + '<b>' + sk + ' 스킬 획득</b>';
     w.querySelector('.trlist').hidden = true; /* X는 결과에서도 남김 = 확인과 같음 (2026-11-26 사용자) */ trSeen = trDone.uid; trInfo(w.querySelector('.trinfo')); trBag();
     w.querySelectorAll('.trinfo .hi-skrow').forEach(function(row){ var n = row.querySelector('.hi-skh b'); if (n && n.querySelector('.trtag') && n.firstChild.textContent.trim() === sk) row.classList.add('trnew'); }); /* 새로 얻은 스킬 줄 */
-    var b = w.querySelector('.rbtns button'); b.textContent = '확인'; b.dataset.tr = 'ok'; b.disabled = false; }
+    var rg = w.querySelector('.trreg'); if (rg) rg.remove(); var b = w.querySelector('.rbtns button'); b.textContent = '확인'; b.dataset.tr = 'ok'; b.disabled = false; }
   function trFit(){ var w = $('trWin'); if (!w) return; var b = w.querySelector('.rbox'), i = w.querySelector('.trinfo'); if (b && i) i.style.setProperty('height', b.offsetHeight + 'px', 'important'); } /* 두 창 높이 맞춤 */
   function trRender(){ var w = $('trWin'); if (!w) return; setTimeout(trFit, 0); if (trDone) return trResult(w); var a = altA != null && U(altA), m = altM != null && U(altM), kind = a && m ? trKind(a, m) : null, st = w.querySelector('.trstage');
     st.innerHTML = trSlot('A', altA) + '<span class="trmid"><i class="trarrow' + (kind ? ' on' : '') + '"></i>' + (m ? '<span class="trsk">' + skFrame(ultIconEl(hero(m.id)), HG(m.id).col) + '<small>' + ultName(hero(m.id)) + '</small></span>' : '') + '</span>' + trSlot('M', altM); trDust(st); /* 화살표는 재료 -> 메인 (왼쪽) */
@@ -5758,7 +5757,8 @@ img.rimg{image-rendering:auto!important}
     var ids = S.team.filter(function(x){ return x && U(x); }); /* 백팩 영웅은 백팩 칸에서 */ trBag();
     w.querySelector('.trlist').innerHTML = ids.map(function(id){ var u = U(id), on = id === altA ? 'A' : id === altM ? 'M' : '', ok = on || trCan(u);
       return '<button class="trc' + (on ? ' on k' + on : '') + (id === trSeen ? ' seen' : '') + '" type="button" data-tr="pick" data-uid="' + id + '" style="--hg:' + HG(u.id).col + '"' + (ok ? '' : ' aria-disabled="true"') + '>' + heroFr(u.id, u.star, isTr(u)) + (on ? '<b>' + (on === 'A' ? '메인' : '재료') + '</b>' : '') + '</button>'; }).join('');
-    w.querySelector('[data-tr="go"]').disabled = !kind || altDone(); }
+    w.querySelector('[data-tr="go"]').disabled = !kind || altDone();
+    var rb = w.querySelector('.trreg'), su = trSeen != null && U(trSeen), on = su && (trSeen === altA || trSeen === altM); rb.textContent = on ? '해제' : '등록'; rb.disabled = trAnim || altDone() || !(on || trCanReg(su)); }
   function trDo(){ var a = altA, m = altM, w = $('trWin'); if (!w || a == null || m == null || altDone() || !trKind(U(a), U(m))) return; var mid = U(m).id; trAnim = true;
     w.querySelector('[data-tr="go"]').disabled = true; var st = w.querySelector('.trstage'), fg = st.querySelector('.sA .trfig'); if (fg){ var sl = fg.parentNode; st.style.setProperty('--cx', (sl.offsetLeft + fg.offsetLeft + fg.offsetWidth / 2) + 'px'); st.style.setProperty('--cy', (sl.offsetTop + fg.offsetTop + fg.offsetHeight * .62) + 'px'); } /* 회전 중심 = 메인 영웅 */
     st.classList.add('suck', 'charge'); /* 재료가 메인 쪽으로 빨려 들어감 + 배경이 보라로 바뀌고 흔들림 */
