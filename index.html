@@ -3009,6 +3009,7 @@ img.rimg{image-rendering:auto!important}
 /* 노림 얼굴: 어두운 바탕, 등급색 없이 편 색(우리 초록·적 빨강) (2026-11-26 사용자) */ #field .aimfaces b{background:#17141d!important;box-shadow:0 0 0 2px #4fd06a,0 0 0 3px #17141d!important} #field .aimfaces b.en{box-shadow:0 0 0 2px #ff5a4a,0 0 0 3px #17141d!important} #field .aimfaces .hic{background:#17141d!important} #field .aimfaces .hic::after{display:none!important}
 /* 초월 영웅 = 96단위(판 배수의 정수배 도트), 전장 영웅과 같은 크기 (2026-11-26 사용자: "캐릭터가 작아") */ #trWin .trslot .trfig{width:96px!important;height:96px!important;left:calc(50% - 48px)!important;bottom:58px!important}
 /* 빨려 들어갈 때 넘어가는 스킬 아이콘도 메인 쪽으로 */ #trWin .trstage.suck .trsk{transition:transform .55s steps(7) .08s,opacity .55s steps(7) .08s;transform:translateX(calc(-50% - 96px)) scale(.3)!important;opacity:0}
+#edList .edch{justify-content:center;margin-top:4px;box-shadow:inset 0 0 0 1px #3f78c8!important} /* 임시 장 이동(시험) */
 #field .vsmark{display:none!important} /* VS 숨김 (2026-11-26 사용자: "가운데 VS 마크 빼자"). 되돌리려면 이 줄 삭제 */
 #field .vsmark{width:var(--vsw,64px)!important;height:var(--vsh,48px)!important} #field .vsmark img{width:var(--vsw,64px)!important;height:var(--vsh,48px)!important;image-rendering:pixelated!important;animation-name:vsbob3!important} @keyframes vsbob3{50%{transform:translateY(calc(-2 * var(--dp,.75px)))}} /* 흐림 고침: 정수배 도트 (2026-11-26) */
 /* 분노 단계 점 숨김: 시험 (2026-11-26 사용자: "점 세개 일단빼봐"). 되돌리려면 이 두 줄 삭제 */
@@ -5447,11 +5448,11 @@ img.rimg{image-rendering:auto!important}
     dk.hidden = !on || !!bt; if (dk.hidden) return; dk.classList.toggle('fold', fold); $('edTab').innerHTML = '<img class="uic" src="img/p/ui_event.png" alt="" onerror="this.outerHTML=\'<span class=&quot;uem&quot;>🎪</span>\'"><b class="ulbl">이벤트</b>'; $('edTab').classList.toggle('on', !fold);
     $('edFe').textContent = fe ? fe + '판마다' : '간격 평소'; $('edFeDown').disabled = fe <= 0; $('edFeUp').disabled = fe >= 10;
     var cur = S.event && S.event.kind;
-    $('edList').innerHTML = edKinds().map(function(k){ return '<button type="button" data-edk="' + k + '"' + (busy ? ' disabled' : '') + ' class="' + (k === cur ? 'cur' : '') + '">' + evIcon(k) + '<span>' + ((typeof EVK_NM !== 'undefined' && EVK_NM[k]) || ED_NM[k] || k) + '</span></button>'; }).join(''); }
+    $('edList').innerHTML = edKinds().map(function(k){ return '<button type="button" data-edk="' + k + '"' + (busy ? ' disabled' : '') + ' class="' + (k === cur ? 'cur' : '') + '">' + evIcon(k) + '<span>' + ((typeof EVK_NM !== 'undefined' && EVK_NM[k]) || ED_NM[k] || k) + '</span></button>'; }).join('') + '<button type="button" class="edch" data-chap="' + (CH === 1 ? 2 : 1) + '"><span>' + (CH === 1 ? '2장 시작' : '1장 시작') + '</span></button>'; /* 임시 시험 버튼: 타이틀이 생기면 지움 (2026-11-26 사용자 "만들어") */ }
   function edJump(k){ if (edBusy()) return; if (shopOpen()) setShop(false); /* 상인 창이 열린 채 넘어가지 않게 */ var ev = E.rollEvent(D, S.stage, Math.random, plv(), { forceKind: k, noFork: true, team: myIds() }); if (!ev) return;
     S.event = ev; S.evOffer = null; S.bell = 0; S.bellGold = 0; save(); scrollPend = true; renderAll(); stageScroll(); } /* 상인 진열(evOffer)이 남으면 다른 이벤트에서 상인 창이 다시 열려요 */
   setInterval(function(){ var dk = $('evDock'); if (!dk || dk.hidden) return; var busy = edBusy(); dk.querySelectorAll('#edList [data-edk]').forEach(function(b){ if (b.disabled !== busy) b.disabled = busy; }); }, 300);
-  $('edList').addEventListener('click', function(e){ var b = e.target.closest('[data-edk]'); if (b && !b.disabled) edJump(b.dataset.edk); });
+  $('edList').addEventListener('click', function(e){ var c = e.target.closest('[data-chap]'); if (c){ newRun(+c.dataset.chap); return; } var b = e.target.closest('[data-edk]'); if (b && !b.disabled) edJump(b.dataset.edk); });
   $('edTab').addEventListener('click', function(){ S.ui = S.ui || {}; S.ui.evDockFold = !S.ui.evDockFold; save(); renderDock(); });
   $('edFeDown').addEventListener('click', function(){ setFE(((S.ui && S.ui.forceEvery) || 0) - 1); renderDock(); });
   $('edFeUp').addEventListener('click', function(){ setFE(((S.ui && S.ui.forceEvery) || 0) + 1); renderDock(); });
