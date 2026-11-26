@@ -2599,7 +2599,9 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
 #skA .skc:has(img.rimg),#skE .skc:has(img.rimg){padding:0!important}
 #skA .skc img.rimg,#skE .skc img.rimg{width:44px!important;height:44px!important}
 #skA .skc .cd,#skE .skc .cd{left:7px!important;right:7px!important;top:7px!important;max-height:30px;z-index:2;-webkit-mask:radial-gradient(circle 15px at 50% 15px,#000 98%,transparent);mask:radial-gradient(circle 15px at 50% 15px,#000 98%,transparent)}
-#tab-shop .stile.sk .ic img.rimg{width:56px!important;height:56px!important}
+#tab-shop .srow2:not(.h) .stile{height:100px;padding:3px 4px 4px!important;gap:3px}
+#tab-shop .stile.sk .ic,#tab-shop .stile.sk .ic img.rimg{width:72px!important;height:72px!important;flex:none}
+#tab-shop .srow2 .stile.lockd,#tab-shop .srow2 .stile.empty.keep{height:100px!important}
 .rstrip span.sk{border-radius:50%!important;clip-path:none!important}
 #roul:not(.chestpop) .rbox .rstage.onped .rpic.loot.relic{width:calc(63 * var(--P))!important;height:calc(63 * var(--P))!important;left:calc(50% - 31.5 * var(--P))!important;bottom:calc(38px + 22 * var(--P))!important;filter:drop-shadow(0 0 8px var(--rg,#d9dde8))!important}
 #roul .rbox .rpic.loot.relic img.lic{width:calc(63 * var(--P))!important;height:calc(63 * var(--P))!important}
@@ -4400,7 +4402,7 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
     return side === 'E' ? ids.map(hero) : allyHeroes(); }
   function skCell(x, side){ var d = E.skillById(D, x.id);
     var sy = synInfo(d, side); return '<button class="skc ' + side + gCls(x.id, x.lv) + (sy && sy.off ? ' synoff' : '') + '"' + gAttr(x.id, x.lv) + ' data-tipsk="' + x.id + '" data-tiplv="' + x.lv + '" data-tipside="' + side + '" data-k="' + side + ':' + x.id + '">' +
-      (SKIMG[x.id] ? '<img class="rimg" src="' + relicSrc(x.id, x.level) + '" alt="">' : '<span class="emo">' + d.icon + '</span>') + synN(d, side) + '<i class="cd"></i></button>'; }
+      (SKIMG[x.id] ? '<img class="rimg" data-smb="1" src="' + relicSrc(x.id, x.level, 'hud') + '" alt="">' : '<span class="emo">' + d.icon + '</span>') + synN(d, side) + '<i class="cd"></i></button>'; }
   function updSkillBars(){
     var L = skList(), key = 'n' + PK().skillSlots + (bt ? 'b' + bt.A.filter(function(u){ return u.alive; }).length : 'f' + S.team.join()) + JSON.stringify([L.A.map(function(x){ return x.id + x.lv; }), L.E.map(function(x){ return x.id + x.lv; })]);
     if (key !== skKey){ skKey = key; var emp = ''; for (var ei = (S.skills || []).length; ei < (PK().skillSlots || 0); ei++) emp += '<i class="skc A empty"><span>+</span></i>'; var SS = PK().skillSlots || 0, SN = L.A.length; $('skA').innerHTML = L.A.map(function(x, xi){ var c = skCell(x, 'A'); return xi >= SS ? c.replace('class="skc ', 'class="skc over ') : c; }).join('') + emp + ''; /* 넘쳤을 때만 빨간 칸 수 */ $('skE').innerHTML = L.E.map(function(x){ return skCell(x, 'E'); }).join(''); renderLootPrev(); fitSkRows(); }
@@ -4759,9 +4761,11 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
   function skIcon(d){ return SKIMG[d.id] ? '<img class="ski rimg" src="' + relicSrc(d.id) + '" alt="">' : d.icon; }
   /* 유물은 어디서나 원 틀 (CLAUDE.md 아이콘 모양): 36x36 돌 테 + 등급색 안쪽 빛 + 가운데 24 아이콘을 한 장으로 합쳐 씀 */
   var RRING = new Image(), RGLOW = new Image(), RC = {}; RRING.onload = RGLOW.onload = function(){ imgReady(); }; RRING.src = 'img/p/relic_ring.png'; RGLOW.src = 'img/p/relic_ring_glow.png';
-  function relicSrc(id, lv){ var col = skG(id, lv).col, k = id + col; if (RC[k]) return RC[k]; var ic = SKIMG[id]; if (!ic || !RRING.naturalWidth || !RGLOW.naturalWidth) return 'img/p/skill_' + id + '.png';
-    var c = document.createElement('canvas'), g = document.createElement('canvas'); c.width = c.height = g.width = g.height = 36; var x = c.getContext('2d'), y = g.getContext('2d'); y.drawImage(RGLOW, 0, 0); y.globalCompositeOperation = 'source-in'; y.fillStyle = col; y.fillRect(0, 0, 36, 36);
-    x.imageSmoothingEnabled = false; x.drawImage(RRING, 0, 0); x.drawImage(g, 0, 0); x.drawImage(ic, 6, 6, 24, 24); try { return RC[k] = c.toDataURL(); } catch (e) { return 'img/p/skill_' + id + '.png'; } }
+  var RSML = new Image(), RSGL = new Image(); RSML.onload = RSGL.onload = function(){ imgReady(); }; RSML.src = 'img/p/relic_ring_s.png'; RSGL.src = 'img/p/relic_ring_s_glow.png';
+  /* kind 'hud' = 작은 틀 22칸 2배(44) + 유물 1배, 그 외 = 큰 틀 36칸 2배(72) + 유물 2배 */
+  function relicSrc(id, lv, kind){ var col = skG(id, lv).col, hud = kind === 'hud', k = id + col + (hud ? 'h' : ''); if (RC[k]) return RC[k]; var ic = SKIMG[id], R = hud ? RSML : RRING, G = hud ? RSGL : RGLOW; if (!ic || !R.naturalWidth || !G.naturalWidth) return 'img/p/skill_' + id + '.png';
+    var n = R.naturalWidth, W2 = n * 2, ip = hud ? 24 : 48, c = document.createElement('canvas'), g = document.createElement('canvas'); c.width = c.height = W2; g.width = g.height = n; var x = c.getContext('2d'), y = g.getContext('2d'); y.drawImage(G, 0, 0); y.globalCompositeOperation = 'source-in'; y.fillStyle = col; y.fillRect(0, 0, n, n);
+    x.imageSmoothingEnabled = false; x.drawImage(R, 0, 0, W2, W2); x.drawImage(g, 0, 0, W2, W2); x.drawImage(ic, (W2 - ip) / 2, (W2 - ip) / 2, ip, ip); try { return RC[k] = c.toDataURL(); } catch (e) { return 'img/p/skill_' + id + '.png'; } }
 
   // ───── 상점 탭 ─────
   function skVal(d, lv){ var a = d.amount * (1 + (D.skills.perGrade != null ? D.skills.perGrade : D.skills.perLevel) * ((lv || 1) - 1)); return d.kind === 'energyAll' || d.kind === 'lineEnergy' || d.kind === 'lineHide' || d.kind === 'lineDef' || d.kind === 'starStep' ? Math.round(a) : Math.round(a * 100); } // 숫자 그대로(에너지·초·방어)
