@@ -2465,6 +2465,14 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
 /* 가방 윗부분은 둥근 덮개처럼 (장식 틀이라 버튼 사각 규칙과 무관, 2026-11-26 사용자) */
 .camp3 > .lbag .ubagbox{border-radius:30px 30px 0 0!important;overflow:hidden!important}
 .lbag .ubagbox::before{height:14px!important;left:0!important;right:0!important;top:0!important;border-radius:30px 30px 0 0}
+/* Galmuri11 (SIL OFL 1.1, fonts/LICENSE.txt). 제목용(--display)은 늘 Bold */
+@font-face{font-family:'Galmuri';font-weight:100 500;font-display:swap;src:url('fonts/Galmuri11.ttf') format('truetype')}
+@font-face{font-family:'Galmuri';font-weight:600 900;font-display:swap;src:url('fonts/Galmuri11-Bold.ttf') format('truetype')}
+@font-face{font-family:'GalmuriB';font-weight:100 900;font-display:swap;src:url('fonts/Galmuri11-Bold.ttf') format('truetype')}
+html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-serif}
+#fontRow .ghost.on{box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #ffd34d!important}
+.upword{position:fixed;z-index:9999;transform:translate(-50%,-100%);pointer-events:none;font-family:var(--display);font-weight:400;line-height:1;color:#ffd34d;white-space:nowrap;text-shadow:2px 0 #17141d,-2px 0 #17141d,0 2px #17141d,0 -2px #17141d,2px 2px #17141d,-2px -2px #17141d,2px -2px #17141d,-2px 2px #17141d;animation:upword .9s ease-out both}
+@keyframes upword{0%{opacity:0;transform:translate(-50%,-40%) scale(.4)}18%{opacity:1;transform:translate(-50%,-125%) scale(1.35)}32%{transform:translate(-50%,-100%) scale(1)}70%{opacity:1;transform:translate(-50%,-110%)}100%{opacity:0;transform:translate(-50%,-165%)}}
 </style>
 </head>
 <body>
@@ -2535,6 +2543,10 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
       <h2>플레이어 레벨 <small>적 편성·상점·영웅 등장 확률·전장 칸이 이 레벨을 따라요</small></h2>
       <div class="row"><button class="ghost" id="plDown">−</button><b id="plVal" style="font:400 20px var(--display);min-width:70px;text-align:center">Lv 1</b><button class="ghost" id="plUp">+</button></div>
       <div class="muted" id="plOdds" style="margin-top:6px"></div>
+    </section>
+    <section class="card">
+      <h2>글꼴 <small>비교해 보기</small></h2>
+      <div class="row" id="fontRow"></div>
     </section>
     <section class="card">
       <h2>구름 그림자 <small>전장 위로 천천히 흘러감</small></h2>
@@ -2885,6 +2897,12 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
   setInterval(function(){ var f = $('field'); if (!f || $('tab-camp').hidden) return; var el = f.querySelector(':scope > .cloudsh'), s = bt ? 0 : cloudStr(); if (!(s > .005)){ if (el) el.remove(); return; }
     if (!el){ el = document.createElement('i'); el.className = 'cloudsh'; if (!$('cloudcss')){ try { var st = document.createElement('style'); st.id = 'cloudcss'; st.textContent = '#field > .cloudsh{background-image:url(' + cloudTex().toDataURL() + ')}'; document.head.appendChild(st); } catch (e) { return; } } f.appendChild(el); }
     el.style.opacity = s; el.style.backgroundPositionX = (-cloudOff() * f.clientWidth / 720).toFixed(2) + 'px'; }, 66);
+  /* 게임 폰트: Galmuri(기본) / 기존, 도구 탭에서 비교 (2026-11-26 사용자) */
+  function fontId(){ return (S && S.ui && S.ui.font) === 'old' ? 'old' : 'galmuri'; }
+  function CF(){ return fontId() === 'old' ? '"Black Han Sans", sans-serif' : '"GalmuriB", sans-serif'; }
+  function applyFont(){ document.documentElement.dataset.font = fontId(); var row = $('fontRow'); if (row) row.innerHTML = [['old', '기존 폰트'], ['galmuri', 'Galmuri']].map(function(a){ return '<button class="ghost' + (fontId() === a[0] ? ' on' : '') + '" data-gfont="' + a[0] + '" type="button">' + a[1] + '</button>'; }).join(''); }
+  $('fontRow').addEventListener('click', function(e){ var b = e.target.closest('[data-gfont]'); if (!b) return; S.ui = S.ui || {}; S.ui.font = b.dataset.gfont; save(); applyFont(); });
+  setTimeout(applyFont, 0);
   function renderCloudBtns(){ var row = $('cloudRow'); if (!row) return; var cur = (S.ui && S.ui.cloud) || 'weak'; row.innerHTML = [['off', '끔'], ['weak', '약'], ['mid', '중'], ['strong', '강']].map(function(a){ return '<button class="ghost' + (cur === a[0] ? ' on' : '') + '" data-cloud="' + a[0] + '" type="button">' + a[1] + '</button>'; }).join(''); }
   $('cloudRow').addEventListener('click', function(e){ var b = e.target.closest('[data-cloud]'); if (!b) return; S.ui = S.ui || {}; S.ui.cloud = b.dataset.cloud; save(); renderCloudBtns(); });
   setTimeout(renderCloudBtns, 0);
@@ -3331,6 +3349,8 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
       var r = row.getBoundingClientRect(), q = pw.getBoundingClientRect(), gap = 8, avail = x[2] === 'L' ? q.left - gap - r.left : r.right - (q.right + gap);
       if (r.width > avail && avail > 0) row.style.transform = 'scale(' + Math.max(.5, avail / r.width).toFixed(3) + ')'; }); }
   // 성급이 올랐을 때: 한 번 퍼지는 픽셀 링 + 새로 생긴 별(마지막 별)이 크게 반짝 (반복 없음)
+  /* 머리(별) 위로 UP! 가 튀어 올랐다 사라짐. 칸·아이콘에 잘리지 않게 body에 붙임 (2026-11-26 사용자: 사각 테두리가 어색) */
+  function upWord(uid, lift){ var f = suFind(uid); if (!f) return; var r = (f.el.querySelector('.fst, .hst') || f.el).getBoundingClientRect(); if (!r.width) return; var k = f.host.getBoundingClientRect().width / (f.host.offsetWidth || 1) || 1, b = document.createElement('b'); b.className = 'upword'; b.textContent = 'UP!'; b.style.left = (r.left + r.width / 2) + 'px'; b.style.top = (r.top - (lift || 0) * k) + 'px'; b.style.fontSize = Math.round(22 * k) + 'px'; document.body.appendChild(b); setTimeout(function(){ b.remove(); }, 900); }
   function suFind(uid){ var el = document.querySelector('#field .slot.on[data-uid="' + uid + '"]') || document.querySelector('#roster .chip[data-uid="' + uid + '"]'); return el ? { el: el, host: el.closest('.unit') || el } : null; }
   function starUpFx(uid, ghost, gr){ setTimeout(function(){ starUpFx2(uid, ghost, gr); }, 0); } // 합성 뒤 다시 그리기가 끝난 다음에 시작
   function starUpFx2(uid, ghost, gr){ var f0 = suFind(uid); if (!f0) return; var el = f0.el;
@@ -3344,10 +3364,11 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
     host.classList.remove('suOn', 'suHit'); void host.offsetWidth; host.classList.add('suOn'); // 모여서 잠깐 멈춤 (하얗게 차오름)
     setTimeout(function(){ var f1 = suFind(uid); if (!f1) return; if (f1.host !== host){ host = f1.host; el = f1.el; st = [].slice.call(el.querySelectorAll('.fst b, .hst b')); host.style.setProperty('--suc', star >= 3 ? '#ffd34d' : '#8fd8ff'); host.style.setProperty('--sus', star >= 3 ? 1.35 : 1); st.forEach(function(b){ b.classList.add('suHide'); }); host.classList.add('suOn'); }
       host.classList.add('suHit'); // 빛 기둥·충격파·흔들림
-      host.insertAdjacentHTML('beforeend', '<i class="supil"></i><i class="upring su"></i><i class="upring su r2"></i>' + (star >= 3 ? '<i class="suburst"></i>' : ''));
+      host.insertAdjacentHTML('beforeend', '<i class="supil"></i>' + (star >= 3 ? '<i class="suburst"></i>' : ''));
+      upWord(uid);
       var fd = onField ? $('field') : null; if (fd){ fd.classList.remove('shk1', 'shk2'); void fd.offsetWidth; fd.classList.add(star >= 3 ? 'shk2' : 'shk1'); setTimeout(function(){ fd.classList.remove('shk1', 'shk2'); }, 420); }
       st.forEach(function(b, i){ setTimeout(function(){ b.classList.remove('suHide'); b.classList.add('suSlam'); }, 120 + i * 110); }); // 별이 하나씩 박혀요
-      setTimeout(function(){ host.querySelectorAll('.supil,.upring.su,.suburst').forEach(function(x){ x.remove(); }); st.forEach(function(b){ b.classList.remove('suSlam', 'suHide'); }); host.classList.remove('suOn', 'suHit'); }, 640); }, t0 + 260); }
+      setTimeout(function(){ host.querySelectorAll('.supil,.suburst').forEach(function(x){ x.remove(); }); st.forEach(function(b){ b.classList.remove('suSlam', 'suHide'); }); host.classList.remove('suOn', 'suHit'); }, 640); }, t0 + 260); }
   function mergeFx(uid){ var el = document.querySelector('#field .slot.on[data-uid="' + uid + '"]') || document.querySelector('#roster .chip[data-uid="' + uid + '"]');
     if (el){ el.classList.remove('mergeFx'); void el.offsetWidth; el.classList.add('mergeFx'); } }
   // ───── 초월: 영웅 위에 다른 영웅을 놓으면 재료가 사라지고 그 스킬이 붙어요(새 스킬 또는 같은 스킬 하나 더) ─────
@@ -3784,25 +3805,41 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
     else if (C.k === 'backstab'){ uxAdd('shx', x, y, {}, .4); if (!C.poof){ C.poof = true; fxAt('poof', a, { scale: .6 }); } }
     else if (C.k === 'mark') uxAdd('mark', x, y, {}, .9);
     else if (C.k === 'zigzag'){ if (C.prev) uxAdd('zig', C.prev[0], C.prev[1], { x2: x, y2: y, c: c }, .3); C.prev = [x, y]; } }
+  /* 데미지 숫자 (2026-11-26 사용자: "팍 꽂히는"): hit=크게 나타나 0.1초에 박히고 흔들린 뒤 뜸, crit=더 크게·기울임·잠깐 멈춤, skill=옆으로 튕김, dot=작고 옅게 */
+  var ultAt = {}, skCol = '';
+  function dmgPop(x, y, o){ var n = pops.filter(function(q){ return q.fx && q.max - q.life < .35 && Math.abs(q.x0 - x) < 26 && Math.abs(q.y - y) < 18; }).length; /* 겹치면 좌우로 번갈아 흩음 */
+    o.x0 = x; o.x = x + (n ? (n % 2 ? 1 : -1) * 24 * Math.ceil(n / 2) : 0) + (Math.random() - .5) * 8; o.y = y - (n % 3) * 9; o.dir = o.x < x ? -1 : o.x > x ? 1 : Math.random() < .5 ? -1 : 1; o.life = o.max; pops.push(o); }
+  function drawDmg(p){ var a = p.max - p.life, slam = p.fx !== 'dot', hold = p.fx === 'crit' ? .42 : .24, k = Math.max(0, Math.min(1, (a - hold) / (p.max - hold))), sc = 1, x = p.x, y = p.y;
+    if (slam){ if (a < .1) sc = 1 + (p.fx === 'crit' ? .9 : .6) * (1 - a / .1); else if (a < .22) x += Math.sin(a * 110) * 3 * (1 - (a - .1) / .12); }
+    if (p.fx === 'skill'){ var m = Math.min(1, a / .45); x += p.dir * 20 * (1 - (1 - m) * (1 - m)); y -= Math.sin(m * Math.PI) * 14; }
+    y -= p.fx === 'dot' ? a / p.max * 18 : k * 22;
+    ctx.save(); ctx.globalAlpha = (p.fx === 'dot' ? .75 : 1) * Math.min(1, p.life / p.max * 3); ctx.translate(x, y - p.size * .35); if (p.rot) ctx.rotate(p.rot); ctx.scale(sc, sc);
+    ctx.font = '400 ' + p.size + 'px ' + CF(); if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round';
+    ctx.lineWidth = p.fx === 'dot' ? 3 : p.fx === 'hit' ? 4 : 6; ctx.strokeStyle = p.fx === 'crit' ? '#5a1500' : '#17141d'; ctx.strokeText(p.s, 0, 0);
+    var fill = p.c; if (p.c2){ fill = ctx.createLinearGradient(0, -p.size / 2, 0, p.size / 2); fill.addColorStop(.35, p.c); fill.addColorStop(1, p.c2); }
+    ctx.fillStyle = fill; ctx.fillText(p.s, 0, 0); ctx.restore(); }
   function onEvent(ev){
     if (ev.kind === 'die') killXp(ev.uid);
     if (ev.kind === 'knock'){ var ku = unitByUid(ev.uid); if (ku){ knocks[ku.uid] = { dx: ev.dx, t: .15 }; var kp = posOf(ku), sx0 = kp[0] - ev.dx, sg = ev.dx > 0 ? 1 : -1;
       for (var q3 = 0; q3 < 8; q3++) fxs.push({ x: sx0, y: kp[1] + 22, vx: -sg * (40 + Math.random() * 70), vy: -10 - Math.random() * 30, t: .35, c: q3 % 2 ? '#b59c7a' : '#d8cdb8', dot: 1 });
       for (var ln = 0; ln < 4; ln++) for (var q4 = 0; q4 < 6; q4++) fxs.push({ x: sx0 - sg * q4 * 7, y: kp[1] - 26 + ln * 13, vx: sg * 300, vy: 0, t: .25 - q4 * .02, c: q4 < 2 ? '#ffffff' : '#cfe8ff', dot: 1 }); } }
+    if (ev.kind === 'ult') ultAt[ev.uid] = ev.t;
+    if (ev.kind === 'skill') skCol = skG(ev.id).col;
     if (ev.kind === 'hit'){
       var a = unitByUid(ev.from), b = unitByUid(ev.to); if (!a || !b) return;
       var bk = blinks[a.uid]; if (bk && ev.t === bk.t && bk.pts.length < bk.n){ bk.pts.push([b.x + bk.f * 30, b.y, -bk.f]); bk.f = -bk.f; if (!bk.t0) bk.t0 = performance.now(); } // 엔진과 같은 자리: 적 등 뒤 30
       if (ev.mag && a.h.ult && a.h.ult.kind === 'barrage'){ var bp2 = posOf(b); bolts.push({ x: bp2[0], y: bp2[1], t: .28, c: ELC[a.el] || '#ffd34d', seed: Math.random() }); }
-      if (ev.burn){ var bp = posOf(b); pops.push({ x: bp[0] + (Math.random() - .5) * 16, y: bp[1] - 22, s: '' + ev.amt, c: '#ff9a3a', life: .6, max: .6, size: 12 }); return; } // 화상 틱
+      if (ev.burn){ var bp = posOf(b); dmgPop(bp[0], bp[1] - 22, { fx: 'dot', s: '' + ev.amt, c: '#ff9a3a', max: .45, size: 11 }); return; } // 화상 틱
       atkT[a.uid] = ANIM_IDS.indexOf(a.id) >= 0 ? ANIM_ATK : .2; ultHitFx(a, b, ev);
-      var land = function(){ var p = posOf(b); pops.push({ x: p[0] + (Math.random() - .5) * 20, y: p[1] - 30, s: '' + ev.amt + (ev.crit ? '!' : ''), c: ev.crit ? '#ffe14d' : ev.mag ? '#c99bff' : a.side === 'A' ? '#fff' : '#ffb3a8', mag: !!ev.mag, life: ev.crit ? .9 : .7, max: ev.crit ? .9 : .7, size: (ev.crit ? 24 : ev.amt > a.atk * 2 ? 20 : 14) + (ev.mag ? 3 : 0) }); // 스킬 피해 = 보라
+      var isUlt = !!ev.mag || ultAt[a.uid] === ev.t, more = Math.max(0, Math.min(8, Math.round((ev.amt / (a.atk || ev.amt || 1) - 1) * 4))); /* 피해가 클수록 크게 */
+      var land = function(){ var p = posOf(b); dmgPop(p[0], p[1] - 30, ev.crit ? { fx: 'crit', s: ev.amt + '!', c: '#ffd02e', c2: '#ff7a1a', max: 1, size: 24 + more, rot: Math.random() < .5 ? -.2 : .2 } : isUlt ? { fx: 'skill', s: '' + ev.amt, c: ELC[a.el] || '#c99bff', max: .85, size: 18 + more } : { fx: 'hit', s: '' + ev.amt, c: a.side === 'A' ? '#fff' : '#ffb3a8', max: .75, size: 14 + more });
         fxs.push({ x: p[0], y: p[1], t: .15, c: '#fff' });
         hitStopOn(b.uid, ev.crit ? .18 : .13, 1); if (a.range === 'melee') hitStopOn(a.uid, .07, 0); // 맞은 쪽 멈칫+번쩍, 근접 공격자도 짧게 멈칫
         if (HAS_FX) fxAt('hit', b, { scale: ev.crit ? 1 : .7 }); };
       if (a.range === 'melee'){ lunges[a.uid] = .18; fxAt('slash', b, { scale: 1, flip: a.x > b.x, speed: 1.4 }); land(); }
       else shots.push({ from: posOf(a), to: posOf(b), t: 0, c: ELC[a.el], kind: a.h.shot, big: a.id === 'cannon', wait: ANIM_IDS.indexOf(a.id) >= 0 ? (a.h.shot === 'arrow' ? .2 : .1) : 0, land: land }); /* 시트 영웅은 공격 프레임에 맞춰 출발(화살 7칸, 나머지 6칸), 맞는 연출은 도착할 때 */
     } else if (ev.kind === 'heal'){
-      var hu = unitByUid(ev.to), hp = posOf(hu); if (ev.amt > 0) pops.push({ x: hp[0], y: hp[1] - 34, s: '+' + ev.amt, c: '#7ee08a', life: .8, max: .8, size: 15 });
+      var hu = unitByUid(ev.to), hp = posOf(hu); if (ev.amt > 0) dmgPop(hp[0], hp[1] - 34, { fx: 'hit', s: '+' + ev.amt, c: '#7ee08a', max: .8, size: 15 });
     } else if (ev.kind === 'ult'){
       var u = unitByUid(ev.uid); ultPops.push({ u: u, t: 0, max: .85 }); atkT[u.uid] = ANIM_IDS.indexOf(u.id) >= 0 ? ANIM_ATK : .25;
       var uk = u.h.ult && u.h.ult.kind; if (uk === 'teamShield') fxTeam('shield', u.side, { scale: 1.2 }); else if (uk === 'healAll') fxTeam('heal', u.side, { scale: .9 }); else if (uk === 'chain') fxAt('chain', u, { scale: 1.2, flip: u.side === 'E' }); else if (uk === 'aoe' && u.h.ult.slow) fxTeam('frost', u.side === 'A' ? 'E' : 'A', { scale: 1 });
@@ -3817,9 +3854,9 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
       if (sd.kind === 'nuke') flash = .2;
     } else if (ev.kind === 'skillHit'){
       var sb = unitByUid(ev.to), sp = posOf(sb); if (sb) hitStopOn(sb.uid, ev.thorns ? .06 : .09, ev.thorns ? .4 : .55); // 팀 스킬·가시: 약하게
-      if (ev.thorns){ if (sb) pops.push({ x: sp[0], y: sp[1] - 30, s: '가시 ' + ev.amt, c: '#9fe07a', life: .7, max: .7, size: 13 }); return; }
+      if (ev.thorns){ if (sb) dmgPop(sp[0], sp[1] - 30, { fx: 'dot', s: '가시 ' + ev.amt, c: '#9fe07a', max: .55, size: 11 }); return; }
       if (sb && skArrowSrc && skArrowSrc.from && skArrowSrc.t === ev.t){ var tp = posOf(sb); arrows.push({ from: skArrowSrc.from, to: [tp[0], tp[1] - 18], t: 0, c: skArrowSrc.c, dim: 'rgba(243,230,196,.75)' }); }
-      if (sb) skDmg[sb.side === 'E' ? 'A' : 'E'] += ev.amt || 0; pops.push({ x: sp[0], y: sp[1] - 30, s: '' + ev.amt, c: '#c99bff', mag: true, life: .8, max: .8, size: 18 }); // 팀 스킬 피해도 스킬 색
+      if (sb) skDmg[sb.side === 'E' ? 'A' : 'E'] += ev.amt || 0; dmgPop(sp[0], sp[1] - 30, { fx: 'skill', s: '' + ev.amt, c: skCol || '#c99bff', max: .85, size: 18 }); // 팀 스킬 피해 = 그 스킬 색
       if (HAS_FX) fxAt('hit', sb, { scale: 1.2 }); else fxs.push({ x: sp[0], y: sp[1], t: .3, c: '#ffd34d', big: 1 });
     } else if (ev.kind === 'fly'){ /* 다시 날아오를 때: 발밑 흙먼지 + 위로 치솟는 바람 줄기 (팍) */
       var fu = unitByUid(ev.uid), fp = posOf(fu), gy0 = Math.max(D.battle.arena.yMin, Math.min(D.battle.arena.yMax, fu.y)) + OFF + 26;
@@ -3873,13 +3910,14 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
     fxs = fxs.filter(function(f){ f.t -= el; if (f.t <= 0) return false;
       if (f.dot){ f.x += f.vx * el; f.y += f.vy * el; ctx.globalAlpha = f.t / .5; ctx.fillStyle = f.c; ctx.beginPath(); ctx.arc(f.x, f.y, 3, 0, 6.29); ctx.fill(); ctx.globalAlpha = 1; return true; }
       ctx.globalAlpha = f.t / (f.big ? .5 : .15); ctx.strokeStyle = f.c; ctx.lineWidth = f.big ? 5 : 3; ctx.beginPath(); ctx.arc(f.x, f.y, f.big ? 30 + (1 - f.t / .5) * 30 : 22, 0, 6.29); ctx.stroke(); ctx.globalAlpha = 1; return true; });
-    pops = pops.filter(function(p){ p.life -= el; if (p.life <= 0) return false; var k = 1 - p.life / p.max; ctx.globalAlpha = Math.min(1, p.life / p.max * 2);
-      ctx.font = '400 ' + p.size + 'px "Black Han Sans", sans-serif'; if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; ctx.lineWidth = p.mag ? 6 : 4; ctx.strokeStyle = p.mag ? '#2a0f4a' : '#000'; ctx.strokeText(p.s, p.x, p.y - k * 24); ctx.fillStyle = p.c; ctx.fillText(p.s, p.x, p.y - k * 24);
+    pops = pops.filter(function(p){ p.life -= el; if (p.life <= 0) return false; if (p.fx){ drawDmg(p); return true; }
+      var k = 1 - p.life / p.max; ctx.globalAlpha = Math.min(1, p.life / p.max * 2);
+      ctx.font = '400 ' + p.size + 'px ' + CF(); if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; ctx.lineWidth = p.mag ? 6 : 4; ctx.strokeStyle = p.mag ? '#2a0f4a' : '#000'; ctx.strokeText(p.s, p.x, p.y - k * 24); ctx.fillStyle = p.c; ctx.fillText(p.s, p.x, p.y - k * 24);
       if (p.star){ var sw = ctx.measureText(p.s).width, scx = Math.round(p.x - sw / 2 - 11), scy = Math.round(p.y - k * 24 - p.size * .35); starPath(scx, scy, 9); ctx.lineWidth = 3; ctx.strokeStyle = '#0d1a33'; ctx.stroke(); ctx.fillStyle = '#4fa3ff'; ctx.fill(); starPath(scx - 1, scy - 1, 4); ctx.fillStyle = '#cfe8ff'; ctx.fill(); }
       ctx.globalAlpha = 1; return true; });
     banners = banners.filter(function(b, i){ b.life -= el; if (b.life <= 0) return false; var y = 100 + i * 30; // 하늘 쪽에 띄워서 땅의 유닛을 가리지 않게
       ctx.globalAlpha = Math.min(1, b.life / b.max * 3); ctx.fillStyle = b.side === 'A' ? 'rgba(40,70,140,.85)' : 'rgba(140,40,40,.85)'; rr(b.side === 'A' ? 10 : W - 230, y - 13, 220, 26, 10); ctx.fill();
-      ctx.fillStyle = '#fff'; ctx.font = '400 14px "Black Han Sans", sans-serif'; if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; ctx.textAlign = 'center'; ctx.fillText(b.s + '!', b.side === 'A' ? 120 : W - 120, y); ctx.globalAlpha = 1; return true; });
+      ctx.fillStyle = '#fff'; ctx.font = '400 14px ' + CF(); if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; ctx.textAlign = 'center'; ctx.fillText(b.s + '!', b.side === 'A' ? 120 : W - 120, y); ctx.globalAlpha = 1; return true; });
   }
   // ───── 스테이지 번호 줄: 이번 장 안에서 지금 스테이지 앞뒤 5칸, 지금 칸은 금색으로 크게 ─────
   function stageWindow(n){
@@ -4088,7 +4126,7 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
       TT.forEach(function(T){ if (T.at >= 1) return; var tx2 = cx0 + Math.round(cw * (1 - T.at)) - 1; ctx.fillStyle = '#17141d'; ctx.fillRect(tx2, cy0, 2, bh); }); /* 구간 눈금 (칸 수만큼) */
       var by2 = cy0 - 10, bh2 = 0; /* 구간별 보상 말풍선은 뺌(2026-11-25 사용자). 시작 때 최대 배지만 */
       ctx.save(); ctx.imageSmoothingEnabled = false; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-      var bt0 = bt && bt.time || 0; if (bt0 < .3){ var sc = 1 - bt0 / .3, mt = chestMaxText(u._ctr); ctx.globalAlpha = 1; ctx.font = '400 11px "Black Han Sans", sans-serif'; var mw = ctx.measureText(mt).width + 12, mh = 16; ctx.save(); ctx.translate(Math.round(x), by2 - 4); ctx.scale(sc, sc); ctx.fillStyle = '#17141d'; ctx.fillRect(-mw / 2 - 2, -mh - 2, mw + 4, mh + 4); ctx.fillStyle = '#d8443e'; ctx.fillRect(-mw / 2, -mh, mw, mh); ctx.fillStyle = '#fff3dc'; ctx.textBaseline = 'middle'; ctx.fillText(mt, 0, -mh / 2 + 1); ctx.restore(); } /* 최대 배지: 전투 시작하면 쏙 */
+      var bt0 = bt && bt.time || 0; if (bt0 < .3){ var sc = 1 - bt0 / .3, mt = chestMaxText(u._ctr); ctx.globalAlpha = 1; ctx.font = '400 11px ' + CF(); var mw = ctx.measureText(mt).width + 12, mh = 16; ctx.save(); ctx.translate(Math.round(x), by2 - 4); ctx.scale(sc, sc); ctx.fillStyle = '#17141d'; ctx.fillRect(-mw / 2 - 2, -mh - 2, mw + 4, mh + 4); ctx.fillStyle = '#d8443e'; ctx.fillRect(-mw / 2, -mh, mw, mh); ctx.fillStyle = '#fff3dc'; ctx.textBaseline = 'middle'; ctx.fillText(mt, 0, -mh / 2 + 1); ctx.restore(); } /* 최대 배지: 전투 시작하면 쏙 */
       ctx.restore(); }
     if (u.h.mob === 'goblin' && D.events){ var fl = D.events.goblin.flee, left = Math.max(0, 1 - (u.age || 0) / fl), tw = 40, tx = Math.round(x - tw / 2), ty = Math.round(foot - S - 6);
       ctx.fillStyle = '#17141d'; ctx.fillRect(tx - 1, ty - 1, tw + 2, 6); ctx.fillStyle = left > .3 ? '#ffd34d' : '#ff6b6b'; ctx.fillRect(tx, ty, Math.round(tw * left), 4); }
@@ -4108,7 +4146,7 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
       if (u.shield > 1) chips.push({ c: '#9ab8ff', t: '◆', f: Math.min(1, u.shield / (u.maxHp * .3)) });
       if (chips.length){
         var cs = 10, cg = 2, cy = by + fh + 1, cx0 = x - (chips.length * (cs + cg) - cg) / 2;
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '400 9px "Black Han Sans", sans-serif'; if ('letterSpacing' in ctx) ctx.letterSpacing = '1px';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '400 9px ' + CF(); if ('letterSpacing' in ctx) ctx.letterSpacing = '1px';
         chips.forEach(function(ch, i){ var cx = cx0 + i * (cs + cg);
           ctx.fillStyle = '#17141d'; ctx.fillRect(cx - 1, cy - 1, cs + 2, cs + 5);
           ctx.fillStyle = ch.c; ctx.fillRect(cx, cy, cs, cs);
@@ -4738,8 +4776,8 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
   function lvUpFx(kind, k){ var el, ic;
     if (kind === 'relic'){ el = document.querySelector('#skA .skc[data-k="A:' + k + '"]'); if (!el) return; el.classList.remove('lvupc'); void el.offsetWidth; el.classList.add('lvupc'); el.insertAdjacentHTML('beforeend', '<i class="upmk big lvupar"></i>'); setTimeout(function(){ el.classList.remove('lvupc'); var a = el.querySelector('.lvupar'); if (a) a.remove(); }, 900); return; }
     var u = U(k); if (!u) return; el = document.querySelector('#field .slot.on[data-uid="' + k + '"]') || document.querySelector('#roster .chip[data-uid="' + k + '"]'); if (!el) return;
-    var host = el.closest('.unit') || el; host.insertAdjacentHTML('beforeend', '<i class="tgic trpop lvsk">' + ultIcon(hero(u.id), 24) + '<i class="upmk"></i></i><i class="upring"></i>');
-    setTimeout(function(){ host.querySelectorAll('.lvsk,.upring').forEach(function(x){ x.remove(); }); }, 950); }
+    var host = el.closest('.unit') || el; host.insertAdjacentHTML('beforeend', '<i class="tgic trpop lvsk">' + ultIcon(hero(u.id), 24) + '<i class="upmk"></i></i>'); upWord(u.uid, 24);
+    setTimeout(function(){ host.querySelectorAll('.lvsk').forEach(function(x){ x.remove(); }); }, 950); }
   function isFork(){ return !bt && !!S.event && S.event.kind === 'fork' && !!S.event.options && S.stage < E.stageCount(D); }
   var FORK_POS = [[430, 184], [582, 184]]; // 적 전방열·후반열 가운데 칸
   function forkRep(ev){ var k = ev.kind;
