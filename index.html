@@ -2592,14 +2592,13 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 #roul .rbox.camp .rstrip{box-shadow:0 0 0 2px #17141d,0 0 0 4px #ff8a2a,0 0 12px 2px rgba(255,138,42,.55)!important}
 /* 유물 원 틀: 그림(rimg)에 틀이 들어 있어 감싸던 사각 칸은 지움 */
 img.rimg{image-rendering:pixelated;border-radius:50%}
-#skA .skc:has(img.rimg),#skE .skc:has(img.rimg),#tab-shop .stile.sk .ic:has(img.rimg),.cdxp.ic:has(img.rimg),.hi-av.sk:has(img.rimg),.skf:has(> img.rimg),.rsk:has(img.rimg),.lvrelic:has(img.rimg),.rit:has(img.rimg),.cps:has(img.rimg),.mdrop:has(img.rimg){background:none!important;box-shadow:none!important;border:0!important;clip-path:none!important}
+#skA .skc:has(img.rimg),#skE .skc:has(img.rimg),#tab-shop .stile.sk .ic:has(img.rimg){background:none!important;box-shadow:none!important;border:0!important;clip-path:none!important}
 #skA .skc:has(img.rimg),#skE .skc:has(img.rimg){padding:0!important}
 #skA .skc img.rimg,#skE .skc img.rimg{width:44px!important;height:44px!important}
 #skA .skc .cd,#skE .skc .cd{left:7px!important;right:7px!important;top:7px!important;max-height:30px;z-index:2;-webkit-mask:radial-gradient(circle 15px at 50% 15px,#000 98%,transparent);mask:radial-gradient(circle 15px at 50% 15px,#000 98%,transparent)}
 #tab-shop .srow2:not(.h) .stile{height:100px;padding:3px 4px 4px!important;gap:3px}
 #tab-shop .stile.sk .ic,#tab-shop .stile.sk .ic img.rimg{width:72px!important;height:72px!important;flex:none}
 #tab-shop .srow2 .stile.lockd,#tab-shop .srow2 .stile.empty.keep{height:100px!important}
-.rstrip span.sk{border-radius:50%!important;clip-path:none!important}
 #roul:not(.chestpop) .rbox .rstage.onped .rpic.loot.relic{width:calc(63 * var(--P))!important;height:calc(63 * var(--P))!important;left:calc(50% - 31.5 * var(--P))!important;bottom:calc(38px + 22 * var(--P))!important;filter:drop-shadow(0 0 8px var(--rg,#d9dde8))!important}
 #roul .rbox .rpic.loot.relic img.lic{width:calc(63 * var(--P))!important;height:calc(63 * var(--P))!important}
 /* 합류 띠: 위 큰 칸 너비, 양 끝 장식 없이 위아래 변 장식(초록 띠 + 금줄 + 리벳, 위 가운데 마름모) (2026-11-26 사용자) */
@@ -2655,6 +2654,12 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
 .stile .upmk{left:50%!important;right:auto!important;top:-1px!important;transform:translateX(-50%);z-index:6}
 .stile .ic{position:relative}
 .stile.up::before{content:'UP'!important;left:50%!important;right:auto!important;top:1px!important;transform:translateX(-50%);color:#ffd34d!important;font:400 12px/12px var(--display)!important;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d,1px 1px #17141d,-1px -1px #17141d!important;z-index:6;animation:upmkbob .7s steps(2) infinite}
+/* 유물은 사각 칸 안에 원 아이콘 (메인 줄만 원만). 룰렛 띠 영웅 칸 = 작은 아이콘(전신, 성급 없음) (2026-11-26 사용자) */
+.rbox .rstrip span.sk img.lic{width:36px!important;height:36px!important}
+.rbox .rstrip span[data-id]:not(.sk){background:#17141d!important}
+.rbox .rstrip span .av.pic{width:100%;height:100%;background-size:contain!important;background-position:50% 100%!important;background-repeat:no-repeat}
+.hi-av.sk img.rimg,.skf > img.rimg{width:100%!important;height:100%!important}
+.rsk img.rimg{width:100%!important;height:100%!important}
 </style>
 </head>
 <body>
