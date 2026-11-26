@@ -1984,7 +1984,7 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .shopPop .spHead{margin:-10px -12px 0;padding:6px 12px;gap:6px;background:#2a2533;box-shadow:0 2px 0 #17141d!important}
 .shopPop .spHead #shopReroll{right:12px;top:50%;transform:translateY(-50%)}
 .shopPop .spHead .sptic{width:24px;height:24px;flex:none;background:url(img/p/ui_shop.png) center/24px 24px no-repeat;image-rendering:pixelated}
-#tab-shop.wander .spHead .sptic{background:url(img/p/ui_merchant.png) center/24px 24px no-repeat}
+#tab-shop.wander .spHead .sptic{background:url(img/p/ev_trader.png) -28px -20px/63px 63px no-repeat} /* 새 상인 얼굴(원본 1배로 잘라 씀) */
 .tbar .tpw,.tbar.e .tpw{top:100%!important;left:0!important;right:auto!important;padding:2px 7px 3px;background:rgba(23,20,29,.8);box-shadow:inset 0 0 0 2px #17141d;margin-top:-2px}
 .tbar .tpw,.tbar.e .tpw{position:absolute!important;top:50%!important;left:12px!important;right:auto!important;transform:translateY(-50%);z-index:3;margin:0!important;padding:0!important;background:none!important;box-shadow:none!important;font:400 13px/1 var(--display);color:#ffd34d;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d,1px 1px #17141d,-1px 1px #17141d;pointer-events:none}
 .tbar .tpw .pwi{font-size:11px}
@@ -4987,7 +4987,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     else if (ev && ev.kind === 'campfire') txt = (EVIMG.ev_campfire_i ? '<img class="evi" src="img/p/ev_campfire_i.png" alt="">' : '🔥 ') + '모닥불';
     if (txt && ev && E.isEventStage && E.isEventStage(D, ev.kind)) txt = '<b class="evstn">' + E.stageName(D, Math.max(0, S.stage - 1)) + '</b> ' + txt;
     b.innerHTML = txt; b.hidden = true; // 전장 위 이벤트 이름 패는 안 띄워요 (사용자: 글 안내 금지)
-    m.hidden = !(ev && ev.kind === 'merchant'); m.innerHTML = EVIMG.merchant ? '<img src="img/p/merchant.png" alt="">' : '🧳'; }
+    m.hidden = true; } /* 예전 상인 그림(merchant.png)이 새 상인 위에 겹쳐 있던 자리: 안 띄움 */
   // ───── 위험 종: 누를 때마다 0→1→2→3→0. 길게 누르거나 우클릭하면 0 ─────
   var BELLIMG = {}; [1, 2, 3].forEach(function(n){ var im = new Image(); im.onload = function(){ BELLIMG[n] = true; renderBell(); }; im.src = 'img/p/ui_foe' + n + '.png'; });
   function renderTalk(){ var t = $('talkBtn'); if (t) t.querySelector('.tic').innerHTML = campImg('ui_talk', '💬', 'timg'); var et = $('evTalk'); if (et) et.querySelector('.eai').innerHTML = campImg('ui_talk', '💬', 'timg'); }
