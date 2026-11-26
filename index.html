@@ -2901,8 +2901,8 @@ img.rimg{image-rendering:auto!important}
 #shopBuy .boff{font-size:16px!important;line-height:20px!important;left:-3px;top:-8px;padding:0 6px}
 /* 돈고블린 전구 */
 #roul .rstage > .rbulbs{display:none}
-#roul .rbox.groll .rstage > .rbulbs{display:block;position:absolute;inset:4px;z-index:6;pointer-events:none}
-#roul .rbulbs s{position:absolute;width:6px;height:6px;margin:-3px 0 0 -3px;text-decoration:none;background:#ffe27a;box-shadow:0 0 0 1px #17141d,0 0 4px 1px rgba(255,210,80,.6)}
+#roul .rbox.groll .rstage > .rbulbs{display:block;position:absolute;inset:12px;z-index:6;pointer-events:none}
+#roul .rbulbs s{position:absolute;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%; /* 작은 원 전구, 테두리 안쪽 (2026-11-26 사용자: "철장 같아") */text-decoration:none;background:#ffe27a;box-shadow:0 0 0 1px #17141d,0 0 4px 1px rgba(255,210,80,.6)}
 #roul .rbox.groll.spin .rbulbs s{animation:bulbrun .48s steps(1) infinite;animation-delay:var(--d)}
 #roul .rbox.groll.reveal:not(.still):not(.spin) .rbulbs s{animation:bulbflash .6s steps(1),bulbon 1.4s steps(1) .6s infinite}
 #roul .rbox.groll:not(.spin) .rbulbs s{animation:bulbon 1.4s steps(1) infinite}
@@ -3039,6 +3039,11 @@ img.rimg{image-rendering:auto!important}
 #trWin .trstage.done{background:radial-gradient(circle at 50% 55%,#8a52e0,#32195c 45%,#0c0818 80%)!important}
 #trWin .trstage.done .trslot.sA > .rped{--tc:#c9a6ff;filter:sepia(1) saturate(3.2) hue-rotate(220deg) drop-shadow(0 0 6px #c9a6ff)}
 #trWin .trstage.charge::before{content:'';position:absolute;left:var(--cx,30%);top:var(--cy,55%);width:720px;height:720px;margin:-360px 0 0 -360px;background:repeating-conic-gradient(rgba(201,166,255,.4) 0 8deg,transparent 8deg 20deg);animation:spinr .7s linear infinite;pointer-events:none}
+/* 딱지는 이름 왼쪽, 큰 칸 윗줄은 안내 (2026-11-26 사용자) */
+#trWin .trline{position:absolute;left:0;right:0;bottom:10px;display:flex;align-items:center;justify-content:center;gap:5px;z-index:3;white-space:nowrap}
+#trWin .trslot .trline .trtag{position:static;transform:none;padding:2px 5px;line-height:14px}
+#trWin .trline .trnm{position:static}
+#trWin .trwarn{position:absolute;left:0;right:0;top:14px;text-align:center;font:400 12px var(--display);font-style:normal;color:#f0b0a0;text-shadow:1px 0 #17141d,-1px 0 #17141d,0 1px #17141d,0 -1px #17141d;pointer-events:none;z-index:3}
 #trWin .trstage.done .trtag{display:none} /* 결과 화면엔 "메인" 딱지 없음 (2026-11-26 사용자) */
 #trWin .trstage.done::after{content:'';position:absolute;inset:0;background:#fff;pointer-events:none;z-index:6;animation:finfl .7s ease-out forwards}
 #trWin .rbox:has(.trstage.charge){background:#2a1648!important}
@@ -3796,7 +3801,7 @@ img.rimg{image-rendering:auto!important}
   function fairyDeco(stage){ if (!stage || stage.querySelector(':scope > .fvine')) return;
     stage.insertAdjacentHTML('beforeend', '<i class="fvine dvine"></i><i class="fvine dvine r"></i>'); }
   /* 돈고블린 룰렛: 큰 칸 둘레 픽셀 전구 (2026-11-26 사용자 OK, 레버 없음). 대기 = 번갈아 천천히, 도는 중 = 한 방향으로 빠르게, 멈추면 한 번 번쩍 */
-  function bulbDeco(stage){ if (!stage || stage.querySelector(':scope > .rbulbs')) return; var nx = 17, ny = 9, pts = [], k; for (k = 0; k < nx; k++) pts.push([k / nx, 0]); for (k = 0; k < ny; k++) pts.push([1, k / ny]); for (k = 0; k < nx; k++) pts.push([1 - k / nx, 1]); for (k = 0; k < ny; k++) pts.push([0, 1 - k / ny]);
+  function bulbDeco(stage){ if (!stage || stage.querySelector(':scope > .rbulbs')) return; var nx = 12, ny = 6, pts = [], k; for (k = 0; k < nx; k++) pts.push([k / nx, 0]); for (k = 0; k < ny; k++) pts.push([1, k / ny]); for (k = 0; k < nx; k++) pts.push([1 - k / nx, 1]); for (k = 0; k < ny; k++) pts.push([0, 1 - k / ny]);
     stage.insertAdjacentHTML('beforeend', '<i class="rbulbs">' + pts.map(function(p, i){ return '<s class="' + (i % 2 ? 'o' : 'e') + '" style="left:' + (p[0] * 100).toFixed(2) + '%;top:' + (p[1] * 100).toFixed(2) + '%;--d:' + ((i % 4) * .12 - .48).toFixed(2) + 's"></s>'; }).join('') + '</i>'); }
   function starFx(stage, tier, col){ if (!stage) return; var el = stage.querySelector(':scope > .rstars'); if (!el){ el = document.createElement('i'); el.className = 'rstars'; stage.appendChild(el); }
     el.style.setProperty('--sc', col || '#fff'); var near = !!stage.closest('.rbox.camp'), md = near ? 'c' : 'a'; if (el.firstChild && el.dataset.m === md) return; el.dataset.m = md; var n = 6, o = ''; /* 모닥불: 영웅 몸 가까이, 절반 (2026-11-26 사용자) */ /* 개수·빈도는 등급과 상관없이 같고 색만 다름. 결과 그림 왼쪽·위·오른쪽 반원, 단상 위로는 안 내려감 (2026-11-26 사용자) */
@@ -3815,10 +3820,10 @@ img.rimg{image-rendering:auto!important}
       if (!host.offsetParent || (host._busy && host._busy())){ if (!quiet) host.textContent = ''; quiet = true; return; } var now = Date.now();
       if (quiet){ quiet = false; next = now + 2400; (host.closest('.rl3,.rl4') ? [450, 730, 1070, 1400, 1650] : [450, 730, 1070]).forEach(function(d){ setTimeout(function(){ if (host.isConnected && !(host._busy && host._busy())) fwShot(host); }, d); }); }
       else if (now >= next){ next = now + 2400; fwShot(host); } }, 150); }
-  /* 거절할 수 있는 팝업의 수락 순간(용병 영입·돈고블린 받기): 화면은 그대로 두고 짧게 터뜨린 뒤 닫음 (2026-11-26 사용자: "뎁스가 있어") */
+  /* 결과가 아니라 제안인 용병 영입의 수락 순간: 화면은 그대로 두고 짧게 터뜨린 뒤 닫음 (2026-11-26 사용자: "뎁스가 있어") */
   function fwQuick(stage, box, done){ if (box.style.pointerEvents === 'none') return; box.style.pointerEvents = 'none'; var f = stage.querySelector(':scope > .rfw'); if (!f){ fwFx(stage, function(){ return true; }); f = stage.querySelector(':scope > .rfw'); }
     [0, 140, 280].forEach(function(d){ setTimeout(function(){ if (f && f.isConnected) fwShot(f); }, d); }); setTimeout(function(){ box.style.pointerEvents = ''; done(); }, 1100); }
-  function rayFx(key){ var rb = $('roul').querySelector('.rbox'), t = lootTier(key); rb.classList.remove('rl1', 'rl2', 'rl3', 'rl4'); rb.classList.add('rl' + t); rb.style.setProperty('--gcol', GR(t).col); fwFx(rb.querySelector('.rstage'), function(){ return rb.classList.contains('spin') || rb.classList.contains('gwait') || (roulPeek != null && roulPeek !== S.offer) || S.offerMode === 'groll'; /* 돈고블린은 받을 때만(거절 가능). 다른 후보 미리 보는 중엔 폭죽 없음 (2026-11-26 사용자) */ }); } /* 뒤 빛줄기: 1등급 없음, 2등급 이상은 등급색, 높을수록 진하고 빠르게. 도는 중 칸이 바뀌면 같이 바뀜 */
+  function rayFx(key){ var rb = $('roul').querySelector('.rbox'), t = lootTier(key); rb.classList.remove('rl1', 'rl2', 'rl3', 'rl4'); rb.classList.add('rl' + t); rb.style.setProperty('--gcol', GR(t).col); fwFx(rb.querySelector('.rstage'), function(){ return rb.classList.contains('spin') || rb.classList.contains('gwait') || (roulPeek != null && roulPeek !== S.offer); /* 다른 후보 미리 보는 중엔 폭죽 없음 (2026-11-26 사용자) */ }); } /* 뒤 빛줄기: 1등급 없음, 2등급 이상은 등급색, 높을수록 진하고 빠르게. 도는 중 칸이 바뀌면 같이 바뀜 */
   /* 룬 단상 (2026-11-26 사용자 확정): 영웅 도트와 같은 밀도(1칸 = P css px, 장치 px 정수배). 발 = 단상 윗끝에서 10.5칸 아래, 이름판은 단상 아래. 룬은 등급색으로 반짝 */
   var PEDRUNE = new Image(), PEDC = {}; PEDRUNE.src = 'img/p/pedestal_rune.png';
   function pedRune(col){ if (PEDC[col]) return PEDC[col]; if (!PEDRUNE.complete || !PEDRUNE.naturalWidth) return 'img/p/pedestal_rune.png'; var c = document.createElement('canvas'); c.width = 96; c.height = 33; var x = c.getContext('2d'); x.drawImage(PEDRUNE, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = col; x.fillRect(0, 0, 96, 33); return PEDC[col] = c.toDataURL(); }
@@ -4485,6 +4490,10 @@ img.rimg{image-rendering:auto!important}
     bigx: function(o, k){ var g = Math.min(1, k * 3), s = 22 * g; uxLine(o.x - s, o.y - 18 - s, o.x + s, o.y - 18 + s, 5, o.c); uxLine(o.x + s, o.y - 18 - s, o.x - s, o.y - 18 + s, 5, '#ffffff'); },
     slash: function(o, k){ var g = Math.min(1, k * 3), s = 16 * g; uxLine(o.x - s, o.y - 18 - s, o.x + s, o.y - 18 + s, 3, o.c); },
     claw: function(o, k){ var g = Math.min(1, k * 3), s = 14 * g; for (var i = -1; i <= 1; i++) uxLine(o.x - s + i * 7, o.y - 18 - s, o.x + s + i * 7, o.y - 18 + s, 2, '#ffe6c4'); },
+    /* 순간이동(그림자 찌르기 등): 보라 연기·잔상·칼날 선 (2026-11-26 사용자: "샤샥 할 때 연출이 좀 더") */
+    smoke: function(o, k){ ctx.globalCompositeOperation = 'source-over'; var C = ['#2a1450', '#5a2a9a', '#9a63e8']; for (var i = 0; i < 12; i++){ var an = i * 2.4, d = (6 + (i % 4) * 6) * (.35 + k), s = Math.max(2, Math.round((11 - (i % 3) * 2) * (1 - k))); ctx.fillStyle = C[i % 3]; ctx.fillRect(Math.round(o.x + Math.cos(an) * d - s / 2), Math.round(o.y - 22 + Math.sin(an) * d * .8 - k * 12 - s / 2), s, s); } },
+    ghost: function(o, k){ if (!IMGS[o.id]) return; ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = .65 * (1 - k); ctx.imageSmoothingEnabled = false; var S = unitPx(false); ctx.translate(o.x, 0); if (o.dir < 0) ctx.scale(-1, 1); ctx.drawImage(silhouette(o.id, '#8a52e0'), -S / 2, o.y - S * .96, S, S); },
+    cut: function(o, k){ var g = Math.min(1, k * 4), L = 42, x0 = o.x - L * o.dir, y0 = o.y - 56; uxLine(x0, y0, x0 + 2 * L * o.dir * g, y0 + 62 * g, 5 * (1 - k) + 2, '#c9a6ff'); },
     shx: function(o, k){ var g = Math.min(1, k * 3), s = 20 * g; uxLine(o.x - s, o.y - 18 - s, o.x + s, o.y - 18 + s, 5, '#b58cff'); uxLine(o.x + s, o.y - 18 - s, o.x - s, o.y - 18 + s, 5, '#7a3fc4'); },
     mark: function(o, k){ var y = o.y - 52 - Math.sin(k * 12) * 2; ctx.lineCap = 'round'; ctx.shadowColor = '#ff4a3a'; ctx.shadowBlur = 8; ctx.strokeStyle = '#ff6a5a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(o.x, y, 10, 0, 6.29); ctx.stroke(); ctx.shadowBlur = 0; uxLine(o.x - 15, y, o.x + 15, y, 2, '#ff6a5a'); uxLine(o.x, y - 15, o.x, y + 15, 2, '#ff6a5a'); uxGlow(o.x, y, 6, '#ffffff', .7); },
     pillar: function(o, k){ var h = 80 * Math.min(1, k * 2.5), a = (1 - k) * .8, g = ctx.createLinearGradient(0, o.y - h, 0, o.y); g.addColorStop(0, 'rgba(255,246,214,0)'); g.addColorStop(1, 'rgba(255,246,214,' + (.5 * a) + ')'); ctx.fillStyle = g; ctx.fillRect(Math.round(o.x - 10), Math.round(o.y - h), 20, h); uxGlow(o.x, o.y - 4, 20, '#fff6d6', .45 * a); for (var i = 0; i < 5; i++) uxDot(o.x - 12 + i * 6 + Math.sin(k * 8 + i) * 3, o.y - 10 - k * 56 - i * 6, 2.4, '#fff6d6', a); },
@@ -4577,7 +4586,7 @@ img.rimg{image-rendering:auto!important}
       var u = unitByUid(ev.uid); ultPops.push({ u: u, t: 0, max: .85 }); atkT[u.uid] = ANIM_IDS.indexOf(u.id) >= 0 ? ANIM_ATK : .25;
       var uk = u.h.ult && u.h.ult.kind; if (uk === 'teamShield') fxTeam('shield', u.side, { scale: 1.2 }); else if (uk === 'healAll') fxTeam('heal', u.side, { scale: .9 }); else if (uk === 'chain') fxAt('chain', u, { scale: 1.2, flip: u.side === 'E' }); else if (uk === 'aoe' && u.h.ult.slow) fxTeam('frost', u.side === 'A' ? 'E' : 'A', { scale: 1 });
       fxs.push({ x: posOf(u)[0], y: posOf(u)[1], t: .5, c: ELC[u.el], big: 1 });
-      var bkb = uk === 'blink' && u.h.ult.back; if (bkb){ blinks[u.uid] = { t: ev.t, f: u.face || (u.side === 'A' ? 1 : -1), pts: [], n: u.h.ult.chain || 1 }; fxAt('poof', u, { scale: .6 }); }
+      var bkb = uk === 'blink' && u.h.ult.back; if (bkb){ blinks[u.uid] = { t: ev.t, f: u.face || (u.side === 'A' ? 1 : -1), pts: [], n: u.h.ult.chain || 1 }; var bp = posOf(u); uxAdd('ghost', bp[0], bp[1] + 26, { id: u.id, dir: u.face }, .45); uxAdd('smoke', bp[0], bp[1] + 26, {}, .45); }
       var ovr = ultCastFx(u, uk, ev), UM = bkb || ovr ? null : ULTMAP[uk]; if (UM && HAS_FX){ if (UM[1] === 'self') fxAt(UM[0], u, { scale: UM[2], flip: u.side === 'E' }); else fxTeam(UM[0], UM[1] === 'ally' ? u.side : (u.side === 'A' ? 'E' : 'A'), { scale: UM[2] }); }
       if (ev.ult === 'aoe' || ev.ult === 'chain' || uk === 'nova' || uk === 'bombard') flash = .25;
     } else if (ev.kind === 'skill'){
@@ -4794,8 +4803,9 @@ img.rimg{image-rendering:auto!important}
   var atkT = {}; ATK_IDS.forEach(function(id){ var im = new Image(); im.onload = function(){ IMGS[id + '_atk'] = im; }; im.src = 'img/p/' + id + '_atk.png'; });
   function blinkStep(u){ var bk = blinks[u.uid]; if (!bk || !bk.t0) return; if (!u.alive){ delete blinks[u.uid]; return; }
     var k = Math.floor((performance.now() - bk.t0) / (360 / speed)); // 한 자리에 0.36초(배속 반영)
-    if (k < bk.pts.length){ if (bk.k !== k){ bk.k = k; bk.cur = bk.pts[k]; if (HAS_FX) FX.play('poof', bk.cur[0], bk.cur[1] + OFF + 26, { scale: .6 }); } return; }
-    var lp = bk.cur; delete blinks[u.uid]; if (HAS_FX){ if (lp) FX.play('poof', lp[0], lp[1] + OFF + 26, { scale: .6 }); fxAt('poof', u, { scale: .6 }); } } // 다 베면 제자리로: 양쪽에 순간이동 이펙트
+    var at = function(c){ return [zx(c[0]), zy(c[1]) + OFF + 26]; };
+    if (k < bk.pts.length){ if (bk.k !== k){ var prev = bk.cur; bk.k = k; bk.cur = bk.pts[k]; var p1 = at(bk.cur); if (prev){ var p0 = at(prev); uxAdd('ghost', p0[0], p0[1], { id: u.id, dir: prev[2] }, .4); } uxAdd('smoke', p1[0], p1[1], {}, .4); uxAdd('cut', p1[0] + bk.cur[2] * 30 * CZ, p1[1], { dir: bk.cur[2] }, .32, .08); } return; }
+    var lp = bk.cur; delete blinks[u.uid]; var back = posOf(u); if (lp){ var p2 = at(lp); uxAdd('ghost', p2[0], p2[1], { id: u.id, dir: lp[2] }, .4); uxAdd('smoke', p2[0], p2[1], {}, .4); } uxAdd('smoke', back[0], back[1] + 26, {}, .45); } // 다 베면 제자리로: 양쪽에 순간이동 이펙트
   var CHSTG = []; [1, 2, 3].forEach(function(g){ [1, 2, 3].forEach(function(s){ CHSTG.push('chest_g' + g + '_s' + s); }); }); CHSTG.forEach(function(k){ var im = new Image(); im.onload = function(){ IMGS[k] = im; IMGSRC[k] = im.src; PIX[k] = true; if (S && !bt) renderForm(); }; im.src = 'img/p/' + k + '.png'; }); /* chest_g등급_s상태 */
   var CHEST_K = 1.25; /* 상자 크기 배율(영웅 칸 기준). 2026-11-25 사용자: 보물상자가 너무 커서 작게 (144/63 = 2.29 -> 1.5 -> 1.25, 36칸 그림이 약 144px -> 약 80px) */ /* 보물상자 화면 배율 (영웅 대비, 정수). 4면 4·5·6칸 폭을 거의 덮지만 높이가 커요 */
   var CPGOLD = new Image(); CPGOLD.src = 'img/p/hud_gold.png';
@@ -5251,7 +5261,6 @@ img.rimg{image-rendering:auto!important}
   $('rYes').addEventListener('click', function(){
     if (S.offerMode === 'mobs' && S.mobPend){ takeMobLoot(); return; }
     if (!S.offer || S.offerDecided) return;
-    var rb = $('roul').querySelector('.rbox'); if (S.offerMode === 'groll' && !this.dataset.fw){ var btn = this; fwQuick(rb.querySelector('.rstage'), rb, function(){ btn.dataset.fw = '1'; btn.click(); delete btn.dataset.fw; }); return; }
     var key = S.offer, p = LP(key), skBefore = S.skills.length;
     decideOffer(true);
     if (S.pending) return; // 백팩 꽉 참: 고르면 닫혀요
@@ -5769,7 +5778,7 @@ img.rimg{image-rendering:auto!important}
       if (k === 'pick') return trPick(uid); });
     trRender(); }
   function trSlot(k, uid){ var u = uid != null && U(uid), nm = k === 'A' ? '메인' : '재료';
-    return '<button class="trslot s' + k + (!u && !trDone && (k === 'A' ? altA == null : altA != null && altM == null) ? ' next' : '') + (u ? ' full' : '') + '" type="button" data-tr="' + k + '"' + ' disabled><i class="trglow"></i><b class="trtag">' + nm + '</b>' + (u ? '<span class="trfig">' + av(u.id) + starsIn(u.star, u.id, isTr(u)) + '</span><span class="trnm">' + hero(u.id).name + '</span>' : '<span class="trplus">+</span>') + '</button>'; }
+    return '<button class="trslot s' + k + (!u && !trDone && (k === 'A' ? altA == null : altA != null && altM == null) ? ' next' : '') + (u ? ' full' : '') + '" type="button" data-tr="' + k + '"' + ' disabled><i class="trglow"></i>' + (u ? '<span class="trfig">' + av(u.id) + starsIn(u.star, u.id, isTr(u)) + '</span>' : '<span class="trplus">+</span>') + '<span class="trline"><b class="trtag">' + nm + '</b>' + (u ? '<span class="trnm">' + hero(u.id).name + '</span>' : '') + '</span></button>'; }
   function trDust(st, quiet){ var o = quiet ? '' : [[10, 16, ' l'], [88, 24, ' m'], [48, 10, ''], [30, 70, ' m'], [72, 66, ''], [92, 78, ' l']].map(function(s, i){ return '<s class="tw' + s[2] + '" style="left:' + s[0] + '%;top:' + s[1] + '%;animation-delay:-' + (i * .4).toFixed(1) + 's"></s>'; }).join('');
     st.insertAdjacentHTML('beforeend', '<i class="trdust">' + o + '</i>'); }
   /* 초월 뒤: 팝업을 닫지 않고 메인만 남겨 얻은 스킬을 보여 줌. 확인과 X 둘 다 닫기 */
@@ -5781,7 +5790,7 @@ img.rimg{image-rendering:auto!important}
     var rg = w.querySelector('.trreg'); if (rg) rg.remove(); var b = w.querySelector('.rbtns button'); b.textContent = '확인'; b.dataset.tr = 'ok'; b.disabled = false; }
   function trFit(){ var w = $('trWin'); if (!w) return; var b = w.querySelector('.rbox'), i = w.querySelector('.trinfo'); if (b && i) i.style.setProperty('height', b.offsetHeight + 'px', 'important'); } /* 두 창 높이 맞춤 */
   function trRender(){ var w = $('trWin'); if (!w) return; setTimeout(trFit, 0); if (trDone) return trResult(w); var a = altA != null && U(altA), m = altM != null && U(altM), kind = a && m ? trKind(a, m) : null, st = w.querySelector('.trstage');
-    st.innerHTML = trSlot('A', altA) + '<span class="trmid"><i class="trarrow' + (kind ? ' on' : '') + '"></i>' + (m ? '<span class="trsk">' + skFrame(ultIconEl(hero(m.id)), HG(m.id).col) + '<small>' + ultName(hero(m.id)) + '</small></span>' : '') + '</span>' + trSlot('M', altM); trDust(st); /* 화살표는 재료 -> 메인 (왼쪽) */
+    st.innerHTML = trSlot('A', altA) + '<span class="trmid"><i class="trarrow' + (kind ? ' on' : '') + '"></i>' + (m ? '<span class="trsk">' + skFrame(ultIconEl(hero(m.id)), HG(m.id).col) + '<small>' + ultName(hero(m.id)) + '</small></span>' : '') + '</span>' + trSlot('M', altM) + '<i class="trwarn">재료로 사용된 히어로는 사라집니다.</i>'; trDust(st); /* 화살표는 재료 -> 메인 (왼쪽) */
     st.querySelectorAll('.trslot').forEach(function(s){ var x = U(s.dataset.tr === 'A' ? altA : altM); pedestal(s, s.dataset.tr === 'A' ? '#ffd34d' : '#5ab4ff'); });
     trInfo(w.querySelector('.trinfo'));
     var ids = S.team.filter(function(x){ return x && U(x); }); /* 백팩 영웅은 백팩 칸에서 */ trBag();
