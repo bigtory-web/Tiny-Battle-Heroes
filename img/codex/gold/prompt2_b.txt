@@ -1,0 +1,9 @@
+Look at these images from our pixel art game: img/gemini/ref/skill_drums_x8.png (item icon style, 8x enlarged), img/gemini/ref/bear_x8.png (hero style and shading, 8x enlarged), img/codex/gold/gold_b.png (a first rough draft of a gold pouch, keep the idea).
+Generate ONE new image with your image generation tool and save it as img/codex/gold/gold2_b.png
+
+A BEAUTIFUL, DETAILED pixel art treasure item: a plump rich leather GOLD POUCH overflowing with gold coins.
+- Plump brown leather bag with soft folds and stitched seams, a small golden buckle or a round gold emblem with a star on the front, a red-gold braided drawstring cord with two tassels, the mouth ruffled and open with a heap of shiny gold coins (some with an engraved star), a few coins tumbling and lying at the base, one ruby and one small blue gem among the coins, two or three tiny white sparkles.
+- Rich shading: 4 to 5 tones for leather and gold, strong highlight on upper left, deeper shadow lower right, 1 art pixel dark outline (#2a1409).
+- Pixel grid: exactly 40x40 art pixels (one art pixel = 24 image pixels, image 960x960), the drawing fills about 36x36, centered. Crisp square pixels, no anti-aliasing, no gradients, no finer detail than the grid.
+[Format] Plain solid #FF00FF magenta background, no text, no shadow.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
