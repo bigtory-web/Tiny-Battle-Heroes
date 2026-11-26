@@ -2897,15 +2897,17 @@ img.rimg{image-rendering:auto!important}
 #trWin .trslot > .rped{filter:sepia(1) saturate(3.2) drop-shadow(0 0 4px var(--tc))}
 #trWin .trslot.sM > .rped{filter:sepia(1) saturate(3.2) hue-rotate(170deg) drop-shadow(0 0 4px var(--tc))}
 #trWin .trstage{overflow:hidden}
-#trWin .trstage.charge{background:radial-gradient(circle at 30% 55%,#8a52e0,#2a1450 45%,#0c0818 80%)!important;animation:trquake .16s steps(2) infinite}
+#trWin .trstage.charge{background:radial-gradient(circle at var(--cx,30%) var(--cy,55%),#8a52e0,#2a1450 45%,#0c0818 80%)!important;animation:trquake .16s steps(2) infinite}
 #trWin .trstage.done{background:radial-gradient(circle at 50% 55%,#8a52e0,#32195c 45%,#0c0818 80%)!important}
 #trWin .trstage.done .trslot.sA > .rped{--tc:#c9a6ff;filter:sepia(1) saturate(3.2) hue-rotate(220deg) drop-shadow(0 0 6px #c9a6ff)}
-#trWin .trstage.charge::before{content:'';position:absolute;left:50%;top:55%;width:720px;height:720px;margin:-360px 0 0 -360px;background:repeating-conic-gradient(rgba(201,166,255,.4) 0 8deg,transparent 8deg 20deg);animation:spinr 1.6s linear infinite;pointer-events:none}
-#trWin .trstage.charge::before{left:30%}
+#trWin .trstage.charge::before{content:'';position:absolute;left:var(--cx,30%);top:var(--cy,55%);width:720px;height:720px;margin:-360px 0 0 -360px;background:repeating-conic-gradient(rgba(201,166,255,.4) 0 8deg,transparent 8deg 20deg);animation:spinr .7s linear infinite;pointer-events:none}
 #trWin .trstage.done .trtag{display:none} /* 결과 화면엔 "메인" 딱지 없음 (2026-11-26 사용자) */
 #trWin .trstage.done::after{content:'';position:absolute;inset:0;background:#fff;pointer-events:none;z-index:6;animation:finfl .7s ease-out forwards}
 #trWin .rbox:has(.trstage.charge){background:#2a1648!important}
 @keyframes trquake{50%{translate:3px -2px}}
+#trWin .trword{position:absolute;left:0;right:0;top:12px;z-index:7;text-align:center;font:400 46px/1 var(--display);letter-spacing:.12em;color:#fff;text-shadow:-3px 0 #4a1f9a,3px 0 #4a1f9a,0 -3px #4a1f9a,0 3px #4a1f9a,0 6px #17141d,0 0 18px #c9a6ff;pointer-events:none;animation:trword .35s steps(4) both}
+@keyframes trword{0%{transform:scale(2.2);opacity:0}100%{transform:scale(1);opacity:1}}
+#trWin .trstage.charge .trtag{visibility:hidden} /* 큰 글자와 딱지가 겹치지 않게 */
 /* 네 모서리 덩굴 장식 = 요정 팝업 모양을 보라로 (2026-11-26 사용자) */
 #trWin .trstage > .trvine{position:absolute;left:7px;top:7px;width:40px;height:40px;pointer-events:none;z-index:3;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' shape-rendering='crispEdges'%3E%3Cpath fill='%235a3a9a' d='M0 0h14v1H9v1H2v7H1v5H0z'/%3E%3Cpath fill='%23a77bff' d='M7 2h3v1h1v1H8V3H7zM13 1h2v1h2v1h-3V2h-1zM2 8h1v1h1v2H3v-1H2zM1 13h1v1h2v2H2v-1H1z'/%3E%3Cpath fill='%23c9a6ff' d='M3 2h3v1h1v3H6v1H3V6H2V3h1z'/%3E%3Cpath fill='%23fff6ff' d='M4 4h1v1H4z'/%3E%3Cpath fill='%23e9ddff' d='M11 2h2v1h-2zM2 11h1v2H2z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
 #trWin .trstage > .trvine.b{top:auto;bottom:7px;transform:scaleY(-1)}
@@ -5526,7 +5528,8 @@ img.rimg{image-rendering:auto!important}
       return '<button class="trc' + (on ? ' on k' + on : '') + (id === trSeen ? ' seen' : '') + '" type="button" data-tr="pick" data-uid="' + id + '" style="--hg:' + HG(u.id).col + '"' + (ok ? '' : ' aria-disabled="true"') + '>' + heroFr(u.id, u.star) + (on ? '<b>' + (on === 'A' ? '메인' : '재료') + '</b>' : '') + '</button>'; }).join('');
     w.querySelector('[data-tr="go"]').disabled = !kind || altDone(); }
   function trDo(){ var a = altA, m = altM, w = $('trWin'); if (!w || a == null || m == null || altDone() || !trKind(U(a), U(m))) return; var mid = U(m).id; trAnim = true;
-    w.querySelector('[data-tr="go"]').disabled = true; w.querySelector('.trstage').classList.add('suck', 'charge'); /* 재료가 메인 쪽으로 빨려 들어감 + 배경이 보라로 바뀌고 흔들림 */
+    w.querySelector('[data-tr="go"]').disabled = true; var st = w.querySelector('.trstage'), fg = st.querySelector('.sA .trfig'); if (fg){ var sl = fg.parentNode; st.style.setProperty('--cx', (sl.offsetLeft + fg.offsetLeft + fg.offsetWidth / 2) + 'px'); st.style.setProperty('--cy', (sl.offsetTop + fg.offsetTop + fg.offsetHeight * .62) + 'px'); } /* 회전 중심 = 메인 영웅 */
+    st.insertAdjacentHTML('beforeend', '<b class="trword">초월</b>'); st.classList.add('suck', 'charge'); /* 재료가 메인 쪽으로 빨려 들어감 + 배경이 보라로 바뀌고 흔들림 */
     setTimeout(function(){ if (!trOn) return; trAnim = false; var ok = tryTranscend(a, m); if (!ok) return trClose(); if (S.event){ S.event.trCount = (S.event.trCount || 0) + 1; save(); } altA = null; altM = null; trDone = { uid: a, mid: mid }; w.querySelector('.trstage').classList.remove('suck', 'charge'); renderForm(); trRender(); }, 1500); }
   function altarHtml(){ if (altA != null && !U(altA)) altA = null; return altarPickHtml(); return altGuide() + '<div class="unit altar' + (altDone() ? ' used' : '') + '" style="left:' + (100 * 506 / W) + '%;top:' + (100 * (184 + OFF + FOOT) / H) + '%;z-index:200"><i class="altspr"></i></div>'; }
   function finishAltar(){ if (!isAltar()) return; trClose(); altA = null; altM = null; S.event = nextEvent(false); S.bell = 0; S.bellGold = 0; save(); evGo(); }
