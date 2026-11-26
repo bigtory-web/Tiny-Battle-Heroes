@@ -248,10 +248,10 @@ var IDLE_DATA = {
     // 적 팀 스킬: from 스테이지부터 count개 (팀 스킬 목록에서 스테이지마다 정해져요). 레벨 = 1 + floor(스테이지 / levelEvery). 보스 스테이지는 +bossExtra개
     enemySkills: { table: [{ from: 4, count: 1 }, { from: 12, count: 2 }, { from: 22, count: 3 }], levelEvery: 10, bossExtra: 0 }, // 보스 판에 스킬을 더 주면 3-10이 거의 못 깨는 벽이 돼서 0
     // 2026-11-26 장(챕터): 장마다 처음부터(플레이어 레벨 1) 10판. E.chapterData(data, 장 번호)가 이 표로 그 장의 data를 만들어요(판 번호는 0~9 그대로, 이름만 "2-1"처럼)
-    //   lvPlus: 적 레벨 +N(1장 표에 더함) · swamp: 적 쪽 늪 칸 { cells: 판마다 칸 수, perSec: 늪에 선 적 공격력 1초마다 +비율(최대 없음) } · bellTiers: 그 장의 분노 단계 · groups: 같은 그룹 이벤트를 장별 확률로(키 = 굴려 나온 이벤트, 값 = 그룹 안 가중치)
+    //   lvPlus: 적 레벨 +N(1장 표에 더함) · swamp: 적 쪽 늪 칸 { cells: 판마다 칸 수, every: 이 초마다, amount: 늪에 선 적 공격력 +비율(계단식, 최대 없음) } · bellTiers: 그 장의 분노 단계 · groups: 같은 그룹 이벤트를 장별 확률로(키 = 굴려 나온 이벤트, 값 = 그룹 안 가중치)
     chapterDefs: [
       { name: '초원', bg: 'img/p/bg_field.png', bgDusk: 'img/p/bg_field_dusk.png' },
-      { name: '늪지대', bg: 'img/p/bg_swamp.png', bgDusk: 'img/p/bg_swamp_dusk.png', lvPlus: 1, swamp: { cells: 1, perSec: 0.05 }, bellTiers: [['more'], ['relic'], ['swamp']], groups: { merchant: { merchant: 3, swampShop: 7 } } }
+      { name: '늪지대', bg: 'img/p/bg_swamp.png', bgDusk: 'img/p/bg_swamp_dusk.png', lvPlus: 1, swamp: { cells: 1, every: 5, amount: 0.01 } /* 2026-11-27: 5초마다 +1% (사용자: "늪칸효과 5초마다 1%로해.."). 예전 perSec 0.05 = 1초마다 +5% */, bellTiers: [['more'], ['relic'], ['swamp']], groups: { merchant: { merchant: 3, swampShop: 7 } } }
     ],
     idle: { enabled: false, base: 8, growth: 1.2, maxHours: 8 } // 방치 보상 (꺼짐: 방치형 게임이 아니에요). 골드는 스테이지 보상과 전리품으로만 들어와요
   },

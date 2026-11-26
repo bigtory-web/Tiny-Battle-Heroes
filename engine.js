@@ -36,7 +36,7 @@
       return { uid: ++uid, id: h.id, name: h.name, h: h, side: side, slot: spec.slot, star: spec.star || 1, line: AR.lines ? (AR.lines[spec.slot] || 0) : (spec.slot < 2 ? 0 : 1), front: (AR.lines ? (AR.lines[spec.slot] || 0) === 0 : spec.slot < 2) || h.mob === 'goblin' || h.mob === 'chest', level: lv,
         x: spec.x != null ? spec.x : (side === 'A' ? p0[0] : AR.w - p0[0]), y: spec.y != null ? spec.y : p0[1], face: side === 'A' ? 1 : -1, moving: false, tgt: null,
         reach: AR.reach[h.range], spd: AR.speed[h.range],
-        maxHp: hp, hp: hp, atk: h.atk * g * (m.atk || 1), def: h.def * g, interval: h.interval / (spec.spd || 1), range: h.range, swampV: spec.swamp || 0, /* 2026-11-26 늪: 살아 있는 1초마다 공격력 +swampV */ race2: spec.race2 && spec.race2 !== h.race ? spec.race2 : null, /* 단상으로 더해진 종족 */ el: spec.el || h.el, el2: spec.el2 && spec.el2 !== (spec.el || h.el) ? spec.el2 : null, // el2: 진영 발판으로 더해진 진영 // spec.el: 진영 발판 위면 그 진영
+        maxHp: hp, hp: hp, atk: h.atk * g * (m.atk || 1), def: h.def * g, interval: h.interval / (spec.spd || 1), range: h.range, swampV: spec.swamp || 0, swampE: spec.swampE || 0, /* 2026-11-26 늪: 살아 있는 1초마다 공격력 +swampV. 2026-11-27: swampE가 있으면 swampE초마다 계단식(늪 칸) */ race2: spec.race2 && spec.race2 !== h.race ? spec.race2 : null, /* 단상으로 더해진 종족 */ el: spec.el || h.el, el2: spec.el2 && spec.el2 !== (spec.el || h.el) ? spec.el2 : null, // el2: 진영 발판으로 더해진 진영 // spec.el: 진영 발판 위면 그 진영
         energy: h.ult && h.ult.trig ? (h.ult.trig.kind === 'start' ? B.energyMax : 0) : Math.min(B.energyMax, SE.value + (spec.energy || 0)), trig: h.ult && h.ult.trig || null, timer: rand() * B.startJitter, alive: true, shield: 0, taunt: 0, slow: 0, slowAmt: 0, haste: 0, hasteAmt: 0,
         grade: h.grade || 1, ultLv: 0, pasLv: 0, uk: 1, pas: null, pv: 0, crit: critChance(data, h),
         boss: !!spec.boss, merc: !!spec.merc, blue: !!spec.blue, endureOnce: !!spec.endure, stats: { dealt: 0, taken: 0, healed: 0, ults: 0, shield: 0 } };
@@ -111,7 +111,7 @@
       if (beats[d.el] === a.el && !(a.el === 'light' || a.el === 'dark')) return EL.dis;
       return 1;
     }
-    function atkOf(u) { var a = u.atk; if (u.swampV) a *= 1 + u.swampV * t; if (u.kStk) a *= 1 + u.pas.v * u.kStk; if (u.pas && u.pas.kind === 'rage' && u.hp / u.maxHp < 0.5) a *= 1 + u.pv; if (u.buffT > 0) a *= 1 + u.buffAmt; if (u.stkAtk) a *= 1 + u.stkAtk;
+    function atkOf(u) { var a = u.atk; if (u.swampV) a *= 1 + u.swampV * (u.swampE ? Math.floor(t / u.swampE) : t); if (u.kStk) a *= 1 + u.pas.v * u.kStk; if (u.pas && u.pas.kind === 'rage' && u.hp / u.maxHp < 0.5) a *= 1 + u.pv; if (u.buffT > 0) a *= 1 + u.buffAmt; if (u.stkAtk) a *= 1 + u.stkAtk;
       if (u.pas && u.pas.kind === 'burnRally') a *= 1 + u.pv * alive(foes(u)).filter(function (x) { return x.burn; }).length; return a; }
 
     function nearGoblin(u, F) { return (F || alive(foes(u))).filter(function (x) { return x.h.mob === 'goblin' && dist(u, x) <= u.reach * 1.2; })[0] || null; }
@@ -683,10 +683,10 @@
     var rndB = makeRng(n * 977 + 41 + plv * 7919); team.forEach(function (u) { u.bonus = heroBonus(data, u.id, n, rndB, plv); if (bhas('haste')) u.spd = 1 + bv('haste'); if (bhas('energy')) u.energy = bv('energy'); if (bhas('endure')) u.endure = 1;
       if (bhas('rage') || bhas('tough')) u.mul = { hp: (u.mul.hp || 1) * (1 + (bhas('tough') ? bv('tough') : 0)), atk: (u.mul.atk || 1) * (1 + (bhas('rage') ? bv('rage') : 0)) }; });
     if (bhas('star') && team.length) { var sU = team[Math.floor(rndB() * team.length)], sg = gradeMul(data, 1 + bv('star')) / gradeMul(data, 1); sU.star = 1 + bv('star'); sU.mul = { hp: sU.mul.hp * sg, atk: sU.mul.atk * sg }; } // 정예: 무작위 적 1명 별 +1 (2026-11-23) // 따로 굴려요: 종으로 적이 늘어도 있던 덤은 그대로
-    // 2026-11-26 늪 칸(2장): 적 쪽 칸 cells개(+분노 '늪 확장'). 적이 선 칸에서 먼저 골라요(빈 늪은 뜻이 없어서). 늪에 선 적은 살아 있는 1초마다 공격력 +perSec(최대 없음)
+    // 2026-11-26 늪 칸(2장): 적 쪽 칸 cells개(+분노 '늪 확장'). 적이 선 칸에서 먼저 골라요(빈 늪은 뜻이 없어서). 늪에 선 적은 살아 있는 every초마다 공격력 +amount(최대 없음, 2026-11-27 계단식)
     var SW = C.swamp, swamp = []; if (SW && team.length) { var rndW = makeRng(n * 977 + 71 + plv * 7919), occ = team.map(function (u) { return u.slot; }), nW = (SW.cells || 0) + (bhas('swamp') ? bv('swamp') : 0);
       for (var wi = occ.length - 1; wi > 0; wi--) { var wj = Math.floor(rndW() * (wi + 1)), wt = occ[wi]; occ[wi] = occ[wj]; occ[wj] = wt; }
-      swamp = occ.slice(0, nW); team.forEach(function (u) { if (swamp.indexOf(u.slot) >= 0) u.swamp = SW.perSec; }); }
+      swamp = occ.slice(0, nW); team.forEach(function (u) { if (swamp.indexOf(u.slot) >= 0) { u.swamp = SW.amount != null ? SW.amount : SW.perSec; u.swampE = SW.every || 0; } }); }
     if (ev && ev.kind === 'goblin') team.push({ id: 'goblin', level: lv, slot: 4, mul: m, mob: true });
     if (mercN) team.push({ id: ev.id, level: lv, slot: 4, mul: m, merc: true });
     return { n: n, name: stageName(data, n), level: lv, boss: boss, wall: C.walls.indexOf(n) >= 0, team: team, skills: eskills, event: ev || null, bell: bell, bellFx: bfx, curse: bhas('curse') ? bv('curse') : 0, swamp: swamp };
