@@ -258,7 +258,7 @@ var IDLE_DATA = {
     //   lvPlus: 적 레벨 +N(1장 표에 더함) · swamp: 적 쪽 늪 칸 { cells: 판마다 칸 수, every: 이 초마다, amount: 늪에 선 적 공격력 +비율(계단식, 최대 없음) } · bellTiers: 그 장의 분노 단계 · groups: 같은 그룹 이벤트를 장별 확률로(키 = 굴려 나온 이벤트, 값 = 그룹 안 가중치)
     chapterDefs: [
       { name: '초원', bg: 'img/p/bg_field.png', bgDusk: 'img/p/bg_field_dusk.png' },
-      { name: '늪지대', bg: 'img/p/bg_swamp.png', bgDusk: 'img/p/bg_swamp_dusk.png', lvPlus: 1, swamp: { cells: 1, every: 5, amount: 0.01 } /* 2026-11-27: 5초마다 +1% (사용자: "늪칸효과 5초마다 1%로해.."). 예전 perSec 0.05 = 1초마다 +5% */, bellTiers: [['more'], ['relic'], ['swamp']], groups: { merchant: { merchant: 3, swampShop: 7 } } }
+      { name: '늪지대', story: '초원을 지나면 안개 낀 늪지대가 나온다. 발이 빠지는 진흙 위에서 적들은 오래 버틸수록 사나워진다. 늪 한가운데에는 수상한 물약을 파는 개구리 상인이 산다.', /* 2026-11-27 챕터 이야기(사용자: "늪지대 스토리도 넣어줘") */ foeIcon: 'img/p/ui_swampfoe', bg: 'img/p/bg_swamp.png', bgDusk: 'img/p/bg_swamp_dusk.png', lvPlus: 1, swamp: { cells: 1, every: 5, amount: 0.01 } /* 2026-11-27: 5초마다 +1% (사용자: "늪칸효과 5초마다 1%로해.."). 예전 perSec 0.05 = 1초마다 +5% */, bellTiers: [['more'], ['relic'], ['swamp']], groups: { merchant: { merchant: 3, swampShop: 7 } } }
     ],
     idle: { enabled: false, base: 8, growth: 1.2, maxHours: 8 } // 방치 보상 (꺼짐: 방치형 게임이 아니에요). 골드는 스테이지 보상과 전리품으로만 들어와요
   },
@@ -409,7 +409,7 @@ var IDLE_DATA = {
     info: {
       campfire: { name: '모닥불', desc: '모닥불에 둘러앉은 영웅 중 1명이 룰렛으로 동료가 된다. 전투는 없다.' },
       merchant: { name: '방랑상인', desc: '희귀 이상 유물과 영웅을 싸게 파는 특별 상점이 열린다. 전투는 없다.' },
-      swampShop: { name: '늪지 상인', desc: '그 전투에서만 힘이 되는 물약을 판다. 물약 칸은 레벨이 오르면 늘어난다. 전투는 없다.' },
+      swampShop: { name: '늪지 상인', desc: '물약을 판다. 물약은 마신 그 전투에서만 힘이 되고, 전투가 끝나면 사라진다.' }, // 2026-11-27 (사용자: "물약을 판다 물약이 뭔지 알려주면 끝")
       chest:    { name: '보물상자', desc: '정해진 시간 동안 상자를 때린다. 많이 깎을수록 골드·마나스톤·유물 보상이 쌓인다. 지지 않는다.' },
       altar:    { name: '초월 제단', desc: '백팩 영웅을 재료로 넣어 전장 영웅을 초월시킨다. 초월은 여기서만 할 수 있다.' },
       fairy:    { name: '요정', desc: '요정이 유물 룰렛을 돌려 1개를 준다. 전투는 없다.' },
