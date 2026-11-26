@@ -2679,6 +2679,10 @@ img.rimg{image-rendering:auto!important}
 #roul:not(.chestpop) .rbox .rstage.onped > .rstars{inset:auto;left:calc(50% - 50 * var(--P));bottom:calc(38px + 4 * var(--P));width:calc(100 * var(--P));height:calc(100 * var(--P))}
 #chestPop .rbox .rstage > .rstars{inset:auto;left:calc(50% - 81px);top:calc(50% - 96px);width:162px;height:162px}
 #roul:not(.chestpop) .rbox.spin .rstars{display:none}
+/* 열 때(돌지 않고 바로 뜸)는 결과 연출(흔들림·튀어 오름·고리) 없음 */
+#roul .rbox.still,#roul .rbox.still .ring,#roul .rbox.still .rgrade,#roul .rbox.still .rstage .rpic{animation:none!important}
+#roul .rbox.still.reveal:not(.spin) .rstage .rpic:not(.loot){animation:rpblink .8s steps(1) infinite!important}
+#roul .rbox.still .rgrade{opacity:1}
 </style>
 </head>
 <body>
@@ -3363,7 +3367,7 @@ img.rimg{image-rendering:auto!important}
   // 멈춘 순간의 연출: 등급이 높을수록 광선·흔들림·번쩍임·조각이 커져요
   function revealFx(key, quiet){
     var gr = lootGrade(key), box = $('roul').querySelector('.rbox');
-    box.classList.remove('spin', 'gr1', 'gr2', 'gr3', 'reveal'); void box.offsetWidth;
+    box.classList.remove('spin', 'gr1', 'gr2', 'gr3', 'reveal', 'still'); $('roul').classList.remove('flash'); void box.offsetWidth; box.classList.toggle('still', !!quiet); /* still: 돌지 않고 바로 뜬 팝업은 흔들림·튀어 오름 없음 (2026-11-26 사용자) */
     var lg = GR(lootTier(key)); box.classList.add('gr' + gr, 'reveal'); box.style.setProperty('--gcol', lg.col);
     $('rGrade').textContent = lg.name; $('rGrade').className = 'rgrade g' + gr; $('rGrade').style.cssText = 'background:' + lg.col + ';color:#17141d';
     if (quiet) return;
