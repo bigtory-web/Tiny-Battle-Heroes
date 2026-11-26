@@ -350,7 +350,10 @@
         if (a.side !== b.side) { // 상대끼리: 공격으로 밀리지 않게, 움직이던 쪽만 물러나요 (둘 다 서 있으면 그대로)
           var wa = a.moving && !b.moving ? 2 : a.moving && b.moving ? 1 : 0, wb = b.moving && !a.moving ? 2 : a.moving && b.moving ? 1 : 0;
           a.x += nx * push * wa; a.y += ny * push * wa; b.x -= nx * push * wb; b.y -= ny * push * wb; continue; }
-        a.x += nx * push; a.y += ny * push; b.x -= nx * push; b.y -= ny * push;
+        if (a.moving !== b.moving) { // 같은 편: 움직이는 쪽만 위아래로 비켜 돌아가요. 서 있는(때리는) 쪽은 그대로 (2026-11-26, 롤토체스처럼)
+          var mv = a.moving ? a : b, st = mv === a ? b : a, sy = Math.abs(mv.y - st.y) > 0.5 ? Math.sign(mv.y - st.y) : (mv.uid % 2 ? 1 : -1);
+          mv.y += sy * push * 2; continue; } // 앞으로는 막지 않아요: 땅 띠(84px)가 좁아 비킬 틈이 없으면 살짝 겹쳐 지나가요
+        a.x += nx * push; a.y += ny * push; b.x -= nx * push; b.y -= ny * push; // 둘 다 서 있거나 둘 다 움직이면 반씩
       }
       all.forEach(function (u) {
         u.x = Math.max(36, Math.min(AR.w - 36, u.x)); // 그림(2배, 폭 72)이 화면 밖으로 잘리지 않게
@@ -405,7 +408,7 @@
         // 대상: 없거나 죽었거나, 상대에 도발이 걸렸으면 다시 골라요
         var taunting = alive(foes(u)).some(function (x) { return x.taunt > 0; });
         if (!u.tgt || !u.tgt.alive || (taunting && !(u.tgt.taunt > 0)) || (!taunting && u.tgt.h.mob !== 'goblin' && nearGoblin(u))) u.tgt = pickTarget(u);
-        var tg = u.tgt;
+        var tg = u.tgt; if (tg && dist(u, tg) > u.reach) { /* 2026-11-26: 대상이 막혀 못 닿으면 사거리 안의 적부터 쳐요(같은 편이 안 비켜 주니 갇히지 않게) */ var nr = alive(foes(u)).filter(function (x) { return dist(u, x) <= u.reach && x.h.mob !== 'chest'; })[0]; if (nr && !(tg.taunt > 0)) tg = u.tgt = nr; }
         if (!tg) { // 칠 수 있는 적이 없으면 가장 가까운 적 쪽으로 다가가요
           var near = alive(foes(u)).sort(function (a, b) { return Math.abs(a.x - u.x) - Math.abs(b.x - u.x); })[0];
           if (near) { var dx = near.x - u.x; u.face = dx >= 0 ? 1 : -1; u.moving = Math.abs(dx) > 30; if (u.moving) u.x += Math.sign(dx) * Math.min(Math.abs(dx) - 30, u.spd * B.dt); }
