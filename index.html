@@ -3472,8 +3472,9 @@ img.rimg{image-rendering:auto!important}
     box.hidden = false; box.querySelector('.rbtns').hidden = false; ['rYes', 'rNo', 'rAgain', 'rLeft', 'rExit'].forEach(function(b){ $(b).hidden = true; }); $('rWait').hidden = false; $('rX').hidden = true; $('rRes').hidden = true; $('rPend').hidden = true; box.querySelector('.rmeta').textContent = ''; // 도는 동안 버튼 자리에 두구두구
     $('rX').disabled = false; if (S.offerMode === 'groll'){ $('rX').hidden = false; $('rX').disabled = true; }
     var rb = box.querySelector('.rbox'); rb.classList.remove('gr1', 'gr2', 'gr3', 'reveal'); rb.classList.add('spin'); $('rGrade').textContent = ''; $('rBurst').innerHTML = '';
-    if (reel){ var L = all.length, ti = Math.max(0, all.indexOf(target)), CW = 48, fi = ti, minSteps = instant ? 0 : 14; while (fi - 3 < minSteps || fi < 3) fi += L;
-      var track = []; for (var q = 0; q < fi + 4; q++) track.push(all[q % L]);
+    if (reel){ var L = all.length, ti = Math.max(0, all.indexOf(target)), CW = 48, s0 = Math.max(0, all.indexOf(S.roulAt)), fi = 3 + (ti - s0 + L) % L, minSteps = instant ? 0 : 14; while (fi - 3 < minSteps) fi += L; /* 지난번에 멈춘 칸에서 이어서 돎 (2026-11-26 사용자) */
+      S.roulAt = target; save();
+      var track = []; for (var q = 0; q < fi + 4; q++) track.push(all[(s0 + q - 3 + 3 * L) % L]);
       rs.innerHTML = '<div class="rreel">' + track.map(cell).join('') + '</div><i class="rwin"></i>'; var rr = rs.querySelector('.rreel');
       var place = function(j, ms){ rr.style.transition = ms ? 'transform ' + ms + 'ms linear' : 'none'; rr.style.transform = 'translateX(' + (-(j - 3) * CW) + 'px)'; };
       var stopAt = function(){ var c = rr.children[fi]; if (c) c.classList.add('rcen'); };
@@ -5084,7 +5085,7 @@ img.rimg{image-rendering:auto!important}
   function grollPool(){ return E.rollGroll(D, S.stage, null, plv(), S.skills || []) || []; } /* rnd null = 같은 판에서는 늘 같은 구성 (별도 표, 기획 v658) */
   function grollIdle(){ if (!isGroll()) return; var pool = grollPool(); if (!pool.length) return; grOpen = true;
     var r = $('roul'), box = r.querySelector('.rbox'), cost = E.grollCost(D, S.stage, plv()), mx = E.grollSpins(D, plv()), left = Math.max(0, mx - grollUsed());
-    S.offerMode = 'groll'; S.offerDecided = false; S.offerGone = []; offerIds = S.offerIds = pool.slice(); startRoulette(pool, pool[0], true);
+    S.offerMode = 'groll'; S.offerDecided = false; S.offerGone = []; offerIds = S.offerIds = pool.slice(); startRoulette(pool, pool.indexOf(S.roulAt) >= 0 ? S.roulAt : pool[0], true);
     box.classList.add('groll'); box.classList.remove('spin', 'pendmode', 'camp'); box.querySelector('.rmeta').textContent = '';
     $('rWait').hidden = true; $('rRes').hidden = true; $('rPend').hidden = true; box.querySelector('.rbtns').hidden = false; ['rYes', 'rNo', 'rAgain', 'rExit'].forEach(function(b){ $(b).hidden = true; });
     var sp = $('rSpin'); if (!sp){ sp = document.createElement('button'); sp.id = 'rSpin'; sp.type = 'button'; sp.className = 'go'; box.querySelector('.rbtns').insertBefore(sp, $('rYes')); sp.addEventListener('click', function(){ if (!this.disabled) grollSpin(); }); }
