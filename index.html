@@ -3899,7 +3899,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
       if (ev.burn){ var bp = posOf(b); dmgPop(bp[0], bp[1] - 22, { fx: 'burn', s: '' + ev.amt, c: '#ffd04a', c2: '#ff3a1a', max: .8, size: 13 }); return; } // 화상 틱
       atkT[a.uid] = ANIM_IDS.indexOf(a.id) >= 0 ? ANIM_ATK : .2; ultHitFx(a, b, ev);
       var isUlt = !!ev.mag || ultAt[a.uid] === ev.t, more = Math.max(0, Math.min(8, Math.round((ev.amt / (a.atk || ev.amt || 1) - 1) * 4))); /* 피해가 클수록 크게 */
-      var ck = a.uid + '>' + b.uid, cg = combos[ck]; if (!cg || ev.t - cg.t > (ev.mag ? .45 : .01) || ev.t < cg.t) cg = combos[ck] = { n: 0, sum: 0, pops: [], timer: 0 }; cg.t = ev.t; var cn = ++cg.n; /* 두 번째부터 연타 */
+      var ck = a.uid + '>' + b.uid, cg = combos[ck]; if (!cg || ev.t - cg.t > .01 || ev.t < cg.t) cg = combos[ck] = { n: 0, sum: 0, pops: [], timer: 0 }; cg.t = ev.t; var cn = ++cg.n; /* 두 번째부터 연타. 연발(barrage)은 0.4초 간격이라 안 묶임 */
       var land = function(){ var p = posOf(b); comboPop(cg, cn, ev.amt, p[0], p[1] - 30, ev.crit ? { fx: 'crit', s: ev.amt + '!', c: '#ffd02e', c2: '#ff7a1a', max: 1, size: 24 + more, rot: Math.random() < .5 ? -.2 : .2 } : isUlt ? { fx: 'skill', s: '' + ev.amt, c: ELC[a.el] || '#c99bff', max: .85, size: 18 + more } : { fx: 'hit', s: '' + ev.amt, c: a.side === 'A' ? '#fff' : '#ffb3a8', max: .75, size: 14 + more }, !!ev.mag && a.el === 'water');
         fxs.push({ x: p[0], y: p[1], t: .15, c: '#fff' });
         hitStopOn(b.uid, ev.crit ? .18 : .13, 1); if (a.range === 'melee') hitStopOn(a.uid, .07, 0); // 맞은 쪽 멈칫+번쩍, 근접 공격자도 짧게 멈칫
