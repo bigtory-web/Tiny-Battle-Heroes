@@ -2593,6 +2593,10 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 #resPop .dfban{position:absolute;left:53px;top:160px;width:242px;height:272px;z-index:1;display:flex;flex-direction:column;align-items:center;padding-top:50px;gap:20px}
 #resPop .dfcloth{inset:0;background-image:url(img/p/defeat_banner.png);z-index:-1;transform-origin:50% 0;animation:dfunroll .4s .5s ease-out both}
 #resPop .dfban .rpits{padding:0;gap:8px;flex-wrap:nowrap}
+/* 보상 칸 위 "패배 스테이지 1-2", 확인은 조금 아래 (2026-11-26 사용자) */
+#resPop .dfban{padding-top:34px;gap:12px}
+#resPop .dfstg{font:400 17px/1 var(--display);color:#f4efe2;text-shadow:2px 0 #17141d,-2px 0 #17141d,0 2px #17141d,0 -2px #17141d;white-space:nowrap}
+#resPop .dfban:has(.rpits) .rpok{margin-top:20px!important}
 #resPop .dfban .rit em{font-size:16px;text-shadow:2px 0 #17141d,-2px 0 #17141d,0 2px #17141d,0 -2px #17141d}
 #resPop .dfban .rpok{margin:0;padding:10px 26px;font-size:18px;font-weight:700;animation:dffade .2s 1.1s both!important}
 @keyframes dfdrop{0%{opacity:0;transform:translateY(-260px)}1%{opacity:1}60%{transform:translateY(0)}75%{transform:translateY(-14px)}88%{transform:translateY(0)}94%{transform:translateY(-4px)}100%{opacity:1;transform:translateY(0)}}
@@ -5097,13 +5101,14 @@ img.rimg{image-rendering:auto!important}
       if (an) an.onfinish = land; else setTimeout(land, 320); }
     btn.onclick = function(){ o.hidden = true; hideTip(); if (onOk) onOk(); };
     setTimeout(step, 450); }
+  function lossStage(){ var n = S.stage, ev = S.event; /* 지면 판이 그대로라 지금 값 */ return E.stageName(D, ev && E.isEventStage && E.isEventStage(D, ev.kind) ? Math.max(0, n - 1) : n); }
   function resPop(win, title, items, onOk, opt){ opt = opt || {}; var ar = $('arena'), o = $('resPop'); if (!o){ o = document.createElement('div'); o.id = 'resPop'; popAdd(o, true); }
     o.className = win ? 'win' : 'lose pov'; /* pov: 깔개가 전장 전체를 덮고 정가운데 */
     var cells = '<div class="rpits">' + items.map(function(x, i){ return '<span class="rit' + (x.gold ? ' gold' : '') + (x.miss ? ' miss' : '') + '" style="animation-delay:' + ((win ? .25 : .85) + i * .08) + 's"' + (x.tip || '') + '>' + x.ic + '<em class="' + (x.c || '') + '">' + (x.n == null ? '' : x.n) + '</em></span>'; }).join('') + '</div>',
       ok = '<button class="rpok" type="button">' + (opt.ok || '확인') + '</button>', x = '<button class="spX popx" data-xfor="#resPop .rpok" type="button" title="닫기">✕</button>';
     o.innerHTML = win ? '<div class="rpcard"><i class="remb"><i></i></i><div class="rpt"><i class="rleaf"></i><b>' + title + '</b><i class="rleaf rr"></i></div>' + (opt.sub ? '<div class="rpsub">' + opt.sub + '</div>' : '') + '<i class="rpline"></i>' + cells + ok + x + '</div>'
       /* 패배: 별 장식 -> 돌 간판이 위에서 떨어지고, 붉은 천이 아래로 펼쳐진 뒤 내용 (2026-11-26 사용자) */
-      : '<div class="dfc"><div class="dfban"><i class="dfcloth"></i>' + (items.length ? cells : '') + ok + x + '</div><div class="dfsign"><b>' + title + '</b></div><i class="dfstar"></i></div>';
+      : '<div class="dfc"><div class="dfban"><i class="dfcloth"></i>' + (items.length ? '<div class="dfstg">' + title + ' 스테이지 ' + lossStage() + '</div>' : '') + (items.length ? cells : '') + ok + x + '</div><div class="dfsign"><b>' + title + '</b></div><i class="dfstar"></i></div>';
     o.hidden = false; o.querySelector('.rpok').onclick = function(){ o.hidden = true; o.innerHTML = ''; if (onOk) onOk(); }; }
   // 처음부터: 시작 영웅 1명만 남기고 판을 새로 시작해요. 설정(S.modules)과 화면 설정(S.ui)은 그대로
   function newRun(){ var keep = { modules: S.modules || {}, ui: S.ui };
