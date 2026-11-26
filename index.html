@@ -2800,6 +2800,10 @@ img.rimg{image-rendering:auto!important}
 #roster .chip.trpk{box-shadow:inset 0 0 0 3px #ffd34d,0 0 0 1px #17141d!important}
 #roster .chip.trno{filter:grayscale(1) brightness(.5)}
 #roster .chip > .trlab{position:absolute;left:0;right:0;bottom:0;z-index:12;font:400 11px/13px var(--display);color:#3a2208;background:#ffd34d;text-align:center}
+/* 전투 전 전장의 미믹: 정지 그림 대신 튀기 4칸 */
+.foe.mob:has(> .mhop) > .av{visibility:hidden}
+.foe > .mhop{position:absolute;left:50%;bottom:0;width:calc(100% * 44 / 37);aspect-ratio:1;transform:translateX(-50%);background:url(img/p/mimic_hop.png) 0 0/400% 100% no-repeat;image-rendering:pixelated;animation:mhop 1.2s step-end infinite;pointer-events:none}
+@keyframes mhop{0%{background-position:0 0}40%{background-position:33.333% 0}60%{background-position:66.667% 0}80%{background-position:100% 0}}
 </style>
 </head>
 <body>
@@ -3363,7 +3367,7 @@ img.rimg{image-rendering:auto!important}
       if (inner && hid && hero(hid).mob !== 'chest') fbars.push({ x: px, y: py, ally: side === 'A', mob: !!hero(hid).mob, id: hid, star: side === 'A' ? (U(key) ? U(key).star : 0) : (hero(hid).mob ? 0 : estar || 1) });
       return '<div class="unit"' + (side === 'A' && key ? ' data-uid="' + key + '"' : '') + ' style="left:' + (100 * px / W) + '%;top:' + (100 * (py + OFF + FOOT) / H) + '%;z-index:' + Math.round(py) + '">' + inner + '</div>'; }
     function foeHtml(u){ if (!u) return ''; var h = hero(u.id); if (h.mob === 'chest'){ return foeHtml0(u, h, chestImgKey(chestGrade(), 1)); } /* 전투 때 그림(등급)으로 미리 그려요: 예전 replace는 외곽선 그림 주소라 안 맞았음 */ return foeHtml0(u, h); }
-    function foeHtml0(u, h, key){ return '<div class="foe' + (u.boss ? ' boss' : '') + (u.merc ? ' merc' : '') + (h.mob ? ' mob' : '') + (MOBSZ[h.mob] ? ' mobsz' + (MOBSZ[h.mob] > 1 ? '2' : '') : '') + (h.mob === 'chest' ? ' chestbig' + chestFlashCls() : '') + '" data-foe="' + u.slot + '" style="--el:' + ELC[h.el] + footCss(h.id) + '" title="' + h.name + '">' + avO(h.id, key) + '' + bnBubble(u.bonus) + (h.mob === 'mimic' ? '' : mobBub(u)) + (h.mob === 'chest' ? chestBub() : '') + '</div>'; } // 레벨 표시는 뺐어요
+    function foeHtml0(u, h, key){ return '<div class="foe' + (u.boss ? ' boss' : '') + (u.merc ? ' merc' : '') + (h.mob ? ' mob' : '') + (MOBSZ[h.mob] ? ' mobsz' + (MOBSZ[h.mob] > 1 ? '2' : '') : '') + (h.mob === 'chest' ? ' chestbig' + chestFlashCls() : '') + '" data-foe="' + u.slot + '" style="--el:' + ELC[h.el] + footCss(h.id) + '" title="' + h.name + '">' + avO(h.id, key) + '' + bnBubble(u.bonus) + (h.mob === 'mimic' ? '<i class="mhop" style="animation-delay:-' + (u.slot * .37).toFixed(2) + 's"></i>' : mobBub(u)) + (h.mob === 'chest' ? chestBub() : '') + '</div>'; } // 레벨 표시는 뺐어요
     var bySlot = []; st.team.forEach(function(u){ bySlot[u.slot] = u; });
 
     function slotHtml(i){
@@ -4502,7 +4506,8 @@ img.rimg{image-rendering:auto!important}
     if (im){ var UN = Math.max(1, Math.ceil(S / im.width)), EX = im.width === 64 && !u.h.mob && !(u._lean > 0) && Math.abs(S * csB - 64 * Math.round(S * csB / 64)) < .02, imU = EX ? im : UPS(sid, UN), sl = function(col){ return EX ? silhouette(sid, col) : silU(sid, col, UN); }, sil = sl(gc(u.id)), o = EX ? 1 / csB : 1, ga0 = ctx.globalAlpha; // 등급 외곽선: 가장 얇게(1 논리 px), 옅게
       ctx.imageSmoothingEnabled = !EX; ctx.imageSmoothingQuality = 'high'; var sx = Math.round(-S / 2 * csB) / csB, sy = Math.round((-S + S * .04) * csB) / csB; /* 정수배(EX)면 최근접 + 장치 px에 딱 맞춤 */
       if (inspect && inspect.uid === u.uid){ var ps = sl(Math.floor(performance.now() / 350) % 2 ? '#fff3b0' : '#ffd34d'), o2 = EX ? 2 / csB : 2; [[o2, 0], [-o2, 0], [0, o2], [0, -o2]].forEach(function(d){ ctx.drawImage(ps, sx + d[0], sy + d[1], S, S); }); } /* 전투 중에도 고른 캐릭터(아군·적)에 금색 선택 라인, 0.7초 깜빡임 (편성 화면 .picked와 같은 모양) */
-      ctx.globalAlpha = ga0 * .65; [[o, 0], [-o, 0], [0, o], [0, -o]].forEach(function(d){ ctx.drawImage(sil, sx + d[0], sy + d[1], S, S); }); ctx.globalAlpha = ga0;
+      ctx.globalAlpha = u.h.mob === 'mimic' ? 0 : ga0 * .65; [[o, 0], [-o, 0], [0, o], [0, -o]].forEach(function(d){ ctx.drawImage(sil, sx + d[0], sy + d[1], S, S); }); ctx.globalAlpha = ga0;
+      if (u.h.mob === 'mimic' && MHOP.complete && MHOP.naturalWidth){ var dW = S * 44 / 37, smo = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.drawImage(MHOP, mimicFrame(u.uid) * 44, 0, 44, 44, -dW / 2, sy + S - dW, dW, dW); ctx.imageSmoothingEnabled = smo; } else
       ctx.drawImage(imU, sx, sy, S, S);
       var clA = cloudStr(); if (clA > .005){ clA *= cloudDens(x, foot - S * .4); if (clA > .005){ ctx.globalAlpha = ga0 * clA; ctx.drawImage(sl('#000000'), sx, sy, S, S); ctx.globalAlpha = ga0; } } /* 캐릭터도 구름 그림자 밑이면 어두워짐 */
       if (u._cfl > 0){ ctx.globalAlpha = ga0 * Math.min(1, u._cfl / .25); ctx.drawImage(sl('#ffffff'), sx, sy, S, S); ctx.globalAlpha = ga0; } /* 상자 그림이 바뀌는 순간 반짝 */
@@ -4597,6 +4602,9 @@ img.rimg{image-rendering:auto!important}
   function synFaces(d){ var y = d ? synInfo(d, 'A') : null; /* 조건에 맞는 아군 얼굴: 모든 시너지 유물 */ if (!y || !y.n) return '';
     return '<div class="sfaces">' + allyHeroes().filter(function(h){ return heroVals(h, y.k).some(function(v){ return y.vs.indexOf(v) >= 0; }); }).map(function(h){ return '<span class="sfa">' + av(h.id) + '</span>'; }).join('') + '</div>'; }
   function heroVals(h, k){ return k === 'el' && h.el2 && h.el2 !== h.el ? [h.el, h.el2] : [h[k]]; } // 발판으로 더해진 진영까지
+  /* 미믹 대기 튀기 = 44칸 4장(기본·웅크림·뜀·착지). 도트 1칸 크기는 정지 그림(37칸)과 같게: 칸 폭 = S × 44/37, 바닥 맞춤 */
+  var MHOP = new Image(); MHOP.src = 'img/p/mimic_hop.png';
+  function mimicFrame(seed){ var p = ((performance.now() / 1200 + (seed || 0) * .37) % 1); return p < .4 ? 0 : p < .6 ? 1 : p < .8 ? 2 : 3; }
   var MOBSZ = { slime: 0.9, bat: 0.9, skeleton: 0.9, ogre: 1.4, mimic: 0.9 }; // 영웅보다 약간 작게, 오우거만 크게 // 몹 무리 몹 크기 배율
   function mobDropList(u){ var d = u && u.drop; return d ? [].concat(d).filter(Boolean) : []; }
   var chestLastG = null; function chestFlashCls(){ var g = chestGrade(S.bell || 0), f = chestLastG != null && g !== chestLastG; chestLastG = g; return f ? ' cflash' : ''; }
