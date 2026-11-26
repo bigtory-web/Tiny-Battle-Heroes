@@ -2619,6 +2619,13 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
 #tab-shop .srow2:not(.h) .stile,#tab-shop .srow2 .stile.lockd,#tab-shop .srow2 .stile.empty.keep{height:96px!important}
 #tab-shop .spRight #shopBuy{height:38px!important;flex:none}
 #tab-shop.shopPop{top:76px!important}
+#evActs .grleft{position:absolute;right:calc(100% + 8px);top:50%;transform:translateY(-50%);font:400 14px var(--display);color:#ffd34d;text-shadow:0 2px 0 #17141d,0 0 4px #17141d;white-space:nowrap}
+#evActs .grleft.z{color:#8a8296}
+#evActs .grleft[hidden]{display:none}
+#evBet.groll .oedots{display:none!important}
+/* 돈고블린 룰렛: 받기(노랑) / 포기(파랑) 같은 크기 */
+#roul .rbox.groll .rbtns{display:flex;justify-content:center;gap:10px}
+#roul .rbox.groll .rbtns #rYes,#roul .rbox.groll .rbtns #rNo{width:110px!important;flex:none!important;height:34px;font-size:16px!important;text-decoration:none;margin:0!important}
 </style>
 </head>
 <body>
@@ -2983,7 +2990,7 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
   function heroPass(h){ if (filter === 'all') return true; if (filter === 'own') return owns(h.id); var p = filter.split(':'); return h[p[0]] === p[1]; }
   function skillPass(d){ if (filter === 'all') return true; if (filter === 'own') return S.skills.some(function(x){ return x.id === d.id; }); var p = filter.split(':'); return p[0] === 'g' && String(d.grade || 1) === p[1]; }
   // 이벤트 아이콘: 배너와 같은 그림 (없으면 이모지)
-  function evIcon(k){ var key = k === 'campfire' ? 'ev_campfire_i' : k === 'oddeven' ? 'ev_goblin' : 'ev_' + k; return EVIMG[key] ? '<img class="evi" src="img/p/' + key + '.png" alt="">' : ({ campfire: '🔥', fairy: '🧚', merchant: '🧳', chest: '🧰', altar: '✦', mobs: '👾', goblin: '💰', merc: '📜' })[k] || '❔'; }
+  function evIcon(k){ var key = k === 'campfire' ? 'ev_campfire_i' : k === 'oddeven' || k === 'groll' ? 'ev_goblin' : 'ev_' + k; return EVIMG[key] ? '<img class="evi" src="img/p/' + key + '.png" alt="">' : ({ campfire: '🔥', fairy: '🧚', merchant: '🧳', chest: '🧰', altar: '✦', mobs: '👾', goblin: '💰', merc: '📜' })[k] || '❔'; }
   function renderHeroes(){
     var html;
     if (cdxTab === 'lv'){ var PLD = D.player || {}, me = plv(), GC = D.gradeColor || {}, odds = function(w){ if (!w) return '-'; var s = w.reduce(function(a, b){ return a + b; }, 0) || 1; return w.map(function(v, i){ return '<i style="color:' + (GC[i + 1] || '#ccc') + '">' + Math.round(v * 100 / s) + '</i>'; }).join(''); };
@@ -3189,7 +3196,7 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
       (S.padPend && !bt ? hexCells().A.map(function(c){ var k = ckey(c); return '<button class="padtgt" type="button" data-padcell="' + k + '" style="' + cellStyle(k) + ';background-image:url(' + padURL(S.padPend) + ')"></button>'; }).join('') : '');
     padNew = '';
     $('field').innerHTML = '' + tilesHtml + padsHtml + [0, 1, 2, 3, 4].map(function(i){ return at('A', i, slotHtml(i), S.team[i]); }).join('') +
-      (scrollPend ? '' : isLvPick() ? lvPickHtml() : isAltar() ? altarHtml() : isFork() ? forkHtml() : isCamp() ? campHtml() : isFairy() ? fairyHtml() : isOddEven() ? oddEvenHtml() : isMerch() ? merchHtml() : bySlot.map(function(u, i){ return u && FP[i] ? at('E', i, foeHtml(u), u.id, u.star) : ''; }).join(''));
+      (scrollPend ? '' : isLvPick() ? lvPickHtml() : isAltar() ? altarHtml() : isFork() ? forkHtml() : isCamp() ? campHtml() : isFairy() ? fairyHtml() : isOddEven() ? oddEvenHtml() : isGroll() ? grollHtml() : isMerch() ? merchHtml() : bySlot.map(function(u, i){ return u && FP[i] ? at('E', i, foeHtml(u), u.id, u.star) : ''; }).join(''));
     $('arena').classList.toggle('camping', noFight()); $('arena').classList.toggle('altaring', isAltar() && !isLvPick()); // 종·적 스킬·전리품 미리보기를 숨기고 말풍선 버튼을 보여요
     var list = bagUnits().slice().sort(function(a, b){ return (E.heroGrade(D, b.id) - E.heroGrade(D, a.id)) || ((b.star || 1) - (a.star || 1)) || (powerU(b) - powerU(a)); });
     var BM = bagMax();
@@ -3321,7 +3328,7 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
     stage.classList.add('onped'); stage.style.setProperty('--P', P.toFixed(4) + 'px'); el.firstChild.style.backgroundImage = 'url(' + pedRune(col || '#d9dde8') + ')'; }
   function showOffer(key){
     var p = LP(key), box = $('roul'), pic = box.querySelector('.rpic');
-    box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); box.querySelector('.rbox').classList.toggle('camp', S.offerMode === 'camp'); rayFx(key); if (!box.classList.contains('chestpop')) pedestal(box.querySelector('.rstage'), GR(lootTier(key)).col); $('rUp').hidden = !upOK(key);
+    box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); box.querySelector('.rbox').classList.toggle('camp', S.offerMode === 'camp'); box.querySelector('.rbox').classList.toggle('groll', S.offerMode === 'groll'); rayFx(key); if (!box.classList.contains('chestpop')) pedestal(box.querySelector('.rstage'), GR(lootTier(key)).col); $('rUp').hidden = !upOK(key);
     pic.style.imageRendering = p.type === 'h' && IMGS[p.id] ? 'pixelated' : '';
     var rk = qN(), rq = { k: rk, css: 66 * qR() / (sApp() * (window.devicePixelRatio || 1)) };
     var lm = Math.max(2, Math.round(qR() * 64 * .8 / 24)); document.documentElement.style.setProperty('--rlq', (24 * lm / (sApp() * (window.devicePixelRatio || 1))).toFixed(2) + 'px'); /* 유물·골드 그림도 영웅과 같은 크기(영웅이 칸에서 차지하는 높이 약 80%), 24px 원본의 정수배 장치 px */ document.documentElement.style.setProperty('--rpq', (p.type === 'h' && IMGS[p.id] ? rq.css : 114) + 'px'); rpAnim.nk = p.type === 'h' ? rq.k : 0; OUTLN = rpAnim.nk;
@@ -3338,7 +3345,7 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
     if (p.type === 'p'){ pic.dataset.tipt = padName(p.id); pic.dataset.tiptx = '이 칸에 선 영웅은 ' + D.elements.names[p.id] + ' 진영이 더해진다.'; } else { delete pic.dataset.tipt; delete pic.dataset.tiptx; } // 큰 스킬 아이콘도 툴팁 // 종족·직업·진영 꼬리표
     box.querySelector('.rname').innerHTML = p.type === 'g' ? '골드 ' + p.amt.toLocaleString() + 'G' : p.type === 'm' ? manaName() + ' · ' + p.amt + '개' : lootName(key);
     // 종류 꼬리표: 영웅 · 스킬 · 골드 (카드 위 제목 줄)
-    box.querySelector('.rt').innerHTML = (S.offerMode === 'camp' ? '모닥불' : S.offerMode === 'fairy' ? '요정' : S.offerMode === 'lvpick' ? '레벨업' : '전리품') + ' <span class="ltag ' + p.type + '">' + (p.type === 'g' ? '골드' : p.type === 'm' ? '마나' : p.type === 's' ? '스킬' : p.type === 'p' ? '발판' : '영웅') + '</span>';
+    box.querySelector('.rt').innerHTML = (S.offerMode === 'camp' ? '모닥불' : S.offerMode === 'fairy' ? '요정' : S.offerMode === 'lvpick' ? '레벨업' : S.offerMode === 'groll' ? '돈고블린' : '전리품') + ' <span class="ltag ' + p.type + '">' + (p.type === 'g' ? '골드' : p.type === 'm' ? '마나' : p.type === 's' ? '스킬' : p.type === 'p' ? '발판' : '영웅') + '</span>';
     var spinning = box.querySelector('.rbox').classList.contains('spin'); box.querySelectorAll('.rstrip span').forEach(function(sp){ sp.classList.toggle('on', sp.dataset.id === key); sp.classList.toggle('res', !spinning && (sp.dataset.id === S.offer || S.offerMode === 'mobs')); });
   }
   var roulPeek = null;
@@ -3397,13 +3404,14 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
     if (S.offerMode === 'mobs'){ $('rAgain').hidden = true; $('roul').querySelectorAll('.rstrip span').forEach(function(sp){ sp.classList.add('res'); }); $('roul').querySelector('.rmeta').textContent = ''; }
     if (S.offerMode === 'fairy'){ if (!(D.recruit.reroll || {}).fairy) $('rAgain').hidden = true; $('rX').hidden = !decided || pend; } /* reroll.fairy면 요정 룰렛도 리셋 */
     if (S.offerMode === 'camp' || S.offerMode === 'lvpick'){ $('rAgain').hidden = true; $('rX').hidden = !decided || pend; }
+    if (S.offerMode === 'groll'){ $('rAgain').hidden = true; $('rNo').hidden = decided || pend; $('rNo').textContent = '포기'; $('rX').hidden = !decided || pend; } /* 리셋 없음: 받기 / 포기 */
     $('rRes').hidden = true; $('rRes').innerHTML = S.offerLast || '';
     $('rPend').hidden = !pend; $('rPend').innerHTML = pend ? pendHtml() : ''; $('roul').querySelector('.rbox').classList.toggle('pendmode', pend);
     if (decided) $('roul').querySelector('.rmeta').textContent = '';
     renderAgain();
   }
   $('talkBtn').addEventListener('click', function(){ if (isMerch()) openMerch(); else if (isFairy()) startFairy(); else startCampfire(); });
-  $('evBet').addEventListener('click', function(){ if (!this.disabled) oeAddBet(); });
+  $('evBet').addEventListener('click', function(){ if (this.disabled) return; if (isGroll()) grollSpin(); else oeAddBet(); });
   $('evTalk').addEventListener('click', function(){ if (this.disabled) return; if (isMerch()) openMerch(); else if (isFairy()) startFairy(); else if (isCamp()) startCampfire(); });
   $('rAgain').addEventListener('click', function(){
     var p = againPrice(), left = leftPool(); if (!S.offer || S.offerDecided || S.pending || S.gold < p || !left.length || rerollLeft().n <= 0) return;
@@ -3710,7 +3718,7 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
     S.team.forEach(function(uid, slot){ if (!uid || !U(uid) || np[uid]) return; var q = POS.A[slot] || POS.A[0], c = nearCell(C, q[0], q[1], used); if (c){ used[ckey(c)] = 1; np[uid] = { x: c[0], y: c[1] }; } });
     S.pos = np; } // 내 쪽 육각 칸 아무 데나 (한 칸에 1명)
   var newinT = 0;
-  var _renderForm = renderForm; renderForm = function(){ if (!bt) settleAllies(); if (!isAltar()){ altA = null; altM = null; } _renderForm(); $('arena').classList.toggle('evstage', !bt && (isCamp() || isMerch() || isAltar() || isFairy() || isOddEven()) && !isLvPick() && !isFork()); evLeaveSync(); $('field').classList.toggle('altpick', isAltar() && !isLvPick() && altA != null); altMarks(); if (!bt && S.mobPend && !S.offer && $('roul').hidden) showMobLoot(); vsBarForm(); fitSkRows(); if (gainFxUid != null){ var gu = gainFxUid; gainFxUid = null; starUpFx(gu); } if (newHeroUid != null && !newinT) newinT = setTimeout(function(){ newinT = 0; if (newHeroUid == null || scrollPend) return; var ne0 = $('field').querySelector('.unit[data-uid="' + newHeroUid + '"]'); newHeroUid = null; if (ne0){ ne0.classList.add('newin'); setTimeout(function(){ ne0.classList.remove('newin'); }, 700); } }, 0); /* 연달아 다시 그리는 게 끝난 뒤 (판 넘김이면 stageScroll이 처리) */ /* 새 영웅: 전장에 섰으면 그 칸에서만 등장, 백팩이면 연출 없음 */ if (skTgt && !bt) markFieldTargets(); if (sel) applySel(); setTimeout(renderBell, 200); renderBagBtn(); };
+  var _renderForm = renderForm; renderForm = function(){ if (!bt) settleAllies(); if (!isAltar()){ altA = null; altM = null; } _renderForm(); $('arena').classList.toggle('evstage', !bt && (isCamp() || isMerch() || isAltar() || isFairy() || isOddEven() || isGroll()) && !isLvPick() && !isFork()); evLeaveSync(); $('field').classList.toggle('altpick', isAltar() && !isLvPick() && altA != null); altMarks(); if (!bt && S.mobPend && !S.offer && $('roul').hidden) showMobLoot(); vsBarForm(); fitSkRows(); if (gainFxUid != null){ var gu = gainFxUid; gainFxUid = null; starUpFx(gu); } if (newHeroUid != null && !newinT) newinT = setTimeout(function(){ newinT = 0; if (newHeroUid == null || scrollPend) return; var ne0 = $('field').querySelector('.unit[data-uid="' + newHeroUid + '"]'); newHeroUid = null; if (ne0){ ne0.classList.add('newin'); setTimeout(function(){ ne0.classList.remove('newin'); }, 700); } }, 0); /* 연달아 다시 그리는 게 끝난 뒤 (판 넘김이면 stageScroll이 처리) */ /* 새 영웅: 전장에 섰으면 그 칸에서만 등장, 백팩이면 연출 없음 */ if (skTgt && !bt) markFieldTargets(); if (sel) applySel(); setTimeout(renderBell, 200); renderBagBtn(); };
   function bagOpen(){ return !(S.ui && S.ui.bagOpen === false); } // 기본은 펼침
   function renderBagBtn(){ var b = $('bagBtn'); if (!b) return; var bn = bagCount(), bm = bagMax(), bc = b.querySelector('.bagcnt'); if (!bc){ b.insertAdjacentHTML('beforeend', '<i class="bagcnt"></i>'); bc = b.querySelector('.bagcnt'); } bc.hidden = bn <= bm; bc.textContent = bn + '/' + bm; /* 넘쳤을 때만 빨간 칸 수 */ b.classList.toggle('on', bagOpen()); $('bagDrawer').classList.toggle('open', bagOpen()); $('arena').classList.toggle('bagon', bagOpen()); }
   $('bagBtn').addEventListener('click', function(){ S.ui = S.ui || {}; S.ui.bagOpen = !bagOpen(); save(); renderBagBtn(); });
@@ -3765,10 +3773,10 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
   });
   var leaveArm = '';
   function evKey(){ return S.stage + ':' + ((S.event || {}).kind || ''); }
-  function evActed(){ var ev = S.event || {}; if (isAltar()) return (ev.trCount || 0) > 0; if (isMerch()){ var wo = S.evOffer; return !!(wo && ((wo.bought && wo.bought.length) || wo.rerolls)); } if (isCamp() || isFairy()) return !!S.offerGot || !!S.offerDecided; return false; } /* 홀짝은 굴리면 바로 떠나요 */
+  function evActed(){ var ev = S.event || {}; if (isAltar()) return (ev.trCount || 0) > 0; if (isGroll()) return grollUsed() > 0; if (isMerch()){ var wo = S.evOffer; return !!(wo && ((wo.bought && wo.bought.length) || wo.rerolls)); } if (isCamp() || isFairy()) return !!S.offerGot || !!S.offerDecided; return false; } /* 홀짝은 굴리면 바로 떠나요 */
   function evLeaveSync(){ var w = $('lvWarn'); if (!w){ w = document.createElement('i'); w.id = 'lvWarn'; w.className = 'lvwarn'; w.textContent = TAP2.leave; $('fightBtn').parentNode.appendChild(w); } if (leaveArm && leaveArm !== evKey()) leaveArm = ''; w.hidden = !leaveArm || !$('arena').classList.contains('evstage'); var fb = $('fightBtn'); fb.classList.toggle('busyhide', fb.disabled && fb.textContent.trim() === '진행 중'); }
   $('fightBtn').addEventListener('click', function(e){ if ($('arena').classList.contains('evstage') && !this.disabled && !evActed() && leaveArm !== evKey()){ e.stopImmediatePropagation(); leaveArm = evKey(); evLeaveSync(); } }, true);
-  $('fightBtn').addEventListener('click', function(){ if (isLvPick() || isFork()) return; leaveArm = ''; if (isAltar()) finishAltar(); else if (isOddEven()){ if (!oeBusy) finishOddEven(); } else if (isFairy() || isCamp()) finishCamp(); else if (isMerch()) leaveMerch(); else if (bagCount() > bagMax() || S.skills.length > PK().skillSlots) showOver(); else startBattle(); });
+  $('fightBtn').addEventListener('click', function(){ if (isLvPick() || isFork()) return; leaveArm = ''; if (isAltar()) finishAltar(); else if (isGroll()) finishGroll(); else if (isOddEven()){ if (!oeBusy) finishOddEven(); } else if (isFairy() || isCamp()) finishCamp(); else if (isMerch()) leaveMerch(); else if (bagCount() > bagMax() || S.skills.length > PK().skillSlots) showOver(); else startBattle(); });
   function showOver(){ var b = bagCount() > bagMax(), r = S.skills.length > PK().skillSlots, o = $('bagOver');
     o.querySelector('b').textContent = b && r ? '백팩과 유물 칸이 넘쳤어요' : b ? '백팩이 넘쳤어요' : '유물 칸이 넘쳤어요';
     o.querySelector('.gost').textContent = (b && r ? '영웅과 유물' : b ? '영웅' : '유물') + '을 팔아야 전투를 시작할 수 있어요.'; o.hidden = false; } /* 백팩이 넘치면 전투 대신 확인 창 */
@@ -4714,7 +4722,7 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
   $('feDown').addEventListener('click', function(){ setFE(((S.ui && S.ui.forceEvery) || 0) - 1); });
   $('feUp').addEventListener('click', function(){ setFE(((S.ui && S.ui.forceEvery) || 0) + 1); });
   // 이벤트 스테이지 종류 켜고 끄기: S.ui.evOff → D.events.off
-  var EVK_NM = { campfire: '모닥불', merchant: '방랑상인', chest: '보물상자', altar: '초월 제단', mobs: '몹', fairy: '요정', oddeven: '돈고블린 홀짝' };
+  var EVK_NM = { campfire: '모닥불', merchant: '방랑상인', chest: '보물상자', altar: '초월 제단', mobs: '몹', fairy: '요정', oddeven: '돈고블린 홀짝', groll: '돈고블린 룰렛' };
   function applyEvOff(){ if (D.events) D.events.off = ((S.ui && S.ui.evOff) || []).slice(); }
   function renderEvOff(){ var box = $('evKinds'); if (!box || !D.events) return; var off = (S.ui && S.ui.evOff) || [];
     box.innerHTML = (D.events.stageKinds || []).map(function(k){ var on = off.indexOf(k) < 0; return '<button class="ghost evk' + (on ? '' : ' off') + '" data-evk="' + k + '">' + (EVK_NM[k] || k) + ' ' + (on ? 'ON' : 'OFF') + '</button>'; }).join(''); }
@@ -4950,6 +4958,14 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
   function oeK(){ var b = S.oeBets; return b && b.st === S.stage && isOddEven() ? b.k : 0; }
   function oeAddBet(){ if (!isOddEven() || oeBusy || !E.oddEvenBet) return; var k = oeK(), bet = E.oddEvenBet(D, S.stage); if (k >= oeMax() || S.gold < bet) return;
     S.gold -= bet; S.oeBets = { st: S.stage, k: k + 1 }; save(); oeCoins(document.querySelector('#hud .goldit'), document.querySelector('#field .oegob'), 4); renderAll(); }
+  /* 돈고블린 룰렛(groll, 홀짝 대신, 2026-11-26 사용자): 돈 넣기 → 룰렛 → 받기/포기. 리셋 없음, 횟수는 레벨별 */
+  function isGroll(){ return !bt && !!S.event && S.event.kind === 'groll' && !!E.rollGroll && S.stage < E.stageCount(D); }
+  function grollUsed(){ var u = S.grollN; return u && u.st === S.stage ? u.n : 0; }
+  function grollHtml(){ var gx = 506, gy = 184; return '<div class="unit cfh oegob" style="left:' + (100 * gx / W) + '%;top:' + (100 * (gy + OFF + FOOT) / H) + '%;z-index:' + gy + '"><div class="cfslot">' + av('goblin') + '</div></div>'; }
+  function grollSpin(){ if (!isGroll() || S.offer || S.pending) return; var cost = E.grollCost(D, S.stage, plv()), n = grollUsed(); if (n >= E.grollSpins(D, plv()) || S.gold < cost) return;
+    var c = E.rollGroll(D, S.stage, Math.random, plv()); if (!c || !c.length) return;
+    S.gold -= cost; S.grollN = { st: S.stage, n: n + 1 }; S.offer = c[E.lootPick(D, c, plv(), Math.random)]; offerIds = S.offerIds = c.slice(); S.offerPlv = null; S.offerMode = 'groll'; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; save(); oeCoins(document.querySelector('#hud .goldit'), document.querySelector('#field .oegob'), 4); renderAll(); startRoulette(offerIds, S.offer); }
+  function finishGroll(){ S.grollN = null; S.event = nextEvent(false); S.bell = 0; S.bellGold = 0; save(); evGo(); }
   function oddEvenHtml(){ var bet = E.oddEvenBet ? E.oddEvenBet(D, S.stage) * oeK() : 0, ok = oeK() > 0 && !oeBusy, gx = 506, gy = 184; /* 2026-11-24: 적 쪽 5번 칸(보물상자와 같은 자리) */
     return '<div class="unit cfh oegob" style="left:' + (100 * gx / W) + '%;top:' + (100 * (gy + OFF + FOOT) / H) + '%;z-index:' + gy + '"><div class="cfslot">' + av('goblin') + '</div></div>' +
       '<div class="oebox" id="oeBox"><div class="oedie" id="oeDie">' + dieFace(5) + '</div><div class="oebet">' + (HUDOK.gold ? '<img src="img/p/hud_gold.png" alt="">' : '🪙') + '<b>' + bet.toLocaleString() + '</b></div>' +
@@ -5074,7 +5090,7 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
   $('altGoBtn').addEventListener('click', function(){ altarGo(); });
   function altarHtml(){ if (altA != null && !U(altA)) altA = null; return altarPickHtml(); return altGuide() + '<div class="unit altar' + (altDone() ? ' used' : '') + '" style="left:' + (100 * 506 / W) + '%;top:' + (100 * (184 + OFF + FOOT) / H) + '%;z-index:200"><i class="altspr"></i></div>'; }
   function finishAltar(){ if (!isAltar()) return; altA = null; altM = null; S.event = nextEvent(false); S.bell = 0; S.bellGold = 0; save(); evGo(); }
-  function noFight(){ return isLvPick() || isCamp() || isMerch() || isAltar() || isFairy() || isOddEven() || isFork(); } // 싸우지 않는 판 (종·적 스킬·전리품 미리보기 숨김, 말 걸기 버튼)
+  function noFight(){ return isLvPick() || isCamp() || isMerch() || isAltar() || isFairy() || isOddEven() || isGroll() || isFork(); } // 싸우지 않는 판 (종·적 스킬·전리품 미리보기 숨김, 말 걸기 버튼)
   function openMerch(){ if (!isMerch() || S.offer || S.pending) return;
     if (!S.evOffer || S.evOffer.kind !== 'merchant') S.evOffer = { kind: 'merchant', stock: E.rollMerchant(D, S.stage, Math.random, plv(), S.skills || []), bought: [], noBattle: true };
     save(); if (shopOpen()) setShop(false); merchShow = true; shopSel = null; setShop(true); renderShop(); }
@@ -5106,6 +5122,7 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
     else if (ev && ev.kind === 'mobs') txt = EI('mobs', '👾') + '몹';
     else if (ev && ev.kind === 'fairy') txt = EI('fairy', '🧚') + '요정';
     else if (ev && ev.kind === 'oddeven') txt = EI('goblin', '💰') + '돈고블린 홀짝';
+    else if (ev && ev.kind === 'groll') txt = EI('goblin', '💰') + '돈고블린 룰렛';
     else if (ev && ev.kind === 'fork') txt = ev.options.map(function(o){ return evIcon(o.kind); }).join(' ');
     else if (ev && ev.kind === 'merc') txt = EI('merc', '📜') + '떠돌이 용병 ' + hero(ev.id).name + ' · ' + g(ev.price);
     else if (ev && ev.kind === 'altar') txt = '✦ 초월 제단';
@@ -5116,8 +5133,11 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
   // ───── 위험 종: 누를 때마다 0→1→2→3→0. 길게 누르거나 우클릭하면 0 ─────
   var BELLIMG = {}; [1, 2, 3].forEach(function(n){ var im = new Image(); im.onload = function(){ BELLIMG[n] = true; renderBell(); }; im.src = 'img/p/ui_foe' + n + '.png'; });
   function renderTalk(){ var t = $('talkBtn'); if (t) t.querySelector('.tic').innerHTML = campImg('ui_talk', '💬', 'timg'); var et = $('evTalk'); if (et) et.querySelector('.eai').innerHTML = campImg('ui_talk', '💬', 'timg'); }
+  function grollBtn(gr){ var b = $('evBet'), lab = b.querySelector('b'), dots = b.querySelector('.oedots'), n = $('grLeft'); if (!n){ n = document.createElement('span'); n.id = 'grLeft'; n.className = 'grleft'; b.parentNode.insertBefore(n, b); }
+    b.classList.toggle('groll', gr); n.hidden = !gr; if (dots) dots.hidden = gr;
+    if (!gr){ lab.textContent = '돈 넣기'; return; } var cost = E.grollCost(D, S.stage, plv()), mx = E.grollSpins(D, plv()), left = Math.max(0, mx - grollUsed()); lab.textContent = '돈 넣기 ' + cost.toLocaleString() + 'G'; b.disabled = !!S.offer || !!S.pending || !left || S.gold < cost; n.textContent = left + '/' + mx; n.classList.toggle('z', !left); }
   function updEvActs(){ var box = $('evActs'); if (!box) return; var ok = !bt && !isLvPick() && !isFork(), tk = ok && (isCamp() || isFairy() || isMerch()), busy = !!S.offer || !!S.pending;
-    $('evTalk').hidden = !tk; $('evTalk').disabled = busy; $('evTalk').classList.toggle('busyhide', busy); $('evBet').classList.toggle('busyhide', oeBusy); var oe = ok && isOddEven(), k = oeK(), mx = oeMax(); $('evBet').hidden = !oe; box.hidden = !tk && !oe;
+    $('evTalk').hidden = !tk; $('evTalk').disabled = busy; $('evTalk').classList.toggle('busyhide', busy); $('evBet').classList.toggle('busyhide', oeBusy); var oe = ok && isOddEven(), k = oeK(), mx = oeMax(), gr = ok && isGroll(); $('evBet').hidden = !oe && !gr; box.hidden = !tk && !oe && !gr; grollBtn(gr);
     if (oe){ $('evBet').disabled = oeBusy || k >= mx || S.gold < E.oddEvenBet(D, S.stage); $('evBet').querySelectorAll('.oedots i').forEach(function(d, i){ d.classList.toggle('on', i < k); d.hidden = i >= mx; }); } } /* 말 걸기: 위 가운데(종·초월 자리) */
   function renderBell(){ renderTalk(); var b = $('bellBtn'); if (!b || !D.bell) { if (b) b.hidden = true; return; } if ((bt && curEv && curEv.kind === 'chest') || (!bt && S.event && S.event.kind === 'chest')){ b.hidden = true; return; } /* 보물상자 판: 용 버튼 없음 */
     var B = D.bell, mx = bellMax(), n = Math.min((bt ? curBell : S.bell) || 0, mx), bStg = bt ? curStage : S.stage, bEv = bt ? curEv : S.event, /* 전투 중엔 시작할 때 값 */ im = BELLIMG[Math.max(1, n)];
