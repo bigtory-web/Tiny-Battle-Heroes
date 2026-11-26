@@ -2644,6 +2644,17 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
 #roul .rbox.groll .rpic.gridle{display:flex;align-items:flex-end;justify-content:center;animation:none!important}
 #roul .rbox.groll .rpic.gridle .av{width:100%;height:100%;background-size:contain!important;background-position:50% 100%!important}
 #rX:disabled{filter:grayscale(1) brightness(.7);cursor:default}
+/* 레벨업(합성) 가능 표시: 화살표 대신 "UP" 글자 (v607 UP!과 같은 글꼴·색), 살짝 위아래 (2026-11-26 사용자) */
+.upmk,.upmk.big,#field .lvpk .fkbub .upmk.big{background:none!important;clip-path:none!important;width:auto!important;height:auto!important;image-rendering:auto}
+.upmk::after{content:'UP'!important;display:block!important;position:static!important;background:none!important;clip-path:none!important;inset:auto!important;font:400 12px/12px var(--display);color:#ffd34d;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d,1px 1px #17141d,-1px -1px #17141d;letter-spacing:0;white-space:nowrap}
+.upmk.big::after{font-size:18px!important;line-height:18px!important}
+.upmk{animation:upmkbob .7s steps(2) infinite!important}
+@keyframes upmkbob{50%{translate:0 -3px}}
+#roul .rbox .rstage > #rUp.upmk{left:50%!important;top:auto!important;bottom:calc(38px + 86 * var(--P,1.2px))!important;transform:translateX(-50%);z-index:5}
+.rstrip span .upmk{left:50%!important;right:auto!important;top:-2px!important;transform:translateX(-50%);z-index:4}
+.stile .upmk{left:50%!important;right:auto!important;top:-1px!important;transform:translateX(-50%);z-index:6}
+.stile .ic{position:relative}
+.stile.up::before{content:'UP'!important;left:50%!important;right:auto!important;top:1px!important;transform:translateX(-50%);color:#ffd34d!important;font:400 12px/12px var(--display)!important;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d,1px 1px #17141d,-1px -1px #17141d!important;z-index:6;animation:upmkbob .7s steps(2) infinite}
 </style>
 </head>
 <body>
@@ -4845,7 +4856,7 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
     });
     var rp = E.refreshPrice(D, S.shop.rerolls);
     var HS = D.shop.heroes || (S.shop.heroes || []).length ? S.shop.heroes || [] : [], hrow = HS.map(function(it, i){ if ((S.shop.hsold || []).indexOf(i) >= 0) return '<span class="stile empty"></span>'; var on = shopSel && shopSel.t === 'hero' && shopSel.i === i; if (S.gold >= it.price) anyBuy = true;
-      return '<button class="stile mhero' + (on ? ' sel' : '') + '" style="--gcol:' + HG(it.id).col + '" data-sel="hero:' + i + '" type="button"><span class="ic">' + heroFr(it.id) + '</span>' + priceTag(it.price, S.gold >= it.price) + '</button>'; });
+      return '<button class="stile mhero' + (on ? ' sel' : '') + '" style="--gcol:' + HG(it.id).col + '" data-sel="hero:' + i + '" type="button"><span class="ic">' + heroFr(it.id) + (upOK('h:' + it.id) ? '<i class="upmk"></i>' : '') + '</span>' + priceTag(it.price, S.gold >= it.price) + '</button>'; });
     var cells = tiles.slice(); for (var ci = cells.length; ci < 6; ci++){ var lv = shopLockLv(ci); cells.push(lv ? '<span class="stile lockd"><em>LV' + lv + '</em></span>' : '<span class="stile empty"></span>'); }
     $('stock').innerHTML = (hrow.length ? '<div class="srow2 h"><span class="rowic">' + (HUDOK.gold ? '<img class="mni" src="img/p/hud_gold.png" alt="">' : '🪙') + '</span>' + hrow.join('') + '</div>' : '') + '<div class="srow2 g six"><span class="rowic"></span>' + cells.join('') + '</div>'; /* 2행×3열 */
     var rMax = D.shop.refreshMax || Infinity, rLeft = Math.max(0, rMax - (S.shop.rerolls || 0)), rOff = !rLeft || S.gold < rp, rDis = rOff || battleOn();
@@ -4858,7 +4869,7 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
   function renderMerchShop(o){ var SR = D.shop.rows || {}, cols = SR.gold != null ? SR.gold : 3;
     var t = o.stock.map(function(it, i){ var done = o.bought.indexOf(i) >= 0, mana = it.cur === 'mana', payOk = (mana ? (S.mana || 0) : S.gold) >= it.price && (it.type !== 's' || E.canTake(D, S.skills, it.id, PK().skillSlots)), on = shopSel && shopSel.t === 'merch' && shopSel.i === i, cls, attr = '', ic;
       if (it.type === 's'){ var d = E.skillById(D, it.id), ml = myLv(it.id); cls = 'stile sk' + gCls(it.id, ml || undefined) + (ml && !skMaxed(it.id) ? ' up' : ''); attr = gAttr(it.id, ml || undefined); ic = skIcon(d) + '</span>' + synN(d) + '<span hidden>'; }
-      else { cls = 'stile mhero'; attr = ' style="--gcol:' + HG(it.id).col + '"'; ic = heroFr(it.id); }
+      else { cls = 'stile mhero'; attr = ' style="--gcol:' + HG(it.id).col + '"'; ic = heroFr(it.id) + (upOK('h:' + it.id) && !done ? '<i class="upmk"></i>' : ''); }
       var pr = '<span class="pr' + (mana ? ' mana' : '') + (payOk ? '' : ' no') + '">' + (mana ? manaIcon('mni') : (HUDOK.gold ? '<img src="img/p/hud_gold.png" alt="">' : '🪙')) + it.price.toLocaleString() + '</span>';
       return '<button class="' + cls + (done ? ' sold' : '') + (on ? ' sel' : '') + '"' + attr + ' data-sel="merch:' + i + '" type="button">' + (it.off ? '<i class="rib">' + it.off + '%</i>' : '') + '<span class="ic">' + ic + '</span>' + pr + '</button>'; }); /* 리본 = 그 상품 할인율 */
     var MS = (D.player && D.player.merchantSlots) || [], open = MS[Math.min(MS.length, plv()) - 1] || 0, max = MS.length ? Math.max.apply(null, MS) : 6; /* 3칸 x 2줄, 왼쪽부터. 레벨로 안 열린 칸은 일반 상점과 같은 잠금 표시 (2026-11-26 사용자) */
