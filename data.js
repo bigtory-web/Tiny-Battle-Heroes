@@ -246,6 +246,13 @@ var IDLE_DATA = {
     reward: { base: 120, growth: 1 }, /* 2026-11-24: 비율 없앰(사용자: 후반에 너무 커져서). 클리어 골드는 player.clearGold(레벨별), 상자·홀짝 등은 base 120 고정 */   // 스테이지를 깨면 골드 = base × growth^n. 상점가 성장(shop.priceGrowth 1.12)보다 조금만 빠르게 (1.22였을 땐 끝에 골드가 쓴 양의 수십 배 남았어요)
     loseStepBack: 1,          // 지면 이만큼 앞 스테이지로 돌아가요 (0이면 그대로). 코스트 상한은 가장 멀리 간 기록 기준이라 줄지 않아요
     // 적 팀 스킬: from 스테이지부터 count개 (팀 스킬 목록에서 스테이지마다 정해져요). 레벨 = 1 + floor(스테이지 / levelEvery). 보스 스테이지는 +bossExtra개
+    // ───── 제약(난이도 구간, 2026-11-27 뼈대, 숫자는 기획안 6번 초안 그대로 임시. 사용자: "난 근데 제약까지가보고싶어.") ─────
+    //   lvPlus: 적 레벨 +N(장 보정에 더함) · gradeShift: 적 영웅 등급 확률을 플레이어 레벨 표에서 N칸 앞당김(적만) · relics: 적 유물 표(enemySkills.table 대신, 없으면 그대로) · medalMul: 판 끝 훈장 배율
+    //   E.difficultyData(data, id)가 반영한 data를 돌려줘요. 순서: difficultyData(chapterData(D, 장), id) → metaData(…, 강화). 내 칸·횟수를 깎는 제약은 처음엔 안 넣음(기획결정기록 0-18)
+    difficulty: { tiers: [
+      { id: 'easy', name: '쉬움', lvPlus: 0, gradeShift: 0, relics: null, medalMul: 1 },
+      { id: 'normal', name: '보통', lvPlus: 1, gradeShift: 2, relics: [{ from: 1, count: 1 }, { from: 6, count: 2 }, { from: 12, count: 2 }, { from: 22, count: 3 }], medalMul: 1.5 },
+      { id: 'hard', name: '어려움', lvPlus: 2, gradeShift: 4, relics: [{ from: 0, count: 1 }, { from: 4, count: 2 }, { from: 12, count: 3 }, { from: 22, count: 3 }], medalMul: 2 } ] },
     enemySkills: { table: [{ from: 4, count: 1 }, { from: 12, count: 2 }, { from: 22, count: 3 }], levelEvery: 10, bossExtra: 0 }, // 보스 판에 스킬을 더 주면 3-10이 거의 못 깨는 벽이 돼서 0
     // 2026-11-26 장(챕터): 장마다 처음부터(플레이어 레벨 1) 10판. E.chapterData(data, 장 번호)가 이 표로 그 장의 data를 만들어요(판 번호는 0~9 그대로, 이름만 "2-1"처럼)
     //   lvPlus: 적 레벨 +N(1장 표에 더함) · swamp: 적 쪽 늪 칸 { cells: 판마다 칸 수, every: 이 초마다, amount: 늪에 선 적 공격력 +비율(계단식, 최대 없음) } · bellTiers: 그 장의 분노 단계 · groups: 같은 그룹 이벤트를 장별 확률로(키 = 굴려 나온 이벤트, 값 = 그룹 안 가중치)

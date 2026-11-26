@@ -30,3 +30,9 @@ assert.deepStrictEqual(MM.player.field,D.player.field); assert.deepStrictEqual(M
 const MF=E.metaData(D,{mode:"meta",nodes:full.nodes}); assert.ok(MF.player.bag.every(v=>v===7)); assert.strictEqual(E.metaData(D,{mode:"level"}),D,"레벨 모드 + 강화 없음 = 원본");
 let cm=0; for(let s=1;s<=5;s++){ cm+=E.campaign(D,{seed:s,meta:{mode:"meta"}}).cleared; E.campaign(E.chapterData(D,2),{seed:s,meta:{mode:"meta",nodes:full.nodes}}); }
 console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",cm);
+// 제약(난이도): 쉬움 = 원본, 보통·어려움 = 적 레벨·등급·유물·훈장 배율, 장 정보 유지
+{ const N=E.difficultyData(D,"normal"),H=E.difficultyData(D,"hard"),C2=E.chapterData(D,2);
+  assert.strictEqual(E.difficultyData(D,"easy"),D); assert.strictEqual(N.campaign.enemyLv[3],D.campaign.enemyLv[3]+1); assert.strictEqual(H.campaign.enemySkills.table[0].from,0);
+  assert.strictEqual(E.metaMedals(H,10,false),E.metaMedals(D,10,false)*2); assert.ok(E.difficultyData(C2,"hard").campaign.swamp,"장 정보 유지");
+  const MH=E.metaData(H,{nodes:{bag:1}}); assert.strictEqual(MH.campaign.diff.id,"hard","강화와 같이 써도 제약 유지");
+  console.log("ok · 제약"); }

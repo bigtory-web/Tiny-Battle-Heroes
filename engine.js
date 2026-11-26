@@ -501,6 +501,12 @@
     if (def.bellTiers && data.bell) { d.bell = cp(data.bell); d.bell.tiers = def.bellTiers; }
     if (def.groups && data.events) { d.events = cp(data.events); d.events.groups = def.groups; }
     return d; }
+  // 2026-11-27 제약(난이도): 그 구간의 data를 만들어요. 적 레벨 +lvPlus, 적 영웅 등급 앞당김, 적 유물 표, 훈장 배율. 쉬움(또는 없음)이면 data 그대로
+  function difficultyData(data, id) { var C = data.campaign, T = ((C.difficulty || {}).tiers || []).filter(function (t) { return t.id === id; })[0]; if (!T || (!T.lvPlus && !T.gradeShift && !T.relics && (T.medalMul || 1) === 1)) return data;
+    var d = {}; for (var k in data) d[k] = data[k]; var cp = function (o) { var r = {}; for (var q in o) r[q] = o[q]; return r; };
+    d.campaign = cp(C); d.campaign.diff = T; if (T.lvPlus && C.enemyLv) d.campaign.enemyLv = C.enemyLv.map(function (x) { return x + T.lvPlus; });
+    if (T.relics && C.enemySkills) { d.campaign.enemySkills = cp(C.enemySkills); d.campaign.enemySkills.table = T.relics; }
+    return d; }
   // 적 팀: 초반엔 1~2명, 점점 5명까지. 코스트 높은 영웅은 뒤쪽 스테이지부터 나와요. 챕터 마지막은 보스
   function isFrontRole(h) { return h.role === 'tank' || h.role === 'warrior'; }
   function fromTable(arr, n) { return arr[Math.min(n, arr.length - 1)]; }
@@ -657,7 +663,7 @@
     // 적 영웅: 플레이어 레벨의 등급 확률(player.heroGrade)로 한 명씩 뽑아요. 같은 스테이지·레벨이면 늘 같은 적, 종으로 늘어난 적은 뒤에 붙어요
     var bfx = (ev && (ev.kind === 'mobs' || ev.kind === 'chest')) ? [] : bellFx(data, n, bell, plv), BFX = (data.bell && data.bell.fx) || {}, bv = function (k) { return (BFX[k] || {}).v || 0; }, bhas = function (k) { return bfx.indexOf(k) >= 0; };
     var baseCnt = cnt; if (bhas('more')) cnt += bv('more');
-    var picks = []; for (var pi = 0; pi < cnt; pi++) picks.push(pickHeroByGrade(data, rnd, plv, picks)); if (n === 0 && C.firstEnemy && picks.length) picks[0] = C.firstEnemy; // 1-1 적 고정
+    var picks = []; for (var pi = 0; pi < cnt; pi++) picks.push(pickHeroByGrade(data, rnd, plv + ((C.diff || {}).gradeShift || 0), picks)); /* 2026-11-27 제약: 적 등급만 앞당김 */ if (n === 0 && C.firstEnemy && picks.length) picks[0] = C.firstEnemy; // 1-1 적 고정
     if (bhas('elite')) { var topG = picks.reduce(function (g, id) { return Math.max(g, heroGrade(data, id)); }, 1), eg = Math.min(4, topG + 1), PL = data.heroes.filter(function (h) { return h.art !== false && (h.grade || 1) === eg && picks.indexOf(h.id) < 0; });
       if (PL.length) picks.push(PL[Math.floor(rnd() * PL.length)].id); }
     var em = C.heroLv === 'player' ? C.enemyMul : C.enemyMul * Math.min(1, C.earlyMul + n * C.earlyRamp); // 영웅 레벨 = 플레이어 레벨이면 숨은 초반 배율 없음 // 초반 적은 약하게 시작해서 점점 원래 세기로
@@ -894,7 +900,7 @@
     return !N.req || !N.req.length || N.req.some(function (q) { return (S[q] || 0) > 0; }) ? 'open' : 'locked'; }
   function metaNext(data, state, id) { var N = metaNode(data, id), n = ((state && state.nodes) || {})[id] || 0; return N && metaStatus(data, state, id) === 'open' ? { node: N, step: n + 1, cost: N.cost[n] } : null; }
   function metaBuy(data, state, id) { var nx = metaNext(data, state, id); if (!nx || (state.medals || 0) < nx.cost) return false; state.medals -= nx.cost; (state.nodes || (state.nodes = {}))[id] = nx.step; return true; } // state를 바꿔요
-  function metaMedals(data, cleared, firstClear) { var M = (data.meta || {}).medal || {}, m = 0; for (var i = 0; i < (cleared || 0); i++) m += (M.clear || 0) + (isBoss(data, i) ? M.boss || 0 : 0); return m + (firstClear ? M.firstClear || 0 : 0); } // 판 끝 훈장(제약 배율은 제약이 생기면 곱함)
+  function metaMedals(data, cleared, firstClear) { var M = (data.meta || {}).medal || {}, m = 0; for (var i = 0; i < (cleared || 0); i++) m += (M.clear || 0) + (isBoss(data, i) ? M.boss || 0 : 0); return Math.round((m + (firstClear ? M.firstClear || 0 : 0)) * (((data.campaign || {}).diff || {}).medalMul || 1)); } // 판 끝 훈장(제약 배율은 제약이 생기면 곱함)
   function campaign(data, opts) {
     opts = opts || {}; if (opts.meta) data = metaData(data, opts.meta); // 2026-11-27 영구 강화
     var C = data.campaign, R = data.recruit, levels = {}, owned = {}, gold = C.startGold || 0, time = 0, stage = 0, best = 0, tries = 0, total = stageCount(data), maxT = (opts.maxHours || 48) * 3600;
@@ -1086,7 +1092,7 @@
     return out;
   }
 
-  var api = { battle: battle, createBattle: createBattle, chapterData: chapterData, potionById: potionById, metaData: metaData, metaNext: metaNext, metaBuy: metaBuy, metaStatus: metaStatus, metaNode: metaNode, metaMedals: metaMedals, potionSellPrice: potionSellPrice, rollPotions: rollPotions, stageTeam: stageTeam, heroLevel: heroLevel, levelPickRoll: levelPickRoll, levelPickKind: levelPickKind, skillUp: skillUp, startExtras: startExtras, bellFx: bellFx, stageLevel: stageLevel, stageName: stageName, stageCount: stageCount, autoFormation: autoFormation,
+  var api = { battle: battle, createBattle: createBattle, chapterData: chapterData, potionById: potionById, difficultyData: difficultyData, metaData: metaData, metaNext: metaNext, metaBuy: metaBuy, metaStatus: metaStatus, metaNode: metaNode, metaMedals: metaMedals, potionSellPrice: potionSellPrice, rollPotions: rollPotions, stageTeam: stageTeam, heroLevel: heroLevel, levelPickRoll: levelPickRoll, levelPickKind: levelPickKind, skillUp: skillUp, startExtras: startExtras, bellFx: bellFx, stageLevel: stageLevel, stageName: stageName, stageCount: stageCount, autoFormation: autoFormation,
     campaign: campaign, compare: compare, lossDamage: lossDamage, lossGold: lossGold, dmgFrac: dmgFrac, levelCost: levelCost, heroById: heroById, makeRng: makeRng,
     costCap: costCap, starMul: starMul, gradeMul: gradeMul, heroGrade: heroGrade, pickHeroByGrade: pickHeroByGrade, effectLevels: effectLevels, relicPowerMul: relicPowerMul, passiveValue: passiveValue, power: power, newUnit: newUnit, canMerge: canMerge, mergeUnits: mergeUnits, autoMerge: autoMerge, gainUnit: gainUnit,
     skillById: skillById, heroSellPrice: heroSellPrice, relicTargets: relicTargets, heroBonus: heroBonus, isBoss: isBoss, critChance: critChance, lootPool: lootPool, lootPick: lootPick, chestGrade: chestGrade, chestTiers: chestTiers, mobLoot: mobLoot, grollCost: grollCost, grollSpins: grollSpins, rollGroll: rollGroll, oddEvenBet: oddEvenBet, oddEvenResult: oddEvenResult, padTeam: padTeam, lootParse: lootParse, lootRerollPrice: lootRerollPrice, rerollMax: rerollMax, rollEvent: rollEvent, rollDais: rollDais, rollDaisCell: rollDaisCell, daisRerolls: daisRerolls, eventRerolls: eventRerolls, rollCampfire: rollCampfire, campfireAtStart: campfireAtStart, stageReward: stageReward, bellMax: bellMax, bellGold: bellGold, rollMerchant: rollMerchant, isEventStage: isEventStage, unitSkills: unitSkills, canTranscend: canTranscend, transcend: transcend, unitBattleSpec: unitBattleSpec, unitPower: unitPower, skillPool: skillPool, merchantPrice: merchantPrice, merchantOff: merchantOff, merchantNoBattle: merchantNoBattle, chestReward: chestReward, rollScroll: rollScroll, mercPrice: mercPrice, skillPrice: skillPrice, skillManaPrice: skillManaPrice, skillBuyPrice: skillBuyPrice, skillGradeNow: skillGradeNow, skillMaxLevel: skillMaxLevel, refreshPrice: refreshPrice, rollShop: rollShop, rollShopHeroes: rollShopHeroes, canTake: canTake, takeSkill: takeSkill, playerLevel: playerLevel, perk: perk, skillSellPrice: skillSellPrice, sellSkill: sellSkill };
