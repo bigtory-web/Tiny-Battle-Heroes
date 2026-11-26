@@ -2508,6 +2508,10 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 #tab-shop .srow2:not(.h) .stile{height:94px;justify-content:center;gap:6px}
 #stock .srow2:not(.h) .stile.mhero .ic,#stock .srow2:not(.h) .stile.mhero .ic .hic{width:56px!important;height:56px!important}
 #tab-shop .stile.sk .ic{width:56px;height:56px;flex:none;background:#17141d;box-shadow:inset 0 0 0 1px var(--sg),0 0 0 1px #17141d}
+#hinfo.hinfo{z-index:760!important} /* 상세 창은 DPS 창(720)·상점(750)보다 위. 팝업 층(900)보다는 아래 */
+/* X 닫기 버튼: 다른 버튼과 같은 도트 입체 모양의 빨강, 흰 ✕ + 어두운 외곽선 (2026-11-26 사용자: 버튼 통일) */
+.spX,.rx,#shopX,.gover.ll .llx,#hinfo.hinfo .hi-x,.hinfo .hi-x,.popx{background:linear-gradient(#ffd0d0,#ffd0d0) 6px 4px/8px 2px no-repeat,linear-gradient(#ffd0d0,#ffd0d0) 18px 4px/2px 2px no-repeat,repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 2px,transparent 2px 8px),linear-gradient(#ee6a70 0 30%,#d9474f 30% 64%,#bd323c 64% 100%)!important;box-shadow:inset 0 0 0 2px #17141d,inset 0 3px 0 -1px #ffaaae,inset 3px 0 0 -1px #9a2630,inset -3px 0 0 -1px #9a2630,inset 0 -5px 0 -2px #8a1f28,inset 0 -7px 0 -2px #5a1218!important;color:#fff!important;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d,0 2px #17141d!important}
+.spX:hover,.rx:hover,#shopX:hover,.gover.ll .llx:hover,.hinfo .hi-x:hover,.popx:hover{filter:brightness(1.12)}
 </style>
 </head>
 <body>
@@ -4642,7 +4646,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     var tiles = S.shop.stock.map(function(id, i){
       var d = E.skillById(D, id), sold = S.shop.sold.indexOf(i) >= 0, c = buyPrice(id), ok = !sold && E.canTake(D, mine, id, PK().skillSlots) && canPay(c), on = shopSel && shopSel.t === 'stock' && shopSel.i === i;
       if (ok) anyBuy = true;
-      return '<button class="stile sk' + gCls(id, myLv(id) || undefined) + ((synInfo(d) || {}).off ? ' synoff' : '') + (d.tag ? ' syn' : '') + (sold ? ' sold' : '') + (on ? ' sel' : '') + (myLv(id) && !skMaxed(id) ? ' up' : '') + '"' + gAttr(id, myLv(id) || undefined) + ' data-sel="stock:' + i + '"><span class="ic">' + skIcon(d) + '</span>' + synN(d) + (sold ? '<span class="pr">품절</span>' : skMaxed(id) ? '<span class="pr">최고 등급</span>' : costTag(c, !E.canTake(D, mine, id, PK().skillSlots))) + '</button>';
+      return '<button class="stile sk' + gCls(id, myLv(id) || undefined) + ((synInfo(d) || {}).off ? ' synoff' : '') + (d.tag ? ' syn' : '') + (sold ? ' sold' : '') + (on ? ' sel' : '') + (myLv(id) && !skMaxed(id) ? ' up' : '') + '"' + gAttr(id, myLv(id) || undefined) + ' data-sel="stock:' + i + '"><span class="ic">' + skIcon(d) + '</span>' + synN(d) + (sold ? costTag((S.shop.soldCost || {})[i] || c).replace(' no', '') /* 산 상품: 글자 없이 산 값 그대로, 칸만 회색 */ : skMaxed(id) ? '<span class="pr">최고 등급</span>' : costTag(c, !E.canTake(D, mine, id, PK().skillSlots))) + '</button>';
     });
     var rp = E.refreshPrice(D, S.shop.rerolls);
     var HS = D.shop.heroes || (S.shop.heroes || []).length ? S.shop.heroes || [] : [], hrow = HS.map(function(it, i){ if ((S.shop.hsold || []).indexOf(i) >= 0) return '<span class="stile empty"></span>'; var on = shopSel && shopSel.t === 'hero' && shopSel.i === i; if (S.gold >= it.price) anyBuy = true;
@@ -4698,10 +4702,10 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     var d = E.skillById(D, id), sold = S.shop.sold.indexOf(i) >= 0, c = buyPrice(id), own = mine.filter(function(x){ return x.id === id; })[0], lv = own ? own.level + 1 : 1;
     var lack = lackText(c);
     var maxed = own && skMaxed(id);
-    var note = sold ? '품절' : maxed ? '최고 등급' : own ? '등급업 · ' + upText(id) : mine.length >= PK().skillSlots ? '새 유물 · 유물 칸이 넘쳐요 (팔아야 전투 가능)' : '새 스킬';
-    nm.innerHTML = d.name + ' <small>' + '<i class="sgn" style="color:' + skG(id, maxed ? own.level : lv).col + '">' + skG(id, maxed ? own.level : lv).name + '</i> · ' + note + '</small>' + cdBox(d); ds.innerHTML = skillDesc(d, maxed ? own.level : lv, own && !maxed ? own.level : 0) + synLine(d) + synFaces(d);
+    var note = sold ? '' : maxed ? '최고 등급' : own ? '등급업 · ' + upText(id) : mine.length >= PK().skillSlots ? '새 유물 · 유물 칸이 넘쳐요 (팔아야 전투 가능)' : '새 스킬';
+    nm.innerHTML = d.name + ' <small>' + '<i class="sgn" style="color:' + skG(id, maxed ? own.level : lv).col + '">' + skG(id, maxed ? own.level : lv).name + '</i>' + (note ? ' · ' + note : '') + '</small>' + cdBox(d); ds.innerHTML = skillDesc(d, maxed ? own.level : lv, own && !maxed ? own.level : 0) + synLine(d) + synFaces(d);
     bt2.hidden = false; var full = !E.canTake(D, mine, id, PK().skillSlots);
-    bt2.innerHTML = sold ? '품절' : maxed ? '최고 등급' : full ? '유물 칸이 꽉 찼어요' : lack ? lack : (own ? '등급업' : '구매'); bt2.disabled = sold || maxed || full || !!lack; // 값은 상품 칸에 있어서 버튼에는 글자만
+    bt2.innerHTML = sold ? '구매' : maxed ? '최고 등급' : full ? '유물 칸이 꽉 찼어요' : lack ? lack : (own ? '등급업' : '구매'); bt2.disabled = sold || maxed || full || !!lack; // 값은 상품 칸에 있어서 버튼에는 글자만
     bt2.classList.toggle('mana', !!c.mana && !sold && !maxed);
   }
   ['pointerover', 'pointerdown'].forEach(function(t){ $('stock').addEventListener(t, function(e){ var b = e.target.closest('[data-sel^="stock:"]'); if (!b) return; var id = S.shop.stock[+b.dataset.sel.split(':')[1]]; if (id != null) synHl(E.skillById(D, id), 'A'); }); });
@@ -4726,7 +4730,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     if (shopSel.t !== 'stock') return;
     var i = shopSel.i, id = S.shop.stock[i], c = buyPrice(id);
     if (S.shop.sold.indexOf(i) >= 0 || !E.canTake(D, S.skills, id, PK().skillSlots) || !canPay(c)) return;
-    S.shop.soldRow = S.shop.soldRow || {}; S.shop.soldRow[i] = c.mana > 0 ? 'm' : 'g'; // 품절 칸이 이 줄에 그대로 남게
+    S.shop.soldRow = S.shop.soldRow || {}; S.shop.soldRow[i] = c.mana > 0 ? 'm' : 'g'; S.shop.soldCost = S.shop.soldCost || {}; S.shop.soldCost[i] = c; // 품절 칸이 이 줄에 그대로 남게
     var had = myLv(id) > 0, ut = had ? upText(id) : ''; S.gold -= c.gold || 0; S.mana = (S.mana || 0) - (c.mana || 0); E.takeSkill(D, S.skills, id); S.shop.sold.push(i); skKey = ''; save(); renderAll(); // 구매·등급업 알림 없음
   });
 
