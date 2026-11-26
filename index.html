@@ -3000,6 +3000,7 @@ img.rimg{image-rendering:auto!important}
 #tab-shop .srow2 .stile.lockd{background:linear-gradient(#08070b 0 3px,#0e0c13 3px 6px,#131019 6px calc(100% - 3px),#2e2938 calc(100% - 3px))!important;box-shadow:inset 3px 0 0 #08070b,inset -2px 0 0 #2a2533!important}
 #tab-shop .stile.lockd em{color:#f3e6c4!important}
 /* 규칙: 빈 칸은 주변 바탕보다 늘 더 어둡게, "+"는 옅게 (2026-11-26 사용자: "이건 규칙이야") */
+#field .aimsvg{position:absolute;inset:0;width:100%;height:100%;z-index:342;pointer-events:none;opacity:.8} #field .aimsvg path{fill:none;stroke-linecap:butt} #field .aimsvg .ao{stroke:#17141d;stroke-width:5} #field .aimsvg .ai{stroke:#ffe27a;stroke-width:2.5;stroke-dasharray:8 5} #field .aimsvg polygon{fill:#ffe27a;stroke:#17141d;stroke-width:1.5} #field.scrollin .aimsvg,#field.gridin .aimsvg,#arena.ending #field .aimsvg{display:none}
 #field .vsmark{width:var(--vsw,64px)!important;height:var(--vsh,48px)!important} #field .vsmark img{width:var(--vsw,64px)!important;height:var(--vsh,48px)!important;image-rendering:pixelated!important;animation-name:vsbob3!important} @keyframes vsbob3{50%{transform:translateY(calc(-2 * var(--dp,.75px)))}} /* 흐림 고침: 정수배 도트 (2026-11-26) */
 /* 용 버튼을 유물 칸 크기에 맞춤: 아이콘 36(원본 24의 정수배) (2026-11-26 사용자: "스킬만큼 작게") */ #bellBtn.bell .cbox{width:44px!important;height:56px!important;gap:1px!important} #bellBtn.bell .bic,#bellBtn.bell .bic img{width:36px!important;height:36px!important;line-height:36px!important;font-size:26px!important} #bellBtn.bell .bic img{image-rendering:pixelated!important} #bellBtn.bell .bdots i{width:9px!important;height:9px!important} #bellBtn.bell.inbt .cbox{width:auto!important;height:32px!important;padding:0 4px!important} #bellBtn.bell.inbt .bic,#bellBtn.bell.inbt .bic img{width:24px!important;height:24px!important;line-height:24px!important}
 #shopBuy .bp b.no,#shopBuy:disabled .bp b.no{color:#ff8a80!important} /* 모자라면 버튼 값도 빨강 */
@@ -4480,6 +4481,14 @@ img.rimg{image-rendering:auto!important}
     var em = box.querySelector('.tpw'), t0 = em.querySelector('em').textContent, t1 = pw.toLocaleString(); if (t0 !== t1){ em.querySelector('em').textContent = t1; if (pop){ em.classList.remove('pop'); void em.offsetWidth; em.classList.add('pop'); } } pwTint(); }
   // 전투 전: 편성 그대로 전투를 하나 만들어 체력·보호막 합을 읽어요 (전투력은 편성 ⚔ 합계 계산)
   function mobPw(u){ var a = u && u.h && u.h.mob === 'mimic' ? ((D.events.mimic || {}).dmg || 0) : u && u.atk; return a > 0 ? Math.sqrt(u.maxHp * a / (u.interval || 1)) : 0; } /* 미믹은 atk 0, 고정 피해로 계산 */ // 몹 전투력: 영웅 전투력과 같은 식
+  /* 편성 화면: 우리 영웅 → 첫 공격 대상 포물선 화살표 (2026-11-26 사용자). 대상은 버리는 전투를 한 걸음 돌려 엔진 그대로 얻음 */
+  function aimArrows(b0){ var f = $('field'); if (!f) return; var old = f.querySelector(':scope > .aimsvg'); if (old) old.remove(); if (!b0 || bt) return;
+    var at = function(u){ return [zx(u.x), zy(u.y) + OFF + FOOT - 24]; }, from = b0.A.map(function(u){ return [u, at(u)]; }), to = b0.E.map(function(u){ return [u, at(u)]; });
+    try { b0.step(); } catch (e) { return; } var P = '';
+    from.forEach(function(a){ var tg = a[0].tgt, e = to.filter(function(x){ return x[0] === tg; })[0]; if (!e) return; var p = a[1], q = e[1], dx = q[0] - p[0], dy = q[1] - p[1], len = Math.sqrt(dx * dx + dy * dy) || 1, cx = (p[0] + q[0]) / 2, cy = (p[1] + q[1]) / 2 - Math.min(60, 14 + len * .14);
+      var ux = q[0] - cx, uy = q[1] - cy, ul = Math.sqrt(ux * ux + uy * uy) || 1; ux /= ul; uy /= ul; var bx = q[0] - ux * 10, by = q[1] - uy * 10, d = 'M' + p[0] + ' ' + p[1] + ' Q' + cx + ' ' + cy + ' ' + bx + ' ' + by;
+      P += '<path class="ao" d="' + d + '"/><path class="ai" d="' + d + '"/><polygon points="' + q[0] + ',' + q[1] + ' ' + (bx - uy * 6) + ',' + (by + ux * 6) + ' ' + (bx + uy * 6) + ',' + (by - ux * 6) + '"/>'; });
+    if (P) f.insertAdjacentHTML('beforeend', '<svg class="aimsvg" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none">' + P + '</svg>'); }
   function vsBarForm(){ var bar = $('vsBar'); if (!bar) return; var tb0 = $('talkBtn'); if (tb0) tb0.style.visibility = isOddEven() || isFork() || isLvPick() ? 'hidden' : ''; if (bt) return; var done = S.stage >= E.stageCount(D);
     if (done){ bar.hidden = true; return; } vsBarInit(); var evm = noFight(); bar.classList.toggle('evmode', evm);
     var st = evm ? { team: [], skills: [] } : E.stageTeam(D, S.stage, S.event, S.bell || 0, plv()), spA = teamSpec().map(padSpec), b0 = null;
@@ -4487,7 +4496,7 @@ img.rimg{image-rendering:auto!important}
     var pA = 0, pE = 0; S.team.forEach(function(uid){ var u0 = uid && U(uid); if (u0) pA += uPow(u0); }); st.team.forEach(function(x){ if (!E.unitPower) return; if (hero(x.id).mob){ if (MOBSZ[hero(x.id).mob] && b0) pE += mobPw(b0.E.filter(function(u){ return u.slot === x.slot; })[0]); return; } var m = x.mul || {}; pE += E.unitPower(D, { id: x.id, star: x.star || 1 }, x.level) * Math.sqrt((m.hp || 1) * (m.atk || 1)); });
     if (E.relicPowerMul){ pA *= E.relicPowerMul(D, S.skills); pE *= E.relicPowerMul(D, st.skills); }
     ['A', 'E'].forEach(function(sd){ var L = b0 ? b0[sd] : [], mx = 0, sh = 0; L.forEach(function(u){ mx += u.maxHp; sh += u.shield > 1 ? u.shield : 0; }); vsBarSet(sd, mx, mx, sh, Math.round(sd === 'A' ? pA : pE), true); });
-    if (evm){ var be = $('tbE'); be.querySelector('.tpw em').textContent = '???'; be.querySelector('small').textContent = '???'; } pwTint(); } // 이벤트 판: 적 쪽은 ???
+    if (evm){ var be = $('tbE'); be.querySelector('.tpw em').textContent = '???'; be.querySelector('small').textContent = '???'; } pwTint(); aimArrows(evm || scrollPend ? null : b0); } // 이벤트 판: 적 쪽은 ???
   function updTeamBars(){ if (!bt || !tpw) return; ['A', 'E'].forEach(function(sd){ var L = bt[sd], hp = 0, mx = 0, sh = 0, pw = 0;
       L.forEach(function(u){ if (u.escaped) return; mx += u.maxHp; if (u.alive){ hp += Math.max(0, u.hp); sh += u.shield > 1 ? u.shield : 0; pw += tpw[sd][u.slot] || 0; } });
       pw = Math.round(pw * (sd === 'A' ? tpw.mA : tpw.mE)); vsBarSet(sd, hp, mx, sh, pw, true, L.filter(function(u){ return u.alive && !u.escaped; }).length); }); } // 전체 HP·전투력 (전투 중 매 프레임)
