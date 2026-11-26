@@ -351,9 +351,8 @@ img.lic.padic{object-fit:contain}
 .bfc{width:56px;padding:4px 0 3px;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;background:#17141d;box-shadow:inset 0 0 0 2px #5d5470;color:#f3e6c4;cursor:help;filter:grayscale(1);opacity:.45}
 .bfc.on{filter:none;opacity:1} .bfc.sel{box-shadow:inset 0 0 0 2px #ffd34d;opacity:1} /* 노란 테두리 = 지금 설명이 보이는 카드 */
 .bfc i{font-style:normal;font-size:20px;line-height:24px;position:relative;display:flex;align-items:center;justify-content:center;width:34px;height:28px}
-.bfc i img{width:24px;height:24px;image-rendering:pixelated} .bfc i .bfsil{filter:brightness(0) invert(.8)} .bfc i .bfstar{width:27px;height:27px}
-.bfc i .bfring{width:20px;height:20px;border-radius:50%;box-shadow:inset 0 0 0 3px #c9c3d6,inset 0 0 0 5px #17141d;background:#3b3546}
-.bfc i s{position:absolute;right:-2px;bottom:-3px;text-decoration:none;font:400 15px/1 var(--display);color:#fff;text-shadow:1px 0 #17141d,-1px 0 #17141d,0 1px #17141d,0 -1px #17141d}
+.bfc i .bfpx{width:26px;height:24px;object-fit:contain;image-rendering:pixelated} .bfc i .bfplus{position:absolute;right:-2px;bottom:-2px;width:14px;height:14px;image-rendering:pixelated}
+.bfc:not(.on) i{filter:brightness(.55)} .bfc.on i .bfpx{animation:bfon .6s ease-out} @keyframes bfon{0%{filter:brightness(2.4)}100%{filter:none}}
 .bfc em{font-style:normal;font:400 10px var(--display);white-space:nowrap}
 .bfdesc{margin-top:5px;min-height:34px;font:400 11px/1.5 var(--body)}
 .nightmsg{position:absolute;left:50%;top:50%;z-index:900;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;white-space:nowrap;animation:nightmsg 2.8s ease-out both}
@@ -3876,7 +3875,7 @@ img.rimg{image-rendering:auto!important}
     rs.classList.toggle('reel', reel); rs.innerHTML = reel ? '' : all.map(cell).join('');
     box.hidden = false; box.querySelector('.rbtns').hidden = false; ['rYes', 'rNo', 'rAgain', 'rLeft', 'rExit'].forEach(function(b){ $(b).hidden = true; }); $('rWait').hidden = false; $('rX').hidden = true; $('rRes').hidden = true; $('rPend').hidden = true; box.querySelector('.rmeta').textContent = ''; // 도는 동안 버튼 자리에 두구두구
     $('rX').disabled = false; if (S.offerMode === 'groll'){ $('rX').hidden = false; $('rX').disabled = true; }
-    var rb = box.querySelector('.rbox'); rb.classList.remove('gr1', 'gr2', 'gr3', 'reveal'); rb.classList.add('spin'); $('rGrade').textContent = ''; $('rBurst').innerHTML = '';
+    var rb = box.querySelector('.rbox'); rb.classList.remove('gr1', 'gr2', 'gr3', 'reveal', 'gwait'); /* 돈고블린을 돌리지 않고 닫으면 gwait 가 남아 다음 룰렛들의 폭죽이 안 나오던 것 */ rb.classList.add('spin'); $('rGrade').textContent = ''; $('rBurst').innerHTML = '';
     if (reel){ var L = all.length, ti = Math.max(0, all.indexOf(target)), CW = 48, s0 = Math.max(0, all.indexOf(S.roulAt)), fi = 3 + (ti - s0 + L) % L, minSteps = instant ? 0 : 14; while (fi - 3 < minSteps) fi += L; /* 지난번에 멈춘 칸에서 이어서 돎 (2026-11-26 사용자) */
       S.roulAt = target; save();
       var track = []; for (var q = 0; q < fi + 4; q++) track.push(all[(s0 + q - 3 + 3 * L) % L]);
@@ -5878,7 +5877,15 @@ img.rimg{image-rendering:auto!important}
     $('evTalk').hidden = !tk; var dsv = tk && isDais() ? S.event : null; $('evTalk').querySelector('b').textContent = '말 걸기'; if (dsv) busy = busy || !!dsv.dsDone; $('evTalk').disabled = busy; $('evTalk').classList.toggle('busyhide', busy); $('evBet').classList.toggle('busyhide', oeBusy); var oe = ok && isOddEven(), k = oeK(), mx = oeMax(), gr = ok && isGroll(); $('evBet').hidden = !oe && !gr; box.hidden = !tk && !oe && !gr; grollBtn(gr);
     if (oe){ $('evBet').disabled = oeBusy || k >= mx || S.gold < E.oddEvenBet(D, S.stage); $('evBet').querySelectorAll('.oedots i').forEach(function(d, i){ d.classList.toggle('on', i < k); d.hidden = i >= mx; }); } } /* 말 걸기: 위 가운데(종·초월 자리) */
   /* 분노 카드 아이콘 = 실루엣 + 작은 "+" 고정 (2026-11-26 사용자: "실루엣으로 하자"): 증원 사람, 적 유물 빈 유물 원, 정예 별 */
-  function bfIcon(k, d){ var a = k === 'more' ? '<img class="bfsil" src="img/p/hud_team.png" alt="">' : k === 'relic' ? '<u class="bfring"></u>' : k === 'star' ? '<img class="bfstar" src="' + starSpr('#c9c3d6').toDataURL() + '" alt="">' : null; return a ? a + '<s>+</s>' : d.icon; }
+  /* 분노 카드 아이콘 = 게임식 픽셀(어두운 1점 테두리·밝은 윗면·어두운 아랫면) + 작은 "+". 걸리기 전엔 어둡게, 걸리면 제 색 (2026-11-26 사용자) */
+  var BFPIX = {}, BFPAL = { L: '#ff9a8a', R: '#e8503c', D: '#9c2a22', a: '#fff0a8', g: '#e9b53a', d: '#a8741c', p: '#3b3546', y: '#fff6b0', Y: '#ffd34d', o: '#d9901a', W: '#ffffff', w: '#cfc8dc' };
+  var BFMAP = { more: ['....LLL....', '...LRRRD...', '...LRRRD...', '...RRRRD...', '....RRD....', '..LLRRRRD..', '.LRRRRRRRD.', 'LRRRRRRRRRD', 'LRRRRRRRRDD', 'DDDDDDDDDDD'],
+    relic: ['...aaaaa...', '..aggggga..', '.ag.ppp.gd.', 'ag.ppppp.gd', 'agppapppppd', 'agpaaapppgd', 'agppapppdgd', 'ag.ppppp.gd', '.gg.ppp.gd.', '..gggggdd..', '...ddddd...'],
+    star: ['.....y.....', '....yYo....', '....yYo....', 'yyyyYYYoooo', '.yYYYYYYYo.', '..yYYYYYo..', '...yYYYo...', '..yYYoYYo..', '..yYo.oYo..', '.yo.....oo.'],
+    plus: ['..W..', '..W..', 'WWWWW', '..w..', '..w..'] };
+  function bfPix(k){ if (BFPIX[k]) return BFPIX[k]; var M = BFMAP[k], w = Math.max.apply(null, M.map(function(r){ return r.length; })), c = document.createElement('canvas'), x = c.getContext('2d'); c.width = w + 2; c.height = M.length + 2;
+    var each = function(f){ M.forEach(function(r, j){ for (var i = 0; i < r.length; i++) if (r[i] !== '.') f(i, j, r[i]); }); }; x.fillStyle = '#17141d'; each(function(i, j){ x.fillRect(i, j + 1, 3, 1); x.fillRect(i + 1, j, 1, 3); }); each(function(i, j, ch){ x.fillStyle = BFPAL[ch]; x.fillRect(i + 1, j + 1, 1, 1); }); return BFPIX[k] = c.toDataURL(); }
+  function bfIcon(k, d){ return BFMAP[k] && k !== 'plus' ? '<img class="bfpx" src="' + bfPix(k) + '" alt=""><img class="bfplus" src="' + bfPix('plus') + '" alt="">' : d.icon; }
   function renderBell(){ renderTalk(); var b = $('bellBtn'); if (!b || !D.bell) { if (b) b.hidden = true; return; } if ((bt && curEv && curEv.kind === 'chest') || (!bt && S.event && S.event.kind === 'chest')){ b.hidden = true; return; } /* 보물상자 판: 용 버튼 없음 */
     var B = D.bell, mx = bellMax(), n = Math.min((bt ? curBell : S.bell) || 0, mx), bStg = bt ? curStage : S.stage, bEv = bt ? curEv : S.event, /* 전투 중엔 시작할 때 값 */ im = BELLIMG[Math.max(1, n)];
     b.hidden = (!bt && noFight()) || bStg >= E.stageCount(D) || !!(bEv && (bEv.kind === 'mobs' || bEv.kind === 'mimic' || bEv.kind === 'oddeven')); b.className = 'bell b' + n + (mx ? '' : ' lock') + (bt ? ' inbt' : ''); b.disabled = !mx;
