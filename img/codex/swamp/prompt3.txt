@@ -1,0 +1,11 @@
+Look at img/p/bg_field.png : this is the battle background of chapter 1 of our 2D mobile RPG. Make a battle background for chapter 2, a SWAMP, in exactly the same art style (clean pixel-art-like painted shapes, soft flat shading, outlines of similar thickness, same level of detail) and exactly the same composition and camera:
+- wide landscape, same aspect ratio as the reference (720x402)
+- sky at the top (about the upper quarter)
+- a continuous back wall of scenery across the whole width, its base line at about 59 percent of the image height, same as the reference
+- below that, a FLAT open ground seen at the same slightly-from-above angle, filling the lower 40 percent. Characters, hex tiles and UI are drawn on top of it, so keep this ground calm, low-contrast and uncluttered: only a few small details.
+
+Theme: MANGROVE SWAMP: warm humid light, the back wall is made of big mangrove trees with tall arching stilt roots standing in murky green water, water reflections and lily pads near the base of the wall, the ground is a flat sandy-brown mud bank with a few small shallow puddles mostly near the left and right edges.
+
+Generate ONE new image with your image generation tool and save it as img/codex/swamp/swamp3_src.png
+No characters, no creatures, no text, no UI, no hex grid, no frame.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

@@ -1,0 +1,11 @@
+Look at img/codex/swamp/swamp3_src_v1.png (mangrove swamp battle background). Make a new version and save it as img/codex/swamp/swamp3_src.png.
+
+Keep EXACTLY the same composition, art style, mangrove trees with arching stilt roots, water band, lily pads and sizes. The only problem: the pink-purple sky and orange-brown ground look the same as our chapter 1 desert-like background, so it does not read as a swamp.
+
+Change only colors and the ground surface:
+- Sky: fresh humid aqua-blue to pale mint, soft white clouds.
+- Water: clearly deep teal-green swamp water.
+- Ground: damp gray-brown / olive mud bank (NOT orange), with a few more shallow teal puddles near the left and right edges and small moss patches. The middle stays calm and uncluttered, because characters stand on it.
+- Foliage: deeper blue-green.
+
+No characters, no text, no UI. Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
