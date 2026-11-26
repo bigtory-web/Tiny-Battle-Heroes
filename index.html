@@ -2530,6 +2530,11 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 /* 파티 HP 빈 부분: 움푹 팬 홈 (위 어두움, 아래 살짝 밝음, 채운 부분과 같은 픽셀 띠) (2026-11-26 사용자) */
 .tbar .thp{background:linear-gradient(#17141d 0 3px,#241f2d 3px 6px,#2f2a3a 6px calc(100% - 3px),#554d66 calc(100% - 3px))!important;box-shadow:0 0 0 2px #17141d,0 3px 0 #17141d,inset 2px 0 0 #1c1824,inset -2px 0 0 #1c1824!important}
 .vsbar.evmode .tbar.e .thp .h{background:transparent!important}
+/* 상점 창 크기 고정: 본문 252px, 긴 설명은 정보 칸 안에서 스크롤. 방랑상점의 빈 칸은 자리만 차지 */
+#tab-shop .spBody{height:252px!important}
+#tab-shop .shopInfo{overflow:hidden}
+#tab-shop .shopInfo .sdesc{flex:1 1 0!important;min-height:0!important;overflow-y:auto!important;max-height:none!important;scrollbar-width:thin}
+#tab-shop .srow2 .stile.empty.keep{visibility:hidden;height:94px!important;padding:0}
 </style>
 </head>
 <body>
@@ -4713,9 +4718,8 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
       else { cls = 'stile mhero'; attr = ' style="--gcol:' + HG(it.id).col + '"'; ic = heroFr(it.id); }
       var pr = '<span class="pr' + (mana ? ' mana' : '') + (payOk ? '' : ' no') + '">' + (mana ? manaIcon('mni') : (HUDOK.gold ? '<img src="img/p/hud_gold.png" alt="">' : '🪙')) + it.price.toLocaleString() + '</span>';
       return '<button class="' + cls + (done ? ' sold' : '') + (on ? ' sel' : '') + '"' + attr + ' data-sel="merch:' + i + '" type="button"><span class="ic">' + ic + '</span>' + pr + '</button>'; }); /* 할인된 값만 (원래 값 표시 뺌) */
-    while (t.length % cols) t.push('<span class="stile empty"></span>');
-    var rows = ''; for (var r = 0; r < t.length; r += cols) rows += '<div class="srow2 g' + (cols > 3 ? ' c' + cols : '') + '"><span class="rowic"></span>' + t.slice(r, r + cols).join('') + '</div>';
-    $('stock').innerHTML = rows; $('shopReroll').hidden = true; renderShopInfo(); }
+    while (t.length < 6) t.push('<span class="stile empty keep"></span>'); /* 일반 상점과 같은 3칸 x 2줄. 상품이 적어도 창 크기 그대로 (2026-11-26 사용자) */
+    $('stock').innerHTML = '<div class="srow2 g six"><span class="rowic"></span>' + t.join('') + '</div>'; $('shopReroll').hidden = true; renderShopInfo(); }
   // 상점이 열려 있을 때 전장 왼쪽 위 '내 유물' 아이콘: 고른 것 표시 (누르면 팔기)
   function shopAutoSel(){ if (!shopOpen()) return false;
     var L = [].slice.call(document.querySelectorAll('#stock [data-sel]')), cur = shopSel ? L.findIndex(function(b){ return b.dataset.sel === shopSel.t + ':' + shopSel.i; }) : -1;
