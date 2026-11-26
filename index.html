@@ -2431,7 +2431,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
 /* ───── 나머지 색 버튼(파랑·빨강·초록·회색)에도 같은 픽셀 입체 (2026-11-25 사용자: "다른버튼들도") ─────
    버튼이 원래 쓰던 색 변수(--bb 면, --bh 밝은 줄, --bl 어두운 단)로 명암 3단·아래 단·좌우 줄을 만들어서 색마다 따로 안 정해도 돼요. 비활성은 색 변수가 회색으로 바뀌어서 같은 구조의 회색이 돼요. X(닫기) 버튼은 작은 아이콘이라 제외.
    되돌리는 방법: 이 블록을 지우면 돼요. */
-.hinfo .hi-b,.hinfo .hi-b.go,.hinfo .hi-b.alt,.rbox .rbtns .again,#rAgain,#rNo,.evbtns [data-evleave],.rbtns .rlink,#backBtn,#rExit,#shopReroll .spRe,#arena.evstage #fightBtn{
+.hinfo .hi-b,.hinfo .hi-b.go,.hinfo .hi-b.alt,.rbox .rbtns .again,#rAgain,#rNo,.evbtns [data-evleave],.rbtns .rlink,#backBtn,#rExit,#shopReroll .spRe,#arena.evstage #fightBtn,#trWin .rbtns .trreg{ /* 초월 등록: 꺼짐도 공통 회색 입체 (2026-11-26 사용자: "버튼 통일성") */
   background:linear-gradient(var(--bh),var(--bh)) 10px 4px/8px 2px no-repeat,repeating-linear-gradient(135deg,rgba(255,255,255,.07) 0 2px,transparent 2px 8px),linear-gradient(color-mix(in srgb,var(--bb) 72%,#fff) 0 30%,var(--bb) 30% 64%,color-mix(in srgb,var(--bb) 80%,var(--bl)) 64% 100%)!important;
   box-shadow:inset 0 0 0 2px #17141d,inset 0 3px 0 -1px var(--bh),inset 3px 0 0 -1px color-mix(in srgb,var(--bb) 78%,var(--bl)),inset -3px 0 0 -1px color-mix(in srgb,var(--bb) 78%,var(--bl)),inset 0 -5px 0 -2px color-mix(in srgb,var(--bb) 55%,var(--bl)),inset 0 -7px 0 -2px var(--bl)!important}
 .hinfo .hi-b:active:not(:disabled),.hinfo .hi-b.go:active:not(:disabled),.hinfo .hi-b.alt:active:not(:disabled),.rbox .rbtns .again:active:not(:disabled),#rAgain:active:not(:disabled),#rNo:active:not(:disabled),.evbtns [data-evleave]:active:not(:disabled),.rbtns .rlink:active:not(:disabled),#backBtn:active:not(:disabled),#rExit:active:not(:disabled),#shopReroll .spRe:active:not(:disabled),#arena.evstage #fightBtn:active:not(:disabled){transform:translateY(2px)!important;box-shadow:inset 0 0 0 2px #17141d,inset 0 2px 0 -1px var(--bh),inset 3px 0 0 -1px color-mix(in srgb,var(--bb) 78%,var(--bl)),inset -3px 0 0 -1px color-mix(in srgb,var(--bb) 78%,var(--bl)),inset 0 -3px 0 -2px color-mix(in srgb,var(--bb) 55%,var(--bl)),inset 0 -4px 0 -2px var(--bl)!important}
@@ -3044,7 +3044,6 @@ img.rimg{image-rendering:auto!important}
 #trWin .rbox:has(.trstage.charge){background:#2a1648!important}
 @keyframes trquake{50%{translate:3px -2px}}
 /* 네 모서리 덩굴 장식 = 요정 팝업 모양을 보라로 (2026-11-26 사용자) */
-#trWin .trstage > .trvine{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 20' shape-rendering='crispEdges'%3E%3Cpath fill='%235a3a9a' d='M1 9h2v1h-2zM1 10h2v1h-2zM2 8h2v1h-2zM2 11h2v1h-2zM4 6h2v1h-2zM4 13h2v1h-2zM5 5h2v1h-2zM5 14h2v1h-2zM7 3h2v1h-2zM7 16h2v1h-2zM8 2h2v1h-2zM8 17h2v1h-2zM10 0h2v1h-2zM10 19h2v1h-2z'/%3E%3Cpath fill='%23a77bff' d='M3 7h2v1h-2zM3 12h2v1h-2zM6 4h2v1h-2zM6 15h2v1h-2zM9 1h2v1h-2zM9 18h2v1h-2zM6 6h1v2h-1zM6 12h1v2h-1zM10 2h1v2h-1zM10 16h1v2h-1z'/%3E%3Cpath fill='%23c9a6ff' d='M1 8h2v1h1v2h-1v1H1v-1H0V9h1z'/%3E%3Cpath fill='%23fff0a0' d='M1 9h2v2H1z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
 /* 결과: 새 스킬 줄·획득 글에 은은한 빛, 상세 창의 "초월" 딱지는 숨김 (팝업 .trtag 자리 규칙이 겹쳐 이름 위에 떠 있었음) */
 @keyframes trsoft{0%,100%{box-shadow:inset 0 0 0 2px rgba(167,123,255,.35),inset 0 0 6px rgba(167,123,255,.15)}50%{box-shadow:inset 0 0 0 2px rgba(201,166,255,.95),inset 0 0 16px rgba(167,123,255,.55)}}
 #trWin .trres{color:#e3d2ff!important}
@@ -5769,7 +5768,7 @@ img.rimg{image-rendering:auto!important}
   function trSlot(k, uid){ var u = uid != null && U(uid), nm = k === 'A' ? '메인' : '재료';
     return '<button class="trslot s' + k + (!u && !trDone && (k === 'A' ? altA == null : altA != null && altM == null) ? ' next' : '') + (u ? ' full' : '') + '" type="button" data-tr="' + k + '"' + ' disabled><i class="trglow"></i><b class="trtag">' + nm + '</b>' + (u ? '<span class="trfig">' + av(u.id) + starsIn(u.star, u.id, isTr(u)) + '</span><span class="trnm">' + hero(u.id).name + '</span>' : '<span class="trplus">+</span>') + '</button>'; }
   function trDust(st, quiet){ var o = quiet ? '' : [[10, 16, ' l'], [88, 24, ' m'], [48, 10, ''], [30, 70, ' m'], [72, 66, ''], [92, 78, ' l']].map(function(s, i){ return '<s class="tw' + s[2] + '" style="left:' + s[0] + '%;top:' + s[1] + '%;animation-delay:-' + (i * .4).toFixed(1) + 's"></s>'; }).join('');
-    st.insertAdjacentHTML('beforeend', '<i class="trdust">' + o + '</i><i class="trvine dvine"></i><i class="trvine dvine r"></i>'); }
+    st.insertAdjacentHTML('beforeend', '<i class="trdust">' + o + '</i>'); }
   /* 초월 뒤: 팝업을 닫지 않고 메인만 남겨 얻은 스킬을 보여 줌. 확인과 X 둘 다 닫기 */
   function trResult(w){ var u = U(trDone.uid), hm = hero(trDone.mid), sk = ultName(hm), st = w.querySelector('.trstage');
     st.innerHTML = trSlot('A', trDone.uid); st.querySelectorAll('.trslot').forEach(function(s){ s.disabled = true; pedestal(s, '#c9a6ff'); }); trDust(st, true); st.classList.add('done'); fwFx(st);
