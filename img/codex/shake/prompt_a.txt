@@ -1,0 +1,9 @@
+Generate ONE new image with your image generation tool and save it as img/codex/shake/shake_a.png
+
+A tiny pixel art UI ICON of a HANDSHAKE (two hands clasping, meaning "we become comrades"), drawn like a 24x24 pixel game icon:
+- Exactly a 24x24 art pixel grid, each art pixel a big crisp square (one art pixel = 32 image pixels, image 768x768). No finer detail than that grid.
+- Two hands seen from the side clasped in the middle: left hand comes from the lower left with a blue cuff sleeve, right hand comes from the lower right with a red-brown cuff sleeve; warm skin tones, fingers wrapped around clearly readable as a handshake even at tiny size. Simple bold shapes.
+- Thick 1 art pixel dark outline (#17141d), 3 tones of skin, bright enough to read on a dark green ribbon.
+- The icon fills about 22x18 art pixels, centered.
+[Format] Plain solid #FF00FF magenta background, no text, no shadow, no anti-aliasing, no gradients.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
