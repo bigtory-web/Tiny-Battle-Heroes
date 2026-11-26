@@ -444,7 +444,7 @@ select{background:var(--panel-2);color:var(--text);border:1px solid var(--line);
 .mods{display:grid;grid-template-columns:auto 1fr;gap:8px 10px;align-items:center;font-size:13px}
 /* ───── 가로 무대 960x540: 화면 크기에 맞춰 통째로 키우고 줄여요 ───── */
 html,body{overflow:hidden;background:#0b0c14}
-.app{position:fixed;left:0;top:0;width:960px;height:511px;max-width:none;margin:0;min-height:0;transform-origin:0 0;overflow:hidden;background:radial-gradient(circle at 50% 0,#252a4a 0,var(--bg) 60%);border-radius:0}
+.app{position:fixed;left:0;top:0;width:960px;height:540px;padding-top:14px;box-sizing:border-box;max-width:none;margin:0;min-height:0;transform-origin:0 0;overflow:hidden;background:radial-gradient(circle at 50% 0,#252a4a 0,var(--bg) 60%);border-radius:0}
 .top{position:absolute;left:0;right:0;top:0;height:44px;padding:0 14px}
 .nav{position:absolute;bottom:0;padding-bottom:0}
 .nav .in{max-width:none;height:46px}
@@ -3226,9 +3226,10 @@ img.rimg{image-rendering:auto!important}
   function smoothInlineAll(root){ if (root.style && root.style.backgroundImage) smoothInline(root); if (root.querySelectorAll) root.querySelectorAll('[style*="img/"]').forEach(smoothInline); }
   new MutationObserver(function(ms){ ms.forEach(function(m){ if (m.type === 'attributes'){ var el = m.target; if (el.style && el.style.backgroundImage && el.style.backgroundImage.indexOf('image-set') < 0){ delete el.dataset.smb; smoothInline(el); } } else m.addedNodes.forEach(function(n){ if (n.nodeType === 1) smoothInlineAll(n); }); }); }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
   setTimeout(function(){ smoothCssRules(); smoothInlineAll(document.body); }, 0);
-  var STAGE_FIT = 0.85; /* 2026-11-24: 게임 판을 창보다 작게 (사용자: 전체 화면 크기는 좀 줄여 줘) */
-  function fitStage(){ var app = document.querySelector('.app'); if (!app) return; var sw = window.innerWidth, sh = window.innerHeight, k = Math.min(sw / 960, sh / 511) * STAGE_FIT; if (!sw || !sh) return;
-    app.style.transform = 'scale(' + k + ')'; app.style.left = Math.round(Math.max(0, (sw - 960 * k) / 2)) + 'px'; app.style.top = Math.round(Math.max(0, (sh - 511 * k) / 2)) + 'px'; /* 소수점 위치는 글씨를 번지게 해서 정수로 */
+  /* 화면 = 기준 640×360을 정수배로 (2026-11-26 사용자: 640×360). 판은 960×540으로 설계해 배율 = 정수 × 2/3. 화면 점(dpr 곱) 기준, 남는 곳은 빈 띠. 캐릭터 1점 = 화면 정수 점이 늘 지켜져 UI와 비율이 같아요. 예전: 창의 85%로 부드럽게 */
+  function fitStage(){ var app = document.querySelector('.app'); if (!app) return; var sw = window.innerWidth, sh = window.innerHeight, dpr = window.devicePixelRatio || 1; if (!sw || !sh) return;
+    var n = Math.max(1, Math.floor(Math.min(sw * dpr / 640, sh * dpr / 360) + .001)), k = n * 2 / 3 / dpr, snap = function(v){ return Math.max(0, Math.round(v * dpr) / dpr); };
+    app.style.transform = 'scale(' + k + ')'; app.style.left = snap((sw - 960 * k) / 2) + 'px'; app.style.top = snap((sh - 540 * k) / 2) + 'px';
     var rh = document.getElementById('rotateHint'); if (rh) rh.hidden = !(sh > sw); }
   window.addEventListener('resize', fitStage); fitStage();
   var $ = function(id){ return document.getElementById(id); };
