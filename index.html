@@ -1612,6 +1612,8 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 /* 유물 인원 숫자 크게 */
 .skc .synn,.stile .synn,.rstrip span .synn,.rsk .synn{min-width:16px;padding:0 3px;font:400 15px/17px var(--display);box-shadow:0 0 0 2px #3f6b33}
 .tip .synn{font:400 14px/16px var(--display)}
+/* 메인 유물 줄 숫자 = 작은 원, 아이콘 왼쪽 위에 걸침 (2026-11-26 사용자: "네모라 좀 어색하네.. 원으로") */
+#skA .skc .synn{left:-1px;top:-1px;min-width:0;width:15px;height:15px;padding:0;border-radius:50%;font:400 11px/15px var(--display);box-shadow:0 0 0 1px #17141d,0 0 0 2px #3f6b33}
 /* 상단 HP 막대 연출 짧게 */
 .tbar .thp.hit{animation:hpshake .15s steps(3)} .tbar .thp.hit::after{animation:hpflash .15s ease-out}
 .tbar .thp.heal::after{animation:hpflash .2s ease-out} .tbar .thp.shup::after{animation:hpsweep .25s ease-out}
