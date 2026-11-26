@@ -5529,7 +5529,7 @@ img.rimg{image-rendering:auto!important}
   /* 설명 한 줄: "유물 칸이 한 단계마다 1(+1)씩 오른다." 앞 = 지금까지 오른 양, 괄호(초록) = 다음 단계에서 더. 다 찍으면 괄호 없음 (2026-11-27 사용자) */
   function upDesc(N, L, n){ var unit = N.hero || N.key === 'merchantOff' ? '%' : N.path === 'campaign.startGold' || N.key === 'clearGold' ? 'G' : N.shift ? '칸' : '', add = N.hero ? Math.round(N.add * 100) : N.shift ? 1 : N.add;
     var who = N.hero ? L.name + ' 영웅의 ' + ({ atk: '공격력', hp: '체력', def: '방어력', crit: '치명타 확률' })[N.hero] : N.id === 'start' ? '시작 모닥불 고르기' : N.name, c = who.charCodeAt(who.length - 1), j = c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28 ? '이' : '가';
-    return who + j + ' 한 단계마다 ' + (add * n) + unit + (n < N.cost.length ? '<u>(+' + add + unit + ')</u>' : '') + '씩 ' + (N.shift ? '앞당겨진다.' : '오른다.'); }
+    return who + j + ' 한 단계마다 ' + (n ? (add * n) + unit : '') + (n < N.cost.length ? '<u>(+' + add + unit + ')</u>' : '') + '씩 ' + (N.shift ? '앞당겨진다.' : '오른다.'); }
   var upTouch = false;
   function upNode(id){ var out = null; D.meta.lines.forEach(function(L){ L.nodes.forEach(function(N){ if (N.id === id) out = { N: N, L: L }; }); }); return out; }
   /* 칸 옆에 바로 뜨는 팁: 이름 · 설명 · 이번 단계 효과 · 비용 */
