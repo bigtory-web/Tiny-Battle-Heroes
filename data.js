@@ -401,8 +401,8 @@ var IDLE_DATA = {
     //   일반 = 둔화(slowDur초, slowAmt), 왕관 = 밀치기(knock px + knockStun초 기절). dur초가 지나면 남은 미믹은 도망. 잡은 미믹마다 보상(구간 보상·말풍선 없음)
     //   보상: 일반 = 클리어 골드 × gold, 왕관 = 유물 1개 + 클리어 골드 × kingGold. 체력 = mobs의 mimic·mimicKing hp × 스테이지 배율. slots = 적 쪽 칸 번호
     // 2026-11-26 배치: 1열(우리 쪽에 가까운 줄) 갈색, 2열 파랑, 3열 가운데 왕관. 칸 번호는 battle.arena.pos 순서(0 = 1열 가운데, 2 = 1열 위, 3 = 2열 가운데, 5 = 2열 위, 6 = 3열 가운데). 갈색 짝수·파랑 홀수 칸은 화면 색 고르기(slot % 2)와 맞춤
-    //   blueHp: 파랑 미믹 체력 배율(갈색보다 셈). dmg: 방해할 때 그 영웅에게 주는 고정 피해. 방해는 색깔별: 갈색 둔화(slow*), 파랑 실명(blind*: blindDur초 동안 평타가 blindAmt 확률로 빗나감), 왕관 밀치기(knock*)
-    mimic: { dur: 20, kingFrom: 7, slowDur: 2, slowAmt: 0.4, knock: 40, knockStun: 0.4, gold: 0.3, kingGold: 0.5, blueHp: 1.5, dmg: 1, blindDur: 2, blindAmt: 0.5, slots: { w: [0, 2, 1], b: [3, 5, 4], k: [6] } },
+    //   blueHp: 파랑 미믹 체력 배율(갈색보다 셈). blueRange: 파랑 미믹 사거리(mid = 2칸, 갈색은 melee 1칸, 왕관은 mobs의 far 4칸). dmg: 방해할 때 그 영웅에게 주는 고정 피해. 방해는 색깔별: 갈색 둔화(slow*), 파랑 실명(blind*: blindDur초 동안 평타가 blindAmt 확률로 빗나감), 왕관 밀치기(knock*)
+    mimic: { dur: 20, kingFrom: 7, slowDur: 2, slowAmt: 0.4, knock: 40, knockStun: 0.4, gold: 0.3, kingGold: 0.5, blueHp: 1.5, blueRange: 'mid', dmg: 1, blindDur: 2, blindAmt: 0.5, slots: { w: [0, 2, 1], b: [3, 5, 4], k: [6] } },
     // 미믹 방해 스킬 이름·설명(2026-11-26, 상세 창 스킬 칸용). w 갈색, b 파랑, k 왕관. 평타(공속 = mobs의 interval, 피해 = dmg)로 에너지가 차면 쓴다. 위 숫자(slowDur·blindAmt·knock 등)를 바꾸면 설명도 같이 고친다
     mimicSkills: {
       w: { name: '끈적한 침', desc: '에너지가 차면 영웅 1명을 2초 동안 40% 느리게 한다.' },
@@ -446,7 +446,7 @@ var IDLE_DATA = {
     // 미믹(2026-11-26, events.mimic): 공격 안 함, 방해만. king = 왕관 미믹
     { id: 'mimic', name: '미믹', mob: 'mimic', race: 'monster', job: null, el: 'earth', range: 'melee', role: 'tank', cost: 0, art: false,
       hp: 3000, atk: 0, def: 60, interval: 1, /* 2026-11-26: 공속 1(평타 = events.mimic.dmg 고정 피해) */ ultName: '', ult: null, passive: null },
-    { id: 'mimicKing', name: '왕관 미믹', mob: 'mimic', king: true, race: 'monster', job: null, el: 'earth', range: 'melee', role: 'tank', cost: 0, art: false,
+    { id: 'mimicKing', name: '왕관 미믹', mob: 'mimic', king: true, race: 'monster', job: null, el: 'earth', range: 'far', /* 2026-11-26: 사거리 4칸(침 뱉기) */ role: 'tank', cost: 0, art: false,
       hp: 6000, atk: 0, def: 80, interval: 1, ultName: '', ult: null, passive: null },
     // 몹 무리용 (events.mobs). 그림은 아직 없어요(art: false)
     { id: 'm_slime', name: '슬라임', mob: 'slime', race: 'monster', job: null, el: 'water', range: 'melee', role: 'tank', cost: 0, art: false,
