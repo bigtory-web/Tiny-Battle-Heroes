@@ -2095,7 +2095,7 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .tbar{overflow:visible!important}
 .tbar .tpw{position:absolute;top:calc(100% + 4px);left:6px;padding:2px 6px;background:rgba(23,20,29,.72);box-shadow:inset 0 0 0 2px #17141d}
 .tbar.e .tpw{left:auto;right:6px}
-#hud #skipBtn{min-width:64px;gap:5px}
+#hud #skipBtn{min-width:64px;gap:5px} #hud #punchBtn{min-width:72px;gap:3px;white-space:nowrap}
 .underbar .evdock .edbody{max-height:220px!important} /* 펼친 목록이 HUD를 가리지 않게 (넘치면 스크롤) */
 /* 상점 제목 띠 (상점·방랑상점 같은 모양) */
 .shopPop .spHead{margin:-10px -12px 0;padding:6px 12px;gap:6px;background:#2a2533;box-shadow:0 2px 0 #17141d!important}
@@ -3113,7 +3113,7 @@ img.rimg{image-rendering:auto!important}
     <div class="camp3">
       <aside class="lbag" id="lbag"><div class="ubagbox"><div class="bagcol bagdrawer open ubag" id="bagDrawer"><div class="bagin"><div class="roster" id="roster"></div></div></div></div></aside>
       <div class="mid">
-        <div class="hud" id="hud"><span class="it hudbag" title="백팩"><img class="hi" src="img/p/hud_bag.png" alt=""></span><span class="hudits" id="hudItems"></span><span class="hudbtns"><button class="hbtn" id="spdBtn" type="button" title="배속"><span class="spem">⏩</span>X1.5</button><button class="hbtn" id="skipBtn" type="button" title="건너뛰기" disabled><span class="spem">⏭️</span>스킵</button></span><span class="hudits" id="hudStg"></span></div>
+        <div class="hud" id="hud"><span class="it hudbag" title="백팩"><img class="hi" src="img/p/hud_bag.png" alt=""></span><span class="hudits" id="hudItems"></span><span class="hudbtns"><button class="hbtn" id="spdBtn" type="button" title="배속"><span class="spem">⏩</span>X1.5</button><button class="hbtn" id="skipBtn" type="button" title="건너뛰기" disabled><span class="spem">⏭️</span>스킵</button><button class="hbtn" id="punchBtn" type="button" title="원펀치(시험용): 이번 스테이지를 승리로 처리"><span class="spem">👊</span>원펀치</button></span><span class="hudits" id="hudStg"></span></div>
         <div class="arena" id="arena"><div class="dps a" id="dpsA" hidden><div class="dpsh" data-dps="A"><b>우리 DPS</b></div><div class="dpsb"></div></div><div class="dps e" id="dpsE" hidden><div class="dpsh" data-dps="E"><b>상대 DPS</b></div><div class="dpsb"></div></div><div class="evban" id="evBan" hidden></div><div class="evmerch" id="evMerch" hidden></div><div class="hinfo left" id="hinfo" hidden></div>
           <div class="evdock" id="evDock" hidden><button class="edtab" id="edTab" type="button">이벤트</button><div class="edbody"><div class="edfe" title="0이면 평소 확률, N이면 스테이지 N개마다 이벤트 스테이지가 꼭 나와요"><button id="edFeDown" type="button">−</button><b id="edFe">간격 0</b><button id="edFeUp" type="button">+</button></div><div class="edlist" id="edList"></div></div></div><div class="field" id="field"></div>
           <canvas id="cv" width="720" height="400" aria-label="전투 화면" hidden></canvas><div id="amb" aria-hidden="true"></div>
@@ -3157,7 +3157,7 @@ img.rimg{image-rendering:auto!important}
     </section>
     <section class="card">
       <h2>봇 캠페인</h2>
-      <div class="muted">지금 요소 설정으로 봇이 1명으로 시작해 영입·합성하며 1-1부터 3-10까지 진행해요. 판마다 영입 운이 달라서 결과가 달라져요.</div>
+      <div class="muted">지금 요소 설정으로 봇이 1명으로 시작해 영입·합성하며 1-1부터 마지막 스테이지까지 진행해요. 판마다 영입 운이 달라서 결과가 달라져요.</div>
       <button class="ghost" id="simBtn" style="margin-top:8px">돌려 보기</button>
       <div id="simBox" class="muted" style="margin-top:8px"></div>
     </section>
@@ -4428,6 +4428,11 @@ img.rimg{image-rendering:auto!important}
   }
   var SPDS = [1, 1.5, 2, 4]; $('spdBtn').innerHTML = '<span class="spem">⏩</span>X' + speed;
   $('spdBtn').addEventListener('click', function(){ speed = SPDS[(SPDS.indexOf(speed) + 1) % SPDS.length]; S.ui = S.ui || {}; S.ui.speed = speed; save(); this.innerHTML = '<span class="spem">⏩</span>X' + speed; });
+  /* 원펀치(시험용, 2026-11-26 사용자): 이번 스테이지를 보통 승리와 같게 처리. 편성 화면이면 전투를 시작하자마자 끝냄 */
+  function onePunch(){ if (!bt || done) return false; closeInspect(); skipNow = true; var fin = bt.finish; bt.finish = function(){ var r = fin(); r.win = true; r.result = 'win'; r.units.forEach(function(u){ if (u.side === 'E'){ u.alive = false; u.hp = 0; u.escaped = false; } }); return r; };
+    bt.E.forEach(function(u){ u.alive = false; u.hp = 0; u.escaped = false; killXp(u.uid, true); }); logI = bt.log.length; done = true; draw(0); finishBattle(); return true; }
+  $('punchBtn').addEventListener('click', function(){ if (this.disabled) return; if (onePunch()) return; var f = $('fightBtn'); if (f.disabled || noFight()) return; f.click(); var n = 0, t = setInterval(function(){ if (onePunch() || ++n > 60) clearInterval(t); }, 50); });
+  setInterval(function(){ var b = $('punchBtn'); if (b) b.disabled = !!(S && (S.stage >= E.stageCount(D) || (!bt && (noFight() || $('fightBtn').disabled)))); }, 300); /* 전투 없는 판은 회색 */
   $('skipBtn').addEventListener('click', function(){ if (!bt || done) return; closeInspect(); skipNow = true; while (!bt.result) bt.step(); for (var j = logI; j < bt.log.length; j++) if (bt.log[j].kind === 'die') killXp(bt.log[j].uid, true); logI = bt.log.length; done = true; draw(0); finishBattle(); });
 
   var tpw = null;
@@ -5160,7 +5165,7 @@ img.rimg{image-rendering:auto!important}
       : '<div class="dfc"><div class="dfban"><i class="dfcloth"></i>' + (items.length ? '<div class="dfstg">' + title + ' 스테이지 ' + lossStage() + '</div>' : '') + (items.length ? cells : '') + ok + x + '</div><div class="dfsign"><b>' + title + '</b></div><i class="dfstar"></i></div>';
     o.hidden = false; o.querySelector('.rpok').onclick = function(){ o.hidden = true; o.innerHTML = ''; if (onOk) onOk(); }; }
   // 처음부터: 시작 영웅 1명만 남기고 판을 새로 시작해요. 설정(S.modules)과 화면 설정(S.ui)은 그대로
-  /* 최종 보스(3-10)까지 깨면: 패배 팝업과 같은 틀의 승리 색 "모험 완료!". 저장된 값(끝난 상태)으로 판단해 새로고침해도 다시 뜸. 버튼은 처음부터 하나 (2026-11-26 사용자) */
+  /* 최종 보스(마지막 스테이지)까지 깨면: 패배 팝업과 같은 틀의 승리 색 "모험 완료!". 저장된 값(끝난 상태)으로 판단해 새로고침해도 다시 뜸. 버튼은 처음부터 하나 (2026-11-26 사용자) */
   /* 플레이 시간 = 게임 화면이 보일 때만, 끝난 판은 멈춤 */
   setInterval(function(){ var R = S && S.runStats; if (!R || document.hidden || S.stage >= E.stageCount(D)) return; R.playMs += 1000; if (R.playMs % 15000 === 0) save(); }, 1000);
   /* 만난 이벤트: 이벤트 판마다 한 번 */
