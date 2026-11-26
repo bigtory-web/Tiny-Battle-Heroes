@@ -1,0 +1,13 @@
+Look at these images:
+- img/codex/goblin/dealer_x16.png = our current goblin casino dealer (pixel art, 16x enlarged). THIS IS THE CHARACTER TO EDIT.
+- img/gemini/ref/bear_x8.png = our game's style standard.
+
+Edit the dealer in dealer_x16.png. KEEP everything the same (hat, ears, face size, eyes, skin color, tuxedo, bow tie, shoes, proportions, outline color #4b150c, 3/4 view facing right seen slightly from above, same pixel size) and change ONLY these three things:
+1. NOSE: a longer pointed goblin nose sticking out to the right, clearly visible as a shape with a darker underside and an outline, not too huge, still cute.
+2. MOUTH: a wide sly grin showing teeth, with exactly ONE GOLD TOOTH on one side (bright gold pixel(s) with a tiny highlight, other teeth white). The nose must not cover the mouth.
+3. CANE: the cane is casually hooked over the forearm of his raised hand (a curved gold handle hooked on the arm, the black shaft hanging down in front, beside his body, ending above the ground). The cane is a black dandy cane with a round gold knob and a gold tip, with outline, clearly readable against the black tuxedo (put it where it does not disappear into the suit).
+
+Generate ONE new image with your image generation tool and save it as img/codex/goblin/dealer2_b.png
+- Pixel grid: same as the input: the character with hat is about 50 art pixels tall. One art pixel = 18 image pixels, image 1152x1152, centered. Crisp square pixels, no anti-aliasing, no gradients, no finer detail than the grid. No gaps in the outline.
+[Format] Plain solid #FF00FF magenta background, no text, no shadow.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
