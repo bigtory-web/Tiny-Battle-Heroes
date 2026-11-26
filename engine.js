@@ -383,12 +383,20 @@
         if (has(u, 'bloodHaste')) speed *= 1 + u.pv * (1 - u.hp / u.maxHp);
         if (u.dStk && on(u, 'hasteStack')) speed *= 1 + u.dStk * u.pv;
         holders(u.side, 'chillAura').forEach(function (f) { if (alive(foes(u)).filter(function (x) { return x.slow > 0 || x.chill > 0; }).length >= (PP(f).n || 3)) speed *= 1 + f.pv; });
-        if (u.stun > 0) { u.moving = false; continue; }
+        if (u.stun > 0 && u.h.mob !== 'mimic') { u.moving = false; continue; } /* 미믹은 기절해도 도망 시간은 봐요(아래에서 방해만 멈춤) */
         if (u.brg) { u.brg.t -= B.dt; if (u.brg.t <= 0) { u.brg.t += u.brg.every; var BF2 = alive(foes(u)); if (BF2.length) { var ps2 = ultSrc, pe2 = ultEl; ultSrc = u; ultEl = u.brg.el || u.el; magic = true;
             hurt(u, BF2[Math.floor(rand() * BF2.length)], u.brg.mul); magic = false; ultSrc = ps2; ultEl = pe2; } if (--u.brg.left <= 0) u.brg = null;
             if (!alive(E).length) { result = 'win'; break; } if (!alive(A).length) { result = 'lose'; break; } } }
         if (u.castT > 0) { u.castT -= B.dt; u.moving = false; if (u.castT <= 0) { u.castT = 0; var hc = u.stats.healed; ultimate(u); (u.extra || []).forEach(function (e) { if (u.alive) ultimate(u, e.ult, e.k, e.el); }); afterUlt(u, u.stats.healed - hc); // 주문 끝: 스킬이 나가요 (기절하면 멈췄다가 이어서 외워요)
             if (!alive(E).length) { result = 'win'; break; } if (!alive(A).length) { result = 'lose'; break; } } continue; } // 넉백으로 잠깐 멈춤
+        if (u.h.mob === 'mimic') { /* 미믹(2026-11-26): 때리지 않고 every초마다 영웅 1명 방해(일반 둔화, 왕관 밀치기). dur초가 지나면 도망 */
+          var MM = data.events.mimic || {}; u.age = (u.age || 0) + B.dt; u.moving = false;
+          if (t >= (MM.dur || 20)) { /* 전투 시간 기준(기절해도 흘러요) */ u.alive = false; u.escaped = true; if (rec) log.push({ t: t, kind: 'escape', uid: u.uid }); if (!alive(E).length) { result = 'win'; break; } continue; }
+          if (u.stun > 0) continue; u.dis = (u.dis == null ? (MM.first || 2) + rand() * 1.5 : u.dis) - B.dt;
+          if (u.dis <= 0) { u.dis += MM.every || 4.5; var MF = alive(foes(u)); if (MF.length) { var mv2 = MF[Math.floor(rand() * MF.length)];
+            if (u.h.king) { var kdx = (mv2.side === 'A' ? -1 : 1) * (MM.knock || 40); mv2.x += kdx; mv2.stun = Math.max(mv2.stun || 0, MM.knockStun || 0.4); if (rec) { log.push({ t: t, kind: 'knock', uid: mv2.uid, dx: kdx }); log.push({ t: t, kind: 'mimicFx', uid: u.uid, to: mv2.uid, fx: 'knock' }); } }
+            else { mv2.slow = Math.max(mv2.slow || 0, MM.slowDur || 2); mv2.slowAmt = Math.max(mv2.slowAmt || 0, MM.slowAmt || 0.4); if (rec) log.push({ t: t, kind: 'mimicFx', uid: u.uid, to: mv2.uid, fx: 'slow' }); } } }
+          continue; }
         if (u.h.mob === 'chest') { // 보물상자: 아무것도 안 해요. dur초가 지나면 사라져요(그때까지 입힌 피해로 보상)
           u.age = (u.age || 0) + B.dt; u.moving = false;
           if (u.age >= data.events.chest.dur) { u.alive = false; u.escaped = true; if (rec) log.push({ t: t, kind: 'escape', uid: u.uid });
@@ -492,6 +500,7 @@
     var ev = { kind: kind };
     if (kind === 'merc') { ev.id = pickHeroByGrade(data, rnd, plv); ev.price = mercPrice(data, ev.id, n); }
     if (kind === 'mobs') rollMobs(data, n, rnd, plv, ev);
+    if (kind === 'mimic') rollMimic(data, n, rnd, plv, ev);
     if (kind === 'fairy') { ev.ids = []; var FY = V.fairy || {}; if ((FY.triggerAt || []).indexOf(n) >= 0) { var W = data.player ? perk(data, plv).shopGrade : null, tp = skillPool(data).filter(function (x) { return x.trigger && (!W || W[(x.grade || 1) - 1] > 0); }); // 2026-11-23: 플레이어 레벨 등급 확률로 (1레벨에 전설 안 나오게)
       while (ev.ids.length < (FY.count || 4) && tp.length) { var tw = tp.reduce(function (s, x) { return s + (W ? W[(x.grade || 1) - 1] : 1); }, 0), tr = rnd() * tw, ti = 0; while (ti < tp.length - 1 && (tr -= (W ? W[(tp[ti].grade || 1) - 1] : 1)) >= 0) ti++; ev.ids.push(tp.splice(ti, 1)[0].id); } return ev; } // 연계 유물만
        for (var fi = 0; fi < ((V.fairy || {}).count || 4); fi++) { var fs0 = rollShop(data, rnd, plv, ev.ids.map(function (x) { return { id: x, level: 1 }; }), opts && opts.team); if (fs0.length) ev.ids.push(fs0[Math.floor(rnd() * fs0.length)]); } } // 요정: 겹치지 않는 유물 후보
@@ -505,6 +514,11 @@
   }
   // 몹 무리: drops가 있는 몹 1마리를 뽑고, 그 몹의 drops 칸을 실제 물건 키로 정해요 (ev.ids = [id], ev.drops = 칸 키들)
   // 몹 판: drops가 있는 몹 종류 하나를 뽑아 pack마리. ev.ids = 몹 id들, ev.drops[i] = i번째 몹이 든 전리품 키 배열(loot개)
+  // 미믹 판(2026-11-26): ev.ids = 미믹 id들, ev.drops[i] = i번째 미믹을 잡으면 받는 키들 (g:골드, s:유물)
+  function rollMimic(data, n, rnd, plv, ev) { var MM = data.events.mimic || {}, P = data.player, li = Math.max(0, (plv || 1) - 1), cnt = P && P.mimicCount ? P.mimicCount[Math.min(li, P.mimicCount.length - 1)] : 3, rew = stageReward(data, n, 0, null, plv);
+    ev.ids = []; ev.drops = []; for (var i = 0; i < cnt; i++) { var king = (plv || 1) >= (MM.kingFrom || 99) && i === cnt - 1; ev.ids.push(king ? 'mimicKing' : 'mimic');
+      if (king) { var sid = rollScroll(data, rnd, plv, []); ev.drops.push((sid ? ['s:' + sid] : []).concat(['g:' + Math.max(1, Math.round(rew * (MM.kingGold || 0.5)))])); } else ev.drops.push(['g:' + Math.max(1, Math.round(rew * (MM.gold || 0.3)))]); }
+    return ev; }
   function rollMobs(data, n, rnd, plv, ev) { var M = (data.mobs || []).filter(function (m) { return m.drops && m.drops.length; }), MB = data.events.mobs || {}, rew = stageReward(data, n, 0, null), els = Object.keys(data.elements.names);
     ev.ids = []; ev.drops = []; if (!M.length) return ev; var m = M[Math.floor(rnd() * M.length)], got = [];
     for (var i = 0; i < (m.pack || 1); i++) { ev.ids.push(m.id); var bag = [];
@@ -611,6 +625,8 @@
       eskills = sids.slice(0, Math.min(ecount + (data.bell && data.bell.skill || 0) * bell + (bhas('relic') ? bv('relic') : 0), data.skills.slots)).map(function (id) { return { id: id, level: data.skills.gradeUp ? 1 : Math.min(data.skills.maxLevel, 1 + Math.floor(n / ES.levelEvery)) }; }); } // 적 스킬은 태생 등급 그대로
     if (ev && ev.kind === 'mobs') return { n: n, name: stageName(data, n), level: lv, boss: false, wall: false, skills: [], event: ev, bell: 0, // 몹 무리 판: 적 스킬·종 없음
       team: ev.ids.map(function (id, i) { var hm = ((data.events.mobs || {}).hp || 1) * (heroById(data, id).hpMul || 1); return { id: id, level: lv, slot: i, mul: { hp: em * hm, atk: em }, mob: true, drop: ev.drops[i] || [] }; }) };
+    if (ev && ev.kind === 'mimic') { var MS = (data.events.mimic || {}).slots || [0, 1, 2, 3]; return { n: n, name: stageName(data, n), level: lv, boss: false, wall: false, skills: [], event: ev, bell: 0, /* 미믹 판: 적 스킬·종 없음, 공격력 0 */
+      team: ev.ids.map(function (id, i) { return { id: id, level: lv, slot: MS[i] != null ? MS[i] : i, mul: { hp: em, atk: 0 }, mob: true, drop: ev.drops[i] || [] }; }) }; }
     if (ev && ev.kind === 'chest') { // 보물상자 판: 상자 1마리만, 적 스킬 없음. 종을 울릴 때마다 체력이 늘어요
       var CB = data.events.chest.bell || {}, CG = chestGrade(data, plv), hm = CG ? data.events.chest.grades[CG - 1].hp : 1 + (CB.hp || 0) * bell;
       return { n: n, name: stageName(data, n), level: lv, boss: false, wall: false, team: [{ id: 'chest', level: lv, slot: 3, /* 2026-11-24: 가운데 줄 가운데(화면 5번 칸) */ mul: { hp: em * hm, atk: 0 }, mob: true }], skills: [], event: ev, bell: bell }; }
@@ -873,6 +889,12 @@
         var cr = chestReward(data, stage, bellN, 1 - cres.enemyLeft, plv); gold += cr.gold; mana += cr.mana; manaGot += cr.mana;
         for (var cs = 0; cs < cr.scroll; cs++) { var sid = rollScroll(data, rnd, plv, skills, units.map(function (x) { return x.id; })); if (sid && canTake(data, skills, sid, data.player ? perk(data, plv).skillSlots : 0)) takeSkill(data, skills, sid); }
         events.chest.tiers = (events.chest.tiers || 0) + cr.tier; events.chest.gold = (events.chest.gold || 0) + cr.gold;
+        shop = rollShop(data, rnd, plv, skills, units.map(function (x) { return x.id; })); rerolls = 0; continue; }
+      if (ev && ev.kind === 'mimic') { /* 미믹 판(2026-11-26): 지지 않아요. 잡은 미믹마다 보상(골드, 왕관은 유물+골드) */
+        var mmres = battle(data, padTeam(team, pads), st.team, { seed: seed + attempts * 31, modules: opts.modules, skills: skills, enemySkills: [] }); attempts++; time += mmres.time; battleTime += mmres.time;
+        events.mimic = events.mimic || {}; events.mimic.seen = (events.mimic.seen || 0) + 1; events.mimic.gold = events.mimic.gold || 0; events.mimic.killed = events.mimic.killed || 0;
+        mobLoot(st, mmres.units).forEach(function (key) { var mk = lootParse(key); if (mk.type === 'g') { gold += mk.amt; events.mimic.gold += mk.amt; } else if (mk.type === 's' && canTake(data, skills, mk.id, data.player ? perk(data, plv).skillSlots : 0)) takeSkill(data, skills, mk.id); });
+        events.mimic.killed += mmres.units.filter(function (x) { return x.side === 'E' && !x.alive && !x.escaped; }).length;
         shop = rollShop(data, rnd, plv, skills, units.map(function (x) { return x.id; })); rerolls = 0; continue; }
       if (ev && ev.kind === 'mobs') { // 몹 무리 판: 지지 않아요. 몹을 쓰러뜨리면 그 몹의 drops 칸 중 1개를 받고 넘어가요
         var mres = battle(data, padTeam(team, pads), st.team, { seed: seed + attempts * 31, modules: opts.modules, skills: skills, enemySkills: [] }); attempts++; time += mres.time; battleTime += mres.time;

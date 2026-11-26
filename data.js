@@ -367,12 +367,12 @@ var IDLE_DATA = {
     //   atStart: true면 게임(그리고 체력 0 뒤 새 판)을 이 모닥불로 시작해요. 시작 영웅이 매번 달라져요(recruit.startHero는 꺼졌을 때만 써요)
     //   이벤트 스테이지(2026-11-18 바뀜): 모닥불·방랑상인·보물상자는 스테이지 수를 쓰지 않아요. 스테이지를 깨고 다음으로 올라갈 때 n과 n+1 사이(1-1.5처럼)에 들러요
     //   시작 모닥불은 1-0.5이고 첫 전투는 1-1이에요. 들른 뒤에는 그 다음 스테이지 전투로 가요(다시 도전할 때는 안 나와요). 목록 = stageKinds
-    stageKinds: ['campfire', 'merchant', 'chest', 'altar', 'mobs', 'fairy', 'groll'], // 2026-11-26: 홀짝(oddeven) 뺌(사용자: 이벤트에서 홀짝은 제거해). 되돌리려면 'oddeven'을 넣고 weights에 oddeven 추가
+    stageKinds: ['campfire', 'merchant', 'chest', 'altar', 'mobs', 'fairy', 'groll', 'mimic'], // 2026-11-26: 홀짝(oddeven) 뺌(사용자: 이벤트에서 홀짝은 제거해). 되돌리려면 'oddeven'을 넣고 weights에 oddeven 추가
     fixed: { 1: 'fairy' }, // 2026-11-22 몹 판 끔(예전 2: 'mobs') // 2026-11-21: 1-2 앞엔 요정, 1-3 앞엔 몹이 꼭 나와요 { 스테이지 번호(0부터): 이벤트 }
     fork: false, // 2026-11-22 끔(사용자: 우측 선택지는 하나만). 갈림길: 이벤트 스테이지가 나오면 2개 중 골라요 (fixed 판은 그대로)
     off: [], // 도구: 여기 적은 이벤트 종류는 안 나와요(예: ['chest']). campfire를 끄면 시작 모닥불도 없어요 (2026-11-18)
     forceEvery: 0, // 도구: N이면 스테이지 N개마다 이벤트 스테이지가 100% 나와요(2면 1-2·1-4 뒤에). 0이면 꺼짐(평소 확률 chance)
-    from: 2, chance: 0.18, weights: { goblin: 0, /* 2026-11-26 홀짝(oddeven) 뺌 → groll(돈고블린 룰렛) */ groll: 3, merchant: 3, merc: 3, campfire: 2, chest: 3, altar: 3, mobs: 0, fairy: 3 }, // chest: 화면 작업이 끝나서 3으로 켰어요 (2026-11-18 UI 세션) // campfire: 화면 작업이 끝나서 2로 켰어요 (2026-11-18 UI 세션)
+    from: 2, chance: 0.18, weights: { goblin: 0, /* 2026-11-26 홀짝(oddeven) 뺌 → groll(돈고블린 룰렛) */ groll: 3, merchant: 3, merc: 3, campfire: 2, chest: 3, /* 2026-11-26 보물상자 → 미믹(mimic). 미믹 화면이 생기면 chest 0, mimic 3 */ mimic: 0, altar: 3, mobs: 0, fairy: 3 }, // chest: 화면 작업이 끝나서 3으로 켰어요 (2026-11-18 UI 세션) // campfire: 화면 작업이 끝나서 2로 켰어요 (2026-11-18 UI 세션)
     // 도감 이벤트 탭용 이름·설명 (2026-11-21)
     info: {
       campfire: { name: '모닥불', desc: '모닥불에 둘러앉은 영웅 중 1명이 룰렛으로 동료가 된다. 전투는 없다.' },
@@ -381,6 +381,7 @@ var IDLE_DATA = {
       altar:    { name: '초월 제단', desc: '백팩 영웅을 재료로 넣어 전장 영웅을 초월시킨다. 초월은 여기서만 할 수 있다.' },
       fairy:    { name: '요정', desc: '요정이 유물 룰렛을 돌려 1개를 준다. 전투는 없다.' },
       mobs:     { name: '몹', desc: '몹 1마리가 나온다. 쓰러뜨리면 그 몹의 전리품 중 1개를 룰렛으로 얻는다. 져도 체력이 닳지 않는다.' },
+      mimic:    { name: '미믹', desc: '미믹 여러 마리가 나온다. 미믹은 때리지 않고 둔화·밀치기로 방해한다. 시간 안에 잡은 미믹마다 보상을 받는다. 지지 않는다.' },
       groll:    { name: '돈고블린 룰렛', desc: '돈고블린에게 골드를 내고 룰렛을 돌린다. 나온 것을 받거나 포기한다. 골드 칸은 낸 골드의 2배. 전투는 없다.' },
       oddeven:  { name: '돈고블린 홀짝', desc: '돈고블린과 홀짝 내기를 한다. 맞히면 건 골드의 2배를 받고, 틀리면 건 골드를 잃는다. 전투는 없다.' },
       merc:     { name: '떠돌이 용병', desc: '용병이 적 편에서 함께 싸운다. 이기면 골드를 내고 바로 영입할 수 있다.' }
@@ -396,6 +397,10 @@ var IDLE_DATA = {
     //   입힌 피해 비율(최대 체력 대비)이 tiers의 at을 넘을 때마다 그 칸 보상을 더해 받아요(누적). gold는 그 스테이지 클리어 보상 × 값, mana는 마나스톤 개수, scroll은 스킬 두루마리 개수
     //   지는 일이 없어요(체력도 안 닳아요). 판 클리어 골드·경험치는 없고 칸 보상만 받아요
     //   종: 울릴 때마다 상자가 업그레이드돼요. 체력 ×(1 + bell.hp × 횟수), 보상 ×(1 + bell.reward × 횟수)(마나·두루마리는 내림, 최소 원래 개수). 이 판에서는 종 즉시 골드가 없어요
+    // mimic 미믹(2026-11-26, 보물상자 판 대신): 미믹 player.mimicCount[레벨]마리(Lv kingFrom부터 1마리는 왕관 미믹). 공격 안 함, every초마다 영웅 1명 방해
+    //   일반 = 둔화(slowDur초, slowAmt), 왕관 = 밀치기(knock px + knockStun초 기절). dur초가 지나면 남은 미믹은 도망. 잡은 미믹마다 보상(구간 보상·말풍선 없음)
+    //   보상: 일반 = 클리어 골드 × gold, 왕관 = 유물 1개 + 클리어 골드 × kingGold. 체력 = mobs의 mimic·mimicKing hp × 스테이지 배율. slots = 적 쪽 칸 번호
+    mimic: { dur: 20, kingFrom: 7, every: 4.5, first: 2, slowDur: 2, slowAmt: 0.4, knock: 40, knockStun: 0.4, gold: 0.3, kingGold: 0.5, slots: [0, 1, 2, 3] },
     chest: { dur: 15, // 체력·방어는 mobs의 chest 값 (스테이지 레벨·초반 배율을 똑같이 받아요)
       tiers: [ { at: 0.25, gold: 0.5 }, { at: 0.5, gold: 1 }, { at: 0.75, gold: 0.5, scroll: 1 }, { at: 1, gold: 1.5 } ],
       bell: { hp: 0.5, reward: 0.7 }, // grades가 있으면 안 써요 (2026-11-24: 보물상자 판에는 용 버튼 없음)
@@ -430,6 +435,11 @@ var IDLE_DATA = {
     // 보물상자: 공격·이동 안 함 (events.chest)
     { id: 'chest', name: '보물상자', mob: 'chest', race: 'monster', job: null, el: 'earth', range: 'melee', role: 'warrior', cost: 0, art: false,
       hp: 10000, atk: 0, def: 60, interval: 99, ultName: '', ult: null, passive: null },
+    // 미믹(2026-11-26, events.mimic): 공격 안 함, 방해만. king = 왕관 미믹
+    { id: 'mimic', name: '미믹', mob: 'mimic', race: 'monster', job: null, el: 'earth', range: 'melee', role: 'tank', cost: 0, art: false,
+      hp: 3000, atk: 0, def: 60, interval: 99, ultName: '', ult: null, passive: null },
+    { id: 'mimicKing', name: '왕관 미믹', mob: 'mimic', king: true, race: 'monster', job: null, el: 'earth', range: 'melee', role: 'tank', cost: 0, art: false,
+      hp: 6000, atk: 0, def: 80, interval: 99, ultName: '', ult: null, passive: null },
     // 몹 무리용 (events.mobs). 그림은 아직 없어요(art: false)
     { id: 'm_slime', name: '슬라임', mob: 'slime', race: 'monster', job: null, el: 'water', range: 'melee', role: 'tank', cost: 0, art: false,
       hp: 1600, atk: 60, def: 100, interval: 1.4, ultName: '', ult: null, passive: null, drops: ['g', 'g', 'p'], pack: 3, loot: 1, hpMul: 1.2 },
@@ -459,6 +469,7 @@ var IDLE_DATA = {
     field:      [2, 3, 3, 4, 4, 5, 5, 5, 5, 5],
     skillSlots: [4, 5, 5, 6, 6, 7, 8, 8, 9, 10], // 2026-11-22: 유물 칸이 레벨에 따라 열려요(4→10)
     shopSlots:  [3, 3, 4, 4, 5, 5, 6, 6, 6, 6],
+    mimicCount: [3, 3, 3, 3, 4, 4, 4, 4, 4, 4], // 2026-11-26: 미믹 판 마리 수(Lv5부터 4마리)
     grollSpins: [1, 1, 1, 2, 2, 2, 3, 3, 3, 3], // 2026-11-26: 돈고블린 룰렛을 한 판에 돌릴 수 있는 횟수(Lv4·Lv7에 +1)
     merchantSlots:  [3, 3, 4, 4, 5, 5, 6, 6, 6, 6], // 2026-11-26: 방랑상인 상품 수(유물+영웅). 일반 상점 칸 수와 같게 (사용자: "방랑상점도 레벨에 의해 상품 개수 늘어나도록")
     merchantHeroes: [1, 1, 1, 1, 2, 2, 2, 2, 2, 2], // 2026-11-26: 그중 영웅 수. 나머지는 유물 (events.merchant.skills·heroes 대신 씀)
