@@ -2746,6 +2746,7 @@ img.rimg{image-rendering:auto!important}
 /* 사각 틀 안 원 유물: 네 변 같은 여백 (2026-11-26 사용자) */
 .hinfo .hi-av img.rimg{width:calc(100% - 8px)!important;height:calc(100% - 8px)!important;margin:4px!important;display:block}
 .hinfo .skf > img.rimg{width:calc(100% - 4px)!important;height:calc(100% - 4px)!important}
+.hinfo .hi-rel{display:flex;flex-direction:column;gap:inherit} /* 유물 상세 = 영웅 상세와 같은 머리 칸·상자 간격 (2026-11-26 사용자) */
 #roul .rstrip span img.rimg,.rsk img.rimg{width:calc(100% - 6px)!important;height:calc(100% - 6px)!important}
 /* 룰렛 골드: 금화 주머니 48x56, 영웅과 같은 도트 밀도, 바닥 = 단상 윗끝에서 11칸 아래 */
 #roul:not(.chestpop) .rbox .rstage.onped .rpic.loot.gold{left:calc(50% - 24 * var(--P))!important;bottom:calc(38px + 22 * var(--P))!important;width:calc(48 * var(--P))!important;height:calc(56 * var(--P))!important}
@@ -5453,7 +5454,7 @@ img.rimg{image-rendering:auto!important}
   var daisBusy = false, daisFx = false;
   function daisKey(i){ return ckey(hexCells().A[i]); }
   function daisRollCell(){ var P = {}; hexCells().A.forEach(function(c, i){ var v = (S.pads || {})[ckey(c)]; if (v) P[i] = v; }); return daisKey(E.rollDaisCell(D, Math.random, P)); }
-  function daisOld(){ var ks = Object.keys(S.pads || {}).filter(function(k){ return k.indexOf(',') > 0; }), mx = ((D.events || {}).dais || {}).max || 2; return ks.length >= mx && !S.event.dsDone ? ks[0] : null; } /* S.pads는 넣은 순서 = 첫 키가 가장 오래됨 */
+  function daisOld(){ var cells = hexCells().A.map(ckey), ks = Object.keys(S.pads || {}).filter(function(k){ return cells.indexOf(k) >= 0 && S.pads[k]; }), /* 우리 칸에 실제로 깔린 것만 셈 */ mx = ((D.events || {}).dais || {}).max || 2; return ks.length >= mx && !S.event.dsDone ? ks[0] : null; } /* S.pads는 넣은 순서 = 첫 키가 가장 오래됨 */
   function daisKinds(){ return Object.keys(D.races || {}).filter(function(r){ return r !== 'monster'; }).map(function(r){ return 'r:' + r; }).concat(Object.keys(D.elements.names)); }
   /* 칸은 판에 들어올 때 하나 정해 저장. 받기 전까지 그 칸에 "이상한 일" 예고 */
   function daisHtml(){ var ev = S.event; if (!ev.tag){ ev.tag = E.rollDais(D, Math.random); save(); } if (!ev.dsCell){ ev.dsCell = daisRollCell(); save(); } if (ev.dsDone) return daisFx ? daisBurst(ev.dsCell) : '';
