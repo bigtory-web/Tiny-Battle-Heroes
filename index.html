@@ -2676,8 +2676,8 @@ img.rimg{image-rendering:auto!important}
 /* 룰렛 띠 골드 = 금화 주머니 */
 .rbox .rstrip span img.lic.gbs{object-fit:contain}
 /* 반짝임: 결과 그림 둘레(그림의 1.5배 원)만, 도는 중에는 없음 (2026-11-26 사용자) */
-#roul:not(.chestpop) .rbox .rstage.onped > .rstars{inset:auto;left:calc(50% - 50 * var(--P));bottom:calc(38px + 4 * var(--P));width:calc(100 * var(--P));height:calc(100 * var(--P))}
-#chestPop .rbox .rstage > .rstars{inset:auto;left:calc(50% - 81px);top:calc(50% - 96px);width:162px;height:162px}
+#roul:not(.chestpop) .rbox .rstage.onped > .rstars{inset:auto;left:calc(50% - 55 * var(--P));bottom:calc(38px + 34 * var(--P));width:calc(110 * var(--P));height:calc(76 * var(--P))}
+#chestPop .rbox .rstage > .rstars{inset:auto;left:calc(50% - 81px);top:calc(50% - 96px);width:162px;height:108px}
 #roul:not(.chestpop) .rbox.spin .rstars{display:none}
 /* 열 때(돌지 않고 바로 뜸)는 결과 연출(흔들림·튀어 오름·고리) 없음 */
 #roul .rbox.still,#roul .rbox.still .ring,#roul .rbox.still .rgrade,#roul .rbox.still .rstage .rpic{animation:none!important}
@@ -3378,8 +3378,8 @@ img.rimg{image-rendering:auto!important}
   }
   /* 도는 빛줄기 대신 단상 주변 도트 별 반짝임, 색 = 결과 등급색 (2026-11-26 사용자). 등급이 높을수록 많이·자주 */
   function starFx(stage, tier, col){ if (!stage) return; var el = stage.querySelector(':scope > .rstars'); if (!el){ el = document.createElement('i'); el.className = 'rstars'; stage.appendChild(el); }
-    el.style.setProperty('--sc', col || '#fff'); var key = String(tier); if (el.dataset.t === key) return; el.dataset.t = key; var n = 7 + tier * 4, o = '';
-    for (var i = 0; i < n; i++){ var a = (i + Math.random() * .7) / n * 6.283, r = 27 + Math.random() * 21, x = 50 + Math.cos(a) * r, y = 50 + Math.sin(a) * r, sz = Math.random() < .45 ? 3 : 2, du = (1.5 - tier * .15 + Math.random() * .8).toFixed(2), dl = (-Math.random() * 2).toFixed(2); o += '<s class="s' + sz + '" style="left:' + x.toFixed(1) + '%;top:' + y.toFixed(1) + '%;animation-duration:' + du + 's;animation-delay:' + dl + 's"></s>'; }
+    el.style.setProperty('--sc', col || '#fff'); if (el.firstChild) return; var n = 23, o = ''; /* 개수·빈도는 등급과 상관없이 같고 색만 다름. 결과 그림 왼쪽·위·오른쪽 반원, 단상 위로는 안 내려감 (2026-11-26 사용자) */
+    for (var i = 0; i < n; i++){ var a = (i + Math.random() * .7) / n * Math.PI, f = Math.random(), x = 50 + Math.cos(a) * (32 + f * 16), y = 94 - Math.sin(a) * (80 + f * 10), sz = Math.random() < .45 ? 3 : 2, du = (1.6 + Math.random() * 1.4).toFixed(2), dl = (-Math.random() * 3).toFixed(2); o += '<s class="s' + sz + '" style="left:' + x.toFixed(1) + '%;top:' + y.toFixed(1) + '%;animation-duration:' + du + 's;animation-delay:' + dl + 's"></s>'; }
     el.innerHTML = o; }
   function rayFx(key){ var rb = $('roul').querySelector('.rbox'), t = lootTier(key); rb.classList.remove('rl1', 'rl2', 'rl3', 'rl4'); rb.classList.add('rl' + t); rb.style.setProperty('--gcol', GR(t).col); starFx(rb.querySelector('.rstage'), t, GR(t).col); } /* 뒤 빛줄기: 1등급 없음, 2등급 이상은 등급색, 높을수록 진하고 빠르게. 도는 중 칸이 바뀌면 같이 바뀜 */
   /* 룬 단상 (2026-11-26 사용자 확정): 영웅 도트와 같은 밀도(1칸 = P css px, 장치 px 정수배). 발 = 단상 윗끝에서 10.5칸 아래, 이름판은 단상 아래. 룬은 등급색으로 반짝 */
