@@ -2578,6 +2578,17 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 .lbag #roster .chip.baglock{gap:0}
 .baglock em{gap:1px;font-size:14px!important;line-height:14px!important}
 .baglock em::before{content:'';width:24px;height:32px;background:url(img/p/ui_lock.png) 0 0/24px 32px no-repeat;image-rendering:pixelated}
+/* 유물은 원, 스킬·용병은 사각 (2026-11-26 사용자): HUD 유물 칸·상점·룰렛 단상 */
+#skA .skc,#skE .skc{background:url(img/p/relic_ring.png) 0 0/100% 100% no-repeat!important;box-shadow:none!important;border:0!important;clip-path:none!important;image-rendering:pixelated;padding:0!important;display:flex;align-items:center;justify-content:center}
+#skA .skc img,#skE .skc img{width:29px!important;height:29px!important;position:relative;z-index:1}
+#skA .skc .cd,#skE .skc .cd{left:7px!important;right:7px!important;top:7px!important;max-height:30px;z-index:2;-webkit-mask:radial-gradient(circle 15px at 50% 15px,#000 98%,transparent);mask:radial-gradient(circle 15px at 50% 15px,#000 98%,transparent)}
+#skA .skc::before,#skE .skc::before{content:'';position:absolute;inset:0;pointer-events:none;background:var(--sg,#d9dde8);-webkit-mask:url(img/p/relic_ring_glow.png) 0 0/100% 100% no-repeat;mask:url(img/p/relic_ring_glow.png) 0 0/100% 100% no-repeat;image-rendering:pixelated}
+#tab-shop .stile.sk .ic{position:relative;background:url(img/p/relic_ring.png) 0 0/100% 100% no-repeat!important;box-shadow:none!important;image-rendering:pixelated}
+#tab-shop .stile.sk .ic img,#tab-shop .stile.sk .ic .ski{width:37px!important;height:37px!important;position:relative;z-index:1}
+#tab-shop .stile.sk .ic::before{content:'';position:absolute;inset:0;pointer-events:none;background:var(--sg,#d9dde8);-webkit-mask:url(img/p/relic_ring_glow.png) 0 0/100% 100% no-repeat;mask:url(img/p/relic_ring_glow.png) 0 0/100% 100% no-repeat;image-rendering:pixelated}
+#roul:not(.chestpop) .rbox .rstage.onped .rpic.loot.relic{width:calc(63 * var(--P))!important;height:calc(63 * var(--P))!important;left:calc(50% - 31.5 * var(--P))!important;bottom:calc(38px + 22 * var(--P))!important;background:url(img/p/relic_ring.png) 0 0/100% 100% no-repeat!important;image-rendering:pixelated;filter:drop-shadow(0 0 8px var(--rg,#d9dde8))!important}
+#roul .rbox .rpic.loot.relic img.lic{width:calc(42 * var(--P))!important;height:calc(42 * var(--P))!important;position:relative;z-index:1}
+#roul .rstage .rpic.loot.relic::before{content:'';position:absolute;inset:0;pointer-events:none;background:var(--rg,#d9dde8);-webkit-mask:url(img/p/relic_ring_glow.png) 0 0/100% 100% no-repeat;mask:url(img/p/relic_ring_glow.png) 0 0/100% 100% no-repeat;image-rendering:pixelated}
 </style>
 </head>
 <body>
@@ -3292,6 +3303,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     if (hu && hu.ult){ rsk.innerHTML = ultIcon(hu, 28); rsk.dataset.tipt = ultName(hu); rsk.dataset.tiptx = ultDescFull(hu, hu.ult, 1); rsk.style.setProperty('--rg', HG(p.id).col); rsk.hidden = false; }
     else if (p.type === 's'){ var ds = E.skillById(D, p.id); rsk.innerHTML = SKIMG[ds.id] ? '<img class="ulti" src="img/p/skill_' + ds.id + '.png" alt="">' : '<span class="ulti">' + ds.icon + '</span>'; delete rsk.dataset.tipt; delete rsk.dataset.tiptx; rsk.dataset.tipsk = p.id; rsk.dataset.tiplv = 1; rsk.innerHTML += synN(ds); rsk.style.setProperty('--rg', skG(p.id, 1).col); rsk.hidden = false; } // 유물 결과도 우하단에 아이콘
     else { rsk.innerHTML = ''; delete rsk.dataset.tipt; delete rsk.dataset.tiptx; rsk.hidden = true; if (tipEl === rsk) hideTip(); } if (p.type === 'h') $('rTags').style.setProperty('--tg', HG(p.id).col); // 꼬리표 묶음 테두리 = 영웅 등급색
+    pic.classList.toggle('relic', p.type === 's'); if (p.type === 's'){ pic.style.setProperty('--rg', GR(lootTier(key)).col); }
     if (p.type === 's'){ pic.dataset.tipsk = p.id; pic.dataset.tiplv = 1; } else { delete pic.dataset.tipsk; if (tipEl === pic) hideTip(); }
     if (p.type === 'p'){ pic.dataset.tipt = padName(p.id); pic.dataset.tiptx = '이 칸에 선 영웅은 ' + D.elements.names[p.id] + ' 진영이 더해진다.'; } else { delete pic.dataset.tipt; delete pic.dataset.tiptx; } // 큰 스킬 아이콘도 툴팁 // 종족·직업·진영 꼬리표
     box.querySelector('.rname').innerHTML = p.type === 'g' ? '골드 ' + p.amt.toLocaleString() + 'G' : p.type === 'm' ? manaName() + ' · ' + p.amt + '개' : lootName(key);
@@ -3553,7 +3565,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   function skRow(frame, name, lv, desc, num, numCls){ return '<div class="hi-ult hi-skrow">' + frame + '<div class="hi-skt"><div class="hi-skh"><b>' + name + '</b>' + (num ? '<i class="hi-num ' + (numCls || 'mp') + '">' + (!numCls && /^\d+$/.test(num) ? BOLT : '') + num + '</i>' : '') + '</div>' + (desc ? '<div class="hi-skd">' + desc + '</div>' : '') + '</div></div>'; }
   function ultNum(U){ if (!U) return ''; var t = U.trig; if (t) return t.kind === 'start' ? '전투 시작' : t.kind === 'struck' ? '맞기 ' + t.n + '번' : t.kind === 'hits' ? '평타 ' + t.n + '번' : ''; return String((D.battle || {}).energyMax || 100); } /* 궁극기에 필요한 에너지 (발동형은 조건) */
   function skFrame(inner, col, cover, flash){ return '<span class="skf' + (flash ? ' flash' : '') + '" style="--gc:' + col + '">' + inner + (cover != null ? '<i class="ulcd" style="--k:' + Math.max(0, Math.min(1, cover)).toFixed(3) + '"></i>' : '') + '</span>'; }
-  function pasIcon(kind){ return kind ? '<span class="pasc"><img class="pasf" src="img/p/pas_frame.png" alt=""><img class="pasi" src="img/p/pas_' + kind + '.png" alt="" onerror="this.outerHTML=&quot;<b class=pasx>✦</b>&quot;"></span>' : ''; }
+  function pasIcon(kind){ return kind ? '<span class="pasc"><img class="pasi" src="img/p/pas_' + kind + '.png" alt="" onerror="this.outerHTML=&quot;<b class=pasx>✦</b>&quot;"></span>' : ''; }
   function pasLine(id, short, star){ var h = hero(id), P = h.passive, PO = (D.gradeEffects || {}).passiveOn; /* star: 그 영웅의 성급 (모르면 잠긴 줄) */
     if (PO){ var PS0 = P && P.kind !== 'none' && (D.passives || {})[P.kind]; if (!PS0 || E.heroGrade(D, id) < PO.grade) return ''; var on = (star || 0) >= PO.star;
       var row = skRow(skFrame(pasIcon(P.kind), HG(id).col), PS0.name + (on ? '' : ' <small class="pslock">★' + PO.star + '</small>'), 1, short ? '' : pasDesc(id, 1)); return on ? row : row.replace('hi-skrow', 'hi-skrow pslocked'); }
