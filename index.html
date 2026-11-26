@@ -2451,6 +2451,9 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
 /* 전장 칸 안쪽을 전투 캔버스와 같은 720:400 비율로(765x425): 예전 774x422는 2% 비율이 달라 전투 때 세로로 눌려 전환 순간 모양이 바뀜 (2026-11-26 사용자) */
 #arena{aspect-ratio:auto!important;width:783px!important;height:443px!important;justify-self:center}
 #field .slot.on .av.olb,#field .foe .av.olb{translate:0 var(--fdy,0px)}
+/* 룰렛(전리품) 창: 유물 그림을 영웅만큼, 너비를 내용에 맞게 480 -> 400 (2026-11-26 사용자). 보물상자 창은 그대로 */
+#roul .rbox{width:400px!important}
+#roul .rbox .rpic.loot img.lic{width:var(--rlq,96px)!important;height:var(--rlq,96px)!important}
 </style>
 </head>
 <body>
@@ -3137,7 +3140,8 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
     var p = LP(key), box = $('roul'), pic = box.querySelector('.rpic');
     box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); rayFx(key); $('rUp').hidden = !upOK(key);
     pic.style.imageRendering = p.type === 'h' && IMGS[p.id] ? 'pixelated' : '';
-    var rk = qN(), rq = { k: rk, css: 66 * qR() / (sApp() * (window.devicePixelRatio || 1)) }; document.documentElement.style.setProperty('--rpq', (p.type === 'h' && IMGS[p.id] ? rq.css : 114) + 'px'); rpAnim.nk = p.type === 'h' ? rq.k : 0; OUTLN = rpAnim.nk;
+    var rk = qN(), rq = { k: rk, css: 66 * qR() / (sApp() * (window.devicePixelRatio || 1)) };
+    var lm = Math.max(2, Math.round(qR() * 64 * .8 / 24)); document.documentElement.style.setProperty('--rlq', (24 * lm / (sApp() * (window.devicePixelRatio || 1))).toFixed(2) + 'px'); /* 유물·골드 그림도 영웅과 같은 크기(영웅이 칸에서 차지하는 높이 약 80%), 24px 원본의 정수배 장치 px */ document.documentElement.style.setProperty('--rpq', (p.type === 'h' && IMGS[p.id] ? rq.css : 114) + 'px'); rpAnim.nk = p.type === 'h' ? rq.k : 0; OUTLN = rpAnim.nk;
     if (p.type === 'h'){ var id = p.id; pic.innerHTML = IMGS[id] ? '' : AV[id]; pic.style.backgroundImage = IMGS[id] ? 'url(' + outlinedURL(id, gc(id)) + ')' : 'none'; pic.style.setProperty('--gc', gc(id)); if (IMGS[id]){ pic.style.setProperty('--o1', 'url(' + outlinedURL(id, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(id, '#ffffff') + ')'); } OUTLN = 0; /* 결과가 뜨면 외곽선 파랑↔흰색 */ pic.classList.remove('loot'); }
     else { pic.style.backgroundImage = 'none'; pic.innerHTML = lootIcon(key); pic.classList.add('loot'); }
     rpAnim.id = p.type === 'h' && ANIM_IDS.indexOf(p.id) >= 0 ? p.id : null; /* 프레임 시트 영웅은 룰렛 큰 그림도 대기 1~4 반복 */
