@@ -1,5 +1,5 @@
 첨부한 픽셀 아트 캐릭터(게임 그림을 8배 확대한 것)로 스프라이트 시트 1장을 만들어 줘.
-캐릭터: light blue hair with snowflake hair ornaments, icy blue dress, a wand topped with a snowflake. (첨부 그림이 디자인 기준이다. 새로 디자인하지 말 것.)
+캐릭터: pale blue hair in a HIGH PONYTAIL with a ribbon tie, a small white ice crystal tiara, white and blue dress, a staff topped with a big blue snowflake. Keep the ponytail exactly as in the reference. (첨부 그림이 디자인 기준이다. 새로 디자인하지 말 것.)
 
 [배열]
 - 4칸 x 2줄 = 8프레임. 칸마다 256x256 픽셀(64 격자 x 4배), 전체 1024x512.
