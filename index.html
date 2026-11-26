@@ -2496,6 +2496,18 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 /* 룰렛: 캐릭터 발밑 돌 받침 (3단 픽셀) */
 #roul:not(.chestpop) .rbox .rstage .rpic:not(.loot){position:relative;z-index:2}
 #roul:not(.chestpop) .rbox .rstage:has(.rpic:not(.loot))::before{content:'';position:absolute;left:50%;bottom:34px;width:132px;height:24px;margin-left:-66px;z-index:1;pointer-events:none;background:linear-gradient(#b9b1c4 0 6px,#8c8399 6px 12px,#5d5470 12px 18px,#3b3546 18px);clip-path:polygon(12px 0,calc(100% - 12px) 0,calc(100% - 12px) 3px,calc(100% - 6px) 3px,calc(100% - 6px) 6px,100% 6px,100% 18px,calc(100% - 6px) 18px,calc(100% - 6px) 21px,calc(100% - 12px) 21px,calc(100% - 12px) 100%,12px 100%,12px 21px,6px 21px,6px 18px,0 18px,0 6px,6px 6px,6px 3px,12px 3px)}
+.merchnpc .mnimg{width:100%;height:100%;object-fit:contain;object-position:50% 100%;image-rendering:pixelated;transform:scaleX(-1)}
+/* 상점: 상품 칸 80, 유물 아이콘도 영웅처럼 틀 (2026-11-26 사용자) */
+#tab-shop.shopPop{width:640px!important}
+#tab-shop .shopInfo{width:240px!important}
+#tab-shop .srow2:not(.h):not(.c4),#tab-shop .srow2.h{grid-template-columns:repeat(3,80px)!important}
+#tab-shop .srow2.c4{gap:6px!important}
+#tab-shop .srow2 .stile,#tab-shop .srow2.c4 .stile,#tab-shop .srow2.h .stile.mhero{width:80px!important;box-sizing:border-box;padding:8px 5px 6px}
+#tab-shop .stile.sk{box-shadow:none!important}
+#tab-shop .stile.sk.sel{box-shadow:inset 0 0 0 3px #f3e6c4,inset 0 0 0 5px #17141d!important}
+#tab-shop .srow2:not(.h) .stile{height:94px;justify-content:center;gap:6px}
+#stock .srow2:not(.h) .stile.mhero .ic,#stock .srow2:not(.h) .stile.mhero .ic .hic{width:56px!important;height:56px!important}
+#tab-shop .stile.sk .ic{width:56px;height:56px;flex:none;background:#17141d;box-shadow:inset 0 0 0 1px var(--sg),0 0 0 1px #17141d}
 </style>
 </head>
 <body>
@@ -2812,7 +2824,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   // 상점 팝업 열기·닫기 (전장 화면은 그대로)
   function shopOpen(){ return !$('tab-shop').hidden; }
   function setShop(on){ $('tab-shop').hidden = !on; $('arena').classList.toggle('shopping', on); document.querySelectorAll('[data-go="shop"]').forEach(function(sb){ sb.classList.toggle('on', on); });
-    if (!on){ shopSel = null; sellArm = null; } else if (!$('hinfo').hidden){ $('hinfo').hidden = true; sel = null; if (typeof relSel !== 'undefined') relSel = null; document.querySelectorAll('.picked').forEach(function(x){ x.classList.remove('picked'); }); } /* 상점을 열면 상세 창 닫기 */ renderShop(); }
+    if (!on){ shopSel = null; sellArm = null; merchShow = false; } else if (!$('hinfo').hidden){ $('hinfo').hidden = true; sel = null; if (typeof relSel !== 'undefined') relSel = null; document.querySelectorAll('.picked').forEach(function(x){ x.classList.remove('picked'); }); } /* 상점을 열면 상세 창 닫기 */ renderShop(); }
   function showTab(t){
     if (t === 'shop'){ if ($('tab-camp').hidden) showTab('camp'); setShop(!shopOpen()); return; }
     setShop(false);
@@ -3064,7 +3076,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
       (S.padPend && !bt ? hexCells().A.map(function(c){ var k = ckey(c); return '<button class="padtgt" type="button" data-padcell="' + k + '" style="' + cellStyle(k) + ';background-image:url(' + padURL(S.padPend) + ')"></button>'; }).join('') : '');
     padNew = '';
     $('field').innerHTML = '' + tilesHtml + padsHtml + [0, 1, 2, 3, 4].map(function(i){ return at('A', i, slotHtml(i), S.team[i]); }).join('') +
-      (scrollPend ? '' : isLvPick() ? lvPickHtml() : isAltar() ? altarHtml() : isFork() ? forkHtml() : isCamp() ? campHtml() : isFairy() ? fairyHtml() : isOddEven() ? oddEvenHtml() : isMerch() ? '' : bySlot.map(function(u, i){ return u && FP[i] ? at('E', i, foeHtml(u), u.id, u.star) : ''; }).join(''));
+      (scrollPend ? '' : isLvPick() ? lvPickHtml() : isAltar() ? altarHtml() : isFork() ? forkHtml() : isCamp() ? campHtml() : isFairy() ? fairyHtml() : isOddEven() ? oddEvenHtml() : isMerch() ? merchHtml() : bySlot.map(function(u, i){ return u && FP[i] ? at('E', i, foeHtml(u), u.id, u.star) : ''; }).join(''));
     $('arena').classList.toggle('camping', noFight()); $('arena').classList.toggle('altaring', isAltar() && !isLvPick()); // 종·적 스킬·전리품 미리보기를 숨기고 말풍선 버튼을 보여요
     var list = bagUnits().slice().sort(function(a, b){ return (E.heroGrade(D, b.id) - E.heroGrade(D, a.id)) || ((b.star || 1) - (a.star || 1)) || (powerU(b) - powerU(a)); });
     var BM = bagMax();
@@ -3074,7 +3086,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     var used = usedCost(), c = cap();
     var over = false; /* 출전 코스트 제도는 없어요. 출전 제한은 전장 칸 수(PK().field)뿐 */ $('fightBtn').disabled = done || teamSpec().length === 0 || !!S.pending || !!S.offer || !!S.padPend || over; $('fightBtn').textContent = '전투 시작'; /* 늘 원래 글자, 못 누르면 회색만 (예전: 캠페인 완료·발판 깔기·전리품을 먼저 정해 주세요·백팩에서 버릴 것을 골라 주세요) */
     if (noFight()){ $('fightBtn').disabled = !!S.offer || !!S.pending || (isOddEven() && oeBusy) || altBusy || (isCamp() && !S.units.length); $('fightBtn').innerHTML = '<img class="exi" src="img/p/ui_exit.png" alt="떠나기">'; $('fightBtn').title = '떠나기'; } if ($('fightBtn').disabled && !done && (!!S.offer || !!S.pending || !!S.padPend || (isOddEven() && oeBusy) || altBusy || !$('roul').hidden)) /* 진행 중이어도 글자 그대로 회색 (2026-11-24) */ $('fightBtn').classList.toggle('busyhide', $('fightBtn').disabled && $('fightBtn').textContent.trim() === '진행 중'); /* 진행 중이면 숨김 */ updEvActs(); /* 영웅이 하나도 없는 첫 모닥불은 먼저 말 걸기 */ /* 이벤트 판: 전투 시작은 꺼 두고 말 걸기·떠나기는 오른쪽 위 버튼으로 */
-    if (isMerch() && !merchOffer() && !S.offer && !S.pending) setTimeout(openMerch, 0); /* 상인 판에 오면 방랑상점을 바로 (닫은 뒤엔 상점 버튼으로) */ $('fightBtn').style.visibility = isFork() || isLvPick() ? 'hidden' : '';
+    $('fightBtn').style.visibility = isFork() || isLvPick() ? 'hidden' : '';
     renderPending(); renderHud();
   }
 
@@ -3627,7 +3639,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   });
   var leaveArm = '';
   function evKey(){ return S.stage + ':' + ((S.event || {}).kind || ''); }
-  function evActed(){ var ev = S.event || {}; if (isAltar()) return (ev.trCount || 0) > 0; if (isMerch()){ var wo = merchOffer(); return !!(wo && wo.bought && wo.bought.length); } if (isCamp() || isFairy()) return !!S.offerGot || !!S.offerDecided; return false; } /* 홀짝은 굴리면 바로 떠나요 */
+  function evActed(){ var ev = S.event || {}; if (isAltar()) return (ev.trCount || 0) > 0; if (isMerch()){ var wo = S.evOffer; return !!(wo && wo.bought && wo.bought.length); } if (isCamp() || isFairy()) return !!S.offerGot || !!S.offerDecided; return false; } /* 홀짝은 굴리면 바로 떠나요 */
   function evLeaveSync(){ var w = $('lvWarn'); if (!w){ w = document.createElement('i'); w.id = 'lvWarn'; w.className = 'lvwarn'; w.textContent = '아무 행동도 하지 않으셨습니다. 한 번 더 터치하면 이벤트를 스킵합니다.'; $('fightBtn').parentNode.appendChild(w); } if (leaveArm && leaveArm !== evKey()) leaveArm = ''; w.hidden = !leaveArm || !$('arena').classList.contains('evstage'); var fb = $('fightBtn'); fb.classList.toggle('busyhide', fb.disabled && fb.textContent.trim() === '진행 중'); }
   $('fightBtn').addEventListener('click', function(e){ if ($('arena').classList.contains('evstage') && !this.disabled && !evActed() && leaveArm !== evKey()){ e.stopImmediatePropagation(); leaveArm = evKey(); evLeaveSync(); } }, true);
   $('fightBtn').addEventListener('click', function(){ if (isLvPick() || isFork()) return; leaveArm = ''; if (isAltar()) finishAltar(); else if (isOddEven()){ if (!oeBusy) finishOddEven(); } else if (isFairy() || isCamp()) finishCamp(); else if (isMerch()) leaveMerch(); else if (bagCount() > bagMax() || S.skills.length > PK().skillSlots) showOver(); else startBattle(); });
@@ -4478,7 +4490,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   function showEvWin(){
     var w = $('evWin'), o = S.evOffer; if (!o || S.offer || S.pending || !$('roul').hidden){ w.hidden = true; return; }
     var html = '';
-    if (o.kind === 'merchant'){ w.hidden = true; setShop(true); return; } // 방랑상인은 상점 창으로
+    if (o.kind === 'merchant'){ w.hidden = true; return; } // 방랑상인 상점은 말 걸기로만 열어요
     {
       var h2 = hero(o.id);
       html = '<div class="evh"><span class="evic big">' + heroFr(o.id) + '</span><b>' + h2.name + '이(가) 합류를 원해요</b></div><div class="evs">떠돌이 용병 · ' + g(o.price) + '</div>' +
@@ -4618,7 +4630,8 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   function newStock(){ var st = E.rollShop(D, Math.random, plv(), S.skills || [], myIds()), ng = 0; while (ng < st.length && !(buyPrice(st[ng]).mana > 0)) ng++; lastNg = ng; return st; }
   var lastNg = null;
   function shopNg(){ if (S.shop.ng == null){ var ng = 0; if (lastNg != null) ng = lastNg; else { var st = S.shop.stock; while (ng < st.length && !(buyPrice(st[ng]).mana > 0)) ng++; } S.shop.ng = ng; } lastNg = null; return S.shop.ng; }
-  function merchOffer(){ return !bt && S.evOffer && S.evOffer.kind === 'merchant' ? S.evOffer : null; }
+  var merchShow = false;
+  function merchOffer(){ return merchShow && !bt && S.evOffer && S.evOffer.kind === 'merchant' ? S.evOffer : null; }
   function renderShop(){ var wo = merchOffer(); $('tab-shop').classList.toggle('wander', !!wo); var off = wo && E.merchantOff ? E.merchantOff(D, plv()) : 0; if (off > 0) $('tab-shop').dataset.disc = Math.round(off) + '% 할인'; else delete $('tab-shop').dataset.disc; $('tab-shop').querySelector('.spHead b').textContent = wo ? '방랑상점' : '상점';
     if (wo){ renderMerchShop(wo); return; }
     var SL = PK().skillSlots, mine = S.skills, anyBuy = false, OPEN = PK().shopSlots || S.shop.stock.length;
@@ -4751,6 +4764,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   function isMerch(){ return !bt && !!S.event && S.event.kind === 'merchant' && !!E.merchantNoBattle && E.merchantNoBattle(D) && S.stage < E.stageCount(D); }
   function isFairy(){ return !bt && !!S.event && S.event.kind === 'fairy' && !!S.event.ids && S.stage < E.stageCount(D); }
   function fairyHtml(){ var fx = 506, fy = 184; return '<div class="unit cfh fairy" style="left:' + (100 * fx / W) + '%;top:' + (100 * (fy + OFF + FOOT) / H) + '%;z-index:' + fy + '"><div class="cfslot">' + campImg('ev_fairy', '🧚', 'fairyimg') + '</div></div>'; }
+  function merchHtml(){ var fx = 506, fy = 184; return '<div class="unit cfh merchnpc" style="left:' + (100 * fx / W) + '%;top:' + (100 * (fy + OFF + FOOT) / H) + '%;z-index:' + fy + '"><div class="cfslot"><img class="mnimg" src="img/p/merchant.png" alt="방랑상인"></div></div>'; }
   function startFairy(){ if (!isFairy() || S.offer || S.pending) return;
     offerIds = S.offerIds = S.event.ids.map(function(id){ return 's:' + id; }); S.offerBonus = {}; S.offer = offerIds[E.lootPick(D, offerIds, plv(), Math.random)]; S.offerPlv = null;
     S.offerMode = 'fairy'; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; save(); renderAll(); startRoulette(offerIds, S.offer); }
@@ -4887,7 +4901,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   function noFight(){ return isLvPick() || isCamp() || isMerch() || isAltar() || isFairy() || isOddEven() || isFork(); } // 싸우지 않는 판 (종·적 스킬·전리품 미리보기 숨김, 말 걸기 버튼)
   function openMerch(){ if (!isMerch() || S.offer || S.pending) return;
     if (!S.evOffer || S.evOffer.kind !== 'merchant') S.evOffer = { kind: 'merchant', stock: E.rollMerchant(D, S.stage, Math.random, plv(), S.skills || []), bought: [], noBattle: true };
-    save(); setShop(true); }
+    save(); if (shopOpen()) setShop(false); merchShow = true; shopSel = null; setShop(true); renderShop(); }
   function leaveMerch(){ S.evOffer = null; setShop(false); finishMerch(); }
   function finishMerch(){ S.event = nextEvent(false); S.bell = 0; S.bellGold = 0; save(); evGo(); }
   // 원래 값(줄 그어 보여 줌): 스킬은 상점 값, 영웅은 heroPrice 식
