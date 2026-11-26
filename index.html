@@ -164,9 +164,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 @keyframes finfl{0%{opacity:.85}100%{opacity:0}}
 .hlv{font:400 12px var(--display);font-style:normal;color:#ffd34d;margin-left:4px;text-shadow:0 1px 0 #17141d}
 .htag.padtag{box-shadow:inset 0 0 0 1px var(--tc),0 0 0 1px #17141d;border-style:dashed;outline:1px dashed var(--tc);outline-offset:1px}
-.hi-terr{border-top:1px solid rgba(255,255,255,.08);margin-top:4px;padding-top:4px}
-.hi-terr .skf{width:46px}
-.skf > img.terri{width:44px!important;height:auto!important;image-rendering:pixelated}
 b.pasx{display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;font:400 14px var(--display);color:#ffd34d}
 .evlist{display:flex;flex-direction:column;gap:6px}
 .evrow{display:flex;align-items:center;gap:10px;padding:8px 10px;background:#2a2533;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 3px #5d5470}
@@ -1539,8 +1536,7 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .oecoin{width:var(--ic-s);height:var(--ic-s);margin:-12px 0 0 -12px}
 .oecoin.mfly img,.mfly img{width:var(--ic-m)!important;height:var(--ic-m)!important}
 #skA .skc img,#skE .skc img,.evh img,.mobrow .evic .av,.evrow .evic img{width:var(--ic-m)!important;height:var(--ic-m)!important}
-.mini .av,.evic.big,.skf > img.terri{width:var(--ic-l)!important;height:var(--ic-l)!important}
-.hi-terr .skf{width:var(--ic-l)!important;height:var(--ic-l)!important}
+.mini .av,.evic.big{width:var(--ic-l)!important;height:var(--ic-l)!important}
 .rbox .rsk .ulti{width:var(--ic-xl)!important;height:var(--ic-xl)!important;line-height:var(--ic-xl)!important}
 /* 말풍선 아이콘 중간(32) */
 #field .foe .mbub{gap:2px;padding:3px 4px;box-shadow:0 0 0 3px #17141d}
@@ -2544,7 +2540,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 .lbag .ubagbox > .bagtop{position:absolute;left:0;top:0;z-index:2;pointer-events:none;image-rendering:pixelated}
 .stile.sold{filter:grayscale(1)}
 .hinfo .mpbolt{width:8px;height:12px;margin-right:3px;vertical-align:-1px;overflow:visible}
-.hinfo .skf > img.daisi{width:30px;height:auto;image-rendering:pixelated}
+.hinfo .skf > img.daisi,.skf > img.daisi{width:24px!important;height:24px!important;object-fit:contain;image-rendering:pixelated}
 .hinfo > .hi-body{flex:1 1 0;min-height:0;display:flex;flex-direction:column;gap:inherit;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;scrollbar-width:thin;scrollbar-color:#5d5470 transparent}
 .hinfo > .hi-body > *{flex:none}
 /* 룰렛: 캐릭터 발밑 돌 받침 (3단 픽셀) */
@@ -3498,7 +3494,7 @@ img.rimg{image-rendering:auto!important}
   function padURL(el){ if (PADURL[el]) return PADURL[el]; var col = padCol(el), cv3 = document.createElement('canvas'); cv3.width = 124; cv3.height = 30;
     return (PADURL[el] = hexDaisURL({ rim: col, top: mixC(col, '#17141d', .55), top2: mixC(col, '#17141d', .35), side: mixC(col, '#17141d', .78), hi: mixC(col, '#ffffff', .45) })); }
   var DAISURL = '';
-  function terrRow(img, col, name, desc){ return '<div class="hi-ult hi-skrow hi-terr"><span class="skf" style="--gc:' + col + '"><img class="terri" src="' + img + '" alt=""></span><div class="hi-skt"><b>' + name + '</b><div class="hi-skd">' + desc + '</div></div></div>'; }
+  function terrRow(img, col, name, desc){ return skRow(skFrame('<img class="daisi" src="' + img + '" alt="">', col), name, 1, desc); } /* 단상 줄 = 스킬 줄과 같은 규격 (2026-11-26 사용자) */
   function padRow(el){ return el ? terrRow(padURL(el), padCol(el), padName(el), padDesc(el)) : ''; }
   function daisRow(){ var n = D.campaign.bossLvPlus; return skRow(skFrame('<img class="daisi" src="' + DAISURL + '" alt="">', '#e9c46a'), '보스 단상', 1, daisDesc(), n ? 'Lv +' + n : '', 'mp'); }
   var RACEC = { human: '#e0a060', elf: '#7fd07a', beast: '#d9784a', demon: '#c05aa8' }; /* 종족 단상 색 (그림 오기 전 임시) */
