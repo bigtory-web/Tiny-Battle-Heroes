@@ -2769,6 +2769,9 @@ img.rimg{image-rendering:auto!important}
 #roul .rbox.fairy .rstage > .fvine.b{top:auto;bottom:7px;transform:scaleY(-1)}
 #roul .rbox.fairy .rstage > .fvine.r{left:auto;right:7px;transform:scaleX(-1)}
 #roul .rbox.fairy .rstage > .fvine.r.b{right:7px;transform:scale(-1,-1)}
+/* 모서리 덩굴 대신 왼쪽·오른쪽 변에 세로 덩굴 (2026-11-26 사용자: "4각 테두리 아니라 좌우로") */
+#roul .rbox.fairy .rstage > .fvine{top:7px;bottom:7px;height:auto;width:20px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 40' width='20' height='80' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='2' height='8' fill='%233f9a6a'/%3E%3Crect x='1' y='8' width='2' height='6' fill='%233f9a6a'/%3E%3Crect x='2' y='14' width='2' height='8' fill='%233f9a6a'/%3E%3Crect x='1' y='22' width='2' height='6' fill='%233f9a6a'/%3E%3Crect x='0' y='28' width='2' height='12' fill='%233f9a6a'/%3E%3Crect x='2' y='3' width='3' height='1' fill='%236fd39a'/%3E%3Crect x='4' y='2' width='2' height='1' fill='%236fd39a'/%3E%3Crect x='4' y='11' width='3' height='1' fill='%236fd39a'/%3E%3Crect x='6' y='12' width='2' height='1' fill='%236fd39a'/%3E%3Crect x='3' y='25' width='3' height='1' fill='%236fd39a'/%3E%3Crect x='5' y='26' width='2' height='1' fill='%236fd39a'/%3E%3Crect x='2' y='35' width='3' height='1' fill='%236fd39a'/%3E%3Crect x='4' y='36' width='1' height='1' fill='%236fd39a'/%3E%3Crect x='4' y='17' width='2' height='1' fill='%23ff9ed2'/%3E%3Crect x='3' y='18' width='4' height='2' fill='%23ff9ed2'/%3E%3Crect x='4' y='20' width='2' height='1' fill='%23ff9ed2'/%3E%3Crect x='3' y='31' width='2' height='1' fill='%23ff9ed2'/%3E%3Crect x='2' y='32' width='4' height='1' fill='%23ff9ed2'/%3E%3Crect x='3' y='33' width='2' height='1' fill='%23ff9ed2'/%3E%3Crect x='4' y='18' width='2' height='2' fill='%23fff3b0'/%3E%3Crect x='3' y='32' width='2' height='1' fill='%23fff3b0'/%3E%3C/svg%3E") 0 0/20px 80px repeat-y}
+#roul .rbox.fairy .rstage > .fvine.b{display:none}
 #roul .rbox.fairy .rstrip{box-shadow:none!important} /* 2026-11-26 사용자: 요정 띠 바깥 테두리 뺌 */
 /* 상점 칸: 할인 딱지·UP이 얼굴을 가리지 않게 (2026-11-26 사용자: "대가리부분아니잖아"). 자르기는 공통 170%·위 40% 그대로 */
 #tab-shop .stile .upmk{top:-6px!important}
@@ -2907,7 +2910,7 @@ img.rimg{image-rendering:auto!important}
 /* 초월 팝업 손보기 (2026-11-26 사용자): 넓은 버튼, 영웅이 단상 앞, 재료 반전, 후보 = 얼굴, 가운데 옮길 스킬, 결과 반짝임, 데코 */
 #trWin .rbtns button.go{min-width:180px}
 /* 룰렛 팝업: 받기와 옆 버튼은 같은 너비 (2026-11-26 사용자) */
-#roul .rbox:not(.groll) .rbtns #rYes,#roul .rbox:not(.groll) .rbtns #rAgain,#roul .rbox:not(.groll) .rbtns #rNo{width:130px!important;flex:none!important;box-sizing:border-box}
+#roul .rbox:not(.groll) .rbtns #rYes,#roul .rbox:not(.groll) .rbtns #rAgain,#roul .rbox:not(.groll) .rbtns #rNo{width:116px!important;flex:none!important;box-sizing:border-box}
 #trWin .trslot .trfig{z-index:3}
 #trWin .trslot.sM .trfig .av{transform:scaleX(-1)}
 #trWin .trc .hic.hicf > .av.pic{background-size:var(--fs,170%) auto!important;background-position:var(--fx,50%) var(--fy,40%)!important}
