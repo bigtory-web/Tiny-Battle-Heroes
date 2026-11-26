@@ -64,6 +64,7 @@
       else if (k === 'auraAtk') (u.side === 'A' ? A : E).forEach(function (x) { x.atk *= 1 + u.pv; }); });
     function team(side) { return side === 'A' ? A : E; }
     function foes(u) { return u.side === 'A' ? E : A; }
+    function JP(u) { return (u && B.jobPassive && B.jobPassive[u.h.job]) || {}; } // 2026-11-26 직업 효과
     function alive(list) { return list.filter(function (x) { return x.alive; }); }
     // ───── 영웅 특성(2026-11-21): has(u, 종류) = 살아 있고 그 특성을 가졌는지. 같은 편/상대 편에서 그 특성 가진 영웅들 ─────
     function on(u, k) { return (u.pas && u.pas.kind === k) || (u.winT > 0 && u.win && u.win.kind === k); }
@@ -84,6 +85,7 @@
       var sr = holders(dst.side, 'reviveAlly').filter(function (x) { return x !== dst && !x.pUsed; })[0];
       if (sr && !dst.h.mob) { sr.pUsed = true; dst.hp = dst.maxHp * sr.pv; if (rec) log.push({ t: t, kind: 'heal', from: sr.uid, to: dst.uid, amt: Math.round(dst.hp) }); return; }
       dst.hp = 0; dst.alive = false; if (rec) log.push({ t: t, kind: 'die', uid: dst.uid });
+      if (!dst.h.mob) alive(team(dst.side)).forEach(function (x) { var v = JP(x).allyDeathAtk; if (v) x.atk *= 1 + v; }); // 전사: 아군이 쓰러질 때마다 공격력
       if (!dst.h.mob && (dst.star || 1) <= 2) allSkills.forEach(function (sk) { if (sk.def.kind !== 'starStep' || sk.side !== dst.side) return; /* 디딤돌: ★1·★2가 쓰러지면 같은 열 별 최고 아군에게 에너지 */
         var L = alive(team(dst.side)).filter(function (x) { return x.line === dst.line; }); if (!L.length) return; gainEnergy(L.reduce(function (m, x) { return (x.star || 1) > (m.star || 1) ? x : m; }), sk.def.amount * sk.mul); sk.fired++; });
       if (dst.markT > 0) holders(dst.side === 'A' ? 'E' : 'A', 'markKillEnergy').forEach(function (hh) { gainEnergy(hh, hh.pas.v); }); /* 밤추적자: 표식 적이 쓰러지면 에너지 */
@@ -159,7 +161,7 @@
       var hadSh = dst.shield > 0, absorbed = Math.min(dst.shield, dmg); dst.shield -= absorbed; dmg -= absorbed;
       dst.hp -= dmg; src.stats.dealt += dmg + absorbed; dst.stats.taken += dmg + absorbed;
       if (dst.trig) { if (dst.trig.kind === 'struck') dst.energy = Math.min(B.energyMax, dst.energy + B.energyMax / dst.trig.n); } // 발동 타입: 피격 N회마다
-      else if (EN.onHitScale) dst.energy = Math.min(B.energyMax, dst.energy + (dmg / dst.maxHp) * EN.onHitScale);
+      else if (EN.onHitScale) dst.energy = Math.min(B.energyMax, dst.energy + (dmg / dst.maxHp) * EN.onHitScale * (JP(dst).hitEnergy || 1)); // 기사: 맞으면 차는 에너지 배
       if (rec) log.push({ t: t, kind: 'hit', from: src.uid, to: dst.uid, amt: Math.round(dmg + absorbed), crit: crit || undefined, mag: magic || undefined, burn: burning || undefined });
       if (dst.hp <= 0) die(dst, src);
       if (hadSh && dst.shield <= 0 && has(dst, 'shieldBreakStun')) alive(foes(dst)).forEach(function (x) { if (dist(x, dst) <= (PP(dst).r || 90)) x.stun = Math.max(x.stun || 0, dst.pv); });
@@ -205,7 +207,7 @@
       ultSrc = ps; ultEl = pe; ultHit = ph; }
     function ultimate0(u, ult0, k0) {
       magic = true; var U0 = ult0 || u.h.ult, k = k0 || u.uk || 1, U = {}; for (var q in U0) U[q] = U0[q]; if (U.mul) U.mul *= k; if (U.shieldPct) U.shieldPct *= k; if (U.amount) U.amount *= k; // 궁극기 레벨만큼 세져요
-      var F = alive(foes(u)), T = alive(team(u.side)); u.stats.ults++;
+      var F = alive(foes(u)), T = alive(team(u.side)); u.stats.ults++; if (JP(u).ultEnergy) T.forEach(function (x) { if (x !== u) gainEnergy(x, JP(u).ultEnergy); }); // 서포터: 궁극기를 쓰면 다른 아군 에너지
       // shortcut: 초월 추가 스킬의 창도 같은 u.win을 써서 기본 스킬 창을 덮어써요, 둘 다 창이 있는 조합이 많아지면 창을 여러 개로 나눠요
       if (U0.win) { u.win = U0.win; u.winT = U0.win.t || 0.5; u.pv = (U0.win.v || 0) * k; u.evT = 0; u.atkC2 = 0; u.dStk = 0; }
       if (rec) log.push({ t: t, kind: 'ult', uid: u.uid, ult: U.kind });

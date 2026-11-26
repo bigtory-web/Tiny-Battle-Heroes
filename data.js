@@ -9,7 +9,7 @@ var IDLE_DATA = {
     defK: 300,          // 피해 감소 = 방어 / (방어 + defK)
     energyMax: 100,
     startJitter: 0.4,
-    crowd: { pen: 40, stuck: 0.8, tauntWait: 1.5 }, jobTarget: { archer: 'far', assassin: 'lowHp' } /* 2026-11-26: 직업별 공격 대상(사용자: "궁수는 먼거리적부터", "암살자=체력이낮은적. 까지."). far = 가장 먼 적, lowHp = 남은 체력(보호막 포함)이 가장 낮은 적. 도발·은신·돈고블린이 먼저. 끄려면 jobTarget 줄 삭제 */, // 2026-11-26: 근접이 대상을 고를 때 그 적에 이미 붙어 때리는 아군 1명마다 거리 +pen(px)처럼 쳐요. 대상 쪽으로 가는데 stuck초 동안 가까워지지 않으면 다른 적으로 바꿔요(아군 사이를 비집고 밀기만 하던 것). 도발한 적에게 막혔을 때는 tauntWait초 동안 사거리 안의 다른 적을 쳐요   // 첫 평타까지 0~이 값(초) 사이로 흩어져요 (모두 동시에 치지 않게)
+    crowd: { pen: 40, stuck: 0.8, tauntWait: 1.5 }, jobTarget: { archer: 'far', assassin: 'lowHp' }, jobPassive: { guardian: { hitEnergy: 2 }, bard: { ultEnergy: 15 }, warrior: { allyDeathAtk: 0.1 } } /* 2026-11-26 직업 효과(사용자): 기사 = 맞으면 차는 궁극기 에너지 ×hitEnergy, 서포터 = 궁극기를 쓰면 다른 아군 에너지 +ultEnergy, 전사 = 아군(몹 제외)이 쓰러질 때마다 공격력 +allyDeathAtk(그 전투 동안 쌓임). 값은 기획이 정한 처음 값 */ /* 2026-11-26: 직업별 공격 대상(사용자: "궁수는 먼거리적부터", "암살자=체력이낮은적. 까지."). far = 가장 먼 적, lowHp = 남은 체력(보호막 포함)이 가장 낮은 적. 도발·은신·돈고블린이 먼저. 끄려면 jobTarget 줄 삭제 */, // 2026-11-26: 근접이 대상을 고를 때 그 적에 이미 붙어 때리는 아군 1명마다 거리 +pen(px)처럼 쳐요. 대상 쪽으로 가는데 stuck초 동안 가까워지지 않으면 다른 적으로 바꿔요(아군 사이를 비집고 밀기만 하던 것). 도발한 적에게 막혔을 때는 tauntWait초 동안 사거리 안의 다른 적을 쳐요   // 첫 평타까지 0~이 값(초) 사이로 흩어져요 (모두 동시에 치지 않게)
     // 전장과 이동: 유닛이 상대에게 걸어가서 사거리 안에 들어와야 때려요 (단위: 전장 픽셀, 초)
     arena: {
       w: 720, h: 320, yMin: 142, yMax: 226, // yMin 162 → 146 (2026-11-22): 배치 칸 맨 윗줄(y148)도 땅 안  // yMax 262 → 226 (2026-11-18): 전장 아래쪽 띠는 백팩·상점 버튼 자리라 유닛이 내려오지 않아요 // 아래쪽 약 40%가 땅: 유닛은 이 띠 안에서만 상하좌우로 움직여요 (위쪽은 하늘)
@@ -226,7 +226,7 @@ var IDLE_DATA = {
   // 종족·직업 (외형을 보고 나눴어요). 스킬·궁극기·시너지가 이 태그를 보고 효과가 달라지게 쓸 거예요
   // 속성은 elements(불·물·숲·빛·어둠)를 그대로 써요. role(탱커·전사…)은 전투 배치용이에요
   races: { human: '인간', elf: '엘프', beast: '수인', demon: '마족', monster: '몬스터' }, // monster: 몹 전용(영입 안 됨)
-  jobs:  { guardian: '기사', assassin: '암살자', warrior: '전사', archer: '궁수', mage: '마법사', bard: '힐러' }, // 2026-11-21: 수호자+성기사 → 기사(탱커), 사수 → 궁수, 음유시인 → 힐러, 암살자 추가 (id는 그대로)
+  jobs:  { guardian: '기사', assassin: '암살자', warrior: '전사', archer: '궁수', mage: '마법사', bard: '서포터' }, /* 2026-11-26: 힐러 → 서포터(사용자) */ jobDesc: { guardian: '맞을 때 궁극기 에너지가 2배로 찬다.', bard: '궁극기를 쓰면 다른 아군의 궁극기 에너지가 15 찬다.', warrior: '아군이 쓰러질 때마다 공격력이 10% 오른다.', archer: '가장 먼 적부터 공격한다.', assassin: '체력이 가장 낮은 적부터 공격한다.' }, // 2026-11-21: 수호자+성기사 → 기사(탱커), 사수 → 궁수, 음유시인 → 힐러, 암살자 추가 (id는 그대로)
 
   // ───── 캠페인 ─────
   // 스테이지 n(0부터): 적 레벨 = 1 + (지나온 스테이지마다 그 챕터의 levelStep) , 벽 스테이지는 레벨 + wallBonus
@@ -305,7 +305,7 @@ var IDLE_DATA = {
       { id: 'bulwark', grade: 2, name: '방패벽', icon: '🧱', cd: 10, price: 160, kind: 'shieldPct', amount: 0.3, tag: { job: 'guardian' }, only: true, desc: '기사 아군에게 최대 체력의 {a}%만큼 보호막을 씌운다.' },
       { id: 'volley',  grade: 3, name: '일제 사격', icon: '🏹', cd: 8,  price: 180, kind: 'volley', amount: 1.5, tag: { job: 'archer' }, only: true, desc: '궁수 아군이 각자 무작위 적에게 공격력의 {a}%만큼 피해를 준다.' },
       { id: 'arcane',  grade: 3, name: '마력 공명', icon: '🔮', cd: 10, price: 170, kind: 'energyAll', amount: 40, tag: { job: 'mage' }, only: true, desc: '마법사 아군의 궁극기 에너지를 {a} 채운다.' },
-      { id: 'chorus',  grade: 4, name: '합주',   icon: '🎶', cd: 12, price: 200, kind: 'hasteAll', amount: 0.15, dur: 5, tag: { job: 'bard' }, per: 0.6, desc: '{d}초 동안 아군 공격 속도가 {a}% 빨라진다. 힐러 1명마다 효과가 60% 커진다.' },
+      { id: 'chorus',  grade: 4, name: '합주',   icon: '🎶', cd: 12, price: 200, kind: 'hasteAll', amount: 0.15, dur: 5, tag: { job: 'bard' }, per: 0.6, desc: '{d}초 동안 아군 공격 속도가 {a}% 빨라진다. 서포터 1명마다 효과가 60% 커진다.' },
       { id: 'resonance', grade: 4, name: '원소 공명', icon: '🌈', cd: 11, price: 200, kind: 'atkBuff', amount: 0.06, dur: 5, tag: { el: '*' }, per: 1, desc: '{d}초 동안 아군 공격력이 {a}% 오른다. 가장 많은 같은 속성 1명마다 {a}%씩 더 오른다.' },
       // 연계 스킬(trigger, 2026-11-18): 쿨타임 없이 전투 내내 켜져 있어요. 조건(tag)에 맞는 아군에게 그 일이 생길 때마다 공격력이 amount씩 쌓여요(최대 max번)
       //   조건이 좁을수록(특정 종족·속성) 한 번에 오르는 양이 커요. to: 'self'면 일으킨 영웅만, 아니면 조건 맞는 아군 모두
