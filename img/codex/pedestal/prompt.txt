@@ -1,0 +1,12 @@
+Look at img/p/bg_field.png and img/gemini/ref/bear_x8.png for the pixel art style of our game (crisp pixel art, dark outline, flat cel shading). Generate ONE new image with your image generation tool and save it as OUTFILE
+
+Draw a STONE PEDESTAL for showing off a hero character, original pixel art:
+- Octagonal, made of blue-gray (slate) stone, seen straight from the front with the camera slightly above, perfectly left-right symmetric.
+- A WIDE flat octagonal TOP PLATE (a hero will stand in its center): the top surface is clearly visible as a flat lighter octagon, calm and without any pattern in the middle, with a thin raised rim and a moulded edge below it.
+- Below it only ONE low step / base tier (flat and squat, NOT tall): the front faces carry a few simple carved glowing-less runes in a slightly darker/lighter stone tone, small chips and cracks only near edges.
+- LOW and FLAT overall: total width is 3 times the total height.
+- Muted cool blue-gray tones (about 4 tones), dark outline 1 art pixel (#17141d), no gradients, no blur, no anti-aliasing.
+- Pixel scale: the pedestal is exactly about 96 art pixels wide and 32 art pixels tall; draw big crisp square art pixels (one art pixel about 12 image pixels).
+- NO character, NO text, NO letters other than the abstract rune marks, no shadow on the background.
+[Format] Landscape image. The single pedestal centered on a plain solid #FF00FF magenta background with margin around it.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
