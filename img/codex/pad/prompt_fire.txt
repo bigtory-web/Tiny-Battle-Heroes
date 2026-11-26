@@ -1,0 +1,13 @@
+Look at these images:
+- img/codex/pad/hex_template.png = the exact SHAPE: a flat pointed-top hexagon floor cell seen from above, 76 art pixels wide and 54 art pixels tall (1 art pixel = 12 image pixels).
+- img/codex/pad/pedestal_x10.png = the stone pedestal of our game: use the same TONE (blue-grey carved stone, light silver rim highlights, small engraved rune marks, very dark outline).
+
+Generate ONE new image with your image generation tool and save it as img/codex/pad/fire_src.png
+Draw a FIRE floor pad (a magic stepping plate set into one hex cell; a hero stands on it) in pixel art, filling exactly the hexagon shape of the template with the same proportions:
+- Completely FLAT, seen straight from above like the template. At most a 2 art pixel darker lower edge. Nothing sticks up.
+- Very dark outline, then a carved blue-grey stone rim with a few small engraved rune ticks and a small glowing ember gem at each of the six corners.
+- Inside: deep warm red-orange surface, and in the middle one big, simple, instantly readable FLAME symbol (bright orange and yellow), with a thin glowing ring around it. The symbol must still read when a character stands over the upper part, so make it wide and centered slightly low.
+- Colors muted but clearly fire: main accent #ff7a45.
+- Crisp square pixels on one grid (1 art pixel = 12 image pixels), no anti-aliasing, no gradients, no finer detail than the grid.
+[Format] Plain solid #FF00FF magenta background outside the hexagon, no text, no shadow, nothing else.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
