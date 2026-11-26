@@ -2930,7 +2930,7 @@ img.rimg{image-rendering:auto!important}
 /* 미믹 결과 팝업 */
 #mimicPop .rbox{width:400px!important;display:flex;flex-direction:column;align-items:center;gap:10px}
 #mimicPop .mmrow{display:flex;justify-content:center;align-items:flex-end;gap:8px;width:100%;height:104px;background:#17141d;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #5d5470;padding:0 8px 8px;box-sizing:border-box}
-#mimicPop .mmc{position:relative;width:74px;height:74px;opacity:0}
+#mimicPop .mmc{position:relative;width:66px;height:66px;opacity:0}
 #mimicPop .mmc b{position:absolute;inset:0;image-rendering:pixelated}
 #mimicPop .mmc.king::after{content:'';position:absolute;left:50%;top:-8px;width:28px;height:14px;margin-left:-14px;background:#ffd34d;clip-path:polygon(0 100%,0 0,25% 50%,50% 0,75% 50%,100% 0,100% 100%)}
 #mimicPop .mmc.in{opacity:1;animation:mmdrop .28s cubic-bezier(.3,1.6,.5,1)}
@@ -2954,7 +2954,7 @@ img.rimg{image-rendering:auto!important}
 #roster .chip > .trlab{position:absolute;left:0;right:0;bottom:0;z-index:12;font:400 11px/13px var(--display);color:#3a2208;background:#ffd34d;text-align:center}
 /* 전투 전 전장의 미믹: 정지 그림 대신 튀기 4칸 */
 .foe.mob:has(> .mhop) > .av{visibility:hidden}
-.foe > .mhop{position:absolute;left:50%;bottom:0;width:calc(100% * 44 / 37);aspect-ratio:1;transform:translateX(-50%) scaleX(-1);background:url(img/p/mimic_hop.png) 0 0/400% 100% no-repeat;image-rendering:pixelated;animation:mhop 1.2s step-end infinite;pointer-events:none}
+.foe > .mhop{position:absolute;left:50%;bottom:0;width:calc(var(--u) * 44 / 64); /* 영웅과 같은 점 크기 (2026-11-26 사용자: "캐릭터 크기만큼 맞춰서 작게") */aspect-ratio:1;transform:translateX(-50%) scaleX(-1);background:url(img/p/mimic_hop.png) 0 0/400% 100% no-repeat;image-rendering:pixelated;animation:mhop 1.2s step-end infinite;pointer-events:none}
 @keyframes mhop{0%{background-position:0 0}40%{background-position:33.333% 0}60%{background-position:66.667% 0}80%{background-position:100% 0}}
 /* 초월 4차: 메인=금, 재료=파랑 · 화살표 ← · 다음에 채울 단상이 반짝 · 결과 */
 #trWin .trslot .trglow{position:absolute;left:50%;top:34px;width:112px;height:100px;margin-left:-56px;opacity:0;pointer-events:none;background:radial-gradient(closest-side,var(--tc) 0 35%,color-mix(in srgb,var(--tc) 45%,transparent) 36% 68%,transparent 69%)}
@@ -2980,15 +2980,14 @@ img.rimg{image-rendering:auto!important}
 #tab-shop .srow2 .stile.lockd{background:linear-gradient(#08070b 0 3px,#0e0c13 3px 6px,#131019 6px calc(100% - 3px),#2e2938 calc(100% - 3px))!important;box-shadow:inset 3px 0 0 #08070b,inset -2px 0 0 #2a2533!important}
 #tab-shop .stile.lockd em{color:#f3e6c4!important}
 /* 미믹킹: 보라 52칸 */
-.foe > .mhop.king{width:calc(100% * 52 / 37);background-image:url(img/p/mimic_king_hop.png)}
-#mimicPop .mmc.king{width:104px;height:104px}
+.foe > .mhop.king{width:calc(var(--u) * 52 / 64);background-image:url(img/p/mimic_king_hop.png)}
+#mimicPop .mmc.king{width:78px;height:78px}
 #mimicPop .mmc.king::after{display:none}
 #mimicPop .mmrow{height:116px}
 /* 룰렛 팝업과 같은 틀: 400×347, 큰 칸 200, 간격 6 → 위 끝·가운데 높이 같음 (2026-11-26 사용자) */
 #mimicPop .rbox{height:347px!important;gap:6px!important} #mimicPop .mmrow{height:200px!important;padding-bottom:40px!important;flex:none} #mimicPop .mmloot{display:flex!important;justify-content:center;gap:6px;width:100%;min-height:0;height:56px;flex:none} #mimicPop .mmloot .mlt{width:52px;height:52px;flex:0 1 52px;align-self:center} #mimicPop .rbox .rbtns{margin-top:auto}
 /* 파랑 일반 미믹: 44칸 (도트 1칸 = 갈색과 같게) */
 .foe > .mhop.g2{background-image:url(img/p/mimic_g2_hop.png)}
-#mimicPop .mmc.g2 b{left:-7px;right:-7px;top:-14px;}
 /* 할인된 가격: 주황 + 살짝 기울임 (2026-11-26 사용자) */
 #tab-shop b.deal,#shopBuy .bp b.deal{display:inline-block;transform:skewX(-9deg);color:#ff8a3d!important;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d,1px 1px #17141d!important;font-weight:400}
 /* 초월 팝업 = 룰렛 팝업과 같은 값: 틀 400·여백 18/22·간격 6, 큰 칸 200, 띠, 버튼, 깔개 (2026-11-26 사용자) */
@@ -3059,7 +3058,7 @@ img.rimg{image-rendering:auto!important}
 .hi-skrow:has(.trtag){border:2px solid #a77bff!important;border-radius:0!important}
 #trWin .trinfo{margin:0!important;align-self:center!important}
 /* 결과 창: 닫힌 상자(0)로 놓였다가 열릴 때 0→3 */
-#mimicPop .mmc b{left:-7px;right:-7px;top:-14px;background:url(img/p/mimic_open.png) 0 0/400% 100% no-repeat}
+#mimicPop .mmc b{left:0;right:0;top:0;background:url(img/p/mimic_open.png) 0 0/400% 100% no-repeat}
 #mimicPop .mmc.g2 b{background-image:url(img/p/mimic_g2_open.png)!important}
 #mimicPop .mmc.king b{left:0;right:0;top:0;background-image:url(img/p/mimic_king_open.png)!important}
 #mimicPop .mmc.open b{animation:mmlid .45s steps(1) forwards}
@@ -4841,7 +4840,7 @@ img.rimg{image-rendering:auto!important}
       ctx.imageSmoothingEnabled = !EX; ctx.imageSmoothingQuality = 'high'; var sx = Math.round(-S / 2 * csB) / csB, sy = Math.round((-S + S * .04) * csB) / csB; /* 정수배(EX)면 최근접 + 장치 px에 딱 맞춤 */
       if (inspect && inspect.uid === u.uid){ var ps = sl(Math.floor(performance.now() / 350) % 2 ? '#fff3b0' : '#ffd34d'), o2 = EX ? 2 / csB : 2; [[o2, 0], [-o2, 0], [0, o2], [0, -o2]].forEach(function(d){ ctx.drawImage(ps, sx + d[0], sy + d[1], S, S); }); } /* 전투 중에도 고른 캐릭터(아군·적)에 금색 선택 라인, 0.7초 깜빡임 (편성 화면 .picked와 같은 모양) */
       ctx.globalAlpha = u.h.mob === 'mimic' ? 0 : ga0 * .65; [[o, 0], [-o, 0], [0, o], [0, -o]].forEach(function(d){ ctx.drawImage(sil, sx + d[0], sy + d[1], S, S); }); ctx.globalAlpha = ga0;
-      var KG = !!u.h.king, HS = KG ? MKHOP : (u.slot % 2 ? MGHOP : MHOP), FW = KG ? 52 : 44; if (u.h.mob === 'mimic' && HS.complete && HS.naturalWidth){ var dW = S * FW / 37, smo = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; var op = u._openT != null ? (performance.now() - u._openT) / 500 : 2, OI = MOPEN[KG ? 'mimic_king' : u.slot % 2 ? 'mimic_g2' : 'mimic'], useO = op < 1 && OI.complete && OI.naturalWidth; ctx.drawImage(useO ? OI : HS, (useO ? (op < .2 ? 1 : op < .35 ? 2 : op < .8 ? 3 : 1) : mimicFrame(u.uid)) * FW, 0, FW, FW, -dW / 2, sy + S - dW, dW, dW); ctx.imageSmoothingEnabled = smo; } else
+      var KG = !!u.h.king, HS = KG ? MKHOP : (u.slot % 2 ? MGHOP : MHOP), FW = KG ? 52 : 44; if (u.h.mob === 'mimic' && HS.complete && HS.naturalWidth){ var dW = unitPx(false) * FW / 64, smo = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; var op = u._openT != null ? (performance.now() - u._openT) / 500 : 2, OI = MOPEN[KG ? 'mimic_king' : u.slot % 2 ? 'mimic_g2' : 'mimic'], useO = op < 1 && OI.complete && OI.naturalWidth; ctx.drawImage(useO ? OI : HS, (useO ? (op < .2 ? 1 : op < .35 ? 2 : op < .8 ? 3 : 1) : mimicFrame(u.uid)) * FW, 0, FW, FW, -dW / 2, sy + S - dW, dW, dW); ctx.imageSmoothingEnabled = smo; } else
       ctx.drawImage(imU, sx, sy, S, S);
       var clA = cloudStr(); if (clA > .005){ clA *= .45 * cloudDens(x, foot - S * .4); /* 캐릭터는 땅보다 약하게 (2026-11-26 사용자) */ if (clA > .005){ ctx.globalAlpha = ga0 * clA; ctx.drawImage(sl('#000000'), sx, sy, S, S); ctx.globalAlpha = ga0; } } /* 캐릭터도 구름 그림자 밑이면 어두워짐 */
       if (u._cfl > 0){ ctx.globalAlpha = ga0 * Math.min(1, u._cfl / .25); ctx.drawImage(sl('#ffffff'), sx, sy, S, S); ctx.globalAlpha = ga0; } /* 상자 그림이 바뀌는 순간 반짝 */
