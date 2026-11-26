@@ -2828,23 +2828,16 @@ img.rimg{image-rendering:auto!important}
 #mimicPop .mmc.king b{background:url(img/p/mimic_king.png) 50% 100%/104px 104px no-repeat}
 #mimicPop .mmc.king::after{display:none}
 #mimicPop .mmrow{height:116px}
-/* 돈고블린 레버: 팝업 오른쪽 바깥 (사각 버튼 규칙의 예외) */
-#roul .rbox:not(.groll) > #rSpin,#roul #rSpin[hidden]{display:none!important}
-#roul .rbox > #rSpin.glever{position:absolute;left:calc(100% + 8px);top:50%;margin-top:-86px;z-index:6;width:60px;padding:0;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;min-width:0;height:auto}
-#rSpin .lvbox{position:relative;display:block;width:44px;height:112px}
-#rSpin .lvbase{position:absolute;left:4px;bottom:0;width:36px;height:30px;background:#5d5470;box-shadow:inset 0 0 0 2px #17141d,inset 0 5px 0 -1px #8c8399}
-#rSpin .lvrod{position:absolute;left:18px;bottom:24px;width:8px;height:66px;background:#d9dde8;box-shadow:inset 0 0 0 2px #17141d;transform-origin:50% 100%}
-#rSpin .lvknob{position:absolute;left:8px;top:0;width:28px;height:28px;background:#d8443e;box-shadow:inset 4px 4px 0 #ff8a80,inset -4px -4px 0 #8a1f1c;clip-path:polygon(8px 0,20px 0,20px 4px,24px 4px,24px 8px,28px 8px,28px 20px,24px 20px,24px 24px,20px 24px,20px 28px,8px 28px,8px 24px,4px 24px,4px 20px,0 20px,0 8px,4px 8px,4px 4px,8px 4px)}
-#rSpin.pull .lvknob{animation:lvpullk .6s steps(6)}
-#rSpin.pull .lvrod{animation:lvpullr .6s steps(6)}
+/* 돈고블린 레버 장식: 팝업 오른쪽 바깥 */
+#roul .rbox:not(.groll) > #grLever{display:none}
+#roul .rbox > #grLever{position:absolute;left:calc(100% + 10px);top:50%;margin-top:-66px;width:44px;height:112px;z-index:6;pointer-events:none}
+#grLever .lvbase{position:absolute;left:4px;bottom:0;width:36px;height:30px;background:#5d5470;box-shadow:inset 0 0 0 2px #17141d,inset 0 5px 0 -1px #8c8399}
+#grLever .lvrod{position:absolute;left:18px;bottom:24px;width:8px;height:66px;background:#d9dde8;box-shadow:inset 0 0 0 2px #17141d;transform-origin:50% 100%}
+#grLever .lvknob{position:absolute;left:8px;top:0;width:28px;height:28px;background:#d8443e;box-shadow:inset 4px 4px 0 #ff8a80,inset -4px -4px 0 #8a1f1c;clip-path:polygon(8px 0,20px 0,20px 4px,24px 4px,24px 8px,28px 8px,28px 20px,24px 20px,24px 24px,20px 24px,20px 28px,8px 28px,8px 24px,4px 24px,4px 20px,0 20px,0 8px,4px 8px,4px 4px,8px 4px)}
+#grLever.pull .lvknob{animation:lvpullk .6s steps(6)}
+#grLever.pull .lvrod{animation:lvpullr .6s steps(6)}
 @keyframes lvpullk{40%{transform:translateY(52px)}}
 @keyframes lvpullr{40%{transform:scaleY(.2)}}
-#rSpin b{font:400 14px var(--display);color:#ffd34d;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d;padding:2px 5px;background:rgba(23,20,29,.88)}
-#rSpin small{font:400 12px var(--display);color:#f3e6c4;padding:1px 5px;background:rgba(23,20,29,.88)}
-#rSpin.z small{color:#ff8a80}
-#rSpin:disabled{cursor:default}
-#rSpin:disabled .lvbox{filter:grayscale(1) brightness(.6)}
-#rSpin:disabled b{color:#b8b0c4}
 /* 파랑 일반 미믹: 44칸 (도트 1칸 = 갈색과 같게) */
 .foe > .mhop.g2{background-image:url(img/p/mimic_g2_hop.png)}
 #mimicPop .mmc.g2 b{left:-7px;right:-7px;top:-14px;background:url(img/p/mimic_g2.png) 50% 100%/88px 88px no-repeat}
@@ -3686,7 +3679,7 @@ img.rimg{image-rendering:auto!important}
     if (S.offerMode === 'mobs'){ $('rAgain').hidden = true; $('roul').querySelectorAll('.rstrip span').forEach(function(sp){ sp.classList.add('res'); }); $('roul').querySelector('.rmeta').textContent = ''; }
     if (S.offerMode === 'fairy'){ if (!(D.recruit.reroll || {}).fairy) $('rAgain').hidden = true; $('rX').hidden = !decided || pend; } /* reroll.fairy면 요정 룰렛도 리셋 */
     if (S.offerMode === 'camp' || S.offerMode === 'lvpick'){ $('rAgain').hidden = true; $('rX').hidden = !decided || pend; }
-    if (S.offerMode === 'groll'){ $('rAgain').hidden = true; $('rNo').hidden = decided || pend; $('rNo').textContent = '포기'; $('rX').hidden = false; $('rX').disabled = !decided; /* 결과 정하기 전: 닫기 막음(회색) */ if ($('rSpin')){ $('rSpin').hidden = false; leverState(); } $('rLeft').hidden = true; } /* 리셋 없음: 받기 / 포기 */
+    if (S.offerMode === 'groll'){ $('rAgain').hidden = true; $('rNo').hidden = decided || pend; $('rNo').textContent = '포기'; $('rX').hidden = false; $('rX').disabled = !decided; /* 결과 정하기 전: 닫기 막음(회색) */ if ($('rSpin')) $('rSpin').hidden = true; $('rLeft').hidden = true; } /* 리셋 없음: 받기 / 포기 */
     $('rRes').hidden = true; $('rRes').innerHTML = S.offerLast || '';
     $('rPend').hidden = !pend; $('rPend').innerHTML = pend ? pendHtml() : ''; $('roul').querySelector('.rbox').classList.toggle('pendmode', pend);
     if (decided) $('roul').querySelector('.rmeta').textContent = '';
@@ -5281,15 +5274,19 @@ img.rimg{image-rendering:auto!important}
     S.offerMode = 'groll'; S.offerDecided = false; S.offerGone = []; offerIds = S.offerIds = pool.slice(); startRoulette(pool, pool.indexOf(S.roulAt) >= 0 ? S.roulAt : pool[0], true);
     box.classList.add('groll'); box.classList.remove('spin', 'pendmode', 'camp'); box.querySelector('.rmeta').textContent = '';
     $('rWait').hidden = true; $('rRes').hidden = true; $('rPend').hidden = true; box.querySelector('.rbtns').hidden = false; ['rYes', 'rNo', 'rAgain', 'rExit'].forEach(function(b){ $(b).hidden = true; });
-    var sp = $('rSpin'); if (!sp){ sp = document.createElement('button'); sp.id = 'rSpin'; sp.type = 'button'; sp.className = 'glever'; sp.title = '레버를 당겨 돌리기'; sp.innerHTML = '<i class="lvbox"><i class="lvrod"></i><i class="lvknob"></i><i class="lvbase"></i></i><b></b><small></small>'; box.appendChild(sp); sp.addEventListener('click', function(){ if (this.disabled) return; this.classList.remove('pull'); void this.offsetWidth; this.classList.add('pull'); grollSpin(); }); } /* 돌리기 = 레버 (2026-11-26 사용자) */
-    sp.hidden = false; leverState(); $('rLeft').hidden = true; $('rX').hidden = false; $('rX').disabled = false; }
-  function leverState(){ var sp = $('rSpin'); if (!sp) return; var cost = E.grollCost(D, S.stage, plv()), mx = E.grollSpins(D, plv()), left = Math.max(0, mx - grollUsed()); sp.querySelector('b').textContent = cost.toLocaleString() + 'G'; sp.querySelector('small').textContent = left + '/' + mx; sp.classList.toggle('z', !left); sp.disabled = !!S.offer || !left || S.gold < cost; } /* 다 쓰거나 골드 부족, 받기·포기 전엔 회색 */
+    var sp = $('rSpin'); if (!sp){ sp = document.createElement('button'); sp.id = 'rSpin'; sp.type = 'button'; sp.className = 'go'; box.querySelector('.rbtns').insertBefore(sp, $('rYes')); sp.addEventListener('click', function(){ if (!this.disabled){ leverPull(); grollSpin(); } }); }
+    leverDeco(box);
+    sp.hidden = false; sp.textContent = '돌리기 ' + cost.toLocaleString() + 'G'; sp.disabled = !left || S.gold < cost;
+    var rl = $('rLeft'); rl.hidden = false; rl.textContent = left + '/' + mx; rl.classList.toggle('z', !left); $('rX').hidden = false; $('rX').disabled = false; }
+  /* 레버는 꾸밈 (누를 수 없음): 돌리기 버튼을 누르면 저절로 당겨짐 (2026-11-26 사용자: "그냥 디자인 말한 거였어") */
+  function leverDeco(box){ if (box.querySelector(':scope > #grLever')) return; box.insertAdjacentHTML('beforeend', '<i id="grLever" aria-hidden="true"><i class="lvrod"></i><i class="lvknob"></i><i class="lvbase"></i></i>'); }
+  function leverPull(){ var l = $('grLever'); if (!l) return; l.classList.remove('pull'); void l.offsetWidth; l.classList.add('pull'); }
   function grollClose(){ grOpen = false; S.offerMode = null; save(); $('roul').hidden = true; var b = $('roul').querySelector('.rbox'); delete b.dataset.grs; if ($('rSpin')) $('rSpin').hidden = true; renderAll(); }
   function grollHtml(){ var gx = 506, gy = 184; return '<div class="unit cfh oegob" style="left:' + (100 * gx / W) + '%;top:' + (100 * (gy + OFF + FOOT) / H) + '%;z-index:' + gy + '"><div class="cfslot"><i class="dlr" role="img" aria-label="돈고블린"></i></div></div>'; }
-  function grollSpin(){ if (!isGroll() || S.offer || S.pending) return; var cost = E.grollCost(D, S.stage, plv()), n = grollUsed(); if (n >= E.grollSpins(D, plv()) || S.gold < cost) return;
+  function grollSpin(){ if (!isGroll() || S.offer || S.pending) return; if ($('rSpin')) $('rSpin').hidden = true; var cost = E.grollCost(D, S.stage, plv()), n = grollUsed(); if (n >= E.grollSpins(D, plv()) || S.gold < cost) return;
     var c = grollPool(); if (!c || !c.length) return;
     
-    S.gold -= cost; S.grollN = { st: S.stage, n: n + 1 }; S.offer = c[E.lootPick(D, c, plv(), Math.random)]; offerIds = S.offerIds = c.slice(); S.offerPlv = null; S.offerMode = 'groll'; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; save(); oeCoins(document.querySelector('#hud .goldit'), document.querySelector('#field .oegob'), 4); renderAll(); startRoulette(offerIds, S.offer); leverState(); }
+    S.gold -= cost; S.grollN = { st: S.stage, n: n + 1 }; S.offer = c[E.lootPick(D, c, plv(), Math.random)]; offerIds = S.offerIds = c.slice(); S.offerPlv = null; S.offerMode = 'groll'; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; save(); oeCoins(document.querySelector('#hud .goldit'), document.querySelector('#field .oegob'), 4); renderAll(); startRoulette(offerIds, S.offer); }
   function finishGroll(){ grOpen = false; S.grollN = null; S.event = nextEvent(false); S.bell = 0; S.bellGold = 0; save(); evGo(); }
   function oddEvenHtml(){ var bet = E.oddEvenBet ? E.oddEvenBet(D, S.stage) * oeK() : 0, ok = oeK() > 0 && !oeBusy, gx = 506, gy = 184; /* 2026-11-24: 적 쪽 5번 칸(보물상자와 같은 자리) */
     return '<div class="unit cfh oegob" style="left:' + (100 * gx / W) + '%;top:' + (100 * (gy + OFF + FOOT) / H) + '%;z-index:' + gy + '"><div class="cfslot">' + av('goblin') + '</div></div>' +
@@ -5505,8 +5502,8 @@ img.rimg{image-rendering:auto!important}
   var BELLIMG = {}; [1, 2, 3].forEach(function(n){ var im = new Image(); im.onload = function(){ BELLIMG[n] = true; renderBell(); }; im.src = 'img/p/ui_foe' + n + '.png'; });
   function renderTalk(){ var t = $('talkBtn'); if (t) t.querySelector('.tic').innerHTML = campImg('ui_talk', '💬', 'timg'); var et = $('evTalk'); if (et) et.querySelector('.eai').innerHTML = campImg('ui_talk', '💬', 'timg'); }
   function grollBtn(gr){ var b = $('evBet'), lab = b.querySelector('b'), dots = b.querySelector('.oedots'), n = $('grLeft'); if (!n){ n = document.createElement('span'); n.id = 'grLeft'; n.className = 'grleft'; b.parentNode.insertBefore(n, b); }
-    b.classList.toggle('groll', gr); n.hidden = true; if (dots) dots.hidden = gr;
-    if (!gr){ lab.textContent = '돈 넣기'; return; } lab.textContent = '룰렛하기'; b.disabled = !!S.offer || !!S.pending || !!(S.event && S.event.grEnd); }
+    b.classList.toggle('groll', gr); var ti = b.querySelector('.timg'), want = gr ? 'img/p/ev_goblin.png' : 'img/p/hud_gold.png'; if (ti && ti.getAttribute('src') !== want) ti.src = want; n.hidden = true; if (dots) dots.hidden = gr;
+    if (!gr){ lab.textContent = '돈 넣기'; return; } lab.textContent = '룰렛 돌리기'; b.disabled = !!S.offer || !!S.pending || !!(S.event && S.event.grEnd); }
   function updEvActs(){ var box = $('evActs'); if (!box) return; var ok = !bt && !isLvPick() && !isFork(), tk = ok && (isCamp() || isFairy() || isMerch()), busy = !!S.offer || !!S.pending;
     $('evTalk').hidden = !tk; $('evTalk').disabled = busy; $('evTalk').classList.toggle('busyhide', busy); $('evBet').classList.toggle('busyhide', oeBusy); var oe = ok && isOddEven(), k = oeK(), mx = oeMax(), gr = ok && isGroll(); $('evBet').hidden = !oe && !gr; box.hidden = !tk && !oe && !gr; grollBtn(gr);
     if (oe){ $('evBet').disabled = oeBusy || k >= mx || S.gold < E.oddEvenBet(D, S.stage); $('evBet').querySelectorAll('.oedots i').forEach(function(d, i){ d.classList.toggle('on', i < k); d.hidden = i >= mx; }); } } /* 말 걸기: 위 가운데(종·초월 자리) */
