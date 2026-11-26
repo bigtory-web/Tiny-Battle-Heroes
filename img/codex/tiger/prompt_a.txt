@@ -1,0 +1,16 @@
+Look at two images from our pixel art game, both shown 8x enlarged on white:
+- img/gemini/ref/bear_x8.png : the hero Roxy. THIS IS THE STYLE AND PROPORTION STANDARD (unity standard).
+- img/gemini/ref/tiger_x8.png : the hero Tyra (tiger warrior girl), the current drawing to be improved.
+Generate ONE new image with your image generation tool and save it as img/codex/tiger/tiger_a.png.
+
+Redraw Tyra so that she looks like she was drawn by the same artist, in the same set, as Roxy:
+- Same head-to-body ratio as Roxy (very big head with a big fluffy hair mass, small short body, tiny legs).
+- Same total volume and chunkiness as Roxy: she should be as wide and as tall as Roxy (the weapon may reach a little higher).
+- Same pixel size as the references: one art pixel here is one 8x8 block in the references; the whole character is about 46 art pixels tall and 46 wide. Draw crisp square pixels on that grid, no finer detail than that.
+- Same outline: 1 art pixel thick dark reddish-brown outline like Roxy. Same flat cel shading with about 3 tones per material. Same saturation level as Roxy (warm, slightly muted; not neon).
+- Same face style as Roxy: same eye shape and size, amber eyes with white glint, same eye position low on the face, small face framed by hair, no mouth, same slightly-from-above camera angle and same slight turn to the right.
+
+Keep Tyra's identity: orange tiger hair with dark brown stripes (fluffy like Roxy's hair, with a mane feeling), TIGER EARS MUCH BIGGER than now (clearly bigger than the current ones, about as large and bold as Roxy's bear ears, but tiger shaped: rounded-pointed with a cream inner ear and a dark outline, standing on the top of the head, the near ear and far ear following the head turn), a striped tiger tail, red and gold battle outfit, and her flame-bladed polearm (glaive with fire) held close to the body in her right-side hand, clearly readable, not crossing her face. She is a fierce but cute girl.
+
+[Format] One character only, standing, full body with feet visible at the bottom, centered, on a plain solid #FF00FF magenta background. No ground, no shadow, no text, no border, no anti-aliasing, no blur. Nothing cropped.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
