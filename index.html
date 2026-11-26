@@ -2884,6 +2884,26 @@ img.rimg{image-rendering:auto!important}
 #trWin .rbtns{align-items:center}
 #trWin .rbtns::before,#trWin .rbtns::after{content:'';flex:1;height:10px;background:linear-gradient(#c9a6ff,#c9a6ff) center/100% 2px no-repeat,linear-gradient(#c9a6ff,#c9a6ff) 25% 50%/6px 6px no-repeat,linear-gradient(#ffd34d,#ffd34d) 60% 50%/10px 10px no-repeat;opacity:.55}
 #trWin .rbtns::after{transform:scaleX(-1)}
+/* 고르기 전: 원 빛 빼고 +만 껌뻑, 단상 색 = 메인 노랑·재료 파랑 / 초월: 배경이 바뀌는 센 연출 (2026-11-26 사용자) */
+#trWin .trslot:not(.full) .trglow{display:none}
+#trWin .trslot.next .trplus{animation:trblink .8s steps(1) infinite}
+@keyframes trblink{50%{opacity:.15}}
+#trWin .trslot > .rped{filter:sepia(1) saturate(3.2) drop-shadow(0 0 4px var(--tc))}
+#trWin .trslot.sM > .rped{filter:sepia(1) saturate(3.2) hue-rotate(170deg) drop-shadow(0 0 4px var(--tc))}
+#trWin .trstage{overflow:hidden}
+#trWin .trstage.charge{background:radial-gradient(circle at 30% 55%,#8a52e0,#2a1450 45%,#0c0818 80%)!important;animation:trquake .16s steps(2) infinite}
+#trWin .trstage.done{background:radial-gradient(circle at 50% 55%,#b8861c,#4a300c 45%,#17100a 80%)!important}
+#trWin .trstage.charge::before,#trWin .trstage.done::before{content:'';position:absolute;left:50%;top:55%;width:720px;height:720px;margin:-360px 0 0 -360px;background:repeating-conic-gradient(rgba(201,166,255,.4) 0 8deg,transparent 8deg 20deg);animation:spinr 1.6s linear infinite;pointer-events:none}
+#trWin .trstage.charge::before{left:30%}
+#trWin .trstage.done::before{background:repeating-conic-gradient(rgba(255,214,120,.34) 0 8deg,transparent 8deg 20deg);animation-duration:10s}
+#trWin .trstage.done::after{content:'';position:absolute;inset:0;background:#fff;pointer-events:none;z-index:6;animation:finfl .7s ease-out forwards}
+#trWin .rbox:has(.trstage.charge){background:#2a1648!important}
+@keyframes trquake{50%{translate:3px -2px}}
+/* 결과: 새 스킬 줄·획득 글에 은은한 빛, 상세 창의 "초월" 딱지는 숨김 (팝업 .trtag 자리 규칙이 겹쳐 이름 위에 떠 있었음) */
+@keyframes trsoft{0%,100%{box-shadow:inset 0 0 0 2px rgba(255,211,77,.3),inset 0 0 6px rgba(255,211,77,.1)}50%{box-shadow:inset 0 0 0 2px rgba(255,211,77,.95),inset 0 0 16px rgba(255,211,77,.45)}}
+#trWin .trres{animation:fadeup .3s both,trsoft 2s ease-in-out .3s infinite}
+#trWin .trinfo .hi-skrow.trnew{animation:trsoft 2s ease-in-out infinite!important}
+#trWin .trinfo .trtag{display:none}
 #trWin .trinfo{margin:0!important;align-self:center!important}
 /* 결과 창: 닫힌 상자(0)로 놓였다가 열릴 때 0→3 */
 #mimicPop .mmc b{left:-7px;right:-7px;top:-14px;background:url(img/p/mimic_open.png) 0 0/400% 100% no-repeat}
@@ -5467,24 +5487,25 @@ img.rimg{image-rendering:auto!important}
     return '<button class="trslot s' + k + (!u && !trDone && (k === 'A' ? altA == null : altA != null && altM == null) ? ' next' : '') + (u ? ' full' : '') + '" type="button" data-tr="' + k + '"' + (u && !trDone ? '' : ' disabled') + '><i class="trglow"></i><b class="trtag">' + nm + '</b>' + (u ? '<span class="trfig">' + av(u.id) + starsIn(u.star, u.id) + '</span><span class="trnm">' + hero(u.id).name + '</span>' : '<span class="trplus">+</span>') + '</button>'; }
   function trDust(st){ var o = ''; for (var i = 0; i < 14; i++){ var du = (5 + Math.random() * 4).toFixed(2); o += '<s style="left:' + (4 + Math.random() * 92).toFixed(1) + '%;top:' + (35 + Math.random() * 60).toFixed(1) + '%;background:' + ['#ffd34d', '#5ab4ff', '#d9dde8'][i % 3] + ';animation-duration:' + du + 's;animation-delay:' + (-Math.random() * du).toFixed(2) + 's"></s>'; }
     st.insertAdjacentHTML('beforeend', '<i class="trdust">' + o + '</i>'); }
-  /* 초월 뒤: 팝업을 닫지 않고 메인만 남겨 얻은 스킬을 보여 줌. 버튼은 확인 하나 (X 없음) */
+  /* 초월 뒤: 팝업을 닫지 않고 메인만 남겨 얻은 스킬을 보여 줌. 확인과 X 둘 다 닫기 */
   function trResult(w){ var u = U(trDone.uid), hm = hero(trDone.mid), sk = ultName(hm), st = w.querySelector('.trstage');
-    st.innerHTML = trSlot('A', trDone.uid); st.querySelectorAll('.trslot').forEach(function(s){ s.disabled = true; pedestal(s, '#ffd34d'); starFx(s, 4, '#ffd34d'); }); trDust(st);
+    st.innerHTML = trSlot('A', trDone.uid); st.querySelectorAll('.trslot').forEach(function(s){ s.disabled = true; pedestal(s, '#ffd34d'); starFx(s, 4, '#ffd34d'); }); trDust(st); st.classList.add('done');
     var r = w.querySelector('.trres'); r.hidden = false; r.innerHTML = skFrame(ultIconEl(hm), HG(trDone.mid).col) + '<b>' + sk + ' 스킬 획득</b>';
-    w.querySelector('.trlist').hidden = true; w.querySelector('.spX').hidden = true; trSeen = trDone.uid; trInfo(w.querySelector('.trinfo')); trBag();
+    w.querySelector('.trlist').hidden = true; /* X는 결과에서도 남김 = 확인과 같음 (2026-11-26 사용자) */ trSeen = trDone.uid; trInfo(w.querySelector('.trinfo')); trBag();
+    w.querySelectorAll('.trinfo .hi-skrow').forEach(function(row){ var n = row.querySelector('.hi-skh b'); if (n && n.querySelector('.trtag') && n.firstChild.textContent.trim() === sk) row.classList.add('trnew'); }); /* 새로 얻은 스킬 줄 */
     var b = w.querySelector('.rbtns button'); b.textContent = '확인'; b.dataset.tr = 'ok'; b.disabled = false; }
   function trFit(){ var w = $('trWin'); if (!w) return; var b = w.querySelector('.rbox'), i = w.querySelector('.trinfo'); if (b && i) i.style.setProperty('height', b.offsetHeight + 'px', 'important'); } /* 두 창 높이 맞춤 */
   function trRender(){ var w = $('trWin'); if (!w) return; setTimeout(trFit, 0); if (trDone) return trResult(w); var a = altA != null && U(altA), m = altM != null && U(altM), kind = a && m ? trKind(a, m) : null, st = w.querySelector('.trstage');
     st.innerHTML = trSlot('A', altA) + '<span class="trmid"><i class="trarrow' + (kind ? ' on' : '') + '"></i>' + (m ? '<span class="trsk">' + skFrame(ultIconEl(hero(m.id)), HG(m.id).col) + '<small>' + ultName(hero(m.id)) + '</small></span>' : '') + '</span>' + trSlot('M', altM); trDust(st); /* 화살표는 재료 -> 메인 (왼쪽) */
-    st.querySelectorAll('.trslot').forEach(function(s){ var x = U(s.dataset.tr === 'A' ? altA : altM); pedestal(s, x ? HG(x.id).col : '#6b6478'); });
+    st.querySelectorAll('.trslot').forEach(function(s){ var x = U(s.dataset.tr === 'A' ? altA : altM); pedestal(s, s.dataset.tr === 'A' ? '#ffd34d' : '#5ab4ff'); });
     trInfo(w.querySelector('.trinfo'));
     var ids = S.team.filter(function(x){ return x && U(x); }); /* 백팩 영웅은 백팩 칸에서 */ trBag();
     w.querySelector('.trlist').innerHTML = ids.map(function(id){ var u = U(id), on = id === altA ? 'A' : id === altM ? 'M' : '', ok = on || trCan(u);
       return '<button class="trc' + (on ? ' on k' + on : '') + (id === trSeen ? ' seen' : '') + '" type="button" data-tr="pick" data-uid="' + id + '" style="--hg:' + HG(u.id).col + '"' + (ok ? '' : ' aria-disabled="true"') + '>' + heroFr(u.id, u.star) + (on ? '<b>' + (on === 'A' ? '메인' : '재료') + '</b>' : '') + '</button>'; }).join('');
     w.querySelector('[data-tr="go"]').disabled = !kind || altDone(); }
   function trDo(){ var a = altA, m = altM, w = $('trWin'); if (!w || a == null || m == null || altDone() || !trKind(U(a), U(m))) return; var mid = U(m).id; trAnim = true;
-    w.querySelector('[data-tr="go"]').disabled = true; w.querySelector('.trstage').classList.add('suck'); /* 재료가 메인 쪽으로 빨려 들어감 */
-    setTimeout(function(){ if (!trOn) return; trAnim = false; var ok = tryTranscend(a, m); if (!ok) return trClose(); if (S.event){ S.event.trCount = (S.event.trCount || 0) + 1; save(); } altA = null; altM = null; trDone = { uid: a, mid: mid }; w.querySelector('.trstage').classList.remove('suck'); renderForm(); trRender(); }, 600); }
+    w.querySelector('[data-tr="go"]').disabled = true; w.querySelector('.trstage').classList.add('suck', 'charge'); /* 재료가 메인 쪽으로 빨려 들어감 + 배경이 보라로 바뀌고 흔들림 */
+    setTimeout(function(){ if (!trOn) return; trAnim = false; var ok = tryTranscend(a, m); if (!ok) return trClose(); if (S.event){ S.event.trCount = (S.event.trCount || 0) + 1; save(); } altA = null; altM = null; trDone = { uid: a, mid: mid }; w.querySelector('.trstage').classList.remove('suck', 'charge'); renderForm(); trRender(); }, 1500); }
   function altarHtml(){ if (altA != null && !U(altA)) altA = null; return altarPickHtml(); return altGuide() + '<div class="unit altar' + (altDone() ? ' used' : '') + '" style="left:' + (100 * 506 / W) + '%;top:' + (100 * (184 + OFF + FOOT) / H) + '%;z-index:200"><i class="altspr"></i></div>'; }
   function finishAltar(){ if (!isAltar()) return; trClose(); altA = null; altM = null; S.event = nextEvent(false); S.bell = 0; S.bellGold = 0; save(); evGo(); }
   function noFight(){ return isLvPick() || isCamp() || isMerch() || isAltar() || isFairy() || isOddEven() || isGroll() || isFork(); } // 싸우지 않는 판 (종·적 스킬·전리품 미리보기 숨김, 말 걸기 버튼)
