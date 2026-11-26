@@ -2728,8 +2728,6 @@ img.rimg{image-rendering:auto!important}
 #roul .rbox.fairy .rstage > .fvine.r.b{right:54px;transform:scale(-1,-1)} /* 우하단 스킬 칸(44px)을 안 가리게 그 왼쪽 */
 #roul .rbox.fairy .rstrip{box-shadow:none!important} /* 2026-11-26 사용자: 요정 띠 바깥 테두리 뺌 */
 /* 상점 칸: 할인 딱지·UP이 얼굴을 가리지 않게 (2026-11-26 사용자: "대가리부분아니잖아"). 자르기는 공통 170%·위 40% 그대로 */
-#tab-shop .stile .pr{translate:0 6px}
-#tab-shop .stile .rib{bottom:18px!important}
 #tab-shop .stile .upmk{top:-6px!important}
 #tab-shop .stile.up::before{top:-4px!important}
 /* 이름 줄은 상점과 같은 주황 (2026-11-26 사용자: "호버팁도 이름은 주황") */
@@ -2739,6 +2737,9 @@ img.rimg{image-rendering:auto!important}
 #roul .rbox.groll > #rX{margin:6px 0 0 6px}
 /* 용병 리본 악수 = img/p/ui_shake.png 32x20 1배 (이미지 세션, 사용자 "넣어") */
 #evWin .mshake{display:block!important;width:32px!important;height:20px!important;flex:none;background:url(img/p/ui_shake.png) center/32px 20px no-repeat;image-rendering:pixelated}
+/* 방랑상점 할인율 = 구매 버튼 왼쪽 위 작은 빨간 딱지 */
+#shopBuy{position:relative;overflow:visible!important}
+#shopBuy .boff{position:absolute;left:-6px;top:-9px;z-index:3;padding:0 4px;font:400 12px/15px var(--display);font-style:normal;color:#fff;background:#d8443e;box-shadow:inset 0 0 0 1px #17141d,0 0 0 1px #17141d;text-shadow:none;pointer-events:none}
 </style>
 </head>
 <body>
@@ -4982,7 +4983,7 @@ img.rimg{image-rendering:auto!important}
       if (it.type === 's'){ var d = E.skillById(D, it.id), ml = myLv(it.id); cls = 'stile sk' + gCls(it.id, ml || undefined) + (ml && !skMaxed(it.id) ? ' up' : ''); attr = gAttr(it.id, ml || undefined); ic = skIcon(d) + '</span>' + synN(d) + '<span hidden>'; }
       else { cls = 'stile mhero'; attr = ' style="--gcol:' + HG(it.id).col + '"'; ic = heroFr(it.id) + (upOK('h:' + it.id) && !done ? '<i class="upmk"></i>' : ''); }
       var pr = '<span class="pr' + (mana ? ' mana' : '') + (payOk ? '' : ' no') + '">' + (mana ? manaIcon('mni') : (HUDOK.gold ? '<img src="img/p/hud_gold.png" alt="">' : '🪙')) + it.price.toLocaleString() + '</span>';
-      return '<button class="' + cls + (done ? ' sold' : '') + (on ? ' sel' : '') + '"' + attr + ' data-sel="merch:' + i + '" type="button">' + (it.off ? '<i class="rib">' + it.off + '%</i>' : '') + '<span class="ic">' + ic + '</span>' + pr + '</button>'; }); /* 리본 = 그 상품 할인율 */
+      return '<button class="' + cls + (done ? ' sold' : '') + (on ? ' sel' : '') + '"' + attr + ' data-sel="merch:' + i + '" type="button">' + '<span class="ic">' + ic + '</span>' + pr + '</button>'; }); /* 할인율은 구매 버튼 왼쪽 위 딱지 (2026-11-26 사용자) */
     var MS = (D.player && D.player.merchantSlots) || [], open = MS[Math.min(MS.length, plv()) - 1] || 0, max = MS.length ? Math.max.apply(null, MS) : 6; /* 3칸 x 2줄, 왼쪽부터. 레벨로 안 열린 칸은 일반 상점과 같은 잠금 표시 (2026-11-26 사용자) */
     while (t.length < max){ var ci = t.length, L = 0; if (ci >= open) for (var q = 0; q < MS.length && !L; q++) if (MS[q] > ci) L = q + 1; t.push(L ? '<span class="stile lockd"><em>LV' + L + '</em></span>' : '<span class="stile empty keep"></span>'); }
     $('stock').innerHTML = '<div class="srow2 g six"><span class="rowic"></span>' + t.join('') + '</div>';
@@ -5007,7 +5008,7 @@ img.rimg{image-rendering:auto!important}
       if (shopSel.t === 'merch'){ var wm = merchOffer(), im = wm && wm.stock[shopSel.i]; if (im){ cur = im.price; isM = im.cur === 'mana'; if (im.base > im.price) was = im.base; } }
       else if (shopSel.t === 'hero'){ var hh = (S.shop.heroes || [])[shopSel.i]; if (hh) cur = hh.price; }
       else { var sid = S.shop.stock[shopSel.i]; if (sid){ var pc = (S.shop.sold.indexOf(shopSel.i) >= 0 && (S.shop.soldCost || {})[shopSel.i]) || buyPrice(sid); isM = pc.mana > 0; cur = isM ? pc.mana : pc.gold; } }
-      bt.innerHTML = '<span class="bl">구매</span>' + (cur == null ? '' : '<span class="bp">' + (was ? '<s>' + was.toLocaleString() + '</s>' : '') + (isM ? manaIcon('mni') : gi) + '<b>' + cur.toLocaleString() + '</b></span>'); } }
+      bt.innerHTML = '<span class="bl">구매</span>' + (cur == null ? '' : '<span class="bp">' + (was ? '<s>' + was.toLocaleString() + '</s>' : '') + (isM ? manaIcon('mni') : gi) + '<b>' + cur.toLocaleString() + '</b></span>') + (shopSel.t === 'merch' && im && im.off ? '<i class="boff">' + im.off + '%</i>' : ''); } }
   function _rsiCore(){
     var nm = $('shopName'), ds = $('shopDesc'), bt2 = $('shopBuy'), mine = S.skills;
     $('shopInfo').hidden = false; // 상점 창 안 고정 칸
