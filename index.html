@@ -2084,7 +2084,7 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .shopPop .spHead{margin:-10px -12px 0;padding:6px 12px;gap:6px;background:#2a2533;box-shadow:0 2px 0 #17141d!important}
 .shopPop .spHead #shopReroll{right:12px;top:50%;transform:translateY(-50%)}
 .shopPop .spHead .sptic{width:24px;height:24px;flex:none;background:url(img/p/ui_shop.png) center/24px 24px no-repeat;image-rendering:pixelated}
-#tab-shop.wander .spHead .sptic{background:url(img/p/ev_trader.png) -28px -20px/63px 63px no-repeat} /* 새 상인 얼굴(원본 1배로 잘라 씀) */
+#tab-shop.wander .spHead .sptic{background:url(img/p/ev_trader.png) -28px -20px/63px 63px no-repeat} #tab-shop.wander.swamp .spHead .sptic{background:url(img/p/ui_swampshop.png) center/24px 24px no-repeat} /* 새 상인 얼굴(원본 1배로 잘라 씀) */
 .tbar .tpw,.tbar.e .tpw{top:100%!important;left:0!important;right:auto!important;padding:2px 7px 3px;background:rgba(23,20,29,.8);box-shadow:inset 0 0 0 2px #17141d;margin-top:-2px}
 .tbar .tpw,.tbar.e .tpw{position:absolute!important;top:50%!important;left:12px!important;right:auto!important;transform:translateY(-50%);z-index:3;margin:0!important;padding:0!important;background:none!important;box-shadow:none!important;font:400 13px/1 var(--display);color:#ffd34d;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d,1px 1px #17141d,-1px 1px #17141d;pointer-events:none}
 .tbar .tpw .pwi{font-size:11px}
@@ -3496,7 +3496,7 @@ img.rimg{image-rendering:auto!important}
   function heroPass(h){ if (filter === 'all') return true; if (filter === 'own') return owns(h.id); var p = filter.split(':'); return h[p[0]] === p[1]; }
   function skillPass(d){ if (filter === 'all') return true; if (filter === 'own') return S.skills.some(function(x){ return x.id === d.id; }); var p = filter.split(':'); return p[0] === 'g' && String(d.grade || 1) === p[1]; }
   // 이벤트 아이콘: 배너와 같은 그림 (없으면 이모지)
-  function evIcon(k){ if (k === 'altar') return '<img class="evi" src="img/p/ui_transcend.png" alt="">'; if (k === 'mimic') return '<img class="evi mimicevi" src="img/p/mimic.png" alt="">'; var key = k === 'campfire' ? 'ev_campfire_i' : k === 'fairy' ? 'ev_fairy_i' : k === 'oddeven' || k === 'groll' ? 'ev_goblin' : 'ev_' + k; return EVIMG[key] ? '<img class="evi" src="img/p/' + key + '.png" alt="">' : ({ swampShop: '🐸', dais: '⬢', campfire: '🔥', fairy: '🧚', merchant: '🧳', chest: '🧰', altar: '✦', mobs: '👾', goblin: '💰', merc: '📜' })[k] || '❔'; }
+  function evIcon(k){ if (k === 'swampShop') return '<img class="evi" src="img/p/ui_swampshop.png" alt="">'; if (k === 'altar') return '<img class="evi" src="img/p/ui_transcend.png" alt="">'; if (k === 'mimic') return '<img class="evi mimicevi" src="img/p/mimic.png" alt="">'; var key = k === 'campfire' ? 'ev_campfire_i' : k === 'fairy' ? 'ev_fairy_i' : k === 'oddeven' || k === 'groll' ? 'ev_goblin' : 'ev_' + k; return EVIMG[key] ? '<img class="evi" src="img/p/' + key + '.png" alt="">' : ({ dais: '⬢', campfire: '🔥', fairy: '🧚', merchant: '🧳', chest: '🧰', altar: '✦', mobs: '👾', goblin: '💰', merc: '📜' })[k] || '❔'; }
   function renderHeroes(){
     var html;
     if (cdxTab === 'lv'){ var PLD = D.player || {}, me = plv(), GC = D.gradeColor || {}, odds = function(w){ if (!w) return '-'; var s = w.reduce(function(a, b){ return a + b; }, 0) || 1; return w.map(function(v, i){ return '<i style="color:' + (GC[i + 1] || '#ccc') + '">' + Math.round(v * 100 / s) + '</i>'; }).join(''); };
@@ -5524,7 +5524,7 @@ img.rimg{image-rendering:auto!important}
   function shopNg(){ if (S.shop.ng == null){ var ng = 0; if (lastNg != null) ng = lastNg; else { var st = S.shop.stock; while (ng < st.length && !(buyPrice(st[ng]).mana > 0)) ng++; } S.shop.ng = ng; } lastNg = null; return S.shop.ng; }
   var merchShow = false;
   function merchOffer(){ return merchShow && !bt && S.evOffer && S.evOffer.kind === 'merchant' ? S.evOffer : null; }
-  function renderShop(){ var wo = merchOffer(); $('tab-shop').classList.toggle('wander', !!wo); var off = wo && !wo.swamp && E.merchantOff ? E.merchantOff(D, plv()) : 0; var sr = $('tab-shop').querySelector('.spRight'); if (sr){ if (off > 0) sr.dataset.disc = 'UP TO ' + Math.round(off) + '%'; else delete sr.dataset.disc; } $('tab-shop').querySelector('.spHead b').textContent = wo ? (wo.swamp ? '늪지 상점' : '방랑상점') : '상점';
+  function renderShop(){ var wo = merchOffer(); $('tab-shop').classList.toggle('wander', !!wo); $('tab-shop').classList.toggle('swamp', !!(wo && wo.swamp)); var off = wo && !wo.swamp && E.merchantOff ? E.merchantOff(D, plv()) : 0; var sr = $('tab-shop').querySelector('.spRight'); if (sr){ if (off > 0) sr.dataset.disc = 'UP TO ' + Math.round(off) + '%'; else delete sr.dataset.disc; } $('tab-shop').querySelector('.spHead b').textContent = wo ? (wo.swamp ? '늪지 상점' : '방랑상점') : '상점';
     if (wo){ renderMerchShop(wo); return; }
     var SL = PK().skillSlots, mine = S.skills, anyBuy = false, OPEN = PK().shopSlots || S.shop.stock.length;
     if (S.shop.stock.length < OPEN){ var add = newStock().filter(function(id){ return S.shop.stock.indexOf(id) < 0; }); while (S.shop.stock.length < OPEN && add.length) S.shop.stock.push(add.shift()); S.shop.ng = null; save(); } /* 레벨업으로 열린 칸은 바로 채워요 */
