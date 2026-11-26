@@ -2643,6 +2643,7 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
 #roul .rbox.groll .rbtns #rSpin[hidden]{display:none}
 #roul .rbox.groll .rpic.gridle{display:flex;align-items:flex-end;justify-content:center;animation:none!important}
 #roul .rbox.groll .rpic.gridle .av{width:100%;height:100%;background-size:contain!important;background-position:50% 100%!important}
+#rX:disabled{filter:grayscale(1) brightness(.7);cursor:default}
 </style>
 </head>
 <body>
@@ -3379,6 +3380,7 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
     var cell = function(x){ var lp = LP(x), dead = gone.indexOf(x) >= 0 && x !== target, hot = !dead && (lp.type === 'h' || (lp.type === 's' && skG(lp.id).n >= 3)); var up = upOK(x); return '<span class="' + (lp.type === 's' ? 'sk' + gCls(lp.id) : '') + (dead ? ' gone' : '') + (hot ? ' hot' : '') + (up ? ' upok' : '') + '" data-id="' + x + '" style="--el:' + stripColor(x) + ';--sg:' + stripColor(x) + '"' + (lp.type === 's' ? ' data-tipsk="' + lp.id + '" data-tiplv="1"' : lp.type === 'p' ? padTipAttr(lp.id) : '') + '>' + stripIn(x) + '</span>'; }, rs = box.querySelector('.rstrip'), reel = S.offerMode !== 'mobs';
     rs.classList.toggle('reel', reel); rs.innerHTML = reel ? '' : all.map(cell).join('');
     box.hidden = false; box.querySelector('.rbtns').hidden = false; ['rYes', 'rNo', 'rAgain', 'rLeft', 'rExit'].forEach(function(b){ $(b).hidden = true; }); $('rWait').hidden = false; $('rX').hidden = true; $('rRes').hidden = true; $('rPend').hidden = true; box.querySelector('.rmeta').textContent = ''; // 도는 동안 버튼 자리에 두구두구
+    $('rX').disabled = false; if (S.offerMode === 'groll'){ $('rX').hidden = false; $('rX').disabled = true; }
     var rb = box.querySelector('.rbox'); rb.classList.remove('gr1', 'gr2', 'gr3', 'reveal'); rb.classList.add('spin'); $('rGrade').textContent = ''; $('rBurst').innerHTML = '';
     if (reel){ var L = all.length, ti = Math.max(0, all.indexOf(target)), CW = 48, fi = ti, minSteps = instant ? 0 : 14; while (fi - 3 < minSteps || fi < 3) fi += L;
       var track = []; for (var q = 0; q < fi + 4; q++) track.push(all[q % L]);
@@ -3421,7 +3423,7 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
     if (S.offerMode === 'mobs'){ $('rAgain').hidden = true; $('roul').querySelectorAll('.rstrip span').forEach(function(sp){ sp.classList.add('res'); }); $('roul').querySelector('.rmeta').textContent = ''; }
     if (S.offerMode === 'fairy'){ if (!(D.recruit.reroll || {}).fairy) $('rAgain').hidden = true; $('rX').hidden = !decided || pend; } /* reroll.fairy면 요정 룰렛도 리셋 */
     if (S.offerMode === 'camp' || S.offerMode === 'lvpick'){ $('rAgain').hidden = true; $('rX').hidden = !decided || pend; }
-    if (S.offerMode === 'groll'){ $('rAgain').hidden = true; $('rNo').hidden = decided || pend; $('rNo').textContent = '포기'; $('rX').hidden = true; if ($('rSpin')) $('rSpin').hidden = true; $('rLeft').hidden = true; } /* 리셋 없음: 받기 / 포기 */
+    if (S.offerMode === 'groll'){ $('rAgain').hidden = true; $('rNo').hidden = decided || pend; $('rNo').textContent = '포기'; $('rX').hidden = false; $('rX').disabled = !decided; /* 결과 정하기 전: 닫기 막음(회색) */ if ($('rSpin')) $('rSpin').hidden = true; $('rLeft').hidden = true; } /* 리셋 없음: 받기 / 포기 */
     $('rRes').hidden = true; $('rRes').innerHTML = S.offerLast || '';
     $('rPend').hidden = !pend; $('rPend').innerHTML = pend ? pendHtml() : ''; $('roul').querySelector('.rbox').classList.toggle('pendmode', pend);
     if (decided) $('roul').querySelector('.rmeta').textContent = '';
@@ -4993,7 +4995,7 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
     box.querySelector('.rbtns').hidden = false; ['rYes', 'rNo', 'rAgain', 'rExit'].forEach(function(b){ $(b).hidden = true; });
     var sp = $('rSpin'); if (!sp){ sp = document.createElement('button'); sp.id = 'rSpin'; sp.type = 'button'; sp.className = 'go'; box.querySelector('.rbtns').insertBefore(sp, $('rYes')); sp.addEventListener('click', function(){ if (!this.disabled) grollSpin(); }); }
     sp.hidden = false; sp.textContent = '돌리기 ' + cost.toLocaleString() + 'G'; sp.disabled = !left || S.gold < cost;
-    var rl = $('rLeft'); rl.hidden = false; rl.textContent = left + '/' + mx; rl.classList.toggle('z', !left); $('rX').hidden = false; }
+    var rl = $('rLeft'); rl.hidden = false; rl.textContent = left + '/' + mx; rl.classList.toggle('z', !left); $('rX').hidden = false; $('rX').disabled = false; }
   function grollClose(){ grOpen = false; $('roul').hidden = true; var b = $('roul').querySelector('.rbox'); delete b.dataset.grs; if ($('rSpin')) $('rSpin').hidden = true; renderAll(); }
   function grollHtml(){ var gx = 506, gy = 184; return '<div class="unit cfh oegob" style="left:' + (100 * gx / W) + '%;top:' + (100 * (gy + OFF + FOOT) / H) + '%;z-index:' + gy + '"><div class="cfslot">' + av('goblin') + '</div></div>'; }
   function grollSpin(){ if (!isGroll() || S.offer || S.pending) return; if ($('rSpin')) $('rSpin').hidden = true; $('roul').querySelector('.rbox').dataset.grs = '1'; var gp = $('roul').querySelector('.rpic'); if (gp) gp.classList.remove('gridle'); var cost = E.grollCost(D, S.stage, plv()), n = grollUsed(); if (n >= E.grollSpins(D, plv()) || S.gold < cost) return;
