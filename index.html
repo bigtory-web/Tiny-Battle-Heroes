@@ -2347,6 +2347,11 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
 .dps .dbar s{background:#f2b53a!important;box-shadow:inset 0 2px 0 #ffe08a,inset 0 -2px 0 #9a6416}
 .dps.e .dbar s{background:#e0554f!important;box-shadow:inset 0 2px 0 #ff9a8a,inset 0 -2px 0 #8a1f26}
 .dps .rbar s{background:#a77bff!important;box-shadow:inset 0 2px 0 #d4b8ff,inset 0 -2px 0 #6b3fc4}
+/* 영웅 줄 = 늘 두 줄: 숫자+막대 / 받음·회복·보호막·궁. 0이면 빈 자리 (2026-11-26 사용자) */
+.dps .dr:not(.drel) .dn{justify-content:flex-start;gap:6px;height:18px} .dps .dr:not(.drel) .dn b{min-width:46px} .dps.e .dr:not(.drel) .dn b{text-align:right}
+.dps .dr:not(.drel) .dn .dbar{flex:1;margin:0}
+.dps .dr:not(.drel) .d2{display:grid;grid-template-columns:1fr 1fr 1fr 26px;align-items:center;height:16px;overflow:visible}
+.dps .d2 span{white-space:nowrap} .dps.e .dr:not(.drel) .d2{direction:rtl} .dps.e .d2 > *{direction:ltr;text-align:right}
 .dps .d2{margin-top:3px;font:400 11px/1.4 var(--display);color:#f3e6c4}
 .dt{display:inline-block;margin-right:2px;padding:0 3px;font:400 10px/14px var(--display);font-style:normal;color:#fff;background:var(--tc,#5d5470);box-shadow:0 0 0 1px #17141d;text-shadow:none}
 .dt.r{--tc:#c84a4a}.dt.g{--tc:#3f8a4a}.dt.b{--tc:#3f6fc2}.dt.o{--tc:#d96a2a}
@@ -4265,9 +4270,8 @@ img.rimg{image-rendering:auto!important}
     var list = (side === 'A' ? B.A : B.E).filter(function(u){ return !u.h.mob || u.stats.dealt > 0; }).slice().sort(function(x, y){ return y.stats.dealt - x.stats.dealt; });
     var mx = Math.max(1, list.reduce(function(m, u){ return Math.max(m, u.stats.dealt); }, 0));
     function row(ic, dealt, sub, dead){ return '<div class="dr' + (dead ? ' dead' : '') + '"><span class="dav">' + ic + '</span><div class="dm"><div class="dn"><b>' + Math.round(dealt).toLocaleString() + '</b></div><i class="dbar"><s style="width:' + Math.round(100 * dealt / mx) + '%"></s></i>' + (sub ? '<small>' + sub + '</small>' : '') + '</div></div>'; }
-    box.querySelector('.dpsb').innerHTML = list.map(function(u){ var s = u.stats, sub = [], key = side + u.uid, w = Math.round(100 * s.dealt / mx), w0 = DPSW[key] == null ? w : DPSW[key]; DPSW[key] = w;
-      if (s.taken > 0) sub.push('' + dtIc('r') + '' + dpsFmt(s.taken)); if (s.healed > 0) sub.push('' + dtIc('g') + '' + dpsFmt(s.healed)); if (s.shield > 0) sub.push('' + dtIc('b') + '' + dpsFmt(s.shield));
-      return '<div class="dr' + (u.alive ? '' : ' dead') + '"><span class="dav">' + heroFr(u.id, 0) + '</span><div class="dm"><div class="dn"><b>' + dpsFmt(s.dealt) + '</b><em class="dult" aria-label="궁 ' + (s.ults || 0) + '">' + BOLT + (s.ults || 0) + '</em></div><i class="dbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i>' + (sub.length ? '<small class="d2">' + sub.join(' ') + '</small>' : '') + '</div></div>'; }).join(''); }); }
+    box.querySelector('.dpsb').innerHTML = list.map(function(u){ var s = u.stats, cell = function(c, v){ return '<span>' + (v > 0 ? dtIc(c) + dpsFmt(v) : '') + '</span>'; }, key = side + u.uid, w = Math.round(100 * s.dealt / mx), w0 = DPSW[key] == null ? w : DPSW[key]; DPSW[key] = w;
+      return '<div class="dr' + (u.alive ? '' : ' dead') + '"><span class="dav">' + heroFr(u.id, 0) + '</span><div class="dm"><div class="dn"><b>' + dpsFmt(s.dealt) + '</b><i class="dbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i></div><small class="d2">' + cell('r', s.taken) + cell('g', s.healed) + cell('b', s.shield) + '<em class="dult" aria-label="궁 ' + (s.ults || 0) + '">' + (s.ults ? BOLT + s.ults : '') + '</em></small></div></div>'; }).join(''); }); }
   $('dpsBtn').addEventListener('click', function(){ S.ui = S.ui || {}; S.ui.dpsOff = !S.ui.dpsOff; save(); dpsBtnSync(); renderDps(); }); /* DPS 창 켜고 끄는 길은 이 버튼 하나 (상점 아래) */
   function dpsBtnSync(){ $('dpsBtn').classList.toggle('on', !(S.ui && S.ui.dpsOff)); } dpsBtnSync();
   function stepMarch(el){ if (!march) return; march.t += el; var k = Math.min(1, march.t / march.dur), e = k * k * (3 - 2 * k);
