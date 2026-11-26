@@ -1,0 +1,9 @@
+Look at these images:
+- img/codex/sheep/sheepb_src.png = THE DESIGN to keep: the night-sky sheep (fluffy navy-violet starry wool, gold curled horns, lavender-cream face, big violet eyes, knitting needles with a starry woven cloth, ball of yarn).
+- img/codex/sheep/ref_seeress_x8.png = the PIXEL SIZE and overall character size of our game: one art pixel of this image is what one art pixel must be, the whole character is only about 47 art pixels tall.
+
+Redraw the same sheep at that LOW resolution: much bigger, chunkier pixels, about 48 art pixels tall and 46 wide INCLUDING the yarn ball. Simplify: fewer, larger wool clumps, only a handful of stars (single pixels and 3x3 sparkles), eyes about 5 x 5 art pixels with one white highlight, tiny nose and mouth, needles and cloth still readable. Keep the 3/4 view facing right seen slightly from above, the eye on the viewer's LEFT exactly 1 art pixel lower than the right.
+Generate ONE new image with your image generation tool and save it as img/codex/sheep/sheepc_src.png
+Image 1024x1024, one art pixel is about 18 image pixels. Crisp square pixels, 1 art pixel dark brown outline with no gaps, no anti-aliasing, no gradients, no detail finer than the grid.
+[Format] Plain solid #FF00FF magenta background, no text, no shadow.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

@@ -1,0 +1,1153 @@
+OpenAI Codex v0.171.0-alpha.13.2
+--------
+workdir: C:\Users\Home\Downloads\방치형RPG_테스트베드
+model: gpt-6.2-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: medium
+reasoning summaries: none
+session id: 01a216b0-0772-7b13-9c94-8dddf7e40e4d
+--------
+user
+Look at these images of our pixel game:
+- img/pixellab/knight_v2_x8.png = our STYLE STANDARD: chibi, big head, thick dark brown outline, muted colors with soft shading, 3/4 view seen slightly from above.
+- img/codex/sheep/ref_seeress_x8.png = another event character of the game: SAME pixel size and same overall height as the new one.
+- img/codex/goblin/dealer_x16.png = a non-human event character, same style.
+
+Generate ONE new image with your image generation tool and save it as img/codex/sheep/sheepa_src.png
+Character: a mystical NIGHT-SKY SHEEP, a cute small sheep creature (an animal, not a human in costume) who weaves magic rugs out of its own wool.
+- WOOL: very fluffy cloud-like fleece in deep midnight navy and violet, shaded in clusters, scattered with tiny twinkling STARS (single bright pixels and a few small four-point sparkles in white, pale gold and light blue). The wool is the highlight: iridescent, like a starry night sky.
+- Head: big round head, soft pale lavender-cream face that reads clearly against the dark wool, big gentle sleepy eyes, tiny nose and small calm smile, drooping ears, two small curled GOLD horns, a fluffy wool tuft on the forehead.
+- Head angle: seen slightly from above, 3/4 view facing RIGHT; the eye on the viewer's LEFT sits exactly 1 art pixel lower than the right eye.
+- Pose: sitting upright / standing on its short hind legs, holding two golden KNITTING NEEDLES with a small piece of woven rug hanging from them (starry violet cloth with a gold border), clearly readable and separated from the body. A ball of starry yarn by its feet connected with a thread.
+- Pixel grid: same as the seeress reference: crisp square pixels, whole character about 47 art pixels tall and at most 50 wide, 1 art pixel outline with no gaps, no anti-aliasing, no gradients, no finer detail than the grid. Image 1024x1024, centered.
+[Format] Plain solid #FF00FF magenta background, no text, no shadow.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
+
+codex
+I’ll use the imagegen skill and inspect all three references before generating the sheep sprite.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-ChildItem -Force -Name; Get-Item -LiteralPath 'img/pixellab/knight_v2_x8.png','img/codex/sheep/ref_seeress_x8.png','img/codex/goblin/dealer_x16.png'; Test-Path -LiteralPath 'img/codex/sheep/sheepa_src.png'" in C:\Users\Home\Downloads\방치형RPG_테스트베드
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -LiteralPath 'C:/Users/Home/.codex/skills/.system/imagegen/SKILL.md'" in C:\Users\Home\Downloads\방치형RPG_테스트베드
+ succeeded in 124ms:
+---
+name: "imagegen"
+description: "Generate or edit raster images when the task benefits from AI-created bitmap visuals such as photos, illustrations, textures, sprites, mockups, or transparent-background cutouts. Use when Codex should create a brand-new image, transform an existing image, or derive visual variants from references, and the output should be a bitmap asset rather than repo-native code or vector. Do not use when the task is better handled by editing existing SVG/vector/code-native assets, extending an established icon or logo system, or building the visual directly in HTML/CSS/canvas."
+---
+
+# Image Generation Skill
+
+Generates or edits images for the current project (for example website assets, game assets, UI mockups, product mockups, wireframes, logo design, photorealistic images, or infographics).
+
+## Top-level modes and rules
+
+This skill has exactly two top-level modes:
+
+- **Default built-in tool mode (preferred):** built-in `image_gen` tool for image generation, editing, and transparent-image requests. Does not require `OPENAI_API_KEY`.
+- **Fallback CLI mode:** `scripts/image_gen.py` CLI. Use when the user explicitly asks for or confirms the CLI/API/model path. Requires `OPENAI_API_KEY`.
+
+Within CLI fallback, the CLI exposes three subcommands:
+
+- `generate`
+- `edit`
+- `generate-batch`
+
+Rules:
+- Use the built-in `image_gen` tool by default for normal image generation and editing requests.
+- Do not switch to CLI fallback for ordinary quality, size, or file-path control.
+- For transparent images, ask built-in `image_gen` for a transparent background and preserve the generated alpha.
+- Never silently switch from built-in `image_gen` or CLI `gpt-image-2` to CLI `gpt-image-1.5`; ask the user first unless they explicitly requested `gpt-image-1.5`.
+- The word `batch` by itself does not mean CLI fallback. If the user asks for many assets or says to batch-generate assets without explicitly asking for CLI/API/model controls, stay on the built-in path and issue one built-in call per requested asset or variant.
+- If the built-in tool fails or is unavailable, tell the user the CLI fallback exists and that it requires `OPENAI_API_KEY`. Proceed only if the user explicitly asks for that fallback.
+- If the user explicitly asks for CLI mode, use the bundled `scripts/image_gen.py` workflow. Do not create one-off SDK runners.
+- Never modify `scripts/image_gen.py`. If something is missing, ask the user before doing anything else.
+
+Built-in save-path policy:
+- In built-in tool mode, Codex saves generated images under `$CODEX_HOME/*` by default.
+- Do not describe or rely on OS temp as the default built-in destination.
+- Do not describe or rely on a destination-path argument (if any) on the built-in `image_gen` tool. If a specific location is needed, generate first and then move or copy the selected output from `$CODEX_HOME/generated_images/...`.
+- Save-path precedence in built-in mode:
+  1. If the user names a destination, move or copy the selected output there.
+  2. If the image is meant for the current project, move or copy the final selected image into the workspace before finishing.
+  3. If the image is only for preview or brainstorming, render it inline; the underlying file can remain at the default `$CODEX_HOME/*` path.
+- Never leave a project-referenced asset only at the default `$CODEX_HOME/*` path.
+- Do not overwrite an existing asset unless the user explicitly asked for replacement; otherwise create a sibling versioned filename such as `hero-v2.png` or `item-icon-edited.png`.
+
+Shared prompt guidance for both modes lives in `references/prompting.md` and `references/sample-prompts.md`.
+
+Fallback-only docs/resources for CLI mode:
+- `references/cli.md`
+- `references/image-api.md`
+- `references/codex-network.md`
+- `scripts/image_gen.py`
+
+## When to use
+- Generate a new image (concept art, product shot, cover, website hero)
+- Generate a new image using one or more reference images for style, composition, or mood
+- Edit an existing image (inpainting, lighting or weather transformations, background replacement, object removal, compositing, transparent background)
+- Produce many assets or variants for one task
+
+## When not to use
+- Extending or matching an existing SVG/vector icon set, logo system, or illustration library inside the repo
+- Creating simple shapes, diagrams, wireframes, or icons that are better produced directly in SVG, HTML/CSS, or canvas
+- Making a small project-local asset edit when the source file already exists in an editable native format
+- Any task where the user clearly wants deterministic code-native output instead of a generated bitmap
+
+## Decision tree
+
+Think about two separate questions:
+
+1. **Intent:** is this a new image or an edit of an existing image?
+2. **Execution strategy:** is this one asset or many assets/variants?
+
+Intent:
+- If the user wants to modify an existing image while preserving parts of it, treat the request as **edit**.
+- If the user provides images only as references for style, composition, mood, or subject guidance, treat the request as **generate**.
+- If the user provides no images, treat the request as **generate**.
+
+Built-in edit semantics:
+- Built-in edit mode is for images already visible in the conversation context, such as attached images or images generated earlier in the thread.
+- If the user wants to edit a local image file with the built-in tool, first load it with built-in `view_image` tool so the image is visible in the conversation context, then proceed with the built-in edit flow.
+- Do not promise arbitrary filesystem-path editing through the built-in tool.
+- If a local file still needs direct file-path control, masks, or other explicit CLI-only parameters, use the explicit CLI fallback only when the user asks for it.
+- For edits, preserve invariants aggressively and save non-destructively by default.
+
+Execution strategy:
+- In the built-in default path, produce many assets or variants by issuing one `image_gen` call per requested asset or variant.
+- In the CLI fallback path, use the CLI `generate-batch` subcommand only when the user explicitly chose CLI mode and needs many prompts/assets.
+- For many distinct assets, do not use `n` as a substitute for separate prompts. `n` is for variants of one prompt; distinct assets need distinct built-in calls or distinct CLI `generate-batch` jobs.
+
+Assume the user wants a new image unless they clearly ask to change an existing one.
+
+## Workflow
+1. Decide the top-level mode: built-in by default, including transparent-output requests; fallback CLI only if explicitly requested or confirmed.
+2. Decide the intent: `generate` or `edit`.
+3. Decide whether the output is preview-only or meant to be consumed by the current project.
+4. Decide the execution strategy: single asset vs repeated built-in calls vs CLI `generate-batch`.
+5. Collect inputs up front: prompt(s), exact text (verbatim), constraints/avoid list, and any input images.
+6. For every input image, label its role explicitly:
+   - reference image
+   - edit target
+   - supporting insert/style/compositing input
+7. If the edit target is only on the local filesystem and you are staying on the built-in path, inspect it with `view_image` first so the image is available in conversation context.
+8. If the user asked for a photo, illustration, sprite, product image, banner, or other explicitly raster-style asset, use `image_gen` rather than substituting SVG/HTML/CSS placeholders. If the request is for an icon, logo, or UI graphic that should match existing repo-native SVG/vector/code assets, prefer editing those directly instead.
+9. Augment the prompt based on specificity:
+   - If the user's prompt is already specific and detailed, normalize it into a clear spec without adding creative requirements.
+   - If the user's prompt is generic, add tasteful augmentation only when it materially improves output quality.
+10. Use the built-in `image_gen` tool by default.
+11. For transparent-output requests, ask built-in `image_gen` for a transparent background and preserve the generated alpha channel.
+12. Inspect outputs and validate: subject, style, composition, text accuracy, and invariants/avoid items.
+13. Iterate with a single targeted change, then re-check.
+14. For preview-only work, render the image inline; the underlying file may remain at the default `$CODEX_HOME/generated_images/...` path.
+15. For project-bound work, move or copy the selected artifact into the workspace and update any consuming code or references. Never leave a project-referenced asset only at the default `$CODEX_HOME/generated_images/...` path.
+16. For batches or multi-asset requests, persist every requested deliverable final in the workspace unless the user explicitly asked to keep outputs preview-only. Discarded variants do not need to be kept unless requested.
+17. If the user explicitly chooses or confirms the CLI fallback, then use the fallback-only docs for model, quality, size, `input_fidelity`, masks, output format, output paths, and network setup.
+18. Always report the final saved path(s) for any workspace-bound asset(s), plus the final prompt or prompt set and whether the built-in tool or fallback CLI mode was used.
+
+## Transparent image requests
+
+Ask built-in `image_gen` for a genuinely transparent background and preserve its alpha.
+
+## Prompt augmentation
+
+Reformat user prompts into a structured, production-oriented spec. Make the user's goal clearer and more actionable, but do not blindly add detail.
+
+Treat this as prompt-shaping guidance, not a closed schema. Use only the lines that help, and add a short extra labeled line when it materially improves clarity.
+
+### Specificity policy
+
+Use the user's prompt specificity to decide how much augmentation is appropriate:
+
+- If the prompt is already specific and detailed, preserve that specificity and only normalize/structure it.
+- If the prompt is generic, you may add tasteful augmentation when it will materially improve the result.
+
+Allowed augmentations:
+- composition or framing hints
+- polish level or intended-use hints
+- practical layout guidance
+- reasonable scene concreteness that supports the stated request
+
+Not allowed augmentations:
+- extra characters or objects that are not implied by the request
+- brand names, slogans, palettes, or narrative beats that are not implied
+- arbitrary side-specific placement unless the surrounding layout supports it
+
+## Use-case taxonomy (exact slugs)
+
+Classify each request into one of these buckets and keep the slug consistent across prompts and references.
+
+Generate:
+- photorealistic-natural ??candid/editorial lifestyle scenes with real texture and natural lighting.
+- product-mockup ??product/packaging shots, catalog imagery, merch concepts.
+- ui-mockup ??app/web interface mockups and wireframes; specify the desired fidelity.
+- infographic-diagram ??diagrams/infographics with structured layout and text.
+- scientific-educational ??classroom explainers, scientific diagrams, and learning visuals with required labels and accuracy constraints.
+- ads-marketing ??campaign concepts and ad creatives with audience, brand position, scene, and exact tagline/copy.
+- productivity-visual ??slide, chart, workflow, and data-heavy business visuals.
+- logo-brand ??logo/mark exploration, vector-friendly.
+- illustration-story ??comics, children?셲 book art, narrative scenes.
+- stylized-concept ??style-driven concept art, 3D/stylized renders.
+- historical-scene ??period-accurate/world-knowledge scenes.
+
+Edit:
+- text-localization ??translate/replace in-image text, preserve layout.
+- identity-preserve ??try-on, person-in-scene; lock face/body/pose.
+- precise-object-edit ??remove/replace a specific element (including interior swaps).
+- lighting-weather ??time-of-day/season/atmosphere changes only.
+- background-extraction ??transparent background / clean cutout. Ask built-in `image_gen` for actual transparency.
+- style-transfer ??apply reference style while changing subject/scene.
+- compositing ??multi-image insert/merge with matched lighting/perspective.
+- sketch-to-render ??drawing/line art to photoreal render.
+
+## Shared prompt schema
+
+Use the following labeled spec as shared prompt scaffolding for both top-level modes:
+
+```text
+Use case: <taxonomy slug>
+Asset type: <where the asset will be used>
+Primary request: <user's main prompt>
+Input images: <Image 1: role; Image 2: role> (optional)
+Scene/backdrop: <environment>
+Subject: <main subject>
+Style/medium: <photo/illustration/3D/etc>
+Composition/framing: <wide/close/top-down; placement>
+Lighting/mood: <lighting + mood>
+Color palette: <palette notes>
+Materials/textures: <surface details>
+Text (verbatim): "<exact text>"
+Constraints: <must keep/must avoid>
+Avoid: <negative constraints>
+```
+
+Notes:
+- `Asset type` and `Input images` are prompt scaffolding, not dedicated CLI flags.
+- `Scene/backdrop` refers to the visual setting. It is not the same as the fallback CLI `background` parameter, which controls output transparency behavior.
+- Fallback-only execution notes such as `Quality:`, `Input fidelity:`, masks, output format, and output paths belong in the CLI path only. Do not treat them as built-in `image_gen` tool arguments.
+
+Augmentation rules:
+- Keep it short.
+- Add only the details needed to improve the prompt materially.
+- For edits, explicitly list invariants (`change only X; keep Y unchanged`).
+- If any critical detail is missing and blocks success, ask a question; otherwise proceed.
+
+## Examples
+
+### Generation example (hero image)
+```text
+Use case: product-mockup
+Asset type: landing page hero
+Primary request: a minimal hero image of a ceramic coffee mug
+Style/medium: clean product photography
+Composition/framing: wide composition with usable negative space for page copy if needed
+Lighting/mood: soft studio lighting
+Constraints: no logos, no text, no watermark
+```
+
+### Edit example (invariants)
+```text
+Use case: precise-object-edit
+Asset type: product photo background replacement
+Primary request: replace only the background with a warm sunset gradient
+Constraints: change only the background; keep the product and its edges unchanged; no text; no watermark
+```
+
+## Prompting best practices
+- Structure prompt as scene/backdrop -> subject -> details -> constraints.
+- Include intended use (ad, UI mock, infographic) to set the mode and polish level.
+- Use camera/composition language for photorealism.
+- Only use SVG/vector stand-ins when the user explicitly asked for vector output or a non-image placeholder.
+- Quote exact text and specify typography + placement.
+- For tricky words, spell them letter-by-letter and require verbatim rendering.
+- For multi-image inputs, reference images by index and describe how they should be used.
+- For edits, repeat invariants every iteration to reduce drift.
+- Iterate with single-change follow-ups.
+- If the prompt is generic, add only the extra detail that will materially help.
+- If the prompt is already detailed, normalize it instead of expanding it.
+- For CLI fallback only, see `references/cli.md` and `references/image-api.md` for model, `quality`, `input_fidelity`, masks, output format, and output-path guidance.
+- For transparent images, ask built-in `image_gen` for actual transparency and preserve its alpha.
+
+More principles shared by both modes: `references/prompting.md`.
+Copy/paste specs shared by both modes: `references/sample-prompts.md`.
+
+## Guidance by asset type
+Asset-type templates (website assets, game assets, wireframes, logo) are consolidated in `references/sample-prompts.md`.
+
+## gpt-image-2 guidance for CLI fallback
+
+The fallback CLI defaults to `gpt-image-2`.
+
+- Use `gpt-image-2` for new CLI/API workflows unless the user confirms a different model.
+- CLI `gpt-image-2` does not support `background=transparent`; ask before using `gpt-image-1.5` unless the user explicitly requested that model.
+- `gpt-image-2` always uses high fidelity for image inputs; do not set `input_fidelity` with this model.
+- `gpt-image-2` supports `quality` values `low`, `medium`, `high`, and `auto`.
+- Use `quality low` for fast drafts, thumbnails, and quick iterations. Use `medium`, `high`, or `auto` for final assets, dense text, diagrams, identity-sensitive edits, or high-resolution outputs.
+- Square images are typically fastest to generate. Use `1024x1024` for fast square drafts.
+- If the user asks for 4K-style output, use `3840x2160` for landscape or `2160x3840` for portrait.
+- `gpt-image-2` size may be `auto` or `WIDTHxHEIGHT` if all constraints hold: max edge `<= 3840px`, both edges multiples of `16px`, long-to-short ratio `<= 3:1`, total pixels between `655,360` and `8,294,400`.
+
+Popular `gpt-image-2` sizes:
+- `1024x1024` square
+- `1536x1024` landscape
+- `1024x1536` portrait
+- `2048x2048` 2K square
+- `2048x1152` 2K landscape
+- `3840x2160` 4K landscape
+- `2160x3840` 4K portrait
+- `auto`
+
+## Fallback CLI mode only
+
+### Temp and output conventions
+These conventions apply only to the CLI fallback. They do not describe built-in `image_gen` output behavior.
+- Use `tmp/imagegen/` for intermediate files (for example JSONL batches); delete them when done.
+- Write final artifacts under `output/imagegen/`.
+- Use `--out` or `--out-dir` to control output paths; keep filenames stable and descriptive.
+
+### Dependencies
+Prefer `uv` for dependency management in this repo.
+
+Required Python package:
+```bash
+uv pip install openai
+```
+
+Optional for image inspection and downscaling:
+```bash
+uv pip install pillow
+```
+
+Portability note:
+- If you are using the installed skill outside this repo, install dependencies into that environment with its package manager.
+- In uv-managed environments, `uv pip install ...` remains the preferred path.
+
+### Environment
+- `OPENAI_API_KEY` must be set for live API calls.
+- Do not ask the user for `OPENAI_API_KEY` when using the built-in `image_gen` tool.
+- Never ask the user to paste the full key in chat. Ask them to set it locally and confirm when ready.
+
+If the key is missing, give the user these steps:
+1. Create an API key in the OpenAI platform UI: https://platform.openai.com/api-keys
+2. Set `OPENAI_API_KEY` as an environment variable in their system.
+3. Offer to guide them through setting the environment variable for their OS/shell if needed.
+
+If installation is not possible in this environment, tell the user which dependency is missing and how to install it into their active environment.
+
+### Script-mode notes
+- CLI commands + examples: `references/cli.md`
+- API parameter quick reference: `references/image-api.md`
+- Network approvals / sandbox settings for CLI mode: `references/codex-network.md`
+
+## Reference map
+- `references/prompting.md`: shared prompting principles for both modes.
+- `references/sample-prompts.md`: shared copy/paste prompt recipes for both modes.
+- `references/cli.md`: fallback-only CLI usage via `scripts/image_gen.py`.
+- `references/image-api.md`: fallback-only API/CLI parameter reference.
+- `references/codex-network.md`: fallback-only network/sandbox troubleshooting for CLI mode.
+- `scripts/image_gen.py`: fallback-only CLI implementation. Use only when the user explicitly chooses or confirms CLI mode.
+
+ succeeded in 195ms:
+.claude
+.git
+devlog
+fonts
+fx
+img
+개발일지
+역할
+홍보
+.gitignore
+build-artifact.js
+CLAUDE.md
+data.js
+data.v1.js
+data.v10.js
+data.v100.js
+data.v101.js
+data.v102.js
+data.v103.js
+data.v104.js
+data.v105.js
+data.v106.js
+data.v107.js
+data.v108.js
+data.v109.js
+data.v11.js
+data.v110.js
+data.v111.js
+data.v112.js
+data.v113.js
+data.v114.js
+data.v115.js
+data.v116.js
+data.v117.js
+data.v118.js
+data.v119.js
+data.v12.js
+data.v120.js
+data.v121.js
+data.v122.js
+data.v123.js
+data.v124.js
+data.v125.js
+data.v126.js
+data.v127.js
+data.v128.js
+data.v129.js
+data.v13.js
+data.v130.js
+data.v131.js
+data.v132.js
+data.v133.js
+data.v134.js
+data.v135.js
+data.v136.js
+data.v137.js
+data.v138.js
+data.v139.js
+data.v14.js
+data.v140.js
+data.v141.js
+data.v142.js
+data.v143.js
+data.v144.js
+data.v145.js
+data.v146.js
+data.v147.js
+data.v148.js
+data.v149.js
+data.v15.js
+data.v150.js
+data.v151.js
+data.v152.js
+data.v153.js
+data.v154.js
+data.v155.js
+data.v156.js
+data.v157.js
+data.v158.js
+data.v159.js
+data.v16.js
+data.v160.js
+data.v161.js
+data.v162.js
+data.v163.js
+data.v164.js
+data.v165.js
+data.v166.js
+data.v167.js
+data.v168.js
+data.v17.js
+data.v18.js
+data.v19.js
+data.v20.js
+data.v21.js
+data.v22.js
+data.v23.js
+data.v24.js
+data.v25.js
+data.v26.js
+data.v27.js
+data.v28.js
+data.v29.js
+data.v3.js
+data.v30.js
+data.v31.js
+data.v32.js
+data.v33.js
+data.v34.js
+data.v35.js
+data.v36.js
+data.v37.js
+data.v38.js
+data.v39.js
+data.v4.js
+data.v40.js
+data.v41.js
+data.v42.js
+data.v43.js
+data.v44.js
+data.v45.js
+data.v46.js
+data.v47.js
+data.v48.js
+data.v49.js
+data.v50.js
+data.v51.js
+data.v52.js
+data.v53.js
+data.v54.js
+data.v55.js
+data.v56.js
+data.v57.js
+data.v58.js
+data.v59.js
+data.v60.js
+data.v61.js
+data.v62.js
+data.v63.js
+data.v64.js
+data.v65.js
+data.v66.js
+data.v67.js
+data.v68.js
+data.v69.js
+data.v70.js
+data.v71.js
+data.v72.js
+data.v73.js
+data.v74.js
+data.v75.js
+data.v76.js
+data.v77.js
+data.v78.js
+data.v79.js
+data.v80.js
+data.v81.js
+data.v82.js
+data.v83.js
+data.v84.js
+data.v85.js
+data.v86.js
+data.v87.js
+data.v88.js
+data.v89.js
+data.v9.js
+data.v90.js
+data.v91.js
+data.v92.js
+data.v93.js
+data.v94.js
+data.v95.js
+data.v96.js
+data.v97.js
+data.v98.js
+data.v99.js
+engine.js
+engine.v1.js
+engine.v10.js
+engine.v100.js
+engine.v101.js
+engine.v102.js
+engine.v103.js
+engine.v104.js
+engine.v105.js
+engine.v106.js
+engine.v107.js
+engine.v108.js
+engine.v109.js
+engine.v11.js
+engine.v110.js
+engine.v111.js
+engine.v112.js
+engine.v113.js
+engine.v114.js
+engine.v115.js
+engine.v116.js
+engine.v117.js
+engine.v118.js
+engine.v119.js
+engine.v12.js
+engine.v120.js
+engine.v121.js
+engine.v122.js
+engine.v123.js
+engine.v124.js
+engine.v125.js
+engine.v126.js
+engine.v127.js
+engine.v13.js
+engine.v14.js
+engine.v15.js
+engine.v16.js
+engine.v17.js
+engine.v18.js
+engine.v19.js
+engine.v20.js
+engine.v21.js
+engine.v22.js
+engine.v23.js
+engine.v24.js
+engine.v25.js
+engine.v26.js
+engine.v27.js
+engine.v28.js
+engine.v29.js
+engine.v3.js
+engine.v30.js
+engine.v31.js
+engine.v32.js
+engine.v33.js
+engine.v34.js
+engine.v35.js
+engine.v36.js
+engine.v37.js
+engine.v38.js
+engine.v39.js
+engine.v4.js
+engine.v40.js
+engine.v41.js
+engine.v42.js
+engine.v43.js
+engine.v44.js
+engine.v45.js
+engine.v46.js
+engine.v47.js
+engine.v48.js
+engine.v49.js
+engine.v5.js
+engine.v50.js
+engine.v51.js
+engine.v52.js
+engine.v53.js
+engine.v54.js
+engine.v55.js
+engine.v56.js
+engine.v57.js
+engine.v58.js
+engine.v59.js
+engine.v6.js
+engine.v60.js
+engine.v61.js
+engine.v62.js
+engine.v63.js
+engine.v64.js
+engine.v65.js
+engine.v66.js
+engine.v67.js
+engine.v68.js
+engine.v69.js
+engine.v7.js
+engine.v70.js
+engine.v71.js
+engine.v72.js
+engine.v73.js
+engine.v74.js
+engine.v75.js
+engine.v76.js
+engine.v77.js
+engine.v78.js
+engine.v79.js
+engine.v8.js
+engine.v80.js
+engine.v81.js
+engine.v82.js
+engine.v83.js
+engine.v84.js
+engine.v85.js
+engine.v86.js
+engine.v87.js
+engine.v88.js
+engine.v89.js
+engine.v9.js
+engine.v90.js
+engine.v91.js
+engine.v92.js
+engine.v93.js
+engine.v94.js
+engine.v95.js
+engine.v96.js
+engine.v97.js
+engine.v98.js
+engine.v99.js
+engine.vsyn.js
+fx.js
+fx.v1.js
+index.html
+index.v1.html
+index.v10.html
+index.v100.html
+index.v101.html
+index.v102.html
+index.v103.html
+index.v104.html
+index.v105.html
+index.v106.html
+index.v107.html
+index.v108.html
+index.v109.html
+index.v11.html
+index.v110.html
+index.v111.html
+index.v112.html
+index.v113.html
+index.v114.html
+index.v115.html
+index.v116.html
+index.v117.html
+index.v118.html
+index.v119.html
+index.v12.html
+index.v120.html
+index.v121.html
+index.v122.html
+index.v123.html
+index.v124.html
+index.v125.html
+index.v126.html
+index.v127.html
+index.v128.html
+index.v129.html
+index.v13.html
+index.v130.html
+index.v131.html
+index.v132.html
+index.v133.html
+index.v134.html
+index.v135.html
+index.v136.html
+index.v137.html
+index.v138.html
+index.v139.html
+index.v14.html
+index.v140.html
+index.v141.html
+index.v142.html
+index.v143.html
+index.v144.html
+index.v145.html
+index.v146.html
+index.v147.html
+index.v148.html
+index.v149.html
+index.v15.html
+index.v150.html
+index.v151.html
+index.v152.html
+index.v153.html
+index.v154.html
+index.v155.html
+index.v156.html
+index.v157.html
+index.v158.html
+index.v159.html
+index.v16.html
+index.v160.html
+index.v161.html
+index.v162.html
+index.v163.html
+index.v164.html
+index.v165.html
+index.v166.html
+index.v167.html
+index.v168.html
+index.v169.html
+index.v17.html
+index.v170.html
+index.v171.html
+index.v172.html
+index.v173.html
+index.v174.html
+index.v175.html
+index.v176.html
+index.v177.html
+index.v178.html
+index.v179.html
+index.v18.html
+index.v180.html
+index.v181.html
+index.v182.html
+index.v183.html
+index.v184.html
+index.v185.html
+index.v186.html
+index.v187.html
+index.v188.html
+index.v189.html
+index.v19.html
+index.v190.html
+index.v191.html
+index.v192.html
+index.v193.html
+index.v194.html
+index.v195.html
+index.v196.html
+index.v197.html
+index.v198.html
+index.v199.html
+index.v2.html
+index.v20.html
+index.v200.html
+index.v201.html
+index.v202.html
+index.v203.html
+index.v204.html
+index.v205.html
+index.v206.html
+index.v207.html
+index.v208.html
+index.v209.html
+index.v21.html
+index.v210.html
+index.v211.html
+index.v212.html
+index.v213.html
+index.v214.html
+index.v215.html
+index.v216.html
+index.v217.html
+index.v218.html
+index.v219.html
+index.v22.html
+index.v220.html
+index.v221.html
+index.v222.html
+index.v223.html
+index.v224.html
+index.v225.html
+index.v226.html
+index.v227.html
+index.v228.html
+index.v229.html
+index.v23.html
+index.v230.html
+index.v231.html
+index.v232.html
+index.v233.html
+index.v234.html
+index.v235.html
+index.v236.html
+index.v237.html
+index.v238.html
+index.v239.html
+index.v24.html
+index.v240.html
+index.v241.html
+index.v242.html
+index.v243.html
+index.v244.html
+index.v245.html
+index.v246.html
+index.v247.html
+index.v248.html
+index.v249.html
+index.v25.html
+index.v250.html
+index.v251.html
+index.v252.html
+index.v253.html
+index.v254.html
+index.v255.html
+index.v256.html
+index.v257.html
+index.v258.html
+index.v259.html
+index.v26.html
+index.v260.html
+index.v261.html
+index.v262.html
+index.v263.html
+index.v264.html
+index.v265.html
+index.v266.html
+index.v267.html
+index.v268.html
+index.v269.html
+index.v27.html
+index.v270.html
+index.v271.html
+index.v272.html
+index.v273.html
+index.v274.html
+index.v275.html
+index.v276.html
+index.v277.html
+index.v278.html
+index.v279.html
+index.v28.html
+index.v280.html
+index.v281.html
+index.v282.html
+index.v283.html
+index.v284.html
+index.v285.html
+index.v286.html
+index.v287.html
+index.v288.html
+index.v289.html
+index.v29.html
+index.v290.html
+index.v291.html
+index.v292.html
+index.v293.html
+index.v294.html
+index.v295.html
+index.v296.html
+index.v297.html
+index.v298.html
+index.v299.html
+index.v3.html
+index.v30.html
+index.v300.html
+index.v301.html
+index.v302.html
+index.v303.html
+index.v304.html
+index.v305.html
+index.v306.html
+index.v307.html
+index.v308.html
+index.v309.html
+index.v31.html
+index.v310.html
+index.v311.html
+index.v312.html
+index.v313.html
+index.v314.html
+index.v315.html
+index.v316.html
+index.v317.html
+index.v318.html
+index.v319.html
+index.v32.html
+index.v320.html
+index.v321.html
+index.v322.html
+index.v323.html
+index.v324.html
+index.v325.html
+index.v326.html
+index.v327.html
+index.v328.html
+index.v329.html
+index.v33.html
+index.v330.html
+index.v331.html
+index.v332.html
+index.v333.html
+index.v334.html
+index.v335.html
+index.v336.html
+index.v337.html
+index.v338.html
+index.v339.html
+index.v34.html
+index.v340.html
+index.v341.html
+index.v342.html
+index.v343.html
+index.v344.html
+index.v345.html
+index.v346.html
+index.v347.html
+index.v348.html
+index.v349.html
+index.v35.html
+index.v350.html
+index.v351.html
+index.v352.html
+index.v353.html
+index.v354.html
+index.v355.html
+index.v356.html
+index.v357.html
+index.v358.html
+index.v359.html
+index.v36.html
+index.v360.html
+index.v361.html
+index.v362.html
+index.v363.html
+index.v364.html
+index.v365.html
+index.v366.html
+index.v367.html
+index.v368.html
+index.v369.html
+index.v37.html
+index.v370.html
+index.v371.html
+index.v372.html
+index.v373.html
+index.v374.html
+index.v375.html
+index.v376.html
+index.v377.html
+index.v378.html
+index.v379.html
+index.v38.html
+index.v380.html
+index.v381.html
+index.v382.html
+index.v383.html
+index.v384.html
+index.v385.html
+index.v386.html
+index.v387.html
+index.v388.html
+index.v389.html
+index.v39.html
+index.v390.html
+index.v391.html
+index.v392.html
+index.v393.html
+index.v394.html
+index.v395.html
+index.v396.html
+index.v4.html
+index.v40.html
+index.v41.html
+index.v42.html
+index.v43.html
+index.v44.html
+index.v45.html
+index.v46.html
+index.v47.html
+index.v48.html
+index.v49.html
+index.v5.html
+index.v50.html
+index.v51.html
+index.v52.html
+index.v53.html
+index.v54.html
+index.v55.html
+index.v56.html
+index.v57.html
+index.v58.html
+index.v59.html
+index.v6.html
+index.v60.html
+index.v61.html
+index.v62.html
+index.v63.html
+index.v64.html
+index.v65.html
+index.v66.html
+index.v67.html
+index.v68.html
+index.v69.html
+index.v7.html
+index.v70.html
+index.v71.html
+index.v72.html
+index.v73.html
+index.v74.html
+index.v75.html
+index.v76.html
+index.v77.html
+index.v78.html
+index.v79.html
+index.v8.html
+index.v80.html
+index.v81.html
+index.v82.html
+index.v83.html
+index.v84.html
+index.v85.html
+index.v86.html
+index.v87.html
+index.v88.html
+index.v89.html
+index.v9.html
+index.v90.html
+index.v91.html
+index.v92.html
+index.v93.html
+index.v94.html
+index.v95.html
+index.v96.html
+index.v97.html
+index.v98.html
+index.v99.html
+index.v_bell.html
+mock_fightbtn.html
+README.md
+게임_현재상태.md
+게임_현재상태.v1.md
+게임_현재상태.v10.md
+게임_현재상태.v11.md
+게임_현재상태.v12.md
+게임_현재상태.v13.md
+게임_현재상태.v14.md
+게임_현재상태.v15.md
+게임_현재상태.v16.md
+게임_현재상태.v17.md
+게임_현재상태.v18.md
+게임_현재상태.v19.md
+게임_현재상태.v2.md
+게임_현재상태.v20.md
+게임_현재상태.v21.md
+게임_현재상태.v22.md
+게임_현재상태.v23.md
+게임_현재상태.v24.md
+게임_현재상태.v25.md
+게임_현재상태.v26.md
+게임_현재상태.v27.md
+게임_현재상태.v28.md
+게임_현재상태.v29.md
+게임_현재상태.v3.md
+게임_현재상태.v30.md
+게임_현재상태.v31.md
+게임_현재상태.v32.md
+게임_현재상태.v33.md
+게임_현재상태.v34.md
+게임_현재상태.v35.md
+게임_현재상태.v4.md
+게임_현재상태.v5.md
+게임_현재상태.v6.md
+게임_현재상태.v7.md
+게임_현재상태.v8.md
+게임_현재상태.v9.md
+기획결정기록.md
+스킬이펙트표.md
+캐릭터_특성표.md
+
+
+    디렉터리: C:\Users\Home\Downloads\방치형RPG_테스트베드\img\pixellab
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+-a----        2026-11-24   오후 3:08          18708 knight_v2_x8.png                                                     
+
+
+    디렉터리: C:\Users\Home\Downloads\방치형RPG_테스트베드\img\codex\sheep
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+-a----        2026-11-26   오후 4:09          20677 ref_seeress_x8.png                                                   
+
+
+    디렉터리: C:\Users\Home\Downloads\방치형RPG_테스트베드\img\codex\goblin
+
+
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+-a----        2026-11-26  오후 12:24          17135 dealer_x16.png                                                       
+False
+
+
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command '$spriteSource = '"'C:\\Users\\Home\\.codex\\generated_images\\01a216b0-0772-7b13-9c94-8dddf7e40e4d\\exec-dd7f7adc-2ede-4d8f-89a2-d3a8abbc915b.png'
+"'$spriteTarget = '"'img/codex/sheep/sheepa_src.png'
+Copy-Item -LiteralPath "'$spriteSource -Destination $spriteTarget -ErrorAction Stop
+$sourceHash = (Get-FileHash -LiteralPath $spriteSource).Hash
+$targetHash = (Get-FileHash -LiteralPath $spriteTarget).Hash
+Add-Type -AssemblyName System.Drawing
+$spriteBitmap = [System.Drawing.Bitmap]::new((Resolve-Path -LiteralPath $spriteTarget).Path)
+try {
+  $corners = @($spriteBitmap.GetPixel(0,0),$spriteBitmap.GetPixel($spriteBitmap.Width - 1,0),$spriteBitmap.GetPixel(0,$spriteBitmap.Height - 1),$spriteBitmap.GetPixel($spriteBitmap.Width - 1,$spriteBitmap.Height - 1))
+  [pscustomobject]@{ Width = $spriteBitmap.Width; Height = $spriteBitmap.Height; Corners = ($corners | ForEach-Object { '"'{0:X2}{1:X2}{2:X2}' -f "'$_.R,$_.G,$_.B }) -join '"','; ExactCopy = ("'$sourceHash -eq $targetHash) }
+} finally { $spriteBitmap.Dispose() }' in C:\Users\Home\Downloads\방치형RPG_테스트베드
+ succeeded in 251ms:
+
+Width Height Corners                     ExactCopy
+----- ------ -------                     ---------
+ 1254   1254 F10CF1,F711F3,EE21ED,F11DEF      True
+
+
+
+codex
+Saved one image generated with the built-in tool to [img/codex/sheep/sheepa_src.png](<C:/Users/Home/Downloads/방치형RPG_테스트베드/img/codex/sheep/sheepa_src.png>). It’s a byte-for-byte copy.
+
+The prompt specified a 1024×1024 night-sky sheep on a strict pixel grid with a solid `#FF00FF` background. The generated PNG came back at 1254×1254 with varying magenta values, and I couldn’t verify the exact grid or one-art-pixel eye offset.
+tokens used
+22,049
+Saved one image generated with the built-in tool to [img/codex/sheep/sheepa_src.png](<C:/Users/Home/Downloads/방치형RPG_테스트베드/img/codex/sheep/sheepa_src.png>). It’s a byte-for-byte copy.
+
+The prompt specified a 1024×1024 night-sky sheep on a strict pixel grid with a solid `#FF00FF` background. The generated PNG came back at 1254×1254 with varying magenta values, and I couldn’t verify the exact grid or one-art-pixel eye offset.

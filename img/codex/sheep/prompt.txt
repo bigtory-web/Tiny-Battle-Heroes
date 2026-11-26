@@ -1,0 +1,14 @@
+Look at these images of our pixel game:
+- img/pixellab/knight_v2_x8.png = our STYLE STANDARD: chibi, big head, thick dark brown outline, muted colors with soft shading, 3/4 view seen slightly from above.
+- img/codex/sheep/ref_seeress_x8.png = another event character of the game: SAME pixel size and same overall height as the new one.
+- img/codex/goblin/dealer_x16.png = a non-human event character, same style.
+
+Generate ONE new image with your image generation tool and save it as img/codex/sheep/OUTNAME
+Character: a mystical NIGHT-SKY SHEEP, a cute small sheep creature (an animal, not a human in costume) who weaves magic rugs out of its own wool.
+- WOOL: very fluffy cloud-like fleece in deep midnight navy and violet, shaded in clusters, scattered with tiny twinkling STARS (single bright pixels and a few small four-point sparkles in white, pale gold and light blue). The wool is the highlight: iridescent, like a starry night sky.
+- Head: big round head, soft pale lavender-cream face that reads clearly against the dark wool, big gentle sleepy eyes, tiny nose and small calm smile, drooping ears, two small curled GOLD horns, a fluffy wool tuft on the forehead.
+- Head angle: seen slightly from above, 3/4 view facing RIGHT; the eye on the viewer's LEFT sits exactly 1 art pixel lower than the right eye.
+- Pose: sitting upright / standing on its short hind legs, holding two golden KNITTING NEEDLES with a small piece of woven rug hanging from them (starry violet cloth with a gold border), clearly readable and separated from the body. A ball of starry yarn by its feet connected with a thread.
+- Pixel grid: same as the seeress reference: crisp square pixels, whole character about 47 art pixels tall and at most 50 wide, 1 art pixel outline with no gaps, no anti-aliasing, no gradients, no finer detail than the grid. Image 1024x1024, centered.
+[Format] Plain solid #FF00FF magenta background, no text, no shadow.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
