@@ -1,0 +1,12 @@
+Look at these images from our pixel art game, shown 8x enlarged on white:
+- img/gemini/ref/bear_x8.png : the hero Roxy. THIS IS THE STYLE AND PROPORTION STANDARD (unity standard).
+- img/gemini/ref/ui_merchant_x8.png : the shop icon showing the face of our wandering merchant (maroon-brown hood with gold trim, brown hair). Match this person and these colors.
+- img/gemini/ref/ev_fairy_x8.png : another event character of our game (the fairy), same size class.
+Generate ONE new image with your image generation tool and save it as OUTFILE
+
+Draw the WANDERING MERCHANT as a full-body character in exactly the same style as Roxy (same artist, same set): a cute chibi girl, very big head with a fluffy brown hair mass, small short body, tiny legs, a maroon-brown hooded travelling cloak with gold trim (hood up, face fully visible), a HUGE travelling backpack bundle on her back, bigger than her torso, stacked with a rolled blanket, a small hanging lantern, pouches and a little pot, so she reads instantly as a travelling trader, a wooden walking staff held in one hand close to the body, a coin pouch on her belt.
+Face exactly like Roxy's: big simple amber eyes with white glints, eyes low on the face, NO mouth, same slightly-from-above camera angle, slight turn to the right. IMPORTANT gaze rule: the eye on the viewer's LEFT sits exactly 1 art pixel LOWER than the eye on the right, like Roxy.
+Same pixel size as the references (one art pixel = one 8x8 block, crisp squares, no finer detail), about 48 art pixels tall and 48 wide in total, 1 art pixel thick dark reddish-brown outline, flat cel shading about 3 tones per material, warm slightly muted saturation. Clean readable shapes, not cluttered.
+
+[Format] One character only, standing, full body with feet visible at the bottom, centered, plain solid #FF00FF magenta background, no ground, no shadow, no text, no anti-aliasing. Nothing cropped.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
