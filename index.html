@@ -5614,8 +5614,8 @@ img.rimg{image-rendering:auto!important}
   var SPK_AT = { campfire: '.unit.cfh:not(.fairy):not(.merchnpc):not(.oegob):not(.altseer):not(.fork):not(.altA):not(.altM)', merchant: '.unit.merchnpc', groll: '.unit.oegob', fairy: '.unit.cfh.fairy', altar: '.unit.altseer', dais: '.unit.dsheep' };
   var spkWait = 0, spkTimer = 0, spkKey = '';
   function spkOff(){ clearInterval(spkTimer); var b = $('spk'); if (b) b.remove(); }
-  function spkSay(host, text){ spkOff(); var A = $('arena'), R = A.getBoundingClientRect(), v = host.querySelector('.cfslot, .cfspr') || host, r = v.getBoundingClientRect(), q = R.width / A.offsetWidth || 1;
-    var b = document.createElement('i'); b.id = 'spk'; b.innerHTML = '<i class="bx"><i class="in"><span></span><u>' + text + '</u></i></i><i class="tl"></i>'; b.style.left = ((r.left + r.width / 2 - R.left) / q) + 'px'; b.style.top = ((r.top - R.top) / q - 2) + 'px'; A.appendChild(b);
+  function spkSay(host, text){ spkOff(); var A = $('arena'), R = A.getBoundingClientRect(), fv = host.dataset.hid && host.querySelector('.foe'), v = fv || host.querySelector('.cfslot, .cfspr') || host, r = v.getBoundingClientRect(), q = R.width / A.offsetWidth || 1, head = fv && IMGS[host.dataset.hid] ? r.height * imgTopFrac(IMGS[host.dataset.hid]) : 0;
+    var b = document.createElement('i'); b.id = 'spk'; b.innerHTML = '<i class="bx"><i class="in"><span></span><u>' + text + '</u></i></i><i class="tl"></i>'; b.style.left = ((r.left + r.width / 2 - R.left) / q) + 'px'; b.style.top = ((r.top + head - R.top) / q - 2) + 'px'; A.appendChild(b);
     var sp = b.querySelector('span'), n = 0; spkTimer = setInterval(function(){ sp.textContent = text.slice(0, ++n); if (n >= text.length){ clearInterval(spkTimer); spkTimer = 0; } }, /^[. ]+$/.test(text) ? 220 : 70); }
   setInterval(function(){ var ev = S && S.event, L = ev && D.events && D.events.lines && D.events.lines[ev.kind], key = ev ? S.stage + ':' + ev.kind : '';
     if (key !== spkKey){ spkKey = key; spkWait = 0; spkOff(); }
@@ -5624,9 +5624,9 @@ img.rimg{image-rendering:auto!important}
     var busy = !$('roul').hidden || !!$('trWin') || (!$('evWin').hidden) || shopOpen() || !!S.offer || !!S.pending || $('field').classList.contains('scrollin');
     if (!$('roul').hidden || $('trWin') || $('dsWin') || !$('evWin').hidden || shopOpen()) spkOff(); /* 팝업이 열리면 닫음 */
     var when = !said.enter ? 'enter' : !said.done && evActed() && !busy ? 'done' : '';
-    if (!when || !hosts.length || (when === 'enter' && $('field').classList.contains('scrollin'))){ spkWait = 0; return; }
+    if (!when || !hosts.length || (when === 'enter' && ($('field').classList.contains('scrollin') || $('field').querySelector('.fspawn')))){ spkWait = 0; return; } /* 내려앉는 중에는 기다림 (자리를 정확히) */
     if (++spkWait < 3) return; /* 나타나고 잠깐 뒤 */
-    spkWait = 0; said[when] = 1; save(); var list = L[when]; if (list && list.length) spkSay(hosts[Math.floor(Math.random() * hosts.length)], list[Math.floor(Math.random() * list.length)]); }, 300);
+    spkWait = 0; said[when] = 1; save(); var list = L[when]; var who = ev.kind === 'campfire' ? (document.querySelector('#field .unit.cfh[data-cfp="1"]') || document.querySelector('#field .unit.cfh[data-cfp]') || hosts[0]) : hosts[Math.floor(Math.random() * hosts.length)]; /* 2026-11-26 사용자: 오른쪽 영웅 머리 위 */ if (list && list.length) spkSay(who, list[Math.floor(Math.random() * list.length)]); }, 300);
   function finishGroll(){ grOpen = false; S.grollN = null; S.event = nextEvent(false); S.bell = 0; S.bellGold = 0; save(); evGo(); }
   function oddEvenHtml(){ var bet = E.oddEvenBet ? E.oddEvenBet(D, S.stage) * oeK() : 0, ok = oeK() > 0 && !oeBusy, gx = 506, gy = 184; /* 2026-11-24: 적 쪽 5번 칸(보물상자와 같은 자리) */
     return '<div class="unit cfh oegob" style="left:' + (100 * zx(gx) / W) + '%;top:' + (100 * (zy(gy) + OFF + FOOT) / H) + '%;z-index:' + gy + '"><div class="cfslot">' + av('goblin') + '</div></div>' +
@@ -5819,7 +5819,7 @@ img.rimg{image-rendering:auto!important}
   function campHtml(){ var ids = S.event.ids || [], fx = 506, fy = 184; // 모닥불은 적 중반열 가운데 칸(3번)
     var fire = '<div class="unit cfire" style="left:' + (100 * zx(fx) / W) + '%;top:' + (100 * (zy(fy) + OFF + FOOT) / H) + '%;z-index:' + fy + '">' + (CFIMG.ev_campfire ? '<span class="cfspr"></span>' : '<span class="cfimg emo">🔥</span>') + '</div>';
     return fire + ids.map(function(id, i){ if ((S.event.got || []).indexOf(id) >= 0) return ''; var p = CF_POS[i] || CF_POS[0];
-      return '<div class="unit cfh" style="left:' + (100 * zx(p[0]) / W) + '%;top:' + (100 * (zy(p[1]) + OFF + FOOT) / H) + '%;z-index:' + p[1] + '"><div class="foe cfhero' + (p[2] ? ' fwd' : '') + '" style="--el:' + ELC[hero(id).el] + footCss(id) + '" title="' + hero(id).name + '">' + avO(id) + '</div>' + bnBubble((S.event.bonus || [])[i]) + '</div>'; }).join(''); } /* 모닥불 영웅도 전장 캐릭터(.foe + avO)와 같은 크기·외곽선·그림자·대기 애니 (2026-11-25) */
+      return '<div class="unit cfh" data-cfp="' + i + '" data-hid="' + id + '" style="left:' + (100 * zx(p[0]) / W) + '%;top:' + (100 * (zy(p[1]) + OFF + FOOT) / H) + '%;z-index:' + p[1] + '"><div class="foe cfhero' + (p[2] ? ' fwd' : '') + '" style="--el:' + ELC[hero(id).el] + footCss(id) + '" title="' + hero(id).name + '">' + avO(id) + '</div>' + bnBubble((S.event.bonus || [])[i]) + '</div>'; }).join(''); } /* 모닥불 영웅도 전장 캐릭터(.foe + avO)와 같은 크기·외곽선·그림자·대기 애니 (2026-11-25) */
   function startCampfire(){ if (!isCamp() || S.offer || S.pending) return;
     var got0 = S.event.got || [], ids = S.event.ids.filter(function(id){ return got0.indexOf(id) < 0; }); offerIds = S.offerIds = ids.map(function(id){ return 'h:' + id; }); S.offerBonus = {}; ids.forEach(function(id){ var b = (S.event.bonus || [])[S.event.ids.indexOf(id)]; if (b && !S.offerBonus[id]) S.offerBonus[id] = b; }); S.offer = offerIds[E.lootPick(D, offerIds, plv(), Math.random)];
     S.offerMode = 'camp'; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; save(); renderAll(); startRoulette(offerIds, S.offer); }
