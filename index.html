@@ -2615,6 +2615,10 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
 .sfaces .sfa{width:40px;height:40px}
 .sfaces .sfa .av.pic{background-size:contain!important;background-position:50% 100%!important;background-repeat:no-repeat}
 #tab-shop .spBody{height:262px!important}
+/* 영웅 줄까지 3줄이면 창 안에서 칸 영역만 스크롤, 구매 버튼은 고정 (2026-11-26 사용자) */
+#tab-shop .spRight{display:flex!important;flex-direction:column;min-height:0}
+#tab-shop .spRight > #stock{flex:1 1 0;min-height:0;overflow-y:auto;overflow-x:hidden;flex-wrap:nowrap!important;justify-content:flex-start!important;scrollbar-width:thin;padding:3px 0}
+#tab-shop .spRight > #stock > *{flex:none}
 #tab-shop .srow2:not(.h) .stile,#tab-shop .srow2 .stile.lockd,#tab-shop .srow2 .stile.empty.keep{height:96px!important}
 #tab-shop .spRight #shopBuy{height:38px!important;flex:none}
 #tab-shop.shopPop{top:76px!important}
