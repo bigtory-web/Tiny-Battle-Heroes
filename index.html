@@ -2848,7 +2848,7 @@ img.rimg{image-rendering:auto!important}
 /* 요정 팝업 */
 /* 용병 영입·거절 = 같은 너비 (2026-11-26 사용자: "같게") */
 .evbox.merc .rbtns button{width:143px!important;white-space:nowrap}
-.rfw{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;font-style:normal}
+.rfw{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1;font-style:normal;filter:drop-shadow(1px 0 #17141d) drop-shadow(-1px 0 #17141d) drop-shadow(0 1px #17141d) drop-shadow(0 -1px #17141d)}
 .rfw .fwr{position:absolute;width:2px;height:10px;margin-left:-1px;background:linear-gradient(currentColor,transparent)}
 .rfw .fws{position:absolute;width:2px;height:2px;margin:-1px;background:currentColor;box-shadow:-2px 0 currentColor,2px 0 currentColor,0 -2px currentColor,0 2px currentColor}
 .rfw .fws.m{width:3px;height:3px;box-shadow:-3px 0 currentColor,3px 0 currentColor,0 -3px currentColor,0 3px currentColor}
@@ -3799,20 +3799,20 @@ img.rimg{image-rendering:auto!important}
     el.style.setProperty('--sc', col || '#fff'); var near = !!stage.closest('.rbox.camp'), md = near ? 'c' : 'a'; if (el.firstChild && el.dataset.m === md) return; el.dataset.m = md; var n = 6, o = ''; /* 모닥불: 영웅 몸 가까이, 절반 (2026-11-26 사용자) */ /* 개수·빈도는 등급과 상관없이 같고 색만 다름. 결과 그림 왼쪽·위·오른쪽 반원, 단상 위로는 안 내려감 (2026-11-26 사용자) */
     for (var i = 0; i < n; i++){ var a = (i + Math.random() * .7) / n * Math.PI, f = Math.random(), x = 50 + Math.cos(a) * (near ? 19 + f * 9 : 32 + f * 16), y = 94 - Math.sin(a) * (near ? 44 + f * 14 : 80 + f * 10), sz = Math.random() < .45 ? 3 : 2, du = (1.6 + Math.random() * 1.4).toFixed(2), dl = (-Math.random() * 3).toFixed(2); o += '<s class="s' + sz + '" style="left:' + x.toFixed(1) + '%;top:' + y.toFixed(1) + '%;animation-delay:-' + (i * .4).toFixed(1) + 's"></s>'; }
     el.innerHTML = o; }
-  /* 룰렛 결과 = 아이콘 뒤 폭죽(2026-11-26 사용자: "아이콘 뒤에 폭죽 아래에서 위로 올라가며 터지듯"). 멈추면 3발 엇갈려, 그 뒤 2.4초에 한 발. 색은 팝업 테마색 */
-  function fwShot(host, col){ var W = host.clientWidth, H = host.clientHeight; if (!W || !host.animate || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
-    var x = W * (.28 + Math.random() * .44), y = H * (.16 + Math.random() * .22), put = function(cls, l, t){ var e = document.createElement('i'); e.className = cls; e.style.cssText = 'left:' + l + 'px;top:' + t + 'px;color:' + col; host.appendChild(e); return e; };
-    var r = put('fwr', x, y); r.animate([{ transform: 'translateY(' + (H - y - 20) + 'px)', opacity: .3 }, { transform: 'none', opacity: 1 }], { duration: 520, easing: 'cubic-bezier(.2,.6,.4,1)' }).onfinish = function(){ r.remove();
-      for (var i = 0; i < 8; i++){ (function(a){ var s = put('fws' + (i % 2 ? ' m' : ''), x, y), d = i % 2 ? 17 : 26; s.animate([{ transform: 'none', opacity: 1 }, { transform: 'translate(' + Math.cos(a) * d * .8 + 'px,' + Math.sin(a) * d * .8 + 'px)', opacity: 1, offset: .45 }, { transform: 'translate(' + Math.cos(a) * d + 'px,' + (Math.sin(a) * d + 9) + 'px) scale(.5)', opacity: 0 }], { duration: 760, easing: 'ease-out' }).onfinish = function(){ s.remove(); }; })(i / 8 * 6.283); } }; }
-  function fwFx(stage, col, busy){ if (!stage) return; var host = stage.querySelector(':scope > .rfw');
+  /* 룰렛 결과 = 아이콘 뒤 폭죽(2026-11-26 사용자: "아이콘 뒤에 폭죽 아래에서 위로 올라가며 터지듯"). 멈추면 3발 엇갈려, 그 뒤 2.4초에 한 발. 색은 모든 팝업 같은 축하 색 한 벌(흰 심지 + 분홍·하늘·연노랑, 어두운 1px 테두리) */
+  var FWC = ['#ff6fb5', '#59d6ff', '#fff27a', '#ffffff'];
+  function fwShot(host){ var W = host.clientWidth, H = host.clientHeight; if (!W || !host.animate || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+    var x = W * (.28 + Math.random() * .44), y = H * (.16 + Math.random() * .22), put = function(cls, l, t, col){ var e = document.createElement('i'); e.className = cls; e.style.cssText = 'left:' + l + 'px;top:' + t + 'px;color:' + col; host.appendChild(e); return e; };
+    var r = put('fwr', x, y, '#ffffff'), turn = Math.random() * 4 | 0; r.animate([{ transform: 'translateY(' + (H - y - 20) + 'px)', opacity: .3 }, { transform: 'none', opacity: 1 }], { duration: 520, easing: 'cubic-bezier(.2,.6,.4,1)' }).onfinish = function(){ r.remove();
+      for (var i = 0; i < 8; i++){ (function(a){ var s = put('fws' + (i % 2 ? ' m' : ''), x, y, FWC[(i + turn) % 4]), d = i % 2 ? 17 : 26; s.animate([{ transform: 'none', opacity: 1 }, { transform: 'translate(' + Math.cos(a) * d * .8 + 'px,' + Math.sin(a) * d * .8 + 'px)', opacity: 1, offset: .45 }, { transform: 'translate(' + Math.cos(a) * d + 'px,' + (Math.sin(a) * d + 9) + 'px) scale(.5)', opacity: 0 }], { duration: 760, easing: 'ease-out' }).onfinish = function(){ s.remove(); }; })(i / 8 * 6.283); } }; }
+  function fwFx(stage, busy){ if (!stage) return; var host = stage.querySelector(':scope > .rfw');
     if (!host){ host = document.createElement('i'); host.className = 'rfw'; stage.insertBefore(host, stage.querySelector(':scope > .rpic, :scope > .dsrug') || null); }
-    host._col = col; if (busy) host._busy = busy; if (host._t) return; var next = 0, quiet = true;
+    if (busy) host._busy = busy; if (host._t) return; var next = 0, quiet = true;
     host._t = setInterval(function(){ if (!host.isConnected){ clearInterval(host._t); host._t = 0; return; }
       if (!host.offsetParent || (host._busy && host._busy())){ quiet = true; return; } var now = Date.now();
-      if (quiet){ quiet = false; next = now + 2400; [0, 280, 620].forEach(function(d){ setTimeout(function(){ if (host.isConnected) fwShot(host, host._col); }, d); }); }
-      else if (now >= next){ next = now + 2400; fwShot(host, host._col); } }, 150); }
-  function fwTheme(){ return { fairy: '#9dff8a', camp: '#ffab4a' }[S.offerMode] || '#ffd75a'; } /* 요정 초록, 모닥불 주황, 승리·돈고블린 금 */
-  function rayFx(key){ var rb = $('roul').querySelector('.rbox'), t = lootTier(key); rb.classList.remove('rl1', 'rl2', 'rl3', 'rl4'); rb.classList.add('rl' + t); rb.style.setProperty('--gcol', GR(t).col); fwFx(rb.querySelector('.rstage'), fwTheme(), function(){ return rb.classList.contains('spin') || rb.classList.contains('gwait'); }); } /* 뒤 빛줄기: 1등급 없음, 2등급 이상은 등급색, 높을수록 진하고 빠르게. 도는 중 칸이 바뀌면 같이 바뀜 */
+      if (quiet){ quiet = false; next = now + 2400; [0, 280, 620].forEach(function(d){ setTimeout(function(){ if (host.isConnected) fwShot(host); }, d); }); }
+      else if (now >= next){ next = now + 2400; fwShot(host); } }, 150); }
+  function rayFx(key){ var rb = $('roul').querySelector('.rbox'), t = lootTier(key); rb.classList.remove('rl1', 'rl2', 'rl3', 'rl4'); rb.classList.add('rl' + t); rb.style.setProperty('--gcol', GR(t).col); fwFx(rb.querySelector('.rstage'), function(){ return rb.classList.contains('spin') || rb.classList.contains('gwait'); }); } /* 뒤 빛줄기: 1등급 없음, 2등급 이상은 등급색, 높을수록 진하고 빠르게. 도는 중 칸이 바뀌면 같이 바뀜 */
   /* 룬 단상 (2026-11-26 사용자 확정): 영웅 도트와 같은 밀도(1칸 = P css px, 장치 px 정수배). 발 = 단상 윗끝에서 10.5칸 아래, 이름판은 단상 아래. 룬은 등급색으로 반짝 */
   var PEDRUNE = new Image(), PEDC = {}; PEDRUNE.src = 'img/p/pedestal_rune.png';
   function pedRune(col){ if (PEDC[col]) return PEDC[col]; if (!PEDRUNE.complete || !PEDRUNE.naturalWidth) return 'img/p/pedestal_rune.png'; var c = document.createElement('canvas'); c.width = 96; c.height = 33; var x = c.getContext('2d'); x.drawImage(PEDRUNE, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = col; x.fillRect(0, 0, 96, 33); return PEDC[col] = c.toDataURL(); }
@@ -5232,7 +5232,9 @@ img.rimg{image-rendering:auto!important}
     var o = S.evOffer; if (!o) return;
     var b = e.target.closest('[data-evmerc],[data-evleave]'); if (!b || b.disabled) return;
     if (b.dataset.evleave){ S.evOffer = null; save(); $('evWin').hidden = true; renderAll(); tryWinAfter(); return; }
-    if (b.dataset.evmerc){ if (S.gold < o.price) return; S.gold -= o.price; S.evOffer = null; recruitFrom(o.id); save(); $('evWin').hidden = true; renderAll(); tryWinAfter(); return; }
+    if (b.dataset.evmerc){ if (S.gold < o.price) return; S.gold -= o.price; S.evOffer = null; recruitFrom(o.id); save();
+      var done = function(){ $('evWin').hidden = true; renderAll(); tryWinAfter(); }; if (S.pending){ done(); return; }
+      this.querySelectorAll('button').forEach(function(x){ x.disabled = true; }); fwFx(this.querySelector('.rstage')); setTimeout(done, 1900); return; }
   });
   var offerIds = [];
   function takeMobLoot(){ var L = S.mobPend || [], g0 = S.gold; S.mobPend = null; L.forEach(grantLoot);
@@ -5580,7 +5582,7 @@ img.rimg{image-rendering:auto!important}
   function daisShow(v, win, peek){ var w = $('dsWin'); if (!w) return; w.querySelectorAll('.dskinds i').forEach(function(c){ var on = c.dataset.v === v; c.classList.toggle('view', !!peek && on); if (peek) return; c.classList.toggle('lit', on && !win); c.classList.toggle('win', on && !!win); }); /* peek = 보기만: 결과(노란 테두리)는 그대로 */
     w.querySelector('.dsstage').classList.toggle('win', !!win);
     var tip = v ? '이 칸에 선 영웅은 ' + padWord(v) + (padRace(v) ? ' 종족이' : ' 속성이') + ' 더해져요. ' + padWord(v) + ' 조건 유물·' + padWord(v) + ' 시너지에 들어가요' : '';
-    w.querySelector('.dsstage').innerHTML = (v ? '<img class="dsrug' + (win ? ' win' : '') + '" src="' + padURL(v) + '" alt="">' : '<em>?</em>') + '<i class="dsdeco dvine"></i><i class="dsdeco dvine r"></i><i class="dsped rped"><i class="rrune" style="background-image:url(' + pedRune(daisCol()) + ')"></i></i>' + (v ? '<b class="dsnm" style="color:' + daisCol() + '">' + padName(v) + '</b><span class="dscorner" style="--pc:' + daisCol() + '" data-tipt="' + padName(v) + '" data-tiptx="' + tip + '"><img src="' + padIc(v) + '" alt="' + padName(v) + '"></span>' : '') ; if (win) fwFx(w.querySelector('.dsstage'), '#d9c4ff', function(){ return daisBusy; }); }
+    w.querySelector('.dsstage').innerHTML = (v ? '<img class="dsrug' + (win ? ' win' : '') + '" src="' + padURL(v) + '" alt="">' : '<em>?</em>') + '<i class="dsdeco dvine"></i><i class="dsdeco dvine r"></i><i class="dsped rped"><i class="rrune" style="background-image:url(' + pedRune(daisCol()) + ')"></i></i>' + (v ? '<b class="dsnm" style="color:' + daisCol() + '">' + padName(v) + '</b><span class="dscorner" style="--pc:' + daisCol() + '" data-tipt="' + padName(v) + '" data-tiptx="' + tip + '"><img src="' + padIc(v) + '" alt="' + padName(v) + '"></span>' : '') ; if (win) fwFx(w.querySelector('.dsstage'), function(){ return daisBusy; }); }
   function daisPrice(){ return E.lootRerollPrice(D, S.event.dsRr || 0, S.stage - 1); } /* 룰렛 리셋과 같은 값 */
   function daisPaint(){ var w = $('dsWin'); if (!w) return; var ev = S.event, mx = E.daisRerolls(D, plv()), left = Math.max(0, mx - (ev.dsRr || 0)), has = !daisBusy, price = Math.floor(daisPrice());
     if (!daisBusy) daisShow(has ? ev.tag : null, has);
@@ -5767,7 +5769,7 @@ img.rimg{image-rendering:auto!important}
     st.insertAdjacentHTML('beforeend', '<i class="trdust">' + o + '</i><i class="trvine dvine"></i><i class="trvine dvine r"></i>'); }
   /* 초월 뒤: 팝업을 닫지 않고 메인만 남겨 얻은 스킬을 보여 줌. 확인과 X 둘 다 닫기 */
   function trResult(w){ var u = U(trDone.uid), hm = hero(trDone.mid), sk = ultName(hm), st = w.querySelector('.trstage');
-    st.innerHTML = trSlot('A', trDone.uid); st.querySelectorAll('.trslot').forEach(function(s){ s.disabled = true; pedestal(s, '#c9a6ff'); }); trDust(st, true); st.classList.add('done'); fwFx(st, '#d9c4ff');
+    st.innerHTML = trSlot('A', trDone.uid); st.querySelectorAll('.trslot').forEach(function(s){ s.disabled = true; pedestal(s, '#c9a6ff'); }); trDust(st, true); st.classList.add('done'); fwFx(st);
     var r = w.querySelector('.trres'); r.hidden = false; r.innerHTML = skFrame(ultIconEl(hm), HG(trDone.mid).col) + '<b>' + sk + ' 스킬 획득</b>';
     w.querySelector('.trlist').hidden = true; /* X는 결과에서도 남김 = 확인과 같음 (2026-11-26 사용자) */ trSeen = trDone.uid; trInfo(w.querySelector('.trinfo')); trBag();
     w.querySelectorAll('.trinfo .hi-skrow').forEach(function(row){ var n = row.querySelector('.hi-skh b'); if (n && n.querySelector('.trtag') && n.firstChild.textContent.trim() === sk) row.classList.add('trnew'); }); /* 새로 얻은 스킬 줄 */
