@@ -367,12 +367,12 @@ var IDLE_DATA = {
     //   atStart: true면 게임(그리고 체력 0 뒤 새 판)을 이 모닥불로 시작해요. 시작 영웅이 매번 달라져요(recruit.startHero는 꺼졌을 때만 써요)
     //   이벤트 스테이지(2026-11-18 바뀜): 모닥불·방랑상인·보물상자는 스테이지 수를 쓰지 않아요. 스테이지를 깨고 다음으로 올라갈 때 n과 n+1 사이(1-1.5처럼)에 들러요
     //   시작 모닥불은 1-0.5이고 첫 전투는 1-1이에요. 들른 뒤에는 그 다음 스테이지 전투로 가요(다시 도전할 때는 안 나와요). 목록 = stageKinds
-    stageKinds: ['campfire', 'merchant', 'chest', 'altar', 'mobs', 'fairy', 'oddeven', 'groll'],
+    stageKinds: ['campfire', 'merchant', 'chest', 'altar', 'mobs', 'fairy', 'groll'], // 2026-11-26: 홀짝(oddeven) 뺌(사용자: 이벤트에서 홀짝은 제거해). 되돌리려면 'oddeven'을 넣고 weights에 oddeven 추가
     fixed: { 1: 'fairy' }, // 2026-11-22 몹 판 끔(예전 2: 'mobs') // 2026-11-21: 1-2 앞엔 요정, 1-3 앞엔 몹이 꼭 나와요 { 스테이지 번호(0부터): 이벤트 }
     fork: false, // 2026-11-22 끔(사용자: 우측 선택지는 하나만). 갈림길: 이벤트 스테이지가 나오면 2개 중 골라요 (fixed 판은 그대로)
     off: [], // 도구: 여기 적은 이벤트 종류는 안 나와요(예: ['chest']). campfire를 끄면 시작 모닥불도 없어요 (2026-11-18)
     forceEvery: 0, // 도구: N이면 스테이지 N개마다 이벤트 스테이지가 100% 나와요(2면 1-2·1-4 뒤에). 0이면 꺼짐(평소 확률 chance)
-    from: 2, chance: 0.18, weights: { goblin: 0, oddeven: 0, /* 2026-11-26 홀짝 → groll(돈고블린 룰렛)으로 바꿈(화면 생김) */ groll: 3, merchant: 3, merc: 3, campfire: 2, chest: 3, altar: 3, mobs: 0, fairy: 3 }, // chest: 화면 작업이 끝나서 3으로 켰어요 (2026-11-18 UI 세션) // campfire: 화면 작업이 끝나서 2로 켰어요 (2026-11-18 UI 세션)
+    from: 2, chance: 0.18, weights: { goblin: 0, /* 2026-11-26 홀짝(oddeven) 뺌 → groll(돈고블린 룰렛) */ groll: 3, merchant: 3, merc: 3, campfire: 2, chest: 3, altar: 3, mobs: 0, fairy: 3 }, // chest: 화면 작업이 끝나서 3으로 켰어요 (2026-11-18 UI 세션) // campfire: 화면 작업이 끝나서 2로 켰어요 (2026-11-18 UI 세션)
     // 도감 이벤트 탭용 이름·설명 (2026-11-21)
     info: {
       campfire: { name: '모닥불', desc: '모닥불에 둘러앉은 영웅 중 1명이 룰렛으로 동료가 된다. 전투는 없다.' },
