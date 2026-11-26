@@ -2689,7 +2689,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   var BG = new Image(), BGD = new Image(); /* 낮·노을 배경 */
   var FG = new Image(), FGD = new Image(), FGN = new Image(); FG.src = 'img/p/fg_field.png'; FGD.src = 'img/p/fg_field_dusk.png'; FGN.src = 'img/p/fg_field_night.png'; /* 앞쪽 아래 장식(720×80): 캐릭터보다 앞. 2026-11-26 */
   /* 배경을 BGUP px 위로 올림(2026-11-26 사용자: 9칸이 뒷배경 바위와 겹쳐 보임). 아래 빈 띠는 맨 아래 땅을 뒤집어 이어 붙임. 전투 캔버스와 편성 화면이 같은 합성 그림을 씀 */
-  var BGUP = 66; /* 30 -> 48 -> 66 (2026-11-26 사용자 선택): 윗줄 칸 전체가 흙 위에 */
+  var BGUP = 58; /* 30 -> 48 -> 66 -> 58 (2026-11-26): 칸을 12 내려서 덜 올림(하늘을 조금 되살림) */
   function bgRaise(src, done){ var im = new Image(); im.onload = function(){ var c = document.createElement('canvas'); c.width = im.width; c.height = im.height; var x = c.getContext('2d'); x.drawImage(im, 0, -BGUP); x.translate(0, im.height); x.scale(1, -1); x.drawImage(im, 0, im.height - BGUP, im.width, BGUP, 0, 0, im.width, BGUP); c.complete = true; c.naturalWidth = c.width; c.naturalHeight = c.height; done(c); }; im.src = src; }
   bgRaise('img/p/bg_field.png', function(c){ BG = c; try { var st = document.createElement('style'); st.textContent = '.field{background:url(' + c.toDataURL() + ') 50% 50% / 100% 100.5% no-repeat,#b8a0a6}'; document.head.appendChild(st); } catch (e) {} });
   bgRaise('img/p/bg_field_dusk.png', function(c){ BGD = c; });
@@ -3610,7 +3610,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   document.querySelectorAll('[data-go]').forEach(function(b){ b.addEventListener('click', function(){ showTab(b.dataset.go); }); });
 
   // ───── 전투 ─────
-  var cv = $('cv'), ctx = cv.getContext('2d'), W = 720, H = 400, OFF = 80, dpr = Math.min(2, window.devicePixelRatio || 1);
+  var cv = $('cv'), ctx = cv.getContext('2d'), W = 720, H = 400, OFF = 92 /* 칸·캐릭터를 아래로: 80 -> 92 (2026-11-26 사용자) */, dpr = Math.min(2, window.devicePixelRatio || 1);
   cv.width = W * dpr; cv.height = H * dpr; ctx.scale(dpr, dpr);
   var hudT = 0, bt = null, inspect = null, speed = (S.ui && S.ui.speed) || 1.5, /* 기본 배속 1.5× (고른 배속은 저장) */ acc = 0, logI = 0, last = 0, fxs = [], shots = [], pops = [], banners = [], flash = 0, lunges = {}, curStage = 0, done = false, raf = 0;
   // 세로 폰용 넓고 낮은 전장: 앞줄 2명은 가운데 쪽, 뒷줄 3명은 지그재그로 좌우 폭을 써요
@@ -3885,7 +3885,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
     ctx.imageSmoothingEnabled = false; if (BG.complete && BG.naturalWidth){ // 배경 240×107을 정확히 3배(720×321)로 OFF 위치에. 위쪽 0~OFF는 하늘색
       var bgK = W / BG.naturalWidth; /* 배경 배율 = 화면 폭 ÷ 그림 폭 (240폭이면 3배, 720폭이면 1배) */
-      var bgY = OFF + 321 - BG.naturalHeight * bgK; /* 아래 맞춤: 107줄이면 OFF부터, 134줄이면 맨 위(0)까지 덮어요 */ if (bgY > 0){ ctx.fillStyle = "#b8a0a6"; ctx.fillRect(0, 0, W, bgY + 1); } var bsx = march ? Math.round(march.sx) : 0; ctx.drawImage(BG, -bsx, bgY, BG.naturalWidth * bgK, BG.naturalHeight * bgK); if (bsx) ctx.drawImage(BG, W - bsx, bgY, BG.naturalWidth * bgK, BG.naturalHeight * bgK);
+      var bgY = 401 - BG.naturalHeight * bgK; /* 배경은 OFF와 따로: 칸을 내려도 안 움직임 */ /* 아래 맞춤: 107줄이면 OFF부터, 134줄이면 맨 위(0)까지 덮어요 */ if (bgY > 0){ ctx.fillStyle = "#b8a0a6"; ctx.fillRect(0, 0, W, bgY + 1); } var bsx = march ? Math.round(march.sx) : 0; ctx.drawImage(BG, -bsx, bgY, BG.naturalWidth * bgK, BG.naturalHeight * bgK); if (bsx) ctx.drawImage(BG, W - bsx, bgY, BG.naturalWidth * bgK, BG.naturalHeight * bgK);
       var ENd = D.battle.enrage, dk0 = ENd && ENd.dusk != null && bt && !bt.result ? Math.max(0, Math.min(1, ((bt.time || 0) - ENd.dusk) / Math.max(1, ENd.at - ENd.dusk))) : 0; if (dk0 > 0 && BGD.complete && BGD.naturalWidth){ ctx.globalAlpha = dk0; ctx.drawImage(BGD, -bsx, bgY, BGD.naturalWidth * bgK, BGD.naturalHeight * bgK); if (bsx) ctx.drawImage(BGD, W - bsx, bgY, BGD.naturalWidth * bgK, BGD.naturalHeight * bgK); ctx.globalAlpha = 1; } /* 낮 → 노을 크로스페이드 (30~40초). 밤은 이 위에 밤 색을 덮음 */ }
     var EN2 = D.battle.enrage, night = !!(EN2 && bt && !bt.result && (bt.time || 0) > EN2.at); nightA += ((night ? 1 : 0) - nightA) * Math.min(1, el * 1.5); if (nightA > .01){ ctx.fillStyle = "rgba(10,14,44," + (.55 * nightA).toFixed(3) + ")"; ctx.fillRect(0, 0, W, H); } /* 광폭화: 배경만 어두운 밤 (캐릭터는 이 뒤에 그려서 그대로) */ if (night && bt && !bt._nightMsg){ bt._nightMsg = 1; nightNotice(); }
     var tg = ctx.createLinearGradient(0, 0, 0, H * .62); [[0, .55], [.3, .25], [.7, .08], [1, 0]].forEach(function(s){ tg.addColorStop(s[0], 'rgba(12,10,18,' + s[1] + ')'); }); ctx.fillStyle = tg; ctx.fillRect(0, 0, W, H * .62); /* 편성 화면 #field::before와 같은 위쪽 어둠: 전투 시작 때 하늘 밝기가 안 바뀌게 */
