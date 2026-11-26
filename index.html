@@ -120,15 +120,15 @@ button{font:inherit;color:inherit;cursor:pointer}
 #amb s{position:absolute;width:3px;height:3px;text-decoration:none}
 /* 가운데 땅은 맑게, 색은 위 하늘과 가장자리에만 (2026-11-26 사용자: "화면이 너무 뿌해") */
 #amb[data-k=altar]{background:linear-gradient(rgba(55,20,120,.2),rgba(55,20,120,0) 40%),radial-gradient(ellipse at 50% 62%,rgba(55,20,120,0) 52%,rgba(55,20,120,.28))}
-#amb[data-k=altar] s{background:#e3d2ff;box-shadow:0 0 5px 1px #a77bff;animation:ambrise linear infinite}
+#amb[data-k=altar] .tw{color:#d9c4ff}
 #amb[data-k=campfire]{background:linear-gradient(rgba(170,60,20,.18),rgba(170,60,20,0) 40%),radial-gradient(ellipse at 50% 62%,rgba(150,55,10,0) 52%,rgba(110,35,15,.28))}
-#amb[data-k=campfire] s{background:#ffb347;box-shadow:0 0 4px 1px #ff7a1a;animation:ambrise linear infinite}
+#amb[data-k=campfire] .tw{color:#ffb347}
 #amb[data-k=mimic] s{width:7px;height:7px;background:#ffd34d;box-shadow:inset -2px -2px #b8861c,0 0 0 1px #17141d;opacity:0;animation:ambpop 2.8s cubic-bezier(.2,.6,.4,1) forwards}
 #amb[data-k=mimic] s.d{width:auto;height:auto;background:none;box-shadow:none}
 #amb s.d::before{content:attr(data-c);font:400 15px var(--display);color:#ffe27a;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d}
 /* 방랑상인: 주황 % 만, 가운데는 맑게 */
 #amb[data-k=merchant]{background:linear-gradient(rgba(150,100,20,.14),rgba(150,100,20,0) 40%),radial-gradient(ellipse at 50% 62%,rgba(120,75,10,0) 52%,rgba(120,75,10,.22))}
-#amb[data-k=merchant] s{width:auto;height:auto;animation:ambrise linear infinite}
+#amb[data-k=merchant] s{width:auto;height:auto;opacity:0;animation:twk 2.4s ease-in-out infinite} /* % 모양은 그대로, 제자리 반짝 */
 #amb[data-k=merchant] s.d::before{font-size:17px;color:#ff8a3d;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d}
 #amb[data-k=mimic]{transition:opacity .9s}
 #amb[data-k=mimic].bt{opacity:0}
@@ -136,12 +136,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 @keyframes ambpop0{0%{opacity:1}}
 /* 양탄자 판: 남보라 밤하늘 물, 초승달·별, 바람에 둥실 가는 털뭉치. 가운데 땅은 맑게 (2026-11-26 사용자: "배경연출도 털뭉치나 달 별") */
 #amb[data-k=dais]{background:linear-gradient(rgba(48,28,120,.42),rgba(70,45,140,.12) 30%,rgba(70,45,140,0) 48%),radial-gradient(ellipse at 50% 62%,rgba(55,30,120,0) 55%,rgba(55,30,120,.22))}
-#amb[data-k=dais] b{position:absolute;right:13%;top:9%;width:30px;height:30px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%23f1e7ff' d='M4 0h4v1H6v1H5v1H4v2H3v3h1v1h1v1h2v1h4v1h-1v1H8v1H4v-1H2v-1H1V8H0V4h1V2h1V1h2z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;filter:drop-shadow(0 0 7px #c9aaff);animation:dsfloat 5s ease-in-out infinite}
-#amb[data-k=dais] s{background:#fff;box-shadow:-3px 0 #cdb6ff,3px 0 #cdb6ff,0 -3px #cdb6ff,0 3px #cdb6ff;animation:rugtwink ease-in-out infinite;opacity:0}
+#amb[data-k=dais] b{position:absolute;right:13%;top:9%;width:30px;height:30px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%23f1e7ff' d='M4 0h4v1H6v1H5v1H4v2H3v3h1v1h1v1h2v1h4v1h-1v1H8v1H4v-1H2v-1H1V8H0V4h1V2h1V1h2z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;filter:drop-shadow(0 0 7px #c9aaff)}
+#amb[data-k=dais] .tw{color:#d9c4ff}
 #amb[data-k=dais] i{position:absolute;left:-8%;width:36px;aspect-ratio:18/13;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 13' shape-rendering='crispEdges'%3E%3Cpath fill='%2317141d' d='M5 0h4v1h2v1h3v1h2v2h1v1h1v4h-1v2h-2v1h-3v-1h-2v1H6v-1H4v1H2v-1H1v-2H0V5h1V3h2V2h2z'/%3E%3Cpath fill='%233a2c7e' d='M6 1h3v1h2v1h3v1h1v2h1v1h1v2h-1v2h-2v1h-1v-1h-3v1H8v-1H6v1H5v-1H3v1H2V9H1V6h1V4h2V3h2z'/%3E%3Cpath fill='%236a55c4' d='M6 2h3v1H6zM3 4h2v2H3zM11 4h3v1h-3z'/%3E%3Cpath fill='%23fff' d='M8 5h1v1H8zM12 7h1v1h-1z'/%3E%3Cpath fill='%23bfe4ff' d='M5 8h1v1H5z'/%3E%3Cpath fill='%23e2c4ff' d='M14 8h1v1h-1z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;opacity:.75;animation:woolgo linear infinite}
 @keyframes woolgo{0%{left:-8%;translate:0 0}25%{translate:0 -10px}50%{translate:0 4px}75%{translate:0 -8px}100%{left:106%;translate:0 0}}
 #amb[data-k=fairy]{background:linear-gradient(rgba(255,160,220,.14),rgba(255,200,230,.04) 60%,rgba(140,230,180,.12))}
-#amb[data-k=fairy] s{width:6px;height:4px;background:#ffb3de;box-shadow:2px 2px #ff8ac8;animation:ambfall linear infinite}
+#amb[data-k=fairy] .tw{color:#9dff8a}
 #amb[data-k=groll]{background:radial-gradient(ellipse at 25% 0,rgba(255,220,90,.26),transparent 55%),radial-gradient(ellipse at 75% 0,rgba(255,220,90,.26),transparent 55%);animation:ambcasino 2.4s steps(2) infinite}
 #amb[data-k=groll] s{width:auto;height:auto;font-style:normal;animation:ambup linear infinite,ambglint .6s steps(1) infinite}
 #amb[data-k=groll] s::before{content:attr(data-c);font:400 17px var(--display);text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d,0 0 6px rgba(255,226,122,.8)}
@@ -243,9 +243,9 @@ b.pasx{display:inline-flex;align-items:center;justify-content:center;width:100%;
 #dsWin .dsstage{box-shadow:inset 0 0 0 3px #17141d,inset 0 0 0 6px var(--gc,#ffb02e),inset 0 0 0 7px #17141d!important} /* 큰 칸 테두리 = 결과물 등급색(양탄자 = 전설) (2026-11-26 사용자) */
 #dsWin .dsstage::before{content:'';position:absolute;inset:7px;pointer-events:none;z-index:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 356 196' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23d7b8ff' stop-opacity='0'/%3E%3Cstop offset='.55' stop-color='%23c39bff' stop-opacity='.75'/%3E%3Cstop offset='1' stop-color='%23a77bff' stop-opacity='0'/%3E%3C/linearGradient%3E%3ClinearGradient id='b' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23a8e4ff' stop-opacity='0'/%3E%3Cstop offset='.6' stop-color='%237fd0ff' stop-opacity='.6'/%3E%3Cstop offset='1' stop-color='%236aa8ff' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23a)' d='M0 34C50 4 96 52 160 34S270 0 356 24V70C280 46 226 96 160 80S54 56 0 90Z'/%3E%3Cpath fill='url(%23b)' d='M0 70C64 46 110 104 188 80S300 46 356 72V104C292 82 240 130 180 112S70 90 0 120Z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;animation:dsaur 6s ease-in-out infinite alternate}
 @keyframes dsaur{from{opacity:.65;transform:translateY(-3px)}to{opacity:1;transform:translateY(4px)}}
-.tw{position:absolute;width:2px;height:2px;margin:-1px;background:#d9c4ff;box-shadow:-2px 0 #d9c4ff,2px 0 #d9c4ff,0 -2px #d9c4ff,0 2px #d9c4ff;text-decoration:none;pointer-events:none;animation:twk 2.4s ease-in-out infinite}
-.tw.m{width:3px;height:3px;box-shadow:-3px 0 #d9c4ff,3px 0 #d9c4ff,0 -3px #d9c4ff,0 3px #d9c4ff}
-.tw.l{width:4px;height:4px;box-shadow:-4px 0 #d9c4ff,4px 0 #d9c4ff,0 -4px #d9c4ff,0 4px #d9c4ff}
+.tw{position:absolute;width:2px;height:2px;margin:-1px;color:#d9c4ff;background:currentColor;box-shadow:-2px 0 currentColor,2px 0 currentColor,0 -2px currentColor,0 2px currentColor;text-decoration:none;pointer-events:none;animation:twk 2.4s ease-in-out infinite}
+.tw.m{width:3px;height:3px;box-shadow:-3px 0 currentColor,3px 0 currentColor,0 -3px currentColor,0 3px currentColor}
+.tw.l{width:4px;height:4px;box-shadow:-4px 0 currentColor,4px 0 currentColor,0 -4px currentColor,0 4px currentColor}
 @keyframes twk{0%,100%{scale:.4;opacity:.2}50%{scale:1;opacity:1}}
 #field .dsgone{position:absolute;transform:translate(-50%,-46.8%);width:calc(100% * 78 / 720);height:calc(100% * 56 / 400);z-index:900;pointer-events:none;background:rgba(216,68,62,.55);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);animation:dsomen 1s ease-in-out infinite}
 /* 예고: 바닥 빛이 일렁이고 빛가루가 오르며 희미한 ? */
@@ -2786,7 +2786,7 @@ img.rimg{image-rendering:auto!important}
 /* 룰렛: 도는 빛줄기 없음, 도트 별 */
 .rbox .rfx .rays{display:none!important}
 .rstage > .rstars{position:absolute;inset:6px;pointer-events:none;z-index:3;overflow:hidden}
-.rstars s{position:absolute;width:2px;height:2px;background:var(--sc,#fff);box-shadow:0 -2px var(--sc,#fff),0 2px var(--sc,#fff),-2px 0 var(--sc,#fff),2px 0 var(--sc,#fff);animation:rstar 1.4s steps(4) infinite;opacity:0;text-decoration:none}
+.rstars s{position:absolute;width:2px;height:2px;background:var(--sc,#fff);box-shadow:0 -2px var(--sc,#fff),0 2px var(--sc,#fff),-2px 0 var(--sc,#fff),2px 0 var(--sc,#fff);animation:twk 2.4s ease-in-out infinite;opacity:0;text-decoration:none}
 .rstars s.s3{width:3px;height:3px;box-shadow:0 -3px var(--sc,#fff),0 3px var(--sc,#fff),-3px 0 var(--sc,#fff),3px 0 var(--sc,#fff),0 -6px var(--sc,#fff),0 6px var(--sc,#fff),-6px 0 var(--sc,#fff),6px 0 var(--sc,#fff)}
 @keyframes rstar{0%,100%{opacity:0;transform:scale(.4)}40%,60%{opacity:1;transform:scale(1)}}
 /* 보물상자 골드 칸: 바구니, 원본 비율 */
@@ -3009,7 +3009,6 @@ img.rimg{image-rendering:auto!important}
 #trWin .trsk{position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px;white-space:nowrap}
 #trWin .trsk small{font:400 11px var(--display);color:#f3e6c4;text-shadow:0 1px 0 #17141d,1px 0 0 #17141d,-1px 0 0 #17141d,0 -1px 0 #17141d}
 #trWin .trdust{position:absolute;inset:7px;overflow:hidden;pointer-events:none;z-index:1}
-#trWin .trdust s{position:absolute;width:2px;height:2px;opacity:0;text-decoration:none;animation:fdust 7s linear infinite}
 #trWin .trslot > .rstars{position:absolute;pointer-events:none;z-index:4;left:calc(50% - 55 * var(--P));bottom:calc(38px + 34 * var(--P));width:calc(110 * var(--P));height:calc(76 * var(--P))}
 #trWin .rbtns{align-items:center}
 /* 고르기 전: 원 빛 빼고 +만 껌뻑, 단상 색 = 메인 노랑·재료 파랑 / 초월: 배경이 바뀌는 센 연출 (2026-11-26 사용자) */
@@ -3778,15 +3777,14 @@ img.rimg{image-rendering:auto!important}
       '#roul .rbox.fairy .rstage{background:' + url([[0, [28, 19, 52]], [.25, [29, 26, 62]], [.45, [26, 36, 66]], [.65, [20, 47, 64]], [.82, [18, 54, 60]]], [236, 158, 232], 24, 40, 30, .085) + '#1c1334!important;image-rendering:pixelated}';
     document.body.appendChild(s); })();
   /* 요정 팝업: 떠오르는 요정 가루 + 왼쪽 위·아래 꽃 덩굴 (2026-11-26 사용자) */
-  function fairyDeco(stage){ if (!stage || stage.querySelector(':scope > .fdust')) return; var o = '', C = ['#ffb3de', '#a8e4ff', '#fff3b0'];
-    for (var i = 0; i < 16; i++){ var du = (5 + Math.random() * 4).toFixed(2); o += '<s style="left:' + (4 + Math.random() * 92).toFixed(1) + '%;top:' + (35 + Math.random() * 62).toFixed(1) + '%;background:' + C[i % 3] + ';animation-duration:' + du + 's;animation-delay:' + (-Math.random() * du).toFixed(2) + 's"></s>'; }
-    stage.insertAdjacentHTML('beforeend', '<i class="fdust">' + o + '</i><i class="fvine dvine"></i><i class="fvine dvine r"></i>'); }
+  function fairyDeco(stage){ if (!stage || stage.querySelector(':scope > .fvine')) return;
+    stage.insertAdjacentHTML('beforeend', '<i class="fvine dvine"></i><i class="fvine dvine r"></i>'); }
   /* 돈고블린 룰렛: 큰 칸 둘레 픽셀 전구 (2026-11-26 사용자 OK, 레버 없음). 대기 = 번갈아 천천히, 도는 중 = 한 방향으로 빠르게, 멈추면 한 번 번쩍 */
   function bulbDeco(stage){ if (!stage || stage.querySelector(':scope > .rbulbs')) return; var nx = 17, ny = 9, pts = [], k; for (k = 0; k < nx; k++) pts.push([k / nx, 0]); for (k = 0; k < ny; k++) pts.push([1, k / ny]); for (k = 0; k < nx; k++) pts.push([1 - k / nx, 1]); for (k = 0; k < ny; k++) pts.push([0, 1 - k / ny]);
     stage.insertAdjacentHTML('beforeend', '<i class="rbulbs">' + pts.map(function(p, i){ return '<s class="' + (i % 2 ? 'o' : 'e') + '" style="left:' + (p[0] * 100).toFixed(2) + '%;top:' + (p[1] * 100).toFixed(2) + '%;--d:' + ((i % 4) * .12 - .48).toFixed(2) + 's"></s>'; }).join('') + '</i>'); }
   function starFx(stage, tier, col){ if (!stage) return; var el = stage.querySelector(':scope > .rstars'); if (!el){ el = document.createElement('i'); el.className = 'rstars'; stage.appendChild(el); }
-    el.style.setProperty('--sc', col || '#fff'); var near = !!stage.closest('.rbox.camp'), md = near ? 'c' : 'a'; if (el.firstChild && el.dataset.m === md) return; el.dataset.m = md; var n = near ? 12 : 23, o = ''; /* 모닥불: 영웅 몸 가까이, 절반 (2026-11-26 사용자) */ /* 개수·빈도는 등급과 상관없이 같고 색만 다름. 결과 그림 왼쪽·위·오른쪽 반원, 단상 위로는 안 내려감 (2026-11-26 사용자) */
-    for (var i = 0; i < n; i++){ var a = (i + Math.random() * .7) / n * Math.PI, f = Math.random(), x = 50 + Math.cos(a) * (near ? 19 + f * 9 : 32 + f * 16), y = 94 - Math.sin(a) * (near ? 44 + f * 14 : 80 + f * 10), sz = Math.random() < .45 ? 3 : 2, du = (1.6 + Math.random() * 1.4).toFixed(2), dl = (-Math.random() * 3).toFixed(2); o += '<s class="s' + sz + '" style="left:' + x.toFixed(1) + '%;top:' + y.toFixed(1) + '%;animation-duration:' + du + 's;animation-delay:' + dl + 's"></s>'; }
+    el.style.setProperty('--sc', col || '#fff'); var near = !!stage.closest('.rbox.camp'), md = near ? 'c' : 'a'; if (el.firstChild && el.dataset.m === md) return; el.dataset.m = md; var n = 6, o = ''; /* 모닥불: 영웅 몸 가까이, 절반 (2026-11-26 사용자) */ /* 개수·빈도는 등급과 상관없이 같고 색만 다름. 결과 그림 왼쪽·위·오른쪽 반원, 단상 위로는 안 내려감 (2026-11-26 사용자) */
+    for (var i = 0; i < n; i++){ var a = (i + Math.random() * .7) / n * Math.PI, f = Math.random(), x = 50 + Math.cos(a) * (near ? 19 + f * 9 : 32 + f * 16), y = 94 - Math.sin(a) * (near ? 44 + f * 14 : 80 + f * 10), sz = Math.random() < .45 ? 3 : 2, du = (1.6 + Math.random() * 1.4).toFixed(2), dl = (-Math.random() * 3).toFixed(2); o += '<s class="s' + sz + '" style="left:' + x.toFixed(1) + '%;top:' + y.toFixed(1) + '%;animation-delay:-' + (i * .4).toFixed(1) + 's"></s>'; }
     el.innerHTML = o; }
   /* 룰렛 결과 = 아이콘 뒤 폭죽(2026-11-26 사용자: "아이콘 뒤에 폭죽 아래에서 위로 올라가며 터지듯"). 멈추면 3발 엇갈려, 그 뒤 2.4초에 한 발. 색은 팝업 테마색 */
   function fwShot(host, col){ var W = host.clientWidth, H = host.clientHeight; if (!W || !host.animate || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
@@ -5532,10 +5530,9 @@ img.rimg{image-rendering:auto!important}
   /* 칸은 판에 들어올 때 하나 정해 저장. 받기 전까지 그 칸에 "이상한 일" 예고 */
   function daisHtml(){ var ev = S.event; if (!ev.tag){ ev.tag = E.rollDais(D, Math.random); save(); } if (!ev.dsCell){ ev.dsCell = daisRollCell(); save(); }
     var sheep = '<div class="unit cfh dsheep" style="left:' + (100 * 506 / W) + '%;top:' + (100 * (184 + OFF + FOOT) / H) + '%;z-index:184"><div class="cfslot"><i class="dlr" role="img" aria-label="밤하늘 양"></i></div></div>'; /* 적 쪽 5번 칸 */
-    if (ev.dsDone) return sheep + (daisFx ? daisBurst(ev.dsCell) : '');
+    if (ev.dsDone) return sheep;
     var m = [[24, 'm', 0], [50, '', -1], [76, 'l', -2]].map(function(s){ return '<s class="tw ' + s[1] + '" style="left:' + s[0] + '%;animation-delay:' + s[2] + 's"></s>'; }).join('');
     return sheep + '<i class="dsomen" style="' + daisAt(ev.dsCell) + '"><u></u>' + m + '<i></i><b></b></i>'; }
-  function daisBurst(k){ var s = ''; for (var i = 0; i < 10; i++) s += '<s style="--a:' + (i * 36) + 'deg;animation-delay:' + (i % 3) * .08 + 's"></s>'; return '<i class="dsfx" style="' + daisAt(k) + '"><b></b>' + s + '</i>'; }
   function daisInfo(tag, cell){ var u = null; S.team.forEach(function(uid){ var p = uid && S.pos && S.pos[uid]; if (p && p.x + ',' + p.y === cell) u = U(uid); });
     var head = '<b><em style="color:' + daisCol() + '">' + padName(tag) + '</em> ' + (u ? hero(u.id).name : '빈 칸') + '</b><small>' + padDesc(tag) + '</small>';
     var rel = (S.skills || []).map(function(x){ return E.skillById(D, x.id); }).filter(function(d){ return d && d.tag; }), before = rel.map(function(d){ return synInfo(d); });
@@ -5738,11 +5735,11 @@ img.rimg{image-rendering:auto!important}
     trRender(); }
   function trSlot(k, uid){ var u = uid != null && U(uid), nm = k === 'A' ? '메인' : '재료';
     return '<button class="trslot s' + k + (!u && !trDone && (k === 'A' ? altA == null : altA != null && altM == null) ? ' next' : '') + (u ? ' full' : '') + '" type="button" data-tr="' + k + '"' + (u && !trDone ? '' : ' disabled') + '><i class="trglow"></i><b class="trtag">' + nm + '</b>' + (u ? '<span class="trfig">' + av(u.id) + starsIn(u.star, u.id, isTr(u)) + '</span><span class="trnm">' + hero(u.id).name + '</span>' : '<span class="trplus">+</span>') + '</button>'; }
-  function trDust(st){ var o = ''; for (var i = 0; i < 14; i++){ var du = (5 + Math.random() * 4).toFixed(2); o += '<s style="left:' + (4 + Math.random() * 92).toFixed(1) + '%;top:' + (35 + Math.random() * 60).toFixed(1) + '%;background:' + ['#c9a6ff', '#a77bff', '#e9ddff'][i % 3] + ';animation-duration:' + du + 's;animation-delay:' + (-Math.random() * du).toFixed(2) + 's"></s>'; }
+  function trDust(st, quiet){ var o = quiet ? '' : [[10, 16, ' l'], [88, 24, ' m'], [48, 10, ''], [30, 70, ' m'], [72, 66, ''], [92, 78, ' l']].map(function(s, i){ return '<s class="tw' + s[2] + '" style="left:' + s[0] + '%;top:' + s[1] + '%;animation-delay:-' + (i * .4).toFixed(1) + 's"></s>'; }).join('');
     st.insertAdjacentHTML('beforeend', '<i class="trdust">' + o + '</i><i class="trvine dvine"></i><i class="trvine dvine r"></i>'); }
   /* 초월 뒤: 팝업을 닫지 않고 메인만 남겨 얻은 스킬을 보여 줌. 확인과 X 둘 다 닫기 */
   function trResult(w){ var u = U(trDone.uid), hm = hero(trDone.mid), sk = ultName(hm), st = w.querySelector('.trstage');
-    st.innerHTML = trSlot('A', trDone.uid); st.querySelectorAll('.trslot').forEach(function(s){ s.disabled = true; pedestal(s, '#c9a6ff'); }); trDust(st); st.classList.add('done'); fwFx(st, '#d9c4ff');
+    st.innerHTML = trSlot('A', trDone.uid); st.querySelectorAll('.trslot').forEach(function(s){ s.disabled = true; pedestal(s, '#c9a6ff'); }); trDust(st, true); st.classList.add('done'); fwFx(st, '#d9c4ff');
     var r = w.querySelector('.trres'); r.hidden = false; r.innerHTML = skFrame(ultIconEl(hm), HG(trDone.mid).col) + '<b>' + sk + ' 스킬 획득</b>';
     w.querySelector('.trlist').hidden = true; /* X는 결과에서도 남김 = 확인과 같음 (2026-11-26 사용자) */ trSeen = trDone.uid; trInfo(w.querySelector('.trinfo')); trBag();
     w.querySelectorAll('.trinfo .hi-skrow').forEach(function(row){ var n = row.querySelector('.hi-skh b'); if (n && n.querySelector('.trtag') && n.firstChild.textContent.trim() === sk) row.classList.add('trnew'); }); /* 새로 얻은 스킬 줄 */
@@ -5806,9 +5803,9 @@ img.rimg{image-rendering:auto!important}
   // ───── 위험 종: 누를 때마다 0→1→2→3→0. 길게 누르거나 우클릭하면 0 ─────
   var BELLIMG = {}; [1, 2, 3].forEach(function(n){ var im = new Image(); im.onload = function(){ BELLIMG[n] = true; renderBell(); }; im.src = 'img/p/ui_foe' + n + '.png'; });
   /* 이벤트 판 분위기: 배경 그림은 그대로, 색·빛·앞 효과만 덮음. 편성·전투 둘 다 (2026-11-26 사용자) */
-  var AMB = { altar: [18, 0, 100, 45, 100], campfire: [10, 0, 100, 40, 100], mimic: [0], dais: [14, 4, 96, 3, 34], fairy: [16, 0, 100, 0, 40], groll: [15, 2, 98, 82, 100], merchant: [10, 3, 97, 20, 95] }; /* [알갱이 수, 가로 최소·최대 %, 세로 최소·최대 %] */
+  var AMB = { altar: [7, 0, 100, 45, 100], campfire: [6, 0, 100, 40, 100], mimic: [0], dais: [6, 4, 96, 3, 34], fairy: [6, 0, 100, 0, 40], groll: [15, 2, 98, 82, 100], merchant: [5, 3, 97, 20, 95] }; /* [알갱이 수, 가로 최소·최대 %, 세로 최소·최대 %] */
   function ambSync(){ var el = $('amb'), ev = bt ? curEv : S.event, k = ev && (bt || (S.stage < E.stageCount(D) && !isLvPick())) && AMB[ev.kind] ? ev.kind : ''; if (!el || (el.dataset.k || '') === k) return; el.dataset.k = k; var a = AMB[k], o = '';
-    for (var i = 0; a && i < a[0]; i++){ var du = (4 + Math.random() * 4).toFixed(2); o += '<s' + (k === 'groll' ? ' class="g' + (i % 2 ? 2 : 0) + '" data-c="' + (i % 2 ? '♣' : '7') + '"' : k === 'merchant' ? ' class="d" data-c="%"' : '') + ' style="left:' + (a[1] + Math.random() * (a[2] - a[1])).toFixed(1) + '%;top:' + (a[3] + Math.random() * (a[4] - a[3])).toFixed(1) + '%;animation-duration:' + du + 's;animation-delay:' + (-Math.random() * du).toFixed(2) + 's"></s>'; }
+    for (var i = 0; a && i < a[0]; i++){ var du = (4 + Math.random() * 4).toFixed(2), tw = k !== 'groll' && k !== 'merchant', x = k === 'groll' ? a[1] + Math.random() * (a[2] - a[1]) : a[1] + (a[2] - a[1]) * (i + .2 + Math.random() * .6) / a[0] /* 가로로 한 칸씩 나눠 안 겹치게 */; o += '<s' + (k === 'groll' ? ' class="g' + (i % 2 ? 2 : 0) + '" data-c="' + (i % 2 ? '♣' : '7') + '"' : k === 'merchant' ? ' class="d" data-c="%"' : ' class="tw' + [' m', '', ' l'][i % 3] + '"') + ' style="left:' + x.toFixed(1) + '%;top:' + (a[3] + Math.random() * (a[4] - a[3])).toFixed(1) + '%' + (k === 'groll' ? ';animation-duration:' + du + 's;animation-delay:' + (-Math.random() * du).toFixed(2) + 's' : ';animation-delay:-' + (i * 2.4 / a[0]).toFixed(2) + 's') + '"></s>'; }
     if (k === 'dais'){ o += '<b></b>'; [[24, 26, 0, 30], [37, 34, -17, 22], [46, 30, -26, 40]].forEach(function(w){ o += '<i style="top:' + w[0] + '%;animation-duration:' + w[1] + 's;animation-delay:' + w[2] + 's;width:' + w[3] + 'px"></i>'; }); } /* 털뭉치 3개: 판(아래 절반) 위 하늘에서만 */
     el.innerHTML = o; }
   setInterval(ambSync, 300);
