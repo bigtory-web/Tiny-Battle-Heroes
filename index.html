@@ -2527,6 +2527,9 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 /* 백팩 7칸: 첫 칸은 덮개 띠 아래(24px)에서, 간격 8px 고정 */
 .camp3 > .lbag .ubagbox{padding:24px 6px 15px!important}
 .camp3 > .lbag .ubagbox #roster{row-gap:8px!important}
+/* 파티 HP 빈 부분: 움푹 팬 홈 (위 어두움, 아래 살짝 밝음, 채운 부분과 같은 픽셀 띠) (2026-11-26 사용자) */
+.tbar .thp{background:linear-gradient(#17141d 0 3px,#241f2d 3px 6px,#2f2a3a 6px calc(100% - 3px),#554d66 calc(100% - 3px))!important;box-shadow:0 0 0 2px #17141d,0 3px 0 #17141d,inset 2px 0 0 #1c1824,inset -2px 0 0 #1c1824!important}
+.vsbar.evmode .tbar.e .thp .h{background:transparent!important}
 </style>
 </head>
 <body>
