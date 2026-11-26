@@ -2578,17 +2578,6 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 .lbag #roster .chip.baglock{gap:0}
 .baglock em{gap:1px;font-size:14px!important;line-height:14px!important}
 .baglock em::before{content:'';width:24px;height:32px;background:url(img/p/ui_lock.png) 0 0/24px 32px no-repeat;image-rendering:pixelated}
-/* 유물은 원, 스킬·용병은 사각 (2026-11-26 사용자): HUD 유물 칸·상점·룰렛 단상 */
-#skA .skc,#skE .skc{background:url(img/p/relic_ring.png) 0 0/100% 100% no-repeat!important;box-shadow:none!important;border:0!important;clip-path:none!important;image-rendering:pixelated;padding:0!important;display:flex;align-items:center;justify-content:center}
-#skA .skc img,#skE .skc img{width:29px!important;height:29px!important;position:relative;z-index:1}
-#skA .skc .cd,#skE .skc .cd{left:7px!important;right:7px!important;top:7px!important;max-height:30px;z-index:2;-webkit-mask:radial-gradient(circle 15px at 50% 15px,#000 98%,transparent);mask:radial-gradient(circle 15px at 50% 15px,#000 98%,transparent)}
-#skA .skc::before,#skE .skc::before{content:'';position:absolute;inset:0;pointer-events:none;background:var(--sg,#d9dde8);-webkit-mask:url(img/p/relic_ring_glow.png) 0 0/100% 100% no-repeat;mask:url(img/p/relic_ring_glow.png) 0 0/100% 100% no-repeat;image-rendering:pixelated}
-#tab-shop .stile.sk .ic{position:relative;background:url(img/p/relic_ring.png) 0 0/100% 100% no-repeat!important;box-shadow:none!important;image-rendering:pixelated}
-#tab-shop .stile.sk .ic img,#tab-shop .stile.sk .ic .ski{width:37px!important;height:37px!important;position:relative;z-index:1}
-#tab-shop .stile.sk .ic::before{content:'';position:absolute;inset:0;pointer-events:none;background:var(--sg,#d9dde8);-webkit-mask:url(img/p/relic_ring_glow.png) 0 0/100% 100% no-repeat;mask:url(img/p/relic_ring_glow.png) 0 0/100% 100% no-repeat;image-rendering:pixelated}
-#roul:not(.chestpop) .rbox .rstage.onped .rpic.loot.relic{width:calc(63 * var(--P))!important;height:calc(63 * var(--P))!important;left:calc(50% - 31.5 * var(--P))!important;bottom:calc(38px + 22 * var(--P))!important;background:url(img/p/relic_ring.png) 0 0/100% 100% no-repeat!important;image-rendering:pixelated;filter:drop-shadow(0 0 8px var(--rg,#d9dde8))!important}
-#roul .rbox .rpic.loot.relic img.lic{width:calc(42 * var(--P))!important;height:calc(42 * var(--P))!important;position:relative;z-index:1}
-#roul .rstage .rpic.loot.relic::before{content:'';position:absolute;inset:0;pointer-events:none;background:var(--rg,#d9dde8);-webkit-mask:url(img/p/relic_ring_glow.png) 0 0/100% 100% no-repeat;mask:url(img/p/relic_ring_glow.png) 0 0/100% 100% no-repeat;image-rendering:pixelated}
 /* 용병 팝업 포인트: 어스름 여관 배경 + 안 도는 조명 하나, 초록 리본 띠 */
 #evWin .rbox .rstage{background:radial-gradient(60% 70% at 50% 38%,rgba(255,214,140,.30),transparent 70%),linear-gradient(#1b2130 0 55%,#2b2530 55% 70%,#3a2c24 70%)!important}
 #evWin .mercline{margin:10px 6px;padding:0;background:none;box-shadow:none;text-shadow:none;display:flex;justify-content:center}
@@ -2604,6 +2593,16 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 #roul .rbox.camp .rstage::after{content:'';position:absolute;inset:6px;pointer-events:none;z-index:1;background:radial-gradient(3px 3px at 18% 80%,#ffb347 60%,transparent),radial-gradient(2px 2px at 32% 65%,#ffd27a 60%,transparent),radial-gradient(3px 3px at 71% 85%,#ff8a2a 60%,transparent),radial-gradient(2px 2px at 84% 55%,#ffb347 60%,transparent),radial-gradient(2px 2px at 60% 40%,#ffd27a 60%,transparent),radial-gradient(60% 40% at 50% 100%,rgba(255,120,30,.35),transparent);animation:campfx 1.4s steps(6) infinite}
 @keyframes campfx{0%{transform:translateY(6px);opacity:.65}50%{opacity:1}100%{transform:translateY(-10px);opacity:.65}}
 #roul .rbox.camp .rstrip{box-shadow:0 0 0 2px #17141d,0 0 0 4px #ff8a2a,0 0 12px 2px rgba(255,138,42,.55)!important}
+/* 유물 원 틀: 그림(rimg)에 틀이 들어 있어 감싸던 사각 칸은 지움 */
+img.rimg{image-rendering:pixelated;border-radius:50%}
+#skA .skc:has(img.rimg),#skE .skc:has(img.rimg),#tab-shop .stile.sk .ic:has(img.rimg),.cdxp.ic:has(img.rimg),.hi-av.sk:has(img.rimg),.skf:has(> img.rimg),.rsk:has(img.rimg),.lvrelic:has(img.rimg),.rit:has(img.rimg),.cps:has(img.rimg),.mdrop:has(img.rimg){background:none!important;box-shadow:none!important;border:0!important;clip-path:none!important}
+#skA .skc:has(img.rimg),#skE .skc:has(img.rimg){padding:0!important}
+#skA .skc img.rimg,#skE .skc img.rimg{width:44px!important;height:44px!important}
+#skA .skc .cd,#skE .skc .cd{left:7px!important;right:7px!important;top:7px!important;max-height:30px;z-index:2;-webkit-mask:radial-gradient(circle 15px at 50% 15px,#000 98%,transparent);mask:radial-gradient(circle 15px at 50% 15px,#000 98%,transparent)}
+#tab-shop .stile.sk .ic img.rimg{width:56px!important;height:56px!important}
+.rstrip span.sk{border-radius:50%!important;clip-path:none!important}
+#roul:not(.chestpop) .rbox .rstage.onped .rpic.loot.relic{width:calc(63 * var(--P))!important;height:calc(63 * var(--P))!important;left:calc(50% - 31.5 * var(--P))!important;bottom:calc(38px + 22 * var(--P))!important;filter:drop-shadow(0 0 8px var(--rg,#d9dde8))!important}
+#roul .rbox .rpic.loot.relic img.lic{width:calc(63 * var(--P))!important;height:calc(63 * var(--P))!important}
 </style>
 </head>
 <body>
@@ -3267,7 +3266,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     if (p.type === 'g') return HUDOK.gold ? '<img class="lic" src="img/p/hud_gold.png" alt="">' : '🪙';
     if (p.type === 'm') return manaIcon('lic');
     if (p.type === 'p') return '<img class="lic padic" src="' + padURL(p.id) + '" alt="">';
-    if (p.type === 's'){ var d = E.skillById(D, p.id); return SKIMG[d.id] ? '<img class="lic" src="img/p/skill_' + d.id + '.png" alt="">' : d.icon; }
+    if (p.type === 's'){ var d = E.skillById(D, p.id); return SKIMG[d.id] ? '<img class="lic rimg" src="' + relicSrc(d.id) + '" alt="">' : d.icon; }
     return av(p.id); }
   function offerNote(key){
     var p = LP(key);
@@ -3316,7 +3315,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     $('rTags').innerHTML = p.type === 'h' ? tagHtml(hero(p.id)) : '';
     var rsk = $('rSk'), hu = p.type === 'h' ? hero(p.id) : null; delete rsk.dataset.tipsk; delete rsk.dataset.tiplv;
     if (hu && hu.ult){ rsk.innerHTML = ultIcon(hu, 28); rsk.dataset.tipt = ultName(hu); rsk.dataset.tiptx = ultDescFull(hu, hu.ult, 1); rsk.style.setProperty('--rg', HG(p.id).col); rsk.hidden = false; }
-    else if (p.type === 's'){ var ds = E.skillById(D, p.id); rsk.innerHTML = SKIMG[ds.id] ? '<img class="ulti" src="img/p/skill_' + ds.id + '.png" alt="">' : '<span class="ulti">' + ds.icon + '</span>'; delete rsk.dataset.tipt; delete rsk.dataset.tiptx; rsk.dataset.tipsk = p.id; rsk.dataset.tiplv = 1; rsk.innerHTML += synN(ds); rsk.style.setProperty('--rg', skG(p.id, 1).col); rsk.hidden = false; } // 유물 결과도 우하단에 아이콘
+    else if (p.type === 's'){ var ds = E.skillById(D, p.id); rsk.innerHTML = SKIMG[ds.id] ? '<img class="ulti rimg" src="' + relicSrc(ds.id, 1) + '" alt="">' : '<span class="ulti">' + ds.icon + '</span>'; delete rsk.dataset.tipt; delete rsk.dataset.tiptx; rsk.dataset.tipsk = p.id; rsk.dataset.tiplv = 1; rsk.innerHTML += synN(ds); rsk.style.setProperty('--rg', skG(p.id, 1).col); rsk.hidden = false; } // 유물 결과도 우하단에 아이콘
     else { rsk.innerHTML = ''; delete rsk.dataset.tipt; delete rsk.dataset.tiptx; rsk.hidden = true; if (tipEl === rsk) hideTip(); } if (p.type === 'h') $('rTags').style.setProperty('--tg', HG(p.id).col); // 꼬리표 묶음 테두리 = 영웅 등급색
     pic.classList.toggle('relic', p.type === 's'); if (p.type === 's'){ pic.style.setProperty('--rg', GR(lootTier(key)).col); }
     if (p.type === 's'){ pic.dataset.tipsk = p.id; pic.dataset.tiplv = 1; } else { delete pic.dataset.tipsk; if (tipEl === pic) hideTip(); }
@@ -4401,7 +4400,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     return side === 'E' ? ids.map(hero) : allyHeroes(); }
   function skCell(x, side){ var d = E.skillById(D, x.id);
     var sy = synInfo(d, side); return '<button class="skc ' + side + gCls(x.id, x.lv) + (sy && sy.off ? ' synoff' : '') + '"' + gAttr(x.id, x.lv) + ' data-tipsk="' + x.id + '" data-tiplv="' + x.lv + '" data-tipside="' + side + '" data-k="' + side + ':' + x.id + '">' +
-      (SKIMG[x.id] ? '<img src="img/p/skill_' + x.id + '.png" alt="">' : '<span class="emo">' + d.icon + '</span>') + synN(d, side) + '<i class="cd"></i></button>'; }
+      (SKIMG[x.id] ? '<img class="rimg" src="' + relicSrc(x.id, x.level) + '" alt="">' : '<span class="emo">' + d.icon + '</span>') + synN(d, side) + '<i class="cd"></i></button>'; }
   function updSkillBars(){
     var L = skList(), key = 'n' + PK().skillSlots + (bt ? 'b' + bt.A.filter(function(u){ return u.alive; }).length : 'f' + S.team.join()) + JSON.stringify([L.A.map(function(x){ return x.id + x.lv; }), L.E.map(function(x){ return x.id + x.lv; })]);
     if (key !== skKey){ skKey = key; var emp = ''; for (var ei = (S.skills || []).length; ei < (PK().skillSlots || 0); ei++) emp += '<i class="skc A empty"><span>+</span></i>'; var SS = PK().skillSlots || 0, SN = L.A.length; $('skA').innerHTML = L.A.map(function(x, xi){ var c = skCell(x, 'A'); return xi >= SS ? c.replace('class="skc ', 'class="skc over ') : c; }).join('') + emp + ''; /* 넘쳤을 때만 빨간 칸 수 */ $('skE').innerHTML = L.E.map(function(x){ return skCell(x, 'E'); }).join(''); renderLootPrev(); fitSkRows(); }
@@ -4447,7 +4446,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     skTgt = { d: d, side: side, tside: FOE_KINDS[d.kind] ? (side === 'A' ? 'E' : 'A') : side, y: d.only ? synInfo(d, side) : null };
     if (!bt) markFieldTargets(); }
   function tgtHero(h){ var y = skTgt.y; return !y || y.vs.indexOf(h[y.k]) >= 0; } // only 스킬은 조건 맞는 아군만
-  function skIconHtml(d){ return SKIMG[d.id] ? '<img src="img/p/skill_' + d.id + '.png" alt="">' : '<span>' + d.icon + '</span>'; }
+  function skIconHtml(d){ return SKIMG[d.id] ? '<img class="rimg" src="' + relicSrc(d.id) + '" alt="">' : '<span>' + d.icon + '</span>'; }
   function markFieldTargets(){ var T = skTgt; if (!T) return;
     var items = [];
     if (T.tside === 'A'){ var TS = teamSpec(), RT = E.relicTargets && T.side === 'A' ? E.relicTargets(D, T.d.id, TS.map(function(sp){ return { slot: sp.slot, star: sp.star }; })) : null; /* 열·별 유물: 받는 아군만 */
@@ -4757,7 +4756,12 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   // ───── 스킬 아이콘 (픽셀 그림이 있으면 그림, 없으면 이모지) ─────
   var SKIMG = {};
   D.skills.list.forEach(function(d){ var im = new Image(); im.onload = function(){ SKIMG[d.id] = im; imgReady(); }; im.src = 'img/p/skill_' + d.id + '.png'; });
-  function skIcon(d){ return SKIMG[d.id] ? '<img class="ski" src="img/p/skill_' + d.id + '.png" alt="">' : d.icon; }
+  function skIcon(d){ return SKIMG[d.id] ? '<img class="ski rimg" src="' + relicSrc(d.id) + '" alt="">' : d.icon; }
+  /* 유물은 어디서나 원 틀 (CLAUDE.md 아이콘 모양): 36x36 돌 테 + 등급색 안쪽 빛 + 가운데 24 아이콘을 한 장으로 합쳐 씀 */
+  var RRING = new Image(), RGLOW = new Image(), RC = {}; RRING.onload = RGLOW.onload = function(){ imgReady(); }; RRING.src = 'img/p/relic_ring.png'; RGLOW.src = 'img/p/relic_ring_glow.png';
+  function relicSrc(id, lv){ var col = skG(id, lv).col, k = id + col; if (RC[k]) return RC[k]; var ic = SKIMG[id]; if (!ic || !RRING.naturalWidth || !RGLOW.naturalWidth) return 'img/p/skill_' + id + '.png';
+    var c = document.createElement('canvas'), g = document.createElement('canvas'); c.width = c.height = g.width = g.height = 36; var x = c.getContext('2d'), y = g.getContext('2d'); y.drawImage(RGLOW, 0, 0); y.globalCompositeOperation = 'source-in'; y.fillStyle = col; y.fillRect(0, 0, 36, 36);
+    x.imageSmoothingEnabled = false; x.drawImage(RRING, 0, 0); x.drawImage(g, 0, 0); x.drawImage(ic, 6, 6, 24, 24); try { return RC[k] = c.toDataURL(); } catch (e) { return 'img/p/skill_' + id + '.png'; } }
 
   // ───── 상점 탭 ─────
   function skVal(d, lv){ var a = d.amount * (1 + (D.skills.perGrade != null ? D.skills.perGrade : D.skills.perLevel) * ((lv || 1) - 1)); return d.kind === 'energyAll' || d.kind === 'lineEnergy' || d.kind === 'lineHide' || d.kind === 'lineDef' || d.kind === 'starStep' ? Math.round(a) : Math.round(a * 100); } // 숫자 그대로(에너지·초·방어)
@@ -4962,7 +4966,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   function lvPickHtml(){ return [lvKind()].map(function(k, i){ var p = LV1_POS, C = lvCands(k), lock = !C.length, inner;
       if (k === 'skill'){ var su = C.length ? U(C[0]) : S.units[0], sh = su ? hero(su.id) : null; inner = '<span class="lvrelic lvskill">' + (sh && sh.ult ? ultIcon(sh, 48) : '<span class="emo">✨</span>') + '</span>'; }
       else if (k === 'hero'){ var ids = C.slice(0, 3).map(function(x){ return x.slice(2); }); inner = '<span class="lvfaces n' + ids.length + '">' + ids.map(function(id){ return '<span class="lvf">' + av(id) + '</span>'; }).join('') + '</span>'; }
-      else { var d = C.length ? E.skillById(D, C[0].slice(2)) : (S.skills[0] ? E.skillById(D, S.skills[0].id) : null); inner = '<span class="lvrelic">' + (d ? (SKIMG[d.id] ? '<img src="img/p/skill_' + d.id + '.png" alt="">' : '<span class="emo">' + d.icon + '</span>') : '<span class="emo">📜</span>') + '</span>'; }
+      else { var d = C.length ? E.skillById(D, C[0].slice(2)) : (S.skills[0] ? E.skillById(D, S.skills[0].id) : null); inner = '<span class="lvrelic">' + (d ? (SKIMG[d.id] ? '<img class="rimg" src="' + relicSrc(d.id) + '" alt="">' : '<span class="emo">' + d.icon + '</span>') : '<span class="emo">📜</span>') + '</span>'; }
       return '<div class="unit cfh fork lvpk' + (lock ? ' lock' : '') + '" data-lvpick="' + k + '" data-tipt="' + LVP_INFO[k][0] + '" data-tiptx="' + LVP_INFO[k][1] + '" style="left:' + (100 * p[0] / W) + '%;top:' + (100 * (p[1] + OFF + FOOT) / H) + '%;z-index:' + p[1] + '"><div class="cfslot">' + inner + '</div><i class="fkbub"><i class="upmk big"></i></i></div>'; }).join(''); }
   function startLvPick(kind){ if (!isLvPick() || kind !== lvKind()) return; var C = lvCands(kind); if (!C.length) return;
     if (kind === 'relic' || kind === 'skill'){ var rr = E.levelPickRoll(D, Math.random, kind, S.units, S.skills); if (rr == null) return; hideTip(); S.lvPicks--;
