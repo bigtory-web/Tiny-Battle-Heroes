@@ -2673,6 +2673,12 @@ img.rimg{image-rendering:auto!important}
 @keyframes rstar{0%,100%{opacity:0;transform:scale(.4)}40%,60%{opacity:1;transform:scale(1)}}
 /* 보물상자 골드 칸: 바구니, 원본 비율 */
 #chestPop img.gbsk{width:auto!important;height:auto!important;max-width:100%;max-height:100%;image-rendering:pixelated}
+/* 룰렛 띠 골드 = 금화 주머니 */
+.rbox .rstrip span img.lic.gbs{object-fit:contain}
+/* 반짝임: 결과 그림 둘레(그림의 1.5배 원)만, 도는 중에는 없음 (2026-11-26 사용자) */
+#roul:not(.chestpop) .rbox .rstage.onped > .rstars{inset:auto;left:calc(50% - 50 * var(--P));bottom:calc(38px + 4 * var(--P));width:calc(100 * var(--P));height:calc(100 * var(--P))}
+#chestPop .rbox .rstage > .rstars{inset:auto;left:calc(50% - 81px);top:calc(50% - 96px);width:162px;height:162px}
+#roul:not(.chestpop) .rbox.spin .rstars{display:none}
 </style>
 </head>
 <body>
@@ -3369,7 +3375,7 @@ img.rimg{image-rendering:auto!important}
   /* 도는 빛줄기 대신 단상 주변 도트 별 반짝임, 색 = 결과 등급색 (2026-11-26 사용자). 등급이 높을수록 많이·자주 */
   function starFx(stage, tier, col){ if (!stage) return; var el = stage.querySelector(':scope > .rstars'); if (!el){ el = document.createElement('i'); el.className = 'rstars'; stage.appendChild(el); }
     el.style.setProperty('--sc', col || '#fff'); var key = String(tier); if (el.dataset.t === key) return; el.dataset.t = key; var n = 7 + tier * 4, o = '';
-    for (var i = 0; i < n; i++){ var side = i % 2 ? 1 : -1, x = 50 + side * (6 + Math.random() * 40), y = 10 + Math.random() * 78, sz = Math.random() < .45 ? 3 : 2, du = (1.5 - tier * .15 + Math.random() * .8).toFixed(2), dl = (-Math.random() * 2).toFixed(2); o += '<s class="s' + sz + '" style="left:' + x.toFixed(1) + '%;top:' + y.toFixed(1) + '%;animation-duration:' + du + 's;animation-delay:' + dl + 's"></s>'; }
+    for (var i = 0; i < n; i++){ var a = (i + Math.random() * .7) / n * 6.283, r = 27 + Math.random() * 21, x = 50 + Math.cos(a) * r, y = 50 + Math.sin(a) * r, sz = Math.random() < .45 ? 3 : 2, du = (1.5 - tier * .15 + Math.random() * .8).toFixed(2), dl = (-Math.random() * 2).toFixed(2); o += '<s class="s' + sz + '" style="left:' + x.toFixed(1) + '%;top:' + y.toFixed(1) + '%;animation-duration:' + du + 's;animation-delay:' + dl + 's"></s>'; }
     el.innerHTML = o; }
   function rayFx(key){ var rb = $('roul').querySelector('.rbox'), t = lootTier(key); rb.classList.remove('rl1', 'rl2', 'rl3', 'rl4'); rb.classList.add('rl' + t); rb.style.setProperty('--gcol', GR(t).col); starFx(rb.querySelector('.rstage'), t, GR(t).col); } /* 뒤 빛줄기: 1등급 없음, 2등급 이상은 등급색, 높을수록 진하고 빠르게. 도는 중 칸이 바뀌면 같이 바뀜 */
   /* 룬 단상 (2026-11-26 사용자 확정): 영웅 도트와 같은 밀도(1칸 = P css px, 장치 px 정수배). 발 = 단상 윗끝에서 10.5칸 아래, 이름판은 단상 아래. 룬은 등급색으로 반짝 */
@@ -3406,7 +3412,7 @@ img.rimg{image-rendering:auto!important}
     document.addEventListener('pointerdown', function(e){ var sp = e.target.closest('#roul .rstrip span[data-id]'); if (!sp || !S.offer || $('roul').querySelector('.rbox').classList.contains('spin')) return; roulPeek = sp.dataset.id; showOffer(roulPeek); });
     ['pointerup', 'pointercancel'].forEach(function(t){ document.addEventListener(t, end); });
     document.addEventListener('pointerout', function(e){ if (roulPeek != null && e.target.closest('#roul .rstrip span[data-id]') && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('#roul .rstrip span[data-id="' + roulPeek + '"]'))) end(); }); })();
-  function stripIn(x){ var lp = LP(x); return lootIcon(x) + (lp.type === 's' ? synN(E.skillById(D, lp.id)) : '') + (upOK(x) ? '<i class="upmk"></i>' : ''); } // 후보 칸 속: 아이콘·인원 숫자·승급 마크
+  function stripIn(x){ var lp = LP(x); return (lp.type === 'g' ? '<img class="lic gbs" data-smb="1" src="img/p/ui_goldbag.png" alt="">' : lootIcon(x)) + (lp.type === 's' ? synN(E.skillById(D, lp.id)) : ''); } // 후보 칸 속: 아이콘(골드는 단상과 같은 주머니)·인원 숫자. UP 마크는 단상에만 (2026-11-26 사용자)
   function upOK(key){ var p = LP(key); if (p.type === 'h') return S.units.some(function(u){ return u.id === p.id && E.canMerge(D, u, { uid: -1, id: p.id, star: 1 }); }); if (p.type === 's') return myLv(p.id) > 0 && !skMaxed(p.id); return false; }
   function startRoulette(ids, target, instant){ if (S.offerMode === 'mobs') instant = true; // 몹 전리품: 돌리지 않아요
     var box = $('roul'), all = S.offerMode === 'mobs' ? ids.slice() : ids.filter(function(x, i){ return ids.indexOf(x) === i; }), gone = S.offerGone || [];
