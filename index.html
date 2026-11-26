@@ -2600,18 +2600,19 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 @keyframes upword{0%{opacity:0;transform:translate(-50%,-40%) scale(.4)}18%{opacity:1;transform:translate(-50%,-125%) scale(1.35)}32%{transform:translate(-50%,-100%) scale(1)}70%{opacity:1;transform:translate(-50%,-110%)}100%{opacity:0;transform:translate(-50%,-165%)}}
 /* 최종 클리어 = 전장 오른쪽 절반의 엔딩 크레딧 (팝업 아님, 2026-11-26 사용자: "크레딧처럼..") */
 #credits{position:absolute;left:50%;right:0;top:0;bottom:0;z-index:30;overflow:hidden;cursor:pointer;background:linear-gradient(90deg,rgba(12,8,22,0),rgba(12,8,22,.74) 14%,rgba(12,8,22,.78))}
-#credits .crin{position:absolute;left:0;right:0;top:0;display:flex;flex-direction:column;align-items:center;gap:22px;padding:0 10px;text-align:center;color:#f3e6c4;font:400 14px var(--display);text-shadow:0 2px 0 #17141d}
+#credits .crscroll{position:absolute;left:0;right:0;top:0;bottom:0;overflow:hidden} #credits .crin{display:flex;flex-direction:column;align-items:center;gap:22px;padding:18px 10px 14px;text-align:center;color:#f3e6c4;font:400 14px var(--display);text-shadow:0 2px 0 #17141d}
 #credits h2{margin:0;font:400 38px var(--display);color:#ffd34d;letter-spacing:3px;text-shadow:3px 0 #17141d,-3px 0 #17141d,0 3px #17141d,0 -3px #17141d,0 6px #17141d}
 #credits h3{margin:0 0 6px;font:400 15px var(--display);color:#ffd34d}
 #credits .crst{display:grid;grid-template-columns:auto auto;gap:4px 14px;justify-content:center;text-align:left} #credits .crst b{font-weight:400;color:#fff;text-align:right}
 #credits .crteam{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:300px} #credits .crh{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px} #credits .crh .hic{width:40px!important;height:40px!important;background:#17141d}
 #credits .crev{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 12px;max-width:300px} #credits .crev span{display:flex;align-items:center;gap:3px} #credits .crev img{width:24px!important;height:24px!important;image-rendering:pixelated}
 #credits .crrel{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;max-width:300px} #credits .crrel i{width:30px;height:30px;background:#17141d;display:flex;align-items:center;justify-content:center;cursor:help} #credits .crrel img{width:24px;height:24px;border-radius:50%;background:#2f2a39;image-rendering:pixelated}
-#credits .rpok{border:0;cursor:pointer;padding:12px 30px;font:700 18px var(--display)}
-#credits.end .crin > :not(.rpok){visibility:hidden} #credits.end{cursor:default}
+#credits .rpok{border:0;cursor:pointer;padding:10px 30px;font:700 18px var(--display);white-space:nowrap}
+#credits .rpok{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:none;z-index:5} #credits.end .rpok{display:block} #credits.end{cursor:default}
+#credits.end .crscroll{bottom:70px;overflow-y:auto;overscroll-behavior:contain;cursor:grab;touch-action:pan-y;scrollbar-width:thin;scrollbar-color:#8a7652 transparent} #credits.end .crscroll::-webkit-scrollbar{width:6px} #credits.end .crscroll::-webkit-scrollbar-thumb{background:#8a7652;border-radius:0} #credits.end .crscroll::-webkit-scrollbar-track{background:rgba(23,20,29,.4)}
 #credits .rfw{z-index:4}
 /* 끝난 판: 적·막대·전투 UI 숨기고, 우리 영웅은 제자리에서 기뻐함 */
-#arena.ending canvas.fbar,#arena.ending .vsmark,#arena.ending #bellBtn,#arena.ending #abar,#arena.ending #vsBar,#arena.ending #skA,#arena.ending #skE,#arena.ending .foe,#arena.ending .dpswrap{visibility:hidden!important}
+#arena.ending canvas.fbar,#arena.ending .vsmark,#arena.ending #bellBtn,#arena.ending #abar,#arena.ending #vsBar,#arena.ending #skE,#arena.ending .foe,#arena.ending .dpswrap{visibility:hidden!important}
 #arena.ending #field .slot.on .av{animation:cheer 1.1s ease-in-out infinite} #arena.ending #field .unit:nth-child(even) .slot.on .av{animation-delay:.35s} #arena.ending #field .unit:nth-child(3n) .slot.on .av{animation-delay:.7s}
 @keyframes cheer{0%,55%,100%{translate:0 0}20%{translate:0 -12px}35%{translate:0 0}45%{translate:0 -5px}}
 
@@ -5183,11 +5184,14 @@ img.rimg{image-rendering:auto!important}
     var evs = Object.keys(RS.events || {}).filter(function(k){ return (D.events.info || {})[k]; }).map(function(k){ return '<span title="' + q(D.events.info[k].name) + '">' + evIcon(k) + '×' + RS.events[k] + '</span>'; }).join('');
     var rel = (S.skills || []).map(function(x){ return '<i data-tipsk="' + x.id + '" data-tiplv="' + (x.lv || 1) + '" data-tipside="A"><img src="img/p/skill_' + x.id + '.png" alt=""></i>'; }).join('');
     o = document.createElement('div'); o.id = 'credits';
-    o.innerHTML = '<div class="crin"><h2>모험 완료!</h2><div class="crst">' + st.map(function(r){ return '<span>' + r[0] + '</span><b>' + r[1] + '</b>'; }).join('') + '</div>' + (team ? '<div><h3>함께한 영웅</h3><div class="crteam">' + team + '</div></div>' : '') + (evs ? '<div><h3>만난 이벤트</h3><div class="crev">' + evs + '</div></div>' : '') + (rel ? '<div><h3>모은 유물</h3><div class="crrel">' + rel + '</div></div>' : '') + '<button class="rpok" type="button">처음부터</button></div>';
+    o.innerHTML = '<div class="crscroll"><div class="crin"><h2>모험 완료!</h2><div class="crst">' + st.map(function(r){ return '<span>' + r[0] + '</span><b>' + r[1] + '</b>'; }).join('') + '</div>' + (team ? '<div><h3>함께한 영웅</h3><div class="crteam">' + team + '</div></div>' : '') + (evs ? '<div><h3>만난 이벤트</h3><div class="crev">' + evs + '</div></div>' : '') + (rel ? '<div><h3>모은 유물</h3><div class="crrel">' + rel + '</div></div>' : '') + '</div></div><button class="rpok" type="button">처음부터</button>';
     A.appendChild(o); o.querySelector('.rpok').onclick = function(ev){ ev.stopPropagation(); newRun(); };
-    var box = o.querySelector('.crin'), btn = o.querySelector('.rpok'), B = o.clientHeight, y1 = Math.round(B / 2 - btn.offsetTop - btn.offsetHeight / 2), finish = function(){ box.style.transform = 'translateY(' + y1 + 'px)'; o.classList.add('end'); };
+    var sc = o.querySelector('.crscroll'), box = o.querySelector('.crin'), finish = function(){ box.style.transform = ''; o.classList.add('end'); sc.scrollTop = sc.scrollHeight; };
+    /* 끝난 뒤 마우스로 끌어서도 스크롤 (휠·터치는 기본 동작) */
+    var drag = null; sc.addEventListener('pointerdown', function(ev){ if (o.classList.contains('end') && ev.pointerType === 'mouse'){ drag = { y: ev.clientY, t: sc.scrollTop }; sc.setPointerCapture(ev.pointerId); } });
+    sc.addEventListener('pointermove', function(ev){ if (drag) sc.scrollTop = drag.t - (ev.clientY - drag.y) / (sc.getBoundingClientRect().height / (sc.offsetHeight || 1)); }); ['pointerup', 'pointercancel'].forEach(function(t){ sc.addEventListener(t, function(){ drag = null; }); });
     if (RS.credits || !box.animate || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)){ finish(); return; }
-    var y0 = Math.round(B * .45), an = box.animate([{ transform: 'translateY(' + y0 + 'px)' }, { transform: 'translateY(' + y1 + 'px)' }], { duration: Math.max(1000, (y0 - y1) / 34 * 1000), easing: 'linear', fill: 'forwards' }); an.onfinish = function(){ finish(); an.cancel(); RS.credits = true; save(); };
+    var B = o.clientHeight, y0 = Math.round(B * .45), y1 = Math.min(0, B - 70 - box.offsetHeight), an = box.animate([{ transform: 'translateY(' + y0 + 'px)' }, { transform: 'translateY(' + y1 + 'px)' }], { duration: Math.max(1000, (y0 - y1) / 34 * 1000), easing: 'linear', fill: 'forwards' }); an.onfinish = function(){ an.cancel(); finish(); RS.credits = true; save(); };
     o.addEventListener('click', function(){ if (!o.classList.contains('end')) an.playbackRate = 7; });
     fwFx(o, function(){ return true; }); var host = o.querySelector(':scope > .rfw'); [250, 600, 950, 1350].forEach(function(d){ setTimeout(function(){ if (host && host.isConnected) fwShot(host); }, d); }); }
   function newRun(){ var keep = { modules: S.modules || {}, ui: S.ui };
