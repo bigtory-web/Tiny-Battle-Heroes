@@ -2842,18 +2842,14 @@ img.rimg{image-rendering:auto!important}
 .altseer .dlr,.oegob .dlr{display:block;flex:none;height:100%;aspect-ratio:1;background:url(img/p/ev_dealer_anim.png) 0 0/800% 100% no-repeat;image-rendering:pixelated;animation:trader 2s steps(8,jump-none) infinite}
 .altseer .dlr{background-image:url(img/p/ev_seeress_anim.png)}
 /* 요정 팝업 */
+/* 룰렛형 팝업 장식 자리(팝업기준안 2-7): 큰 칸 좌우 끝·세로 가운데·끝이 바깥. 팝업마다 그림(background)만 따로 */
+.dvine{position:absolute;left:21px;top:calc(50% - 26px);width:52px;height:52px;pointer-events:none;z-index:3;transform:rotate(-45deg)} .dvine.r{left:auto;right:21px;transform:rotate(135deg)}
 #roul .rstage > .fdust,#roul .rstage > .fvine{display:none}
 #roul .rbox.fairy .rstage > .fdust{display:block;position:absolute;inset:7px;overflow:hidden;pointer-events:none;z-index:1}
 #roul .fdust s{position:absolute;width:2px;height:2px;opacity:0;text-decoration:none;animation:fdust 7s linear infinite}
 @keyframes fdust{0%{translate:0 0;opacity:0}20%{opacity:.55}50%{translate:4px -26px}80%{opacity:.45}100%{translate:-2px -54px;opacity:0}}
-#roul .rbox.fairy .rstage > .fvine{display:block;position:absolute;left:7px;top:7px;width:40px;height:40px;pointer-events:none;z-index:3;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' shape-rendering='crispEdges'%3E%3Cpath fill='%233f9a6a' d='M0 0h14v1H9v1H2v7H1v5H0z'/%3E%3Cpath fill='%236fd39a' d='M7 2h3v1h1v1H8V3H7zM13 1h2v1h2v1h-3V2h-1zM2 8h1v1h1v2H3v-1H2zM1 13h1v1h2v2H2v-1H1z'/%3E%3Cpath fill='%23ff9ed2' d='M3 2h3v1h1v3H6v1H3V6H2V3h1z'/%3E%3Cpath fill='%23fff0a0' d='M4 4h1v1H4z'/%3E%3Cpath fill='%23a8e4ff' d='M11 2h2v1h-2zM2 11h1v2H2z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
-#roul .rbox.fairy .rstage > .fvine.b{top:auto;bottom:7px;transform:scaleY(-1)}
-#roul .rbox.fairy .rstage > .fvine.r{left:auto;right:7px;transform:scaleX(-1)}
-#roul .rbox.fairy .rstage > .fvine.r.b{right:7px;transform:scale(-1,-1)}
+#roul .rbox.fairy .rstage > .fvine{display:block;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' shape-rendering='crispEdges'%3E%3Cpath fill='%233f9a6a' d='M0 0h14v1H9v1H2v7H1v5H0z'/%3E%3Cpath fill='%236fd39a' d='M7 2h3v1h1v1H8V3H7zM13 1h2v1h2v1h-3V2h-1zM2 8h1v1h1v2H3v-1H2zM1 13h1v1h2v2H2v-1H1z'/%3E%3Cpath fill='%23ff9ed2' d='M3 2h3v1h1v3H6v1H3V6H2V3h1z'/%3E%3Cpath fill='%23fff0a0' d='M4 4h1v1H4z'/%3E%3Cpath fill='%23a8e4ff' d='M11 2h2v1h-2zM2 11h1v2H2z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
 /* 테두리 말고 가운데 단상 양옆에서 감싸듯 (2026-11-26 사용자) */
-#roul .rbox.fairy .rstage > .fvine{left:21px;top:calc(50% - 26px);bottom:auto;width:52px;height:52px;transform:rotate(-45deg)} /* 큰 칸 양 끝, 꺾인 끝이 바깥을 가리키는 화살표 모양 (2026-11-26 사용자) */
-#roul .rbox.fairy .rstage > .fvine.r{left:auto;right:21px;transform:rotate(135deg)}
-#roul .rbox.fairy .rstage > .fvine.b{display:none}
 #roul .rbox.fairy .rstrip{box-shadow:none!important} /* 2026-11-26 사용자: 요정 띠 바깥 테두리 뺌 */
 /* 상점 칸: 할인 딱지·UP이 얼굴을 가리지 않게 (2026-11-26 사용자: "대가리부분아니잖아"). 자르기는 공통 170%·위 40% 그대로 */
 #tab-shop .stile .upmk{top:-6px!important}
@@ -3026,10 +3022,7 @@ img.rimg{image-rendering:auto!important}
 #trWin .rbox:has(.trstage.charge){background:#2a1648!important}
 @keyframes trquake{50%{translate:3px -2px}}
 /* 네 모서리 덩굴 장식 = 요정 팝업 모양을 보라로 (2026-11-26 사용자) */
-#trWin .trstage > .trvine{position:absolute;left:7px;top:7px;width:40px;height:40px;pointer-events:none;z-index:3;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' shape-rendering='crispEdges'%3E%3Cpath fill='%235a3a9a' d='M0 0h14v1H9v1H2v7H1v5H0z'/%3E%3Cpath fill='%23a77bff' d='M7 2h3v1h1v1H8V3H7zM13 1h2v1h2v1h-3V2h-1zM2 8h1v1h1v2H3v-1H2zM1 13h1v1h2v2H2v-1H1z'/%3E%3Cpath fill='%23c9a6ff' d='M3 2h3v1h1v3H6v1H3V6H2V3h1z'/%3E%3Cpath fill='%23fff6ff' d='M4 4h1v1H4z'/%3E%3Cpath fill='%23e9ddff' d='M11 2h2v1h-2zM2 11h1v2H2z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
-#trWin .trstage > .trvine.b{top:auto;bottom:7px;transform:scaleY(-1)}
-#trWin .trstage > .trvine.r{left:auto;right:7px;transform:scaleX(-1)}
-#trWin .trstage > .trvine.r.b{transform:scale(-1,-1)}
+#trWin .trstage > .trvine{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' shape-rendering='crispEdges'%3E%3Cpath fill='%235a3a9a' d='M0 0h14v1H9v1H2v7H1v5H0z'/%3E%3Cpath fill='%23a77bff' d='M7 2h3v1h1v1H8V3H7zM13 1h2v1h2v1h-3V2h-1zM2 8h1v1h1v2H3v-1H2zM1 13h1v1h2v2H2v-1H1z'/%3E%3Cpath fill='%23c9a6ff' d='M3 2h3v1h1v3H6v1H3V6H2V3h1z'/%3E%3Cpath fill='%23fff6ff' d='M4 4h1v1H4z'/%3E%3Cpath fill='%23e9ddff' d='M11 2h2v1h-2zM2 11h1v2H2z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
 /* 결과: 새 스킬 줄·획득 글에 은은한 빛, 상세 창의 "초월" 딱지는 숨김 (팝업 .trtag 자리 규칙이 겹쳐 이름 위에 떠 있었음) */
 @keyframes trsoft{0%,100%{box-shadow:inset 0 0 0 2px rgba(167,123,255,.35),inset 0 0 6px rgba(167,123,255,.15)}50%{box-shadow:inset 0 0 0 2px rgba(201,166,255,.95),inset 0 0 16px rgba(167,123,255,.55)}}
 #trWin .trres{color:#e3d2ff!important}
@@ -3775,7 +3768,7 @@ img.rimg{image-rendering:auto!important}
   /* 요정 팝업: 떠오르는 요정 가루 + 왼쪽 위·아래 꽃 덩굴 (2026-11-26 사용자) */
   function fairyDeco(stage){ if (!stage || stage.querySelector(':scope > .fdust')) return; var o = '', C = ['#ffb3de', '#a8e4ff', '#fff3b0'];
     for (var i = 0; i < 16; i++){ var du = (5 + Math.random() * 4).toFixed(2); o += '<s style="left:' + (4 + Math.random() * 92).toFixed(1) + '%;top:' + (35 + Math.random() * 62).toFixed(1) + '%;background:' + C[i % 3] + ';animation-duration:' + du + 's;animation-delay:' + (-Math.random() * du).toFixed(2) + 's"></s>'; }
-    stage.insertAdjacentHTML('beforeend', '<i class="fdust">' + o + '</i><i class="fvine"></i><i class="fvine b"></i><i class="fvine r"></i><i class="fvine r b"></i>'); }
+    stage.insertAdjacentHTML('beforeend', '<i class="fdust">' + o + '</i><i class="fvine dvine"></i><i class="fvine dvine r"></i>'); }
   /* 돈고블린 룰렛: 큰 칸 둘레 픽셀 전구 (2026-11-26 사용자 OK, 레버 없음). 대기 = 번갈아 천천히, 도는 중 = 한 방향으로 빠르게, 멈추면 한 번 번쩍 */
   function bulbDeco(stage){ if (!stage || stage.querySelector(':scope > .rbulbs')) return; var nx = 17, ny = 9, pts = [], k; for (k = 0; k < nx; k++) pts.push([k / nx, 0]); for (k = 0; k < ny; k++) pts.push([1, k / ny]); for (k = 0; k < nx; k++) pts.push([1 - k / nx, 1]); for (k = 0; k < ny; k++) pts.push([0, 1 - k / ny]);
     stage.insertAdjacentHTML('beforeend', '<i class="rbulbs">' + pts.map(function(p, i){ return '<s class="' + (i % 2 ? 'o' : 'e') + '" style="left:' + (p[0] * 100).toFixed(2) + '%;top:' + (p[1] * 100).toFixed(2) + '%;--d:' + ((i % 4) * .12 - .48).toFixed(2) + 's"></s>'; }).join('') + '</i>'); }
@@ -5723,7 +5716,7 @@ img.rimg{image-rendering:auto!important}
   function trSlot(k, uid){ var u = uid != null && U(uid), nm = k === 'A' ? '메인' : '재료';
     return '<button class="trslot s' + k + (!u && !trDone && (k === 'A' ? altA == null : altA != null && altM == null) ? ' next' : '') + (u ? ' full' : '') + '" type="button" data-tr="' + k + '"' + (u && !trDone ? '' : ' disabled') + '><i class="trglow"></i><b class="trtag">' + nm + '</b>' + (u ? '<span class="trfig">' + av(u.id) + starsIn(u.star, u.id, isTr(u)) + '</span><span class="trnm">' + hero(u.id).name + '</span>' : '<span class="trplus">+</span>') + '</button>'; }
   function trDust(st){ var o = ''; for (var i = 0; i < 14; i++){ var du = (5 + Math.random() * 4).toFixed(2); o += '<s style="left:' + (4 + Math.random() * 92).toFixed(1) + '%;top:' + (35 + Math.random() * 60).toFixed(1) + '%;background:' + ['#c9a6ff', '#a77bff', '#e9ddff'][i % 3] + ';animation-duration:' + du + 's;animation-delay:' + (-Math.random() * du).toFixed(2) + 's"></s>'; }
-    st.insertAdjacentHTML('beforeend', '<i class="trdust">' + o + '</i><i class="trvine"></i><i class="trvine b"></i><i class="trvine r"></i><i class="trvine r b"></i>'); }
+    st.insertAdjacentHTML('beforeend', '<i class="trdust">' + o + '</i><i class="trvine dvine"></i><i class="trvine dvine r"></i>'); }
   /* 초월 뒤: 팝업을 닫지 않고 메인만 남겨 얻은 스킬을 보여 줌. 확인과 X 둘 다 닫기 */
   function trResult(w){ var u = U(trDone.uid), hm = hero(trDone.mid), sk = ultName(hm), st = w.querySelector('.trstage');
     st.innerHTML = trSlot('A', trDone.uid); st.querySelectorAll('.trslot').forEach(function(s){ s.disabled = true; pedestal(s, '#c9a6ff'); starFx(s, 4, '#c9a6ff'); }); trDust(st); st.classList.add('done');
