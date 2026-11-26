@@ -2802,7 +2802,7 @@ img.rimg{image-rendering:auto!important}
 #roster .chip > .trlab{position:absolute;left:0;right:0;bottom:0;z-index:12;font:400 11px/13px var(--display);color:#3a2208;background:#ffd34d;text-align:center}
 /* 전투 전 전장의 미믹: 정지 그림 대신 튀기 4칸 */
 .foe.mob:has(> .mhop) > .av{visibility:hidden}
-.foe > .mhop{position:absolute;left:50%;bottom:0;width:calc(100% * 44 / 37);aspect-ratio:1;transform:translateX(-50%);background:url(img/p/mimic_hop.png) 0 0/400% 100% no-repeat;image-rendering:pixelated;animation:mhop 1.2s step-end infinite;pointer-events:none}
+.foe > .mhop{position:absolute;left:50%;bottom:0;width:calc(100% * 44 / 37);aspect-ratio:1;transform:translateX(-50%) scaleX(-1);background:url(img/p/mimic_hop.png) 0 0/400% 100% no-repeat;image-rendering:pixelated;animation:mhop 1.2s step-end infinite;pointer-events:none}
 @keyframes mhop{0%{background-position:0 0}40%{background-position:33.333% 0}60%{background-position:66.667% 0}80%{background-position:100% 0}}
 /* 초월 4차: 메인=금, 재료=파랑 · 화살표 ← · 다음에 채울 단상이 반짝 · 결과 */
 #trWin .trslot .trglow{position:absolute;left:50%;top:34px;width:112px;height:100px;margin-left:-56px;opacity:0;pointer-events:none;background:radial-gradient(closest-side,var(--tc) 0 35%,color-mix(in srgb,var(--tc) 45%,transparent) 36% 68%,transparent 69%)}
