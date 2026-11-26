@@ -1,0 +1,14 @@
+Look at:
+- img/codex/pad/hex_template.png : the exact flat hexagon footprint of one battlefield cell.
+- img/p/bg_swamp.png : our swamp battle background. Note the small teal puddles on the mud ground and the pixel-art style.
+
+Make a SWAMP POOL floor tile that covers one cell: a shallow puddle of swamp water lying flat in the mud, shaped to fill the hexagon (slightly irregular natural edge, but clearly reading as that hex cell, same size and position as the template).
+- murky teal-green water in 3 tones, a few flat pale ripple rings, 2 or 3 small bubbles, two small lily pads near the edge
+- a narrow dark wet-mud rim around the water with a few small moss tufts
+- everything flat on the ground (a character will stand on top of it), centre area calm and not busy, muted and fairly dark
+
+Chunky pixel art, same pixel size as the background art: draw it as about 94 x 62 art pixels scaled up, hard edges, no anti-aliasing, no gradients.
+
+Generate ONE new image with your image generation tool and save it as img/codex/mire/mire_src.png
+[Format] Plain solid #FF00FF magenta background outside the tile, no text, nothing else.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
