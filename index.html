@@ -5444,8 +5444,11 @@ img.rimg{image-rendering:auto!important}
   /* 우리 칸 9개 위를 불빛이 돌다가 당첨 칸에 멈춤. 결과는 먼저 저장 */
   function daisSpin(){ var ev = S.event; if (!isDais() || ev.dsDone || daisBusy) return; if (ev.dsCell){ ev.tag = E.rollDais(D, Math.random, ev.tag); ev.dsRr = (ev.dsRr || 0) + 1; }
     ev.dsCell = daisRollCell(); save(); daisBusy = true; daisFx = false; var end = hexCells().A.map(ckey).indexOf(ev.dsCell), steps = 18 + end, n = 0;
-    (function tick(){ if (!isDais() || S.event !== ev){ daisBusy = false; return; } daisLit = daisKey(n % 9); renderForm();
-      if (n++ >= steps){ setTimeout(function(){ daisBusy = false; daisFx = true; renderForm(); setTimeout(function(){ daisFx = false; }, 1200); }, 280); return; }
+    /* 전장을 다시 그리면 영웅이 움찔해서(2026-11-26 사용자) 단상 것만 바꿔 끼움 */
+    var F = $('field'), wipe = function(){ F.querySelectorAll('.dsobj,.dswin,.dsinfo,.dsfx,.dslit').forEach(function(x){ x.remove(); }); };
+    wipe(); F.insertAdjacentHTML('beforeend', '<i class="dslit"></i>'); var lit = F.querySelector('.dslit'); updEvActs();
+    (function tick(){ if (!isDais() || S.event !== ev){ daisBusy = false; lit.remove(); return; } daisLit = daisKey(n % 9); if (!lit.isConnected){ F.appendChild(lit); } lit.setAttribute('style', daisAt(daisLit));
+      if (n++ >= steps){ setTimeout(function(){ daisBusy = false; daisFx = true; wipe(); F.insertAdjacentHTML('beforeend', daisHtml()); updEvActs(); setTimeout(function(){ daisFx = false; F.querySelectorAll('.dsfx').forEach(function(x){ x.remove(); }); }, 1200); }, 280); return; }
       setTimeout(tick, 50 + Math.pow(n / steps, 3) * 260); })(); }
   function daisTake(){ var ev = S.event; if (!isDais() || !ev.dsCell || ev.dsDone || daisBusy) return; S.pads = S.pads || {}; S.pads[ev.dsCell] = ev.tag; padNew = ev.dsCell; ev.dsDone = true; save(); daisFx = true; renderAll(); setTimeout(function(){ daisFx = false; }, 1200); }
   function finishDais(){ daisBusy = false; daisFx = false; S.event = nextEvent(false); S.bell = 0; S.bellGold = 0; save(); evGo(); }
