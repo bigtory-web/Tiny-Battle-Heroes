@@ -1,0 +1,12 @@
+Fix the pixel-art icon img/codex/fairyicon/wings_src.png and save the new version as img/codex/fairyicon/wings2_src.png (1024x1024 PNG).
+
+Keep the same 24x24 art-pixel grid, the same wing colors and dark brown outline, and the same flat #FF00FF background.
+
+What was wrong: the gold sparkle sits too low, below the wings, and looks like a gold lump, not a sparkle. The wings also look a bit like straight blades.
+
+Change:
+1. Sparkle: a clear symmetric four-point + star (long thin points up, down, left, right, bright pale-yellow center), placed exactly in the middle between the two upper and lower wings, vertically centered in the icon. About 8 art pixels tall and 8 wide, with the dark brown outline.
+2. Wings: rounder, softer fairy wings. Upper wings big with a rounded top edge, lower wings smaller and round. Left and right exactly mirrored, with a gap in the middle for the star.
+3. The whole icon is vertically and horizontally centered, about 22 art pixels wide and 20 tall.
+
+Large crisp square pixels, no anti-aliasing, no gradient. Do not use python.

@@ -1,0 +1,9 @@
+Make ONE small pixel-art game icon of FAIRY WINGS and save it as img/codex/fairyicon/wings_src.png (1024x1024 PNG).
+
+Look at these reference images first:
+- img/codex/fairyicon/ref_icons.png : the existing event icons (campfire, roulette wheel, scroll). Match their style exactly: 24x24 pixel grid, thick dark brown 1px outline, chunky clear shapes, simple 3-step shading.
+- img/codex/fairyicon/ref_fairy.png : the fairy character. Use the same wing colors (light sky blue, white highlights, soft pink tips) and warm gold.
+
+The icon: a pair of fairy wings seen from the front, left and right mirrored, each side with a large upper wing and a small lower wing. No body, no face, no butterfly antennae. Between the wings, one small warm gold four-point + sparkle (fairy light). Optionally one tiny + sparkle near the top corner.
+
+Rules: it is a 24x24 pixel-art sprite drawn with large crisp square pixels (about 40 real pixels per art pixel), no anti-aliasing, no gradient, no shadow on the ground, flat solid magenta #FF00FF background everywhere outside the icon. The icon fills most of the grid (about 22 art pixels wide). Do not use python.

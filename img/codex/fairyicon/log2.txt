@@ -1,0 +1,1414 @@
+OpenAI Codex v0.171.0-alpha.13.2
+--------
+workdir: C:\Users\Home\Downloads\방치형RPG_테스트베드
+model: gpt-6.2-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: medium
+reasoning summaries: none
+session id: 01a217a7-f4fb-76f2-9de2-b2963329cc81
+--------
+user
+Fix the pixel-art icon img/codex/fairyicon/wings_src.png and save the new version as img/codex/fairyicon/wings2_src.png (1024x1024 PNG).
+
+Keep the same 24x24 art-pixel grid, the same wing colors and dark brown outline, and the same flat #FF00FF background.
+
+What was wrong: the gold sparkle sits too low, below the wings, and looks like a gold lump, not a sparkle. The wings also look a bit like straight blades.
+
+Change:
+1. Sparkle: a clear symmetric four-point + star (long thin points up, down, left, right, bright pale-yellow center), placed exactly in the middle between the two upper and lower wings, vertically centered in the icon. About 8 art pixels tall and 8 wide, with the dark brown outline.
+2. Wings: rounder, softer fairy wings. Upper wings big with a rounded top edge, lower wings smaller and round. Left and right exactly mirrored, with a gap in the middle for the star.
+3. The whole icon is vertically and horizontally centered, about 22 art pixels wide and 20 tall.
+
+Large crisp square pixels, no anti-aliasing, no gradient. Do not use python.
+
+codex
+I’ll inspect the source grid and palette, then redraw the wings and sparkle and verify the exported PNG.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Command magick,node,dotnet -ErrorAction SilentlyContinue | Select-Object Name,Source; Get-Item -LiteralPath 'img/codex/fairyicon/wings_src.png' | Select-Object Length,FullName" in C:\Users\Home\Downloads\방치형RPG_테스트베드
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Location; Get-ChildItem -Force -Name; rg --files -g AGENTS.md -g '*wings*' -g '"'!node_modules'"'" in C:\Users\Home\Downloads\방치형RPG_테스트베드
+ succeeded in 302ms:
+
+Name       Source                            
+----       ------                            
+node.exe   C:\Program Files\nodejs\node.exe  
+dotnet.exe C:\Program Files\dotnet\dotnet.exe
+                                             
+
+
+
+ exited 1 in 323ms:
+
+Path                                
+----                                
+C:\Users\Home\Downloads\방치형RPG_테스트베드
+.claude
+.git
+devlog
+fonts
+fx
+img
+개발일지
+역할
+홍보
+.gitignore
+build-artifact.js
+CLAUDE.md
+data.js
+data.v1.js
+data.v10.js
+data.v100.js
+data.v101.js
+data.v102.js
+data.v103.js
+data.v104.js
+data.v105.js
+data.v106.js
+data.v107.js
+data.v108.js
+data.v109.js
+data.v11.js
+data.v110.js
+data.v111.js
+data.v112.js
+data.v113.js
+data.v114.js
+data.v115.js
+data.v116.js
+data.v117.js
+data.v118.js
+data.v119.js
+data.v12.js
+data.v120.js
+data.v121.js
+data.v122.js
+data.v123.js
+data.v124.js
+data.v125.js
+data.v126.js
+data.v127.js
+data.v128.js
+data.v129.js
+data.v13.js
+data.v130.js
+data.v131.js
+data.v132.js
+data.v133.js
+data.v134.js
+data.v135.js
+data.v136.js
+data.v137.js
+data.v138.js
+data.v139.js
+data.v14.js
+data.v140.js
+data.v141.js
+data.v142.js
+data.v143.js
+data.v144.js
+data.v145.js
+data.v146.js
+data.v147.js
+data.v148.js
+data.v149.js
+data.v15.js
+data.v150.js
+data.v151.js
+data.v152.js
+data.v153.js
+data.v154.js
+data.v155.js
+data.v156.js
+data.v157.js
+data.v158.js
+data.v159.js
+data.v16.js
+data.v160.js
+data.v161.js
+data.v162.js
+data.v163.js
+data.v164.js
+data.v165.js
+data.v166.js
+data.v167.js
+data.v168.js
+data.v169.js
+data.v17.js
+data.v170.js
+data.v171.js
+data.v172.js
+data.v173.js
+data.v174.js
+data.v175.js
+data.v176.js
+data.v177.js
+data.v178.js
+data.v18.js
+data.v19.js
+data.v20.js
+data.v21.js
+data.v22.js
+data.v23.js
+data.v24.js
+data.v25.js
+data.v26.js
+data.v27.js
+data.v28.js
+data.v29.js
+data.v3.js
+data.v30.js
+data.v31.js
+data.v32.js
+data.v33.js
+data.v34.js
+data.v35.js
+data.v36.js
+data.v37.js
+data.v38.js
+data.v39.js
+data.v4.js
+data.v40.js
+data.v41.js
+data.v42.js
+data.v43.js
+data.v44.js
+data.v45.js
+data.v46.js
+data.v47.js
+data.v48.js
+data.v49.js
+data.v50.js
+data.v51.js
+data.v52.js
+data.v53.js
+data.v54.js
+data.v55.js
+data.v56.js
+data.v57.js
+data.v58.js
+data.v59.js
+data.v60.js
+data.v61.js
+data.v62.js
+data.v63.js
+data.v64.js
+data.v65.js
+data.v66.js
+data.v67.js
+data.v68.js
+data.v69.js
+data.v70.js
+data.v71.js
+data.v72.js
+data.v73.js
+data.v74.js
+data.v75.js
+data.v76.js
+data.v77.js
+data.v78.js
+data.v79.js
+data.v80.js
+data.v81.js
+data.v82.js
+data.v83.js
+data.v84.js
+data.v85.js
+data.v86.js
+data.v87.js
+data.v88.js
+data.v89.js
+data.v9.js
+data.v90.js
+data.v91.js
+data.v92.js
+data.v93.js
+data.v94.js
+data.v95.js
+data.v96.js
+data.v97.js
+data.v98.js
+data.v99.js
+engine.js
+engine.v1.js
+engine.v10.js
+engine.v100.js
+engine.v101.js
+engine.v102.js
+engine.v103.js
+engine.v104.js
+engine.v105.js
+engine.v106.js
+engine.v107.js
+engine.v108.js
+engine.v109.js
+engine.v11.js
+engine.v110.js
+engine.v111.js
+engine.v112.js
+engine.v113.js
+engine.v114.js
+engine.v115.js
+engine.v116.js
+engine.v117.js
+engine.v118.js
+engine.v119.js
+engine.v12.js
+engine.v120.js
+engine.v121.js
+engine.v122.js
+engine.v123.js
+engine.v124.js
+engine.v125.js
+engine.v126.js
+engine.v127.js
+engine.v128.js
+engine.v129.js
+engine.v13.js
+engine.v130.js
+engine.v131.js
+engine.v132.js
+engine.v133.js
+engine.v14.js
+engine.v15.js
+engine.v16.js
+engine.v17.js
+engine.v18.js
+engine.v19.js
+engine.v20.js
+engine.v21.js
+engine.v22.js
+engine.v23.js
+engine.v24.js
+engine.v25.js
+engine.v26.js
+engine.v27.js
+engine.v28.js
+engine.v29.js
+engine.v3.js
+engine.v30.js
+engine.v31.js
+engine.v32.js
+engine.v33.js
+engine.v34.js
+engine.v35.js
+engine.v36.js
+engine.v37.js
+engine.v38.js
+engine.v39.js
+engine.v4.js
+engine.v40.js
+engine.v41.js
+engine.v42.js
+engine.v43.js
+engine.v44.js
+engine.v45.js
+engine.v46.js
+engine.v47.js
+engine.v48.js
+engine.v49.js
+engine.v5.js
+engine.v50.js
+engine.v51.js
+engine.v52.js
+engine.v53.js
+engine.v54.js
+engine.v55.js
+engine.v56.js
+engine.v57.js
+engine.v58.js
+engine.v59.js
+engine.v6.js
+engine.v60.js
+engine.v61.js
+engine.v62.js
+engine.v63.js
+engine.v64.js
+engine.v65.js
+engine.v66.js
+engine.v67.js
+engine.v68.js
+engine.v69.js
+engine.v7.js
+engine.v70.js
+engine.v71.js
+engine.v72.js
+engine.v73.js
+engine.v74.js
+engine.v75.js
+engine.v76.js
+engine.v77.js
+engine.v78.js
+engine.v79.js
+engine.v8.js
+engine.v80.js
+engine.v81.js
+engine.v82.js
+engine.v83.js
+engine.v84.js
+engine.v85.js
+engine.v86.js
+engine.v87.js
+engine.v88.js
+engine.v89.js
+engine.v9.js
+engine.v90.js
+engine.v91.js
+engine.v92.js
+engine.v93.js
+engine.v94.js
+engine.v95.js
+engine.v96.js
+engine.v97.js
+engine.v98.js
+engine.v99.js
+engine.vsyn.js
+fx.js
+fx.v1.js
+index.html
+index.v1.html
+index.v10.html
+index.v100.html
+index.v101.html
+index.v102.html
+index.v103.html
+index.v104.html
+index.v105.html
+index.v106.html
+index.v107.html
+index.v108.html
+index.v109.html
+index.v11.html
+index.v110.html
+index.v111.html
+index.v112.html
+index.v113.html
+index.v114.html
+index.v115.html
+index.v116.html
+index.v117.html
+index.v118.html
+index.v119.html
+index.v12.html
+index.v120.html
+index.v121.html
+index.v122.html
+index.v123.html
+index.v124.html
+index.v125.html
+index.v126.html
+index.v127.html
+index.v128.html
+index.v129.html
+index.v13.html
+index.v130.html
+index.v131.html
+index.v132.html
+index.v133.html
+index.v134.html
+index.v135.html
+index.v136.html
+index.v137.html
+index.v138.html
+index.v139.html
+index.v14.html
+index.v140.html
+index.v141.html
+index.v142.html
+index.v143.html
+index.v144.html
+index.v145.html
+index.v146.html
+index.v147.html
+index.v148.html
+index.v149.html
+index.v15.html
+index.v150.html
+index.v151.html
+index.v152.html
+index.v153.html
+index.v154.html
+index.v155.html
+index.v156.html
+index.v157.html
+index.v158.html
+index.v159.html
+index.v16.html
+index.v160.html
+index.v161.html
+index.v162.html
+index.v163.html
+index.v164.html
+index.v165.html
+index.v166.html
+index.v167.html
+index.v168.html
+index.v169.html
+index.v17.html
+index.v170.html
+index.v171.html
+index.v172.html
+index.v173.html
+index.v174.html
+index.v175.html
+index.v176.html
+index.v177.html
+index.v178.html
+index.v179.html
+index.v18.html
+index.v180.html
+index.v181.html
+index.v182.html
+index.v183.html
+index.v184.html
+index.v185.html
+index.v186.html
+index.v187.html
+index.v188.html
+index.v189.html
+index.v19.html
+index.v190.html
+index.v191.html
+index.v192.html
+index.v193.html
+index.v194.html
+index.v195.html
+index.v196.html
+index.v197.html
+index.v198.html
+index.v199.html
+index.v2.html
+index.v20.html
+index.v200.html
+index.v201.html
+index.v202.html
+index.v203.html
+index.v204.html
+index.v205.html
+index.v206.html
+index.v207.html
+index.v208.html
+index.v209.html
+index.v21.html
+index.v210.html
+index.v211.html
+index.v212.html
+index.v213.html
+index.v214.html
+index.v215.html
+index.v216.html
+index.v217.html
+index.v218.html
+index.v219.html
+index.v22.html
+index.v220.html
+index.v221.html
+index.v222.html
+index.v223.html
+index.v224.html
+index.v225.html
+index.v226.html
+index.v227.html
+index.v228.html
+index.v229.html
+index.v23.html
+index.v230.html
+index.v231.html
+index.v232.html
+index.v233.html
+index.v234.html
+index.v235.html
+index.v236.html
+index.v237.html
+index.v238.html
+index.v239.html
+index.v24.html
+index.v240.html
+index.v241.html
+index.v242.html
+index.v243.html
+index.v244.html
+index.v245.html
+index.v246.html
+index.v247.html
+index.v248.html
+index.v249.html
+index.v25.html
+index.v250.html
+index.v251.html
+index.v252.html
+index.v253.html
+index.v254.html
+index.v255.html
+index.v256.html
+index.v257.html
+index.v258.html
+index.v259.html
+index.v26.html
+index.v260.html
+index.v261.html
+index.v262.html
+index.v263.html
+index.v264.html
+index.v265.html
+index.v266.html
+index.v267.html
+index.v268.html
+index.v269.html
+index.v27.html
+index.v270.html
+index.v271.html
+index.v272.html
+index.v273.html
+index.v274.html
+index.v275.html
+index.v276.html
+index.v277.html
+index.v278.html
+index.v279.html
+index.v28.html
+index.v280.html
+index.v281.html
+index.v282.html
+index.v283.html
+index.v284.html
+index.v285.html
+index.v286.html
+index.v287.html
+index.v288.html
+index.v289.html
+index.v29.html
+index.v290.html
+index.v291.html
+index.v292.html
+index.v293.html
+index.v294.html
+index.v295.html
+index.v296.html
+index.v297.html
+index.v298.html
+index.v299.html
+index.v3.html
+index.v30.html
+index.v300.html
+index.v301.html
+index.v302.html
+index.v303.html
+index.v304.html
+index.v305.html
+index.v306.html
+index.v307.html
+index.v308.html
+index.v309.html
+index.v31.html
+index.v310.html
+index.v311.html
+index.v312.html
+index.v313.html
+index.v314.html
+index.v315.html
+index.v316.html
+index.v317.html
+index.v318.html
+index.v319.html
+index.v32.html
+index.v320.html
+index.v321.html
+index.v322.html
+index.v323.html
+index.v324.html
+index.v325.html
+index.v326.html
+index.v327.html
+index.v328.html
+index.v329.html
+index.v33.html
+index.v330.html
+index.v331.html
+index.v332.html
+index.v333.html
+index.v334.html
+index.v335.html
+index.v336.html
+index.v337.html
+index.v338.html
+index.v339.html
+index.v34.html
+index.v340.html
+index.v341.html
+index.v342.html
+index.v343.html
+index.v344.html
+index.v345.html
+index.v346.html
+index.v347.html
+index.v348.html
+index.v349.html
+index.v35.html
+index.v350.html
+index.v351.html
+index.v352.html
+index.v353.html
+index.v354.html
+index.v355.html
+index.v356.html
+index.v357.html
+index.v358.html
+index.v359.html
+index.v36.html
+index.v360.html
+index.v361.html
+index.v362.html
+index.v363.html
+index.v364.html
+index.v365.html
+index.v366.html
+index.v367.html
+index.v368.html
+index.v369.html
+index.v37.html
+index.v370.html
+index.v371.html
+index.v372.html
+index.v373.html
+index.v374.html
+index.v375.html
+index.v376.html
+index.v377.html
+index.v378.html
+index.v379.html
+index.v38.html
+index.v380.html
+index.v381.html
+index.v382.html
+index.v383.html
+index.v384.html
+index.v385.html
+index.v386.html
+index.v387.html
+index.v388.html
+index.v389.html
+index.v39.html
+index.v390.html
+index.v391.html
+index.v392.html
+index.v393.html
+index.v394.html
+index.v395.html
+index.v396.html
+index.v4.html
+index.v40.html
+index.v41.html
+index.v42.html
+index.v43.html
+index.v44.html
+index.v45.html
+index.v46.html
+index.v47.html
+index.v48.html
+index.v49.html
+index.v5.html
+index.v50.html
+index.v51.html
+index.v52.html
+index.v53.html
+index.v54.html
+index.v55.html
+index.v56.html
+index.v57.html
+index.v58.html
+index.v59.html
+index.v6.html
+index.v60.html
+index.v61.html
+index.v62.html
+index.v63.html
+index.v64.html
+index.v65.html
+index.v66.html
+index.v67.html
+index.v68.html
+index.v69.html
+index.v7.html
+index.v70.html
+index.v71.html
+index.v72.html
+index.v73.html
+index.v74.html
+index.v75.html
+index.v76.html
+index.v77.html
+index.v78.html
+index.v79.html
+index.v8.html
+index.v80.html
+index.v81.html
+index.v82.html
+index.v83.html
+index.v84.html
+index.v85.html
+index.v86.html
+index.v87.html
+index.v88.html
+index.v89.html
+index.v9.html
+index.v90.html
+index.v91.html
+index.v92.html
+index.v93.html
+index.v94.html
+index.v95.html
+index.v96.html
+index.v97.html
+index.v98.html
+index.v99.html
+index.v_bell.html
+mock_fightbtn.html
+README.md
+게임_현재상태.md
+게임_현재상태.v1.md
+게임_현재상태.v10.md
+게임_현재상태.v11.md
+게임_현재상태.v12.md
+게임_현재상태.v13.md
+게임_현재상태.v14.md
+게임_현재상태.v15.md
+게임_현재상태.v16.md
+게임_현재상태.v17.md
+게임_현재상태.v18.md
+게임_현재상태.v19.md
+게임_현재상태.v2.md
+게임_현재상태.v20.md
+게임_현재상태.v21.md
+게임_현재상태.v22.md
+게임_현재상태.v23.md
+게임_현재상태.v24.md
+게임_현재상태.v25.md
+게임_현재상태.v26.md
+게임_현재상태.v27.md
+게임_현재상태.v28.md
+게임_현재상태.v29.md
+게임_현재상태.v3.md
+게임_현재상태.v30.md
+게임_현재상태.v31.md
+게임_현재상태.v32.md
+게임_현재상태.v33.md
+게임_현재상태.v34.md
+게임_현재상태.v35.md
+게임_현재상태.v4.md
+게임_현재상태.v5.md
+게임_현재상태.v6.md
+게임_현재상태.v7.md
+게임_현재상태.v8.md
+게임_현재상태.v9.md
+기획결정기록.md
+스킬이펙트표.md
+캐릭터_특성표.md
+캐릭터_해상도_점검.md
+팝업기준안.md
+화면구조_검토.md
+rg : 'rg' 용어가 cmdlet, 함수, 스크립트 파일 또는 실행할 수 있는 프로그램 이름으로 인식되지 않습니다. 이름이 정확한지 확인하고 경로가 포함된 경우 경로가 올바른지 검증한 다음 다시 시도하십시오.
+위치 줄:2 문자:43
++ Get-Location; Get-ChildItem -Force -Name; rg --files -g AGENTS.md -g  ...
++                                           ~~
+    + CategoryInfo          : ObjectNotFound: (rg:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+
+
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command '$paths = @('"'AGENTS.md','img/AGENTS.md','img/codex/AGENTS.md','img/codex/fairyicon/AGENTS.md'); foreach ("'$p in $paths) { if (Test-Path -LiteralPath $p) { Get-Content -LiteralPath $p } }; Get-ChildItem -LiteralPath '"'img/codex/fairyicon' -Filter '*wings*' | Format-Table Name,Length; git status --short -- img/codex/fairyicon; Add-Type -AssemblyName System.Drawing; "'$b=[Drawing.Bitmap]::new((Resolve-Path -LiteralPath '"'img/codex/fairyicon/wings_src.png').Path); "'$b.Size; $lut=@{}; for($y=0;$y -lt 24;$y++){ $row='"''; for("'$x=0;$x -lt 24;$x++){ $c=$b.GetPixel([math]::Floor(($x+0.5)*$b.Width/24),[math]::Floor(($y+0.5)*$b.Height/24)).Name; if(!$lut.ContainsKey($c)){$lut[$c]=[char](65+$lut.Count)}; $row+=$lut[$c] }; $row }; $lut.GetEnumerator() | Sort-Object Value | Format-Table Name,Value; $b.Dispose()' in C:\Users\Home\Downloads\방치형RPG_테스트베드
+ succeeded in 235ms:
+
+Name          Length
+----          ------
+wings.png        381
+wings_src.png  32541
+wings_x8.png    3620
+
+
+?? img/codex/fairyicon/
+
+IsEmpty Width Height
+------- ----- ------
+  False  1024   1024
+AAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAA
+AABBAAAAAAAAAAAAAAAABBAA
+ABCCBBAAAAAAAAAAAABBCCBA
+ABDCCEBBAAAAAAAABBECCDBA
+ABDDCEEFBAAAAAABFEECDDBA
+ABDFCEEFFBAAAABFFEECFDBA
+ABFFFCEFFFBAABFFFECFFFBA
+AABEFFECFFBAABFFCEFFEBAA
+AABCFFEECFBAABFCEEFFCBAA
+AAABCCFECFBAABFCEFCCBAAA
+AAAABCCEFFBAABFFECCBAAAA
+AAABBBBBFBAAAABFBBBBBAAA
+AABCCEFBBABBBBABBFECCBAA
+ABDECFFBABBGGBBABFFCEDBA
+ABDDEFBABHGGGGHBABFEDDBA
+AABECFBABBHIIHBBABFCEBAA
+AABECFBAAABIIBAAABFCEBAA
+AAABCBAAAABBBBAAAABCBAAA
+AAAABAAAAAAAAAAAAAABAAAA
+AAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAA
+
+
+
+Name     Value
+----     -----
+ffff00ff     A
+ff4b150c     B
+fffdf9ed     C
+fffca5e3     D
+ffd7e6f8     E
+ff92bcf1     F
+fffbe27d     G
+ffcc801a     H
+fff4ba2b     I
+
+
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command '$ErrorActionPreference='"'Stop'
+
+Add-Type -AssemblyName System.Drawing
+"'$palette = @{
+ '"'.' = 'FF00FF'
+ 'B' = '4B150C'
+ 'C' = 'FDF9ED'
+ 'D' = 'FCA5E3'
+ 'E' = 'D7E6F8'
+ 'F' = '92BCF1'
+ 'G' = 'FBE27D'
+ 'I' = 'F4BA2B'
+}
+"'$upperWing = @(
+ '"'...CCCC'
+ '..CCCCEE'
+ '.CDDDCEEE'
+ '.CDDDCCEEF'
+ '.CDDEECEEFF'
+ '.CCEEECEEFF'
+ '.FCEEEECFF'
+ '..FCEEECF'
+ '...FFEEF'
+ '.....FF'
+)
+"'$lowerWing = @(
+ '"'....EEFF'
+ '...CCEEFF'
+ '..CDDCEEFF'
+ '..CDDCEEFF'
+ '..CDCCEEF'
+ '..FCCEFFF'
+ '...FEEFF'
+ '...FFFF'
+ '....FF'
+)
+"'$star = @(
+ '"'...BB...'
+ '...BB...'
+ '..BIGB..'
+ 'BBICCGIB'
+ 'BIGCCCBB'
+ '..BGIB..'
+ '...BB...'
+ '...BB...'
+)
+# Fill the outline where a wing touches the background along an edge.
+"'$art = New-Object '"'char[,]' 24,24
+for ("'$y=0; $y -lt 24; $y++) {
+ for ($x=0; $x -lt 24; $x++) { $art[$y,$x]='"'.' }
+}
+foreach ("'$wing in @(@{Rows=$upperWing; Top=2}, @{Rows=$lowerWing; Top=13})) {
+ $rows = @('"'.') + @("'$wing.Rows | ForEach-Object { $_.PadRight(12,'"'.') }) + @('.')
+ "'$rows[0] = '"'.' * 12
+ "'$rows[$rows.Count-1] = '"'.' * 12
+ for ("'$row=1; $row -lt $rows.Count-1; $row++) {
+  $y = $wing.Top + $row - 1
+  for ($x=1; $x -lt 11; $x++) {
+   $color = $rows[$row][$x]
+   if ($color -eq '"'.') { continue }
+   if ("'$rows[$row][$x-1] -eq '"'.' -or "'$rows[$row][$x+1] -eq '"'.' -or
+       "'$rows[$row-1][$x] -eq '"'.' -or "'$rows[$row+1][$x] -eq '"'.') { "'$color = '"'B' }
+   "'$art[$y,$x] = $color
+   $art[$y,(23-$x)] = $color
+  }
+ }
+}
+for ($y=0; $y -lt 8; $y++) {
+ for ($x=0; $x -lt 8; $x++) {
+  if ($star[$y][$x] -eq '"'.') { continue }
+  if ("'$art[($y+8),($x+8)] -ne '"'.') { throw 'Sparkle overlaps a wing.' }
+  "'$art[($y+8),($x+8)] = $star[$y][$x]
+ }
+}
+$bitmap = [Drawing.Bitmap]::new(1024,1024,[Drawing.Imaging.PixelFormat]::Format24bppRgb)
+$graphics = [Drawing.Graphics]::FromImage($bitmap)
+$brushes = @{}
+foreach ($key in $palette.Keys) {
+ $brushes[$key] = [Drawing.SolidBrush]::new([Drawing.ColorTranslator]::FromHtml('"'#'+"'$palette[$key]))
+}
+for ($y=0; $y -lt 24; $y++) {
+ $top = [int][Math]::Round($y*1024/24)
+ $bottom = [int][Math]::Round(($y+1)*1024/24)
+ $line = '"''
+ for ("'$x=0; $x -lt 24; $x++) {
+  $left = [int][Math]::Round($x*1024/24)
+  $right = [int][Math]::Round(($x+1)*1024/24)
+  $key = [string]$art[$y,$x]
+  $line += $key
+  $graphics.FillRectangle($brushes[$key],$left,$top,($right-$left),($bottom-$top))
+ }
+ $line
+}
+$graphics.Dispose()
+$bitmap.Save((Join-Path (Get-Location) '"'img/codex/fairyicon/wings2_src.png'),[Drawing.Imaging.ImageFormat]::Png)
+"'$bitmap.Dispose()
+$brushes.Values | ForEach-Object { $_.Dispose() }
+' in C:\Users\Home\Downloads\방치형RPG_테스트베드
+ succeeded in 261ms:
+........................
+........................
+...BBBB..........BBBB...
+..BCCCEB........BECCCB..
+.BDDDCEEB......BEECDDDB.
+.BDDDCCEEB....BEECCDDDB.
+.BDDEECEEFB..BFEECEEDDB.
+.BCEEECEEFB..BFEECEEECB.
+.BCEEEECFB.BB.BFCEEEECB.
+..BCEEECB..BB..BCEEECB..
+...BBEEB..BIGB..BEEBB...
+.....BB.BBICCGIB.BB.....
+........BIGCCCBB........
+....BBBB..BGIB..BBBB....
+...BCEEFB..BB..BFEECB...
+..BDDCEEFB.BB.BFEECDDB..
+..BDDCEEFB....BFEECDDB..
+..BDCCEEB......BEECCDB..
+..BCCEFFB......BFFECCB..
+...BEEFB........BFEEB...
+...BFFB..........BFFB...
+....BB............BB....
+........................
+........................
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command '$ErrorActionPreference='"'Stop'
+
+Add-Type -AssemblyName System.Drawing
+"'$palette = @{
+ '"'.' = 'FF00FF'
+ 'B' = '4B150C'
+ 'C' = 'FDF9ED'
+ 'D' = 'FCA5E3'
+ 'E' = 'D7E6F8'
+ 'F' = '92BCF1'
+ 'G' = 'FBE27D'
+}
+"'$upperWing = @(
+ '"'...CCCC'
+ '..CCCCEE'
+ '.CDDDCEEE'
+ '.CDDDCCEEF'
+ '.CDDEECEEFF'
+ '.CCEEECEEFF'
+ '.FCEEEECFF'
+ '..FCEEECF'
+ '...FFEEF'
+ '.....FF'
+)
+"'$lowerWing = @(
+ '"'....EEFF'
+ '...CCEEFF'
+ '..CDDCEEFF'
+ '..CDDCEEFF'
+ '..CDCCEEF'
+ '..FCCEFFF'
+ '...FEEFF'
+ '...FFFF'
+ '....FF'
+)
+"'$star = @(
+ '"'...BB...'
+ '...BB...'
+ '..BGGB..'
+ 'BBGCCGBB'
+ 'BBGCCGBB'
+ '..BGGB..'
+ '...BB...'
+ '...BB...'
+)
+# Fill the outline where a wing touches the background along an edge.
+"'$art = New-Object '"'char[,]' 24,24
+for ("'$y=0; $y -lt 24; $y++) {
+ for ($x=0; $x -lt 24; $x++) { $art[$y,$x]='"'.' }
+}
+foreach ("'$wing in @(@{Rows=$upperWing; Top=2}, @{Rows=$lowerWing; Top=13})) {
+ $rows = @('"'.') + @("'$wing.Rows | ForEach-Object { $_.PadRight(12,'"'.') }) + @('.')
+ "'$rows[0] = '"'.' * 12
+ "'$rows[$rows.Count-1] = '"'.' * 12
+ for ("'$row=1; $row -lt $rows.Count-1; $row++) {
+  $y = $wing.Top + $row - 1
+  for ($x=1; $x -lt 11; $x++) {
+   $color = $rows[$row][$x]
+   if ($color -eq '"'.') { continue }
+   if ("'$rows[$row][$x-1] -eq '"'.' -or "'$rows[$row][$x+1] -eq '"'.' -or
+       "'$rows[$row-1][$x] -eq '"'.' -or "'$rows[$row+1][$x] -eq '"'.') { "'$color = '"'B' }
+   "'$art[$y,$x] = $color
+   $art[$y,(23-$x)] = $color
+  }
+ }
+}
+for ($y=0; $y -lt 8; $y++) {
+ for ($x=0; $x -lt 8; $x++) {
+  if ($star[$y][$x] -eq '"'.') { continue }
+  if ("'$art[($y+8),($x+8)] -ne '"'.') { throw 'Sparkle overlaps a wing.' }
+  "'$art[($y+8),($x+8)] = $star[$y][$x]
+ }
+}
+$bitmap = [Drawing.Bitmap]::new(1024,1024,[Drawing.Imaging.PixelFormat]::Format24bppRgb)
+$graphics = [Drawing.Graphics]::FromImage($bitmap)
+$brushes = @{}
+foreach ($key in $palette.Keys) {
+ $brushes[$key] = [Drawing.SolidBrush]::new([Drawing.ColorTranslator]::FromHtml('"'#'+"'$palette[$key]))
+}
+for ($y=0; $y -lt 24; $y++) {
+ $top = [int][Math]::Round($y*1024/24)
+ $bottom = [int][Math]::Round(($y+1)*1024/24)
+ $line = '"''
+ for ("'$x=0; $x -lt 24; $x++) {
+  $left = [int][Math]::Round($x*1024/24)
+  $right = [int][Math]::Round(($x+1)*1024/24)
+  $key = [string]$art[$y,$x]
+  $line += $key
+  $graphics.FillRectangle($brushes[$key],$left,$top,($right-$left),($bottom-$top))
+ }
+ $line
+}
+$graphics.Dispose()
+$bitmap.Save((Join-Path (Get-Location) '"'img/codex/fairyicon/wings2_src.png'),[Drawing.Imaging.ImageFormat]::Png)
+"'$bitmap.Dispose()
+$brushes.Values | ForEach-Object { $_.Dispose() }
+' in C:\Users\Home\Downloads\방치형RPG_테스트베드
+ succeeded in 238ms:
+........................
+........................
+...BBBB..........BBBB...
+..BCCCEB........BECCCB..
+.BDDDCEEB......BEECDDDB.
+.BDDDCCEEB....BEECCDDDB.
+.BDDEECEEFB..BFEECEEDDB.
+.BCEEECEEFB..BFEECEEECB.
+.BCEEEECFB.BB.BFCEEEECB.
+..BCEEECB..BB..BCEEECB..
+...BBEEB..BGGB..BEEBB...
+.....BB.BBGCCGBB.BB.....
+........BBGCCGBB........
+....BBBB..BGGB..BBBB....
+...BCEEFB..BB..BFEECB...
+..BDDCEEFB.BB.BFEECDDB..
+..BDDCEEFB....BFEECDDB..
+..BDCCEEB......BEECCDB..
+..BCCEFFB......BFFECCB..
+...BEEFB........BFEEB...
+...BFFB..........BFFB...
+....BB............BB....
+........................
+........................
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command '$ErrorActionPreference='"'Stop'
+
+Add-Type -AssemblyName System.Drawing
+"'$palette = @{
+ '"'.' = 'FF00FF'
+ 'B' = '4B150C'
+ 'C' = 'FDF9ED'
+ 'D' = 'FCA5E3'
+ 'E' = 'D7E6F8'
+ 'F' = '92BCF1'
+ 'G' = 'FBE27D'
+ 'P' = 'FFF4B0'
+}
+"'$upperWing = @(
+ '"'...CCCC'
+ '..CCCCEE'
+ '.CDDDCEEE'
+ '.CDDDCCEEF'
+ '.CDDEECEEFF'
+ '.CCEEECEEF'
+ '.FCEEEECFF'
+ '..FCEEECF'
+ '...FFEEF'
+ '.....FF'
+)
+"'$lowerWing = @(
+ '"'....EEF'
+ '...CCEEFF'
+ '..CDDCEEFF'
+ '..CDDCEEFF'
+ '..CDCCEEF'
+ '..FCCEFFF'
+ '...FEEFF'
+ '...FFFF'
+ '....FFF'
+)
+"'$star = @(
+ '"'...BB...'
+ '...BB...'
+ '..BGGB..'
+ 'BBGPPGBB'
+ 'BBGPPGBB'
+ '..BGGB..'
+ '...BB...'
+ '...BB...'
+)
+# Fill the outline where a wing touches the background along an edge.
+"'$art = New-Object '"'char[,]' 24,24
+for ("'$y=0; $y -lt 24; $y++) {
+ for ($x=0; $x -lt 24; $x++) { $art[$y,$x]='"'.' }
+}
+foreach ("'$wing in @(@{Rows=$upperWing; Top=2}, @{Rows=$lowerWing; Top=13})) {
+ $rows = @('"'.') + @("'$wing.Rows | ForEach-Object { $_.PadRight(12,'"'.') }) + @('.')
+ "'$rows[0] = '"'.' * 12
+ "'$rows[$rows.Count-1] = '"'.' * 12
+ for ("'$row=1; $row -lt $rows.Count-1; $row++) {
+  $y = $wing.Top + $row - 1
+  for ($x=1; $x -lt 11; $x++) {
+   $color = $rows[$row][$x]
+   if ($color -eq '"'.') { continue }
+   if ("'$rows[$row][$x-1] -eq '"'.' -or "'$rows[$row][$x+1] -eq '"'.' -or
+       "'$rows[$row-1][$x] -eq '"'.' -or "'$rows[$row+1][$x] -eq '"'.') { "'$color = '"'B' }
+   "'$art[$y,$x] = $color
+   $art[$y,(23-$x)] = $color
+  }
+ }
+}
+for ($y=0; $y -lt 8; $y++) {
+ for ($x=0; $x -lt 8; $x++) {
+  if ($star[$y][$x] -eq '"'.') { continue }
+  if ("'$art[($y+8),($x+8)] -ne '"'.') { throw 'Sparkle overlaps a wing.' }
+  "'$art[($y+8),($x+8)] = $star[$y][$x]
+ }
+}
+$bitmap = [Drawing.Bitmap]::new(1024,1024,[Drawing.Imaging.PixelFormat]::Format24bppRgb)
+$graphics = [Drawing.Graphics]::FromImage($bitmap)
+$brushes = @{}
+foreach ($key in $palette.Keys) {
+ $brushes[$key] = [Drawing.SolidBrush]::new([Drawing.ColorTranslator]::FromHtml('"'#'+"'$palette[$key]))
+}
+for ($y=0; $y -lt 24; $y++) {
+ $top = [int][Math]::Round($y*1024/24)
+ $bottom = [int][Math]::Round(($y+1)*1024/24)
+ $line = '"''
+ for ("'$x=0; $x -lt 24; $x++) {
+  $left = [int][Math]::Round($x*1024/24)
+  $right = [int][Math]::Round(($x+1)*1024/24)
+  $key = [string]$art[$y,$x]
+  $line += $key
+  $graphics.FillRectangle($brushes[$key],$left,$top,($right-$left),($bottom-$top))
+ }
+ $line
+}
+$graphics.Dispose()
+$bitmap.Save((Join-Path (Get-Location) '"'img/codex/fairyicon/wings2_src.png'),[Drawing.Imaging.ImageFormat]::Png)
+"'$bitmap.Dispose()
+$brushes.Values | ForEach-Object { $_.Dispose() }
+' in C:\Users\Home\Downloads\방치형RPG_테스트베드
+ succeeded in 241ms:
+........................
+........................
+...BBBB..........BBBB...
+..BCCCEB........BECCCB..
+.BDDDCEEB......BEECDDDB.
+.BDDDCCEEB....BEECCDDDB.
+.BDDEECEEFB..BFEECEEDDB.
+.BCEEECEEB....BEECEEECB.
+.BCEEEECFB.BB.BFCEEEECB.
+..BCEEECB..BB..BCEEECB..
+...BBEEB..BGGB..BEEBB...
+.....BB.BBGPPGBB.BB.....
+........BBGPPGBB........
+....BBB...BGGB...BBB....
+...BCEEBB..BB..BBEECB...
+..BDDCEEFB.BB.BFEECDDB..
+..BDDCEEFB....BFEECDDB..
+..BDCCEEB......BEECCDB..
+..BCCEFFB......BFFECCB..
+...BEEFB........BFEEB...
+...BFFB..........BFFB...
+....BBB..........BBB....
+........................
+........................
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command '$ErrorActionPreference='"'Stop'
+
+Add-Type -AssemblyName System.Drawing
+"'$palette = @{
+ '"'.' = 'FF00FF'
+ 'B' = '4B150C'
+ 'C' = 'FDF9ED'
+ 'D' = 'FCA5E3'
+ 'E' = 'D7E6F8'
+ 'F' = '92BCF1'
+ 'G' = 'FBE27D'
+ 'P' = 'FFF4B0'
+}
+"'$upperWing = @(
+ '"'...CCCC'
+ '..CCCCEE'
+ '.CDDDCEEE'
+ '.CDDDCCEEF'
+ '.CDDEECEEFF'
+ '.CCEEECEEF'
+ '.FCEEEECFF'
+ '..FCEEECF'
+ '...FFEE'
+ '.....FF'
+)
+"'$lowerWing = @(
+ '"'....EEF'
+ '...CCEEFF'
+ '..CDDCEEFF'
+ '..CDDCEEFF'
+ '..CDCCEEF'
+ '..FCCEFFF'
+ '...FEEFF'
+ '...FFFF'
+ '....FFF'
+)
+"'$star = @(
+ '"'...BB...'
+ '...BB...'
+ '..BGGB..'
+ 'BBGPPGBB'
+ 'BBGPPGBB'
+ '..BGGB..'
+ '...BB...'
+ '...BB...'
+)
+# Fill the outline where a wing touches the background along an edge.
+"'$art = New-Object '"'char[,]' 24,24
+for ("'$y=0; $y -lt 24; $y++) {
+ for ($x=0; $x -lt 24; $x++) { $art[$y,$x]='"'.' }
+}
+foreach ("'$wing in @(@{Rows=$upperWing; Top=2}, @{Rows=$lowerWing; Top=13})) {
+ $rows = @('"'.') + @("'$wing.Rows | ForEach-Object { $_.PadRight(12,'"'.') }) + @('.')
+ "'$rows[0] = '"'.' * 12
+ "'$rows[$rows.Count-1] = '"'.' * 12
+ for ("'$row=1; $row -lt $rows.Count-1; $row++) {
+  $y = $wing.Top + $row - 1
+  for ($x=1; $x -lt 11; $x++) {
+   $color = $rows[$row][$x]
+   if ($color -eq '"'.') { continue }
+   if ("'$rows[$row][$x-1] -eq '"'.' -or "'$rows[$row][$x+1] -eq '"'.' -or
+       "'$rows[$row-1][$x] -eq '"'.' -or "'$rows[$row+1][$x] -eq '"'.') { "'$color = '"'B' }
+   "'$art[$y,$x] = $color
+   $art[$y,(23-$x)] = $color
+  }
+ }
+}
+for ($y=0; $y -lt 8; $y++) {
+ for ($x=0; $x -lt 8; $x++) {
+  if ($star[$y][$x] -eq '"'.') { continue }
+  if ("'$art[($y+8),($x+8)] -ne '"'.') { throw 'Sparkle overlaps a wing.' }
+  "'$art[($y+8),($x+8)] = $star[$y][$x]
+ }
+}
+$bitmap = [Drawing.Bitmap]::new(1024,1024,[Drawing.Imaging.PixelFormat]::Format24bppRgb)
+$graphics = [Drawing.Graphics]::FromImage($bitmap)
+$brushes = @{}
+foreach ($key in $palette.Keys) {
+ $brushes[$key] = [Drawing.SolidBrush]::new([Drawing.ColorTranslator]::FromHtml('"'#'+"'$palette[$key]))
+}
+for ($y=0; $y -lt 24; $y++) {
+ $top = [int][Math]::Round($y*1024/24)
+ $bottom = [int][Math]::Round(($y+1)*1024/24)
+ $line = '"''
+ for ("'$x=0; $x -lt 24; $x++) {
+  $left = [int][Math]::Round($x*1024/24)
+  $right = [int][Math]::Round(($x+1)*1024/24)
+  $key = [string]$art[$y,$x]
+  $line += $key
+  $graphics.FillRectangle($brushes[$key],$left,$top,($right-$left),($bottom-$top))
+ }
+ $line
+}
+$graphics.Dispose()
+$bitmap.Save((Join-Path (Get-Location) '"'img/codex/fairyicon/wings2_src.png'),[Drawing.Imaging.ImageFormat]::Png)
+"'$bitmap.Dispose()
+$brushes.Values | ForEach-Object { $_.Dispose() }
+' in C:\Users\Home\Downloads\방치형RPG_테스트베드
+ succeeded in 241ms:
+........................
+........................
+...BBBB..........BBBB...
+..BCCCEB........BECCCB..
+.BDDDCEEB......BEECDDDB.
+.BDDDCCEEB....BEECCDDDB.
+.BDDEECEEFB..BFEECEEDDB.
+.BCEEECEEB....BEECEEECB.
+.BCEEEECFB.BB.BFCEEEECB.
+..BCEEEBB..BB..BBEEECB..
+...BBEB...BGGB...BEBB...
+.....BB.BBGPPGBB.BB.....
+........BBGPPGBB........
+....BBB...BGGB...BBB....
+...BCEEBB..BB..BBEECB...
+..BDDCEEFB.BB.BFEECDDB..
+..BDDCEEFB....BFEECDDB..
+..BDCCEEB......BEECCDB..
+..BCCEFFB......BFFECCB..
+...BEEFB........BFEEB...
+...BFFB..........BFFB...
+....BBB..........BBB....
+........................
+........................
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command '
+$ErrorActionPreference='"'Stop'
+Add-Type -AssemblyName System.Drawing
+Add-Type -ReferencedAssemblies System.Drawing -TypeDefinition @'
+using System;
+using System.Drawing;
+public class WingArtVerification {
+ public static void Verify(string path, uint[] expected) {
+  using (var bitmap = new Bitmap(path)) {
+   if (bitmap.Width "'!= 1024 || bitmap.Height != 1024 ||
+       bitmap.RawFormat.Guid != System.Drawing.Imaging.ImageFormat.Png.Guid)
+    throw new Exception("Unexpected image dimensions or format.");
+   for (int row = 0; row < 24; row++)
+    for (int col = 0; col < 24; col++)
+     for (int y = (row * 1024 + 12) / 24; y < ((row + 1) * 1024 + 12) / 24; y++)
+      for (int x = (col * 1024 + 12) / 24; x < ((col + 1) * 1024 + 12) / 24; x++)
+       if (unchecked((uint)bitmap.GetPixel(x, y).ToArgb()) != expected[row * 24 + col])
+        throw new Exception("Unexpected pixel at " + x + ", " + y);
+  }
+ }
+}
+'"'@
+
+[WingArtVerification]::Verify((Resolve-Path -LiteralPath 'img/codex/fairyicon/wings2_src.png').Path,[uint32[]]@(4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4283110668,4283110668,4283110668,4283110668,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4283110668,4283110668,4283110668,4283110668,4294902015,4294902015,4294902015,4294902015,4294902015,4283110668,4294834669,4294834669,4294834669,4292339448,4283110668,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4283110668,4292339448,4294834669,4294834669,4294834669,4283110668,4294902015,4294902015,4294902015,4283110668,4294747619,4294747619,4294747619,4294834669,4292339448,4292339448,4283110668,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4283110668,4292339448,4292339448,4294834669,4294747619,4294747619,4294747619,4283110668,4294902015,4294902015,4283110668,4294747619,4294747619,4294747619,4294834669,4294834669,4292339448,4292339448,4283110668,4294902015,4294902015,4294902015,4294902015,4283110668,4292339448,4292339448,4294834669,4294834669,4294747619,4294747619,4294747619,4283110668,4294902015,4294902015,4283110668,4294747619,4294747619,4292339448,4292339448,4294834669,4292339448,4292339448,4287806705,4283110668,4294902015,4294902015,4283110668,4287806705,4292339448,4292339448,4294834669,4292339448,4292339448,4294747619,4294747619,4283110668,4294902015,4294902015,4283110668,4294834669,4292339448,4292339448,4292339448,4294834669,4292339448,4292339448,4283110668,4294902015,4294902015,4294902015,4294902015,4283110668,4292339448,4292339448,4294834669,4292339448,4292339448,4292339448,4294834669,4283110668,4294902015,4294902015,4283110668,4294834669,4292339448,4292339448,4292339448,4292339448,4294834669,4287806705,4283110668,4294902015,4283110668,4283110668,4294902015,4283110668,4287806705,4294834669,4292339448,4292339448,4292339448,4292339448,4294834669,4283110668,4294902015,4294902015,4294902015,4283110668,4294834669,4292339448,4292339448,4292339448,4283110668,4283110668,4294902015,4294902015,4283110668,4283110668,4294902015,4294902015,4283110668,4283110668,4292339448,4292339448,4292339448,4294834669,4283110668,4294902015,4294902015,4294902015,4294902015,4294902015,4283110668,4283110668,4292339448,4283110668,4294902015,4294902015,4294902015,4283110668,4294697597,4294697597,4283110668,4294902015,4294902015,4294902015,4283110668,4292339448,4283110668,4283110668,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4283110668,4283110668,4294902015,4283110668,4283110668,4294697597,4294964400,4294964400,4294697597,4283110668,4283110668,4294902015,4283110668,4283110668,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4283110668,4283110668,4294697597,4294964400,4294964400,4294697597,4283110668,4283110668,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4283110668,4283110668,4283110668,4294902015,4294902015,4294902015,4283110668,4294697597,4294697597,4283110668,4294902015,4294902015,4294902015,4283110668,4283110668,4283110668,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4283110668,4294834669,4292339448,4292339448,4283110668,4283110668,4294902015,4294902015,4283110668,4283110668,4294902015,4294902015,4283110668,4283110668,4292339448,4292339448,4294834669,4283110668,4294902015,4294902015,4294902015,4294902015,4294902015,4283110668,4294747619,4294747619,4294834669,4292339448,4292339448,4287806705,4283110668,4294902015,4283110668,4283110668,4294902015,4283110668,4287806705,4292339448,4292339448,4294834669,4294747619,4294747619,4283110668,4294902015,4294902015,4294902015,4294902015,4283110668,4294747619,4294747619,4294834669,4292339448,4292339448,4287806705,4283110668,4294902015,4294902015,4294902015,4294902015,4283110668,4287806705,4292339448,4292339448,4294834669,4294747619,4294747619,4283110668,4294902015,4294902015,4294902015,4294902015,4283110668,4294747619,4294834669,4294834669,4292339448,4292339448,4283110668,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4283110668,4292339448,4292339448,4294834669,4294834669,4294747619,4283110668,4294902015,4294902015,4294902015,4294902015,4283110668,4294834669,4294834669,4292339448,4287806705,4287806705,4283110668,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4283110668,4287806705,4287806705,4292339448,4294834669,4294834669,4283110668,4294902015,4294902015,4294902015,4294902015,4294902015,4283110668,4292339448,4292339448,4287806705,4283110668,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4283110668,4287806705,4292339448,4292339448,4283110668,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4283110668,4287806705,4287806705,4283110668,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4283110668,4287806705,4287806705,4283110668,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4283110668,4283110668,4283110668,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4283110668,4283110668,4283110668,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015,4294902015))
+'Verified every pixel in the 1024 x 1024 PNG against the 24 x 24 grid.'" in C:\Users\Home\Downloads\방치형RPG_테스트베드
+ succeeded in 575ms:
+Verified every pixel in the 1024 x 1024 PNG against the 24 x 24 grid.
+
+codex
+Saved [wings2_src.png](/C:/Users/Home/Downloads/방치형RPG_테스트베드/img/codex/fairyicon/wings2_src.png) as a 1024×1024 PNG. The rounded, mirrored wings frame a centered 8×8 four-point gold sparkle with a pale-yellow center.
+
+Verified the centered 22×20 silhouette, crisp 24×24 art grid, original wing colors and dark-brown outline, and flat `#FF00FF` background.
+tokens used
+34,211
+Saved [wings2_src.png](/C:/Users/Home/Downloads/방치형RPG_테스트베드/img/codex/fairyicon/wings2_src.png) as a 1024×1024 PNG. The rounded, mirrored wings frame a centered 8×8 four-point gold sparkle with a pale-yellow center.
+
+Verified the centered 22×20 silhouette, crisp 24×24 art grid, original wing colors and dark-brown outline, and flat `#FF00FF` background.

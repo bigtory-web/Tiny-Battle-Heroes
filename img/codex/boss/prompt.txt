@@ -1,0 +1,14 @@
+Look at these images:
+- img/codex/pad/demon_src.png and img/codex/pad/fire_src.png : our carpet floor pads (flat pointed-top hexagon seen on a battlefield floor). Use their EXACT hexagon shape, size, position and chunky pixel grid.
+- img/codex/pad/hex_template.png : the same hexagon outline.
+
+Make a BOSS DAIS floor pad with the same hexagon shape. It is NOT a carpet: it is a heavy, majestic STONE and METAL platform that a boss stands on.
+- Border: thick polished GOLD metal frame with bevel highlights, a red gem set at each of the 6 corners.
+- Surface: dark charcoal-violet stone slabs with a few thin cracks and carved seams, slightly raised inner step.
+- Center emblem: a big horned SKULL wearing a small gold CROWN, carved in bone-pale and gold tones, simple and instantly readable even when the whole picture is shrunk to 48 pixels wide.
+- Soft red and gold light: a thin glowing red ring around the emblem and glowing red eyes. Keep the overall surface fairly dark, because a character stands on top of it.
+
+Generate ONE new image with your image generation tool and save it as img/codex/boss/dais_src.png
+Crisp square pixels, no anti-aliasing, no gradients.
+[Format] Plain solid #FF00FF magenta background outside the hexagon, no text, no tassels, no drop shadow, nothing else.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
