@@ -2600,12 +2600,15 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 #clearPop{position:absolute;inset:0;z-index:900;display:flex;align-items:center;justify-content:center;background:rgba(10,8,14,.62)} #clearPop[hidden]{display:none}
 #clearPop .dfsign{filter:sepia(1) saturate(3.4) hue-rotate(-8deg) brightness(1.08)} #clearPop .dfcloth{filter:hue-rotate(222deg) saturate(1.1)} #clearPop .dfstar{filter:sepia(1) saturate(3.2) brightness(1.1)}
 #clearPop .dfsign b{font-size:36px;letter-spacing:3px;text-indent:3px;color:#fff6c8}
-#clearPop .dfban{padding-top:38px;gap:18px} #clearPop .rit em{white-space:nowrap} #clearPop .rpits{display:flex;gap:6px;justify-content:center}
-#clearPop .cllb{font:400 11px/14px var(--display);color:#c9c3d6} #clearPop .rit{width:60px;height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:#1d1a24;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 3px #3b3546}
+#clearPop .dfc{height:464px} #clearPop .dfban{height:304px;padding-top:12px;gap:6px} #clearPop .rit em{white-space:nowrap} #clearPop .rpits{gap:3px!important} #clearPop .rpits{display:flex;gap:6px;justify-content:center}
+#clearPop .cllb{font:400 11px/14px var(--display);color:#c9c3d6} #clearPop .rit{width:53px;height:38px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:#1d1a24;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 3px #3b3546}
 #clearPop .rit img,#clearPop .rit .rpi,#clearPop .rit .mni{width:18px!important;height:18px!important;image-rendering:pixelated} #clearPop .cllv{font:400 13px/18px var(--display);color:#9fd4ff}
 #clearPop .rit em{font:400 14px/1 var(--display);font-style:normal;color:#f3e6c4;text-shadow:0 2px 0 #17141d} #clearPop .rit em.g{color:#ffd34d} #clearPop .rit em.r{color:#ff6b6b} #clearPop .rit em.b{color:#9fd4ff}
-#clearPop .dfban .rpok{border:0;cursor:pointer;margin-top:0!important;padding:9px 24px;font:700 17px var(--display)}
+#clearPop .dfban .rpok{border:0;cursor:pointer;margin-top:0!important;padding:6px 22px;font:700 15px var(--display)}
 #clearPop .rfw{z-index:4}
+#clearPop .clrow{display:flex;gap:3px;justify-content:center;flex-wrap:wrap;max-width:210px} #clearPop .clh{width:28px;height:28px;background:#17141d} #clearPop .clh .hic{width:28px!important;height:28px!important}
+#clearPop .clrel{display:flex;gap:2px;justify-content:center;flex-wrap:wrap;max-width:210px} #clearPop .clrel i{width:18px;height:18px;background:#17141d;display:flex;align-items:center;justify-content:center;cursor:help} #clearPop .clrel img{width:16px;height:16px;border-radius:50%;background:#2f2a39;image-rendering:pixelated}
+#clearPop .clevs{display:flex;gap:4px 6px;justify-content:center;flex-wrap:wrap;max-width:216px} #clearPop .cle{display:flex;align-items:center;gap:1px;cursor:help} #clearPop .cle img{width:18px!important;height:18px!important;image-rendering:pixelated} #clearPop .cle .emo{font-size:15px} #clearPop .cle b{font:400 12px var(--display);color:#f3e6c4;text-shadow:0 1px 0 #17141d}
 /* 패배 팝업 */
 #resPop .dfc,#clearPop .dfc{position:relative;width:348px;height:432px;flex:none}
 #resPop .dfstar,#clearPop .dfstar,#resPop .dfsign,#clearPop .dfsign,#resPop .dfcloth,#clearPop .dfcloth{position:absolute;background:center/100% 100% no-repeat;image-rendering:pixelated}
@@ -3339,7 +3342,7 @@ img.rimg{image-rendering:auto!important}
 
   // ───── 상태 저장 ─────
   var R = D.recruit, KEY = 'idle-testbed-v2', S;
-  function runStats0(){ return { heroes: 0, battles: 0, wins: 0, startAt: Date.now(), playMs: 0 }; } /* 이번 판 기록 (모험 완료 팝업) */
+  function runStats0(){ return { heroes: 0, battles: 0, wins: 0, kills: 0, events: {}, lastTeam: [], startAt: Date.now(), playMs: 0 }; } /* 이번 판 기록 (모험 완료 팝업) */
   function fresh(){ var s = { runStats: runStats0(), gold: 0, stage: 0, units: [], levels: {}, team: [null, null, null, null, null], idleAt: Date.now(), modules: {}, pending: null, life: D.life ? D.life.max : 10, streak: 0, mana: 0, xp: 0, bell: 0, bellGold: 0 }; // 새 판: 체력·마나스톤·경험치도 처음 값
     if (E.campfireAtStart && E.campfireAtStart(D) && E.rollCampfire){ s.event = { kind: 'campfire', ids: E.rollCampfire(D, Math.random, 1), start: true }; return s; } // 시작 모닥불: 1명을 얻고 1-1로
     var u = E.newUnit(s.units, R.startHero, 1); s.levels[R.startHero] = D.startLevel; s.team[0] = u.uid; return s; }
@@ -3355,7 +3358,7 @@ img.rimg{image-rendering:auto!important}
   }
   try { S = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
   if (!S || (!S.owned && !S.units)) S = fresh();
-  migrate(); if (!S.levels) S.levels = {}; if (!S.runStats) S.runStats = runStats0();
+  migrate(); if (!S.levels) S.levels = {}; S.runStats = Object.assign(runStats0(), S.runStats || {});
   if ((S.team || []).length !== 5 || S.rot){ var keep0 = (S.team || []).filter(function(uid){ return uid && U(uid); }); S.team = [null, null, null, null, null]; keep0.slice(0, Math.min(5, PK().field)).forEach(function(uid, i){ S.team[i] = uid; }); delete S.rot; S.pos = {}; } // 2026-11-23 되돌림: 코스트·3×3 때 저장(9·11칸, 회전) → 5칸 팀 (넘치는 영웅은 백팩, 백팩 칸보다 많아도 그대로 둬요)
   // 개체 grade(합성 단계) → star(성급, 최대 3). 등급(희귀도)은 이제 영웅마다 고정이에요
   S.units.forEach(function(u){ if (u.star == null) u.star = Math.max(1, Math.min(3, u.grade || 1)); delete u.grade; });
@@ -4408,7 +4411,7 @@ img.rimg{image-rendering:auto!important}
   function startBattle(){ if (S.evOffer && S.evOffer.kind === 'merchant'){ S.evOffer = null; setShop(false); }
     if (!teamSpec().length || S.stage >= E.stageCount(D)) return;
     setShop(false); // 전투가 시작되면 상점 팝업은 닫아요
-    goldStart = S.gold; skipNow = false; march = null; winAfter = null; curStage = S.stage; curEv = S.event || null; curBell = S.bell || 0; curGrades = {}; curTr = {}; curPlv = plv(); teamSpec().forEach(function(sp){ curGrades[sp.slot] = sp.star; curTr[sp.slot] = isTr(U(sp.tuid)); });
+    goldStart = S.gold; skipNow = false; march = null; winAfter = null; curStage = S.stage; curEv = S.event || null; if (S.runStats && S.stage === E.stageCount(D) - 1) S.runStats.lastTeam = S.team.map(function(id){ return id && U(id); }).filter(Boolean).map(function(u){ return { id: u.id, star: u.star, tr: isTr(u) }; }); /* 최종 전투 영웅 */ curBell = S.bell || 0; curGrades = {}; curTr = {}; curPlv = plv(); teamSpec().forEach(function(sp){ curGrades[sp.slot] = sp.star; curTr[sp.slot] = isTr(U(sp.tuid)); });
     setTimeout(function(){ renderEvent(); renderBell(); }, 0); // 전투 중엔 배너·종 숨기기(상인은 그대로)
     var st = E.stageTeam(D, curStage, curEv, curBell, curPlv); curFoeMul = {}; st.team.forEach(function(x){ curFoeMul[x.slot] = x.mul || {}; });
     tpw = { A: {}, E: {}, mA: E.relicPowerMul ? E.relicPowerMul(D, S.skills) : 1, mE: E.relicPowerMul ? E.relicPowerMul(D, st.skills) : 1, last: { A: -1, E: -1 } };
@@ -5159,10 +5162,17 @@ img.rimg{image-rendering:auto!important}
   /* 최종 보스(3-10)까지 깨면: 패배 팝업과 같은 틀의 승리 색 "모험 완료!". 저장된 값(끝난 상태)으로 판단해 새로고침해도 다시 뜸. 버튼은 처음부터 하나 (2026-11-26 사용자) */
   /* 플레이 시간 = 게임 화면이 보일 때만, 끝난 판은 멈춤 */
   setInterval(function(){ var R = S && S.runStats; if (!R || document.hidden || S.stage >= E.stageCount(D)) return; R.playMs += 1000; if (R.playMs % 15000 === 0) save(); }, 1000);
-  function clearCheck(){ var o = $('clearPop'), end = S && S.stage >= E.stageCount(D) && !(LIFE_ON && S.life <= 0) && !bt && !S.offer && !S.pending && !S.mobPend && !S.mimicPend && !S.adv && $('roul').hidden && !($('mimicPop') && !$('mimicPop').hidden);
+  /* 만난 이벤트: 이벤트 판마다 한 번 */
+  function evCount(){ var ev = S && S.event, R = S && S.runStats; if (ev && R && !ev.counted){ ev.counted = true; R.events[ev.kind] = (R.events[ev.kind] || 0) + 1; save(); } }
+  function clearCheck(){ evCount(); var o = $('clearPop'), end = S && S.stage >= E.stageCount(D) && !(LIFE_ON && S.life <= 0) && !bt && !S.offer && !S.pending && !S.mobPend && !S.mimicPend && !S.adv && $('roul').hidden && !($('mimicPop') && !$('mimicPop').hidden);
     if (!end){ if (o && !o.hidden){ o.hidden = true; o.innerHTML = ''; } return; } if (o && !o.hidden) return; if (!o){ o = document.createElement('div'); o.id = 'clearPop'; popAdd(o, true); } o.className = 'pov';
     var RS = S.runStats || runStats0(), cell = function(ic, n, c){ return '<span class="rit">' + ic + '<em class="' + c + '">' + n + '</em></span>'; };
-    o.innerHTML = '<div class="dfc"><div class="dfban"><i class="dfcloth"></i><div class="dfstg">최종 스테이지 ' + E.stageName(D, E.stageCount(D) - 1) + ' 클리어</div><div class="rpits">' + cell('<span class="cllb">영웅</span>', RS.heroes + '명', '') + cell('<span class="cllb">승 / 패</span>', RS.wins + ' / ' + (RS.battles - RS.wins), '') + cell('<span class="cllb">시간</span>', Math.floor(RS.playMs / 3600000) + ':' + ('0' + Math.floor(RS.playMs / 60000) % 60).slice(-2), '') + '</div><button class="rpok" type="button">처음부터</button></div><div class="dfsign"><b>모험 완료!</b></div><i class="dfstar"></i></div>';
+    var q = function(t){ return String(t || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;'); };
+    var team = (RS.lastTeam || []).filter(function(x){ return E.heroById(D, x.id); }).map(function(x){ return '<span class="clh">' + heroFr(x.id, x.star, x.tr) + '</span>'; }).join('');
+    var rel = (S.skills || []).map(function(x){ return '<i data-tipsk="' + x.id + '" data-tiplv="' + (x.lv || 1) + '" data-tipside="A"><img src="img/p/skill_' + x.id + '.png" alt=""></i>'; }).join('');
+    var evs = Object.keys(RS.events || {}).filter(function(k){ return (D.events.info || {})[k]; }).map(function(k){ return '<span class="cle" data-tipt="' + q(D.events.info[k].name) + '" data-tiptx="' + RS.events[k] + '번 만남">' + evIcon(k) + '<b>×' + RS.events[k] + '</b></span>'; }).join('');
+    var t = Math.floor(RS.playMs / 3600000) + ':' + ('0' + Math.floor(RS.playMs / 60000) % 60).slice(-2);
+    o.innerHTML = '<div class="dfc"><div class="dfban"><i class="dfcloth"></i><div class="rpits">' + cell('<span class="cllb">영웅</span>', RS.heroes + '명', '') + cell('<span class="cllb">승 / 패</span>', RS.wins + ' / ' + (RS.battles - RS.wins), '') + cell('<span class="cllb">처치</span>', (RS.kills || 0).toLocaleString(), '') + cell('<span class="cllb">시간</span>', t, '') + '</div>' + (team ? '<div class="clrow">' + team + '</div>' : '') + (rel ? '<div class="clrel">' + rel + '</div>' : '') + (evs ? '<div class="clevs">' + evs + '</div>' : '') + '<button class="rpok" type="button">처음부터</button></div><div class="dfsign"><b>모험 완료!</b></div><i class="dfstar"></i></div>';
     o.hidden = false; o.querySelector('.rpok').onclick = newRun; fwFx(o.querySelector('.dfc')); }
   function newRun(){ var keep = { modules: S.modules || {}, ui: S.ui };
     var n = fresh(); n.modules = keep.modules; if (keep.ui) n.ui = keep.ui; n.skills = []; n.mana = 0; n.xp = 0; n.life = D.life ? D.life.max : 10; n.streak = 0; n.bell = 0; n.bellGold = 0; n.bellPaid = 0;
@@ -5170,7 +5180,7 @@ img.rimg{image-rendering:auto!important}
   function finishBattle(){
     if (!bt) return;
     $('skipBtn').disabled = true; renderDps();
-    var r = bt.finish(), st = E.stageTeam(D, curStage, curEv, curBell, curPlv), html = '', reward = 0, gain = ''; if (S.runStats){ S.runStats.battles++; if (r.win) S.runStats.wins++; }
+    var r = bt.finish(), st = E.stageTeam(D, curStage, curEv, curBell, curPlv), html = '', reward = 0, gain = ''; if (S.runStats){ S.runStats.battles++; if (r.win) S.runStats.wins++; S.runStats.kills += r.units.filter(function(x){ return x.side === 'E' && !x.alive && !x.escaped; }).length; }
     save(); // 경험치는 처치할 때마다 이미 더했어요
     var chestDone = !!(curEv && curEv.kind === 'chest' && E.chestReward), advanced = false;
     if (curEv && curEv.kind === 'mimic' && E.mobLoot){ var ml = [].concat.apply([], E.mobLoot(st, r.units) || []).filter(Boolean), mk = r.units.filter(function(x){ return x.side === 'E' && !x.alive && !x.escaped; }).map(function(x){ return x.id === 'mimic' && x.slot % 2 ? 'mimic:g2' : x.id; }); /* 전장에서 본 색 그대로 */
