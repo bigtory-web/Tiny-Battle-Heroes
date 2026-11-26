@@ -372,7 +372,7 @@ var IDLE_DATA = {
     fork: false, // 2026-11-22 끔(사용자: 우측 선택지는 하나만). 갈림길: 이벤트 스테이지가 나오면 2개 중 골라요 (fixed 판은 그대로)
     off: [], // 도구: 여기 적은 이벤트 종류는 안 나와요(예: ['chest']). campfire를 끄면 시작 모닥불도 없어요 (2026-11-18)
     forceEvery: 0, // 도구: N이면 스테이지 N개마다 이벤트 스테이지가 100% 나와요(2면 1-2·1-4 뒤에). 0이면 꺼짐(평소 확률 chance)
-    from: 2, chance: 0.18, weights: { goblin: 0, /* 2026-11-26 홀짝(oddeven) 뺌 → groll(돈고블린 룰렛) */ groll: 3, merchant: 3, merc: 3, campfire: 2, chest: 3, /* 2026-11-26 보물상자 → 미믹(mimic). 미믹 화면이 생기면 chest 0, mimic 3 */ mimic: 0, altar: 3, mobs: 0, fairy: 3 }, // chest: 화면 작업이 끝나서 3으로 켰어요 (2026-11-18 UI 세션) // campfire: 화면 작업이 끝나서 2로 켰어요 (2026-11-18 UI 세션)
+    from: 2, chance: 0.18, weights: { goblin: 0, /* 2026-11-26 홀짝(oddeven) 뺌 → groll(돈고블린 룰렛) */ groll: 3, merchant: 3, merc: 3, campfire: 2, chest: 0, /* 2026-11-26 보물상자 → 미믹(mimic). 되돌리려면 chest 3, mimic 0 */ mimic: 3, altar: 3, mobs: 0, fairy: 3 }, // chest: 화면 작업이 끝나서 3으로 켰어요 (2026-11-18 UI 세션) // campfire: 화면 작업이 끝나서 2로 켰어요 (2026-11-18 UI 세션)
     // 도감 이벤트 탭용 이름·설명 (2026-11-21)
     info: {
       campfire: { name: '모닥불', desc: '모닥불에 둘러앉은 영웅 중 1명이 룰렛으로 동료가 된다. 전투는 없다.' },

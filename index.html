@@ -2775,6 +2775,24 @@ img.rimg{image-rendering:auto!important}
 #trWin .trinfo > .trguide{margin:auto;font:400 14px var(--display);color:#c9c1d6;text-align:center}
 /* 초월 목록 별: 칸 위쪽 안에 (별 글자는 .hst 선 위로 그려짐) */
 #trWin .trc .hst{top:13px!important}
+/* 미믹 결과 팝업 */
+#mimicPop .rbox{width:400px!important;display:flex;flex-direction:column;align-items:center;gap:10px}
+#mimicPop .mmrow{display:flex;justify-content:center;align-items:flex-end;gap:8px;width:100%;height:104px;background:#17141d;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #5d5470;padding:0 8px 8px;box-sizing:border-box}
+#mimicPop .mmc{position:relative;width:74px;height:74px;opacity:0}
+#mimicPop .mmc b{position:absolute;inset:0;background:url(img/p/mimic.png) 50% 100%/74px 74px no-repeat;image-rendering:pixelated}
+#mimicPop .mmc.king::after{content:'';position:absolute;left:50%;top:-8px;width:28px;height:14px;margin-left:-14px;background:#ffd34d;clip-path:polygon(0 100%,0 0,25% 50%,50% 0,75% 50%,100% 0,100% 100%)}
+#mimicPop .mmc.in{opacity:1;animation:mmdrop .28s cubic-bezier(.3,1.6,.5,1)}
+#mimicPop .mmc.open b{animation:mmopen .4s steps(4) 1}
+#mimicPop .mmc.open::before{content:'';position:absolute;left:50%;top:8px;width:4px;height:4px;margin-left:-2px;background:#fff3b0;box-shadow:-22px 6px #fff3b0,22px 4px #fff3b0,-12px -10px #ffd34d,14px -12px #ffd34d,0 -18px #fff;animation:mmspark .5s steps(3) forwards}
+@keyframes mmdrop{from{transform:translateY(-40px);opacity:0}}
+@keyframes mmopen{30%{transform:scale(1.15,.8)}60%{transform:scale(.9,1.2) translateY(-8px)}}
+@keyframes mmspark{to{transform:translateY(-14px);opacity:0}}
+#mimicPop .mmnone{align-self:center;font:400 14px var(--display);color:#c9c1d6}
+#mimicPop .mmloot{display:grid;grid-template-columns:repeat(3,56px);grid-auto-rows:56px;gap:8px;justify-content:center;min-height:56px}
+#mimicPop .mmloot .mlt{position:relative;display:flex;align-items:center;justify-content:center;background:#17141d;box-shadow:inset 0 0 0 2px #5d5470;animation:fadeup .25s both}
+#mimicPop .mmloot .mlt img{width:36px;height:36px;object-fit:contain}
+#mimicPop .mmloot .mlt em{position:absolute;right:3px;bottom:1px;font:400 13px var(--display);font-style:normal;color:#ffd34d;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d}
+.evi.mimicevi,.mimicevi{width:24px;height:24px;object-fit:contain;image-rendering:pixelated}
 </style>
 </head>
 <body>
@@ -2889,6 +2907,7 @@ img.rimg{image-rendering:auto!important}
 
 <div class="tip" id="tip" hidden></div>
 <!-- 영입 룰렛 -->
+<div class="roul" id="mimicPop" hidden><div class="rbox"><div class="rt">미믹</div><div class="mmrow"></div><div class="mmloot"></div><div class="rbtns"><button class="go" id="mmGet" type="button">받기</button></div></div></div>
 <div class="roul chestpop" id="chestPop" hidden><div class="rbox"><div class="rt">보물상자</div><div class="rstage"><div class="rpic loot"></div><div class="rname"></div></div><div class="rstrip"></div><div class="rbtns"><button class="go" id="cpGet" type="button" hidden>받기</button></div><button class="spX popx" data-xfor="#cpGet" type="button" title="닫기">✕</button></div></div>
 <div class="roul" id="roul" hidden><div class="rbox"><button class="rx" id="rX" type="button" title="닫기" hidden>✕</button>
   <div class="rt">전리품</div>
@@ -2996,7 +3015,7 @@ img.rimg{image-rendering:auto!important}
   bgRaise('img/p/bg_field.png', function(c){ BG = c; try { var st = document.createElement('style'); st.textContent = '.field{background:url(' + c.toDataURL() + ') 50% 50% / 100% 100.5% no-repeat,#b8a0a6}'; document.head.appendChild(st); } catch (e) {} });
   bgRaise('img/p/bg_field_dusk.png', function(c){ BGD = c; });
   // 특수 몹·이벤트 그림 (없으면 이모지)
-  (D.mobs || []).forEach(function(h){ var im = new Image(); im.onload = function(){ IMGS[h.id] = im; IMGSRC[h.id] = im.src; PIX[h.id] = true; imgReady(); }; im.src = 'img/p/' + h.id + '.png'; });
+  (D.mobs || []).forEach(function(h){ var im = new Image(); im.onload = function(){ IMGS[h.id] = im; IMGSRC[h.id] = im.src; PIX[h.id] = true; imgReady(); }; im.src = 'img/p/' + (h.id === 'mimicKing' ? 'mimic' : h.id) + '.png'; }); /* 왕관 미믹 그림이 오기 전엔 일반 미믹 */
   var EVIMG = {}; ['merchant', 'mark_merc', 'ev_goblin', 'ev_merchant', 'ev_merc', 'ev_campfire_i', 'ev_chest', 'ui_shake'].forEach(function(k){ var im = new Image(); im.onload = function(){ EVIMG[k] = im; imgReady(); }; im.src = 'img/p/' + k + '.png'; });
   function gc(id){ return D.gradeColor[E.heroGrade(D, id)] || '#fff'; }
   var FACE = {bear:[0.571,0.643,63,0.88],wolf:[0.587,0.619,63],rain:[0.539,0.594,64],drum:[0.508,0.635,63],harpy:[0.556,0.619,63],imp:[0.54,0.651,63],boar:[0.542,0.617,60],squire:[0.516,0.605,62,1.12],sprout:[0.559,0.61,59],pup:[0.484,0.581,62],mudgolem:[0.403,0.61,77,0.75],slinger:[0.542,0.619,59,1.12],candle:[0.507,0.597,67],batling:[0.548,0.629,62],frog:[0.556,0.611,63],piper:[0.532,0.581,62],mossguard:[0.571,0.611,63],knight:[0.539,0.641,64],blades:[0.492,0.627,63],hawk:[0.508,0.585,65],song:[0.554,0.602,83,0.88],bat:[0.576,0.652,66],dancer:[0.548,0.629,62],spark:[0.5,0.629,62],ranger:[0.5,0.591,66],shield:[0.5,0.583,60],fox:[0.554,0.631,65],nun:[0.5,0.613,62],warlock:[0.564,0.618,55,1.12],turtle:[0.524,0.635,63],horn:[0.524,0.603,63],owl:[0.555,0.633,64],icefairy:[0.542,0.633,60],frost:[0.547,0.627,75],flame:[0.541,0.615,61],storm:[0.508,0.61,59],pegasus:[0.517,0.603,58],thorn:[0.492,0.608,60],shaman:[0.508,0.587,63],monk:[0.542,0.585,59],vine:[0.532,0.613,62],gargoyle:[0.532,0.611,63],assassin:[0.529,0.577,52,1.2],druid:[0.533,0.617,60],succubus:[0.542,0.625,60],cannon:[0.509,0.605,57],coral:[0.535,0.606,71],moonarcher:[0.525,0.619,59,1.1],minotaur:[0.426,0.59,61],shadow:[0.581,0.621,62],wyvern:[0.555,0.591,55],gate:[0.508,0.608,60],lion:[0.548,0.619,63,0.9],valkyrie:[0.579,0.627,63],tiger:[0.556,0.619,63],thunderbird:[0.533,0.598,61],necro:[0.508,0.59,61],dragon:[0.56,0.634,67,0.88],archmage:[0.525,0.598,61],worldtree:[0.538,0.538,65],demonlord:[0.569,0.638,65],phoenix:[0.531,0.631,65,0.88],seraph:[0.493,0.613,71,0.9],kraken:[0.533,0.618,76],windlord:[0.486,0.6,70,0.9]}; /* 얼굴 가운데 [x/폭, y/폭, 틀 폭] — img/tools/faces.ps1로 뽑음 */
@@ -3149,7 +3168,7 @@ img.rimg{image-rendering:auto!important}
   function heroPass(h){ if (filter === 'all') return true; if (filter === 'own') return owns(h.id); var p = filter.split(':'); return h[p[0]] === p[1]; }
   function skillPass(d){ if (filter === 'all') return true; if (filter === 'own') return S.skills.some(function(x){ return x.id === d.id; }); var p = filter.split(':'); return p[0] === 'g' && String(d.grade || 1) === p[1]; }
   // 이벤트 아이콘: 배너와 같은 그림 (없으면 이모지)
-  function evIcon(k){ var key = k === 'campfire' ? 'ev_campfire_i' : k === 'oddeven' || k === 'groll' ? 'ev_goblin' : 'ev_' + k; return EVIMG[key] ? '<img class="evi" src="img/p/' + key + '.png" alt="">' : ({ campfire: '🔥', fairy: '🧚', merchant: '🧳', chest: '🧰', altar: '✦', mobs: '👾', goblin: '💰', merc: '📜' })[k] || '❔'; }
+  function evIcon(k){ if (k === 'mimic') return '<img class="evi mimicevi" src="img/p/mimic.png" alt="">'; var key = k === 'campfire' ? 'ev_campfire_i' : k === 'oddeven' || k === 'groll' ? 'ev_goblin' : 'ev_' + k; return EVIMG[key] ? '<img class="evi" src="img/p/' + key + '.png" alt="">' : ({ campfire: '🔥', fairy: '🧚', merchant: '🧳', chest: '🧰', altar: '✦', mobs: '👾', goblin: '💰', merc: '📜' })[k] || '❔'; }
   function renderHeroes(){
     var html;
     if (cdxTab === 'lv'){ var PLD = D.player || {}, me = plv(), GC = D.gradeColor || {}, odds = function(w){ if (!w) return '-'; var s = w.reduce(function(a, b){ return a + b; }, 0) || 1; return w.map(function(v, i){ return '<i style="color:' + (GC[i + 1] || '#ccc') + '">' + Math.round(v * 100 / s) + '</i>'; }).join(''); };
@@ -3161,7 +3180,7 @@ img.rimg{image-rendering:auto!important}
         var dh = (ev ? '<span class="mdk mev" title="' + ((((D.events || {}).info || {})[ev] || {}).name || '') + '">' + evIcon(ev) + '</span>' : '') + dk.map(function(k){ return DI[k] || ''; }).join('');
         return '<div class="hinfo cdxh mobcd">' + mobInfoHtml(m.id, { lv: 1, hp: m.hp, atk: m.atk, def: m.def, interval: m.interval, dropHtml: dh }) + '</div>'; }).join('') + '</div>';
     } else if (cdxTab === 'event'){ var EI2 = (D.events && D.events.info) || {}, off = (D.events && D.events.off) || [];
-      html = '<div class="evlist">' + Object.keys(EI2).filter(function(k){ return k !== 'oddeven'; }).map(function(k){ return '<div class="evrow' + (off.indexOf(k) >= 0 ? ' off' : '') + '"><span class="evic">' + evIcon(k) + '</span><div><b>' + EI2[k].name + '</b><p>' + EI2[k].desc + '</p></div></div>'; }).join('') + '</div>';
+      html = '<div class="evlist">' + Object.keys(EI2).filter(function(k){ return k !== 'oddeven' && k !== 'chest'; }).map(function(k){ return '<div class="evrow' + (off.indexOf(k) >= 0 ? ' off' : '') + '"><span class="evic">' + evIcon(k) + '</span><div><b>' + EI2[k].name + '</b><p>' + EI2[k].desc + '</p></div></div>'; }).join('') + '</div>';
     } else if (cdxTab === 'hero'){
       var cur = D.heroes.filter(function(h){ return h.art !== false; }), gSort = function(x, y){ return E.heroGrade(D, x.id) - E.heroGrade(D, y.id); }, /* 등급 → 데이터 순서 (보유 여부와 상관없이) */
         top = cur.filter(function(h){ return inPool(h) && heroPass(h); }).sort(gSort), low = cur.filter(function(h){ return !inPool(h) && heroPass(h); }).sort(gSort),
@@ -3337,7 +3356,7 @@ img.rimg{image-rendering:auto!important}
       if (inner && hid && hero(hid).mob !== 'chest') fbars.push({ x: px, y: py, ally: side === 'A', mob: !!hero(hid).mob, id: hid, star: side === 'A' ? (U(key) ? U(key).star : 0) : (hero(hid).mob ? 0 : estar || 1) });
       return '<div class="unit"' + (side === 'A' && key ? ' data-uid="' + key + '"' : '') + ' style="left:' + (100 * px / W) + '%;top:' + (100 * (py + OFF + FOOT) / H) + '%;z-index:' + Math.round(py) + '">' + inner + '</div>'; }
     function foeHtml(u){ if (!u) return ''; var h = hero(u.id); if (h.mob === 'chest'){ return foeHtml0(u, h, chestImgKey(chestGrade(), 1)); } /* 전투 때 그림(등급)으로 미리 그려요: 예전 replace는 외곽선 그림 주소라 안 맞았음 */ return foeHtml0(u, h); }
-    function foeHtml0(u, h, key){ return '<div class="foe' + (u.boss ? ' boss' : '') + (u.merc ? ' merc' : '') + (h.mob ? ' mob' : '') + (MOBSZ[h.mob] ? ' mobsz' + (MOBSZ[h.mob] > 1 ? '2' : '') : '') + (h.mob === 'chest' ? ' chestbig' + chestFlashCls() : '') + '" data-foe="' + u.slot + '" style="--el:' + ELC[h.el] + footCss(h.id) + '" title="' + h.name + '">' + avO(h.id, key) + '' + bnBubble(u.bonus) + mobBub(u) + (h.mob === 'chest' ? chestBub() : '') + '</div>'; } // 레벨 표시는 뺐어요
+    function foeHtml0(u, h, key){ return '<div class="foe' + (u.boss ? ' boss' : '') + (u.merc ? ' merc' : '') + (h.mob ? ' mob' : '') + (MOBSZ[h.mob] ? ' mobsz' + (MOBSZ[h.mob] > 1 ? '2' : '') : '') + (h.mob === 'chest' ? ' chestbig' + chestFlashCls() : '') + '" data-foe="' + u.slot + '" style="--el:' + ELC[h.el] + footCss(h.id) + '" title="' + h.name + '">' + avO(h.id, key) + '' + bnBubble(u.bonus) + (h.mob === 'mimic' ? '' : mobBub(u)) + (h.mob === 'chest' ? chestBub() : '') + '</div>'; } // 레벨 표시는 뺐어요
     var bySlot = []; st.team.forEach(function(u){ bySlot[u.slot] = u; });
 
     function slotHtml(i){
@@ -3859,7 +3878,7 @@ img.rimg{image-rendering:auto!important}
   /* 팝업 층: 전장(#arena)에 붙은 하나의 층. 팝업은 popAdd로 넣으면 전장 가운데에 와요 (full: 배경 덮개가 있는 팝업) */
   function popAdd(el, full){ var L = $('popl'); if (!L){ L = document.createElement('div'); L.id = 'popl'; L.className = 'popl'; document.querySelector('.camp3 > .mid').appendChild(L); } /* 전장이 큰 팝업을 자르지 않게 가운데 열에 붙여요 */
     if (!el || (el.parentNode && el.parentNode.parentNode === L)) return el; var w = document.createElement('div'); w.className = 'popw'; L.appendChild(w); w.appendChild(el); el.classList.add(full ? 'pov' : 'pcard'); return el; }
-  (function(){ ['roul', 'chestPop', 'res', 'mobLoot', 'bagOver', 'evWin'].forEach(function(id){ if ($(id)) popAdd($(id), true); }); if ($('pendBox')) popAdd($('pendBox'), false); })();
+  (function(){ ['roul', 'chestPop', 'res', 'mobLoot', 'bagOver', 'evWin', 'mimicPop'].forEach(function(id){ if ($(id)) popAdd($(id), true); }); if ($('pendBox')) popAdd($('pendBox'), false); })();
   function hiFill(html, fresh){ var p = $('hinfo'), old = p.querySelector('.hi-body'), sc = !fresh && old ? old.scrollTop : 0;
     html = html.replace(/<button class="hi-x"[^>]*>✕<\/button>/g, ''); var i = html.indexOf('<div class="hi-st4">'), j = html.indexOf('<div class="hi-btns">');
     if (i >= 0) html = html.slice(0, i) + '<div class="hi-body">' + html.slice(i, j > i ? j : html.length) + '</div>' + (j > i ? html.slice(j) : '');
@@ -3906,7 +3925,7 @@ img.rimg{image-rendering:auto!important}
     S.team.forEach(function(uid, slot){ if (!uid || !U(uid) || np[uid]) return; var q = POS.A[slot] || POS.A[0], c = nearCell(C, q[0], q[1], used); if (c){ used[ckey(c)] = 1; np[uid] = { x: c[0], y: c[1] }; } });
     S.pos = np; } // 내 쪽 육각 칸 아무 데나 (한 칸에 1명)
   var newinT = 0;
-  var _renderForm = renderForm; renderForm = function(){ if (!bt) settleAllies(); if (!isAltar()){ altA = null; altM = null; } _renderForm(); $('arena').classList.toggle('evstage', !bt && (isCamp() || isMerch() || isAltar() || isFairy() || isOddEven() || isGroll()) && !isLvPick() && !isFork()); evLeaveSync(); $('field').classList.toggle('altpick', isAltar() && !isLvPick() && altA != null); altMarks(); if (!bt && S.mobPend && !S.offer && $('roul').hidden) showMobLoot(); vsBarForm(); fitSkRows(); if (gainFxUid != null){ var gu = gainFxUid; gainFxUid = null; starUpFx(gu); } if (newHeroUid != null && !newinT) newinT = setTimeout(function(){ newinT = 0; if (newHeroUid == null || scrollPend) return; var ne0 = $('field').querySelector('.unit[data-uid="' + newHeroUid + '"]'); newHeroUid = null; if (ne0){ ne0.classList.add('newin'); setTimeout(function(){ ne0.classList.remove('newin'); }, 700); } }, 0); /* 연달아 다시 그리는 게 끝난 뒤 (판 넘김이면 stageScroll이 처리) */ /* 새 영웅: 전장에 섰으면 그 칸에서만 등장, 백팩이면 연출 없음 */ if (skTgt && !bt) markFieldTargets(); if (sel) applySel(); setTimeout(renderBell, 200); renderBagBtn(); };
+  var _renderForm = renderForm; renderForm = function(){ if (!bt) settleAllies(); if (!isAltar()){ altA = null; altM = null; } _renderForm(); $('arena').classList.toggle('evstage', !bt && (isCamp() || isMerch() || isAltar() || isFairy() || isOddEven() || isGroll()) && !isLvPick() && !isFork()); evLeaveSync(); $('field').classList.toggle('altpick', isAltar() && !isLvPick() && altA != null); altMarks(); if (!bt && S.mobPend && !S.offer && $('roul').hidden) showMobLoot(); if (!bt && S.mimicPend && $('mimicPop').hidden) showMimicPop(); vsBarForm(); fitSkRows(); if (gainFxUid != null){ var gu = gainFxUid; gainFxUid = null; starUpFx(gu); } if (newHeroUid != null && !newinT) newinT = setTimeout(function(){ newinT = 0; if (newHeroUid == null || scrollPend) return; var ne0 = $('field').querySelector('.unit[data-uid="' + newHeroUid + '"]'); newHeroUid = null; if (ne0){ ne0.classList.add('newin'); setTimeout(function(){ ne0.classList.remove('newin'); }, 700); } }, 0); /* 연달아 다시 그리는 게 끝난 뒤 (판 넘김이면 stageScroll이 처리) */ /* 새 영웅: 전장에 섰으면 그 칸에서만 등장, 백팩이면 연출 없음 */ if (skTgt && !bt) markFieldTargets(); if (sel) applySel(); setTimeout(renderBell, 200); renderBagBtn(); };
   function bagOpen(){ return !(S.ui && S.ui.bagOpen === false); } // 기본은 펼침
   function renderBagBtn(){ var b = $('bagBtn'); if (!b) return; var bn = bagCount(), bm = bagMax(), bc = b.querySelector('.bagcnt'); if (!bc){ b.insertAdjacentHTML('beforeend', '<i class="bagcnt"></i>'); bc = b.querySelector('.bagcnt'); } bc.hidden = bn <= bm; bc.textContent = bn + '/' + bm; /* 넘쳤을 때만 빨간 칸 수 */ b.classList.toggle('on', bagOpen()); $('bagDrawer').classList.toggle('open', bagOpen()); $('arena').classList.toggle('bagon', bagOpen()); }
   $('bagBtn').addEventListener('click', function(){ S.ui = S.ui || {}; S.ui.bagOpen = !bagOpen(); save(); renderBagBtn(); });
@@ -4252,6 +4271,7 @@ img.rimg{image-rendering:auto!important}
       var fu = unitByUid(ev.uid), fp = posOf(fu), gy0 = Math.max(D.battle.arena.yMin, Math.min(D.battle.arena.yMax, fu.y)) + OFF + 26;
       for (var q = 0; q < 10; q++){ var sd = q % 2 ? 1 : -1; fxs.push({ x: fp[0] + sd * (4 + Math.random() * 8), y: gy0 - 2, vx: sd * (60 + Math.random() * 90), vy: -20 - Math.random() * 40, t: .35, c: q % 3 ? '#b59c7a' : '#8a7458', dot: 1 }); }
       for (var q2 = 0; q2 < 6; q2++) fxs.push({ x: fp[0] - 14 + q2 * 6, y: gy0 - 10, vx: 0, vy: -380 - Math.random() * 120, t: .22, c: '#f3f0e6', dot: 1 });
+    } else if (ev.kind === 'mimicFx'){ lunges[ev.uid] = .18; var mt = unitByUid(ev.to); if (mt && ev.fx === 'slow'){ var mp0 = posOf(mt); if (HAS_FX) fxAt('frost', mt, { scale: .8 }); pops.push({ x: mp0[0], y: mp0[1] - 46, s: '느림', c: '#7fd0ff', life: .9, max: .9, size: 15 }); } /* 미믹 방해: 느려짐 표시 (밀치기는 knock이 그림) */
     } else if (ev.kind === 'escape'){
       var eu = unitByUid(ev.uid), ep = posOf(eu); if (HAS_FX) fxAt('poof', eu, { scale: 1.4 }); else for (var j = 0; j < 14; j++){ var a3 = Math.random() * 6.28; fxs.push({ x: ep[0] + Math.cos(a3) * 8, y: ep[1] - 10 + Math.sin(a3) * 8, vx: Math.cos(a3) * 50, vy: Math.sin(a3) * 50 - 20, t: .6, c: '#d8d2c4', dot: 1 }); }
       pops.push({ x: ep[0], y: ep[1] - 40, s: '펑!', c: '#d8d2c4', life: .7, max: .7, size: 15 });
@@ -4570,7 +4590,7 @@ img.rimg{image-rendering:auto!important}
   function synFaces(d){ var y = d ? synInfo(d, 'A') : null; /* 조건에 맞는 아군 얼굴: 모든 시너지 유물 */ if (!y || !y.n) return '';
     return '<div class="sfaces">' + allyHeroes().filter(function(h){ return heroVals(h, y.k).some(function(v){ return y.vs.indexOf(v) >= 0; }); }).map(function(h){ return '<span class="sfa">' + av(h.id) + '</span>'; }).join('') + '</div>'; }
   function heroVals(h, k){ return k === 'el' && h.el2 && h.el2 !== h.el ? [h.el, h.el2] : [h[k]]; } // 발판으로 더해진 진영까지
-  var MOBSZ = { slime: 0.9, bat: 0.9, skeleton: 0.9, ogre: 1.4 }; // 영웅보다 약간 작게, 오우거만 크게 // 몹 무리 몹 크기 배율
+  var MOBSZ = { slime: 0.9, bat: 0.9, skeleton: 0.9, ogre: 1.4, mimic: 0.9 }; // 영웅보다 약간 작게, 오우거만 크게 // 몹 무리 몹 크기 배율
   function mobDropList(u){ var d = u && u.drop; return d ? [].concat(d).filter(Boolean) : []; }
   var chestLastG = null; function chestFlashCls(){ var g = chestGrade(S.bell || 0), f = chestLastG != null && g !== chestLastG; chestLastG = g; return f ? ' cflash' : ''; }
   function chestMaxText(TR){ var g = 0, s = 0; TR.forEach(function(R){ g += R.gold || 0; s += R.scroll || 0; }); return '최대 ' + g.toLocaleString() + 'G' + (s ? ' + 📜' + s : ''); }
@@ -4589,6 +4609,16 @@ img.rimg{image-rendering:auto!important}
       return '<span class="mlt" style="animation-delay:' + (i * .07) + 's"' + tip + '>' + lootIcon(k) + (p.amt ? '<em>' + p.amt.toLocaleString() + '</em>' : '') + '</span>'; }).join('');
     $('mobLoot').hidden = false; }
   $('mlGet').addEventListener('click', function(){ var L = S.mobPend || [], g0 = S.gold; S.mobPend = null; L.forEach(grantLoot); save(); $('mobLoot').hidden = true; hideTip(); evGo(); if (S.gold > g0) goldCount(g0, S.gold); });
+  /* 미믹 결과 (2026-11-26 사용자): 잡은 미믹이 하나씩 놓여 열리고, 다 열리면 보상이 한꺼번에. 도망간 미믹은 놓지 않음. 받기 하나(X 없음) */
+  var mimicT = [];
+  function showMimicPop(){ var P = S.mimicPend, o = $('mimicPop'); if (!P || !o) return; mimicT.forEach(clearTimeout); mimicT = [];
+    var row = o.querySelector('.mmrow'), loot = o.querySelector('.mmloot'), btn = $('mmGet'), n = P.m.length;
+    row.innerHTML = n ? P.m.map(function(id){ return '<i class="mmc' + (id === 'mimicKing' ? ' king' : '') + '"><b></b></i>'; }).join('') : '<span class="mmnone">미믹이 모두 도망쳤어요.</span>';
+    loot.innerHTML = ''; btn.disabled = true; o.hidden = false;
+    var cells = [].slice.call(row.querySelectorAll('.mmc'));
+    cells.forEach(function(c, i){ mimicT.push(setTimeout(function(){ c.classList.add('in'); }, 200 + i * 300)); mimicT.push(setTimeout(function(){ c.classList.add('open'); }, 200 + n * 300 + i * 180)); });
+    mimicT.push(setTimeout(function(){ loot.innerHTML = P.loot.length ? P.loot.map(function(k){ var p = LP(k), tip = p.type === 's' ? ' data-tipsk="' + p.id + '" data-tiplv="1"' : ''; return '<span class="mlt"' + tip + '>' + lootIcon(k) + (p.amt ? '<em>' + p.amt.toLocaleString() + '</em>' : '') + '</span>'; }).join('') : ''; btn.disabled = false; }, n ? 400 + n * 480 : 200)); }
+  $('mmGet').addEventListener('click', function(){ var P = S.mimicPend; if (!P) return; var g0 = S.gold; S.mimicPend = null; P.loot.forEach(grantLoot); save(); $('mimicPop').hidden = true; hideTip(); evGo(); if (S.gold > g0) goldCount(g0, S.gold); });
   function grantLoot(k){ var p = LP(k); if (p.type === 'g') S.gold += p.amt; else if (p.type === 'm') S.mana = (S.mana || 0) + p.amt; else if (p.type === 's'){ if (E.canTake(D, S.skills, p.id, 999)){ E.takeSkill(D, S.skills, p.id); skKey = ''; } } else if (p.type === 'p') autoPad(p.id); }
   function synHl(d, side){ document.querySelectorAll('#field .synhl').forEach(function(e){ e.classList.remove('synhl'); }); if (!d || !d.per || d.only || bt) return; var y = synInfo(d, side); if (!y) return;
     var hit = function(hh){ return heroVals(hh, y.k).some(function(v){ return y.vs.indexOf(v) >= 0; }); };
@@ -4754,6 +4784,10 @@ img.rimg{image-rendering:auto!important}
     var r = bt.finish(), st = E.stageTeam(D, curStage, curEv, curBell, curPlv), html = '', reward = 0, gain = '';
     save(); // 경험치는 처치할 때마다 이미 더했어요
     var chestDone = !!(curEv && curEv.kind === 'chest' && E.chestReward), advanced = false;
+    if (curEv && curEv.kind === 'mimic' && E.mobLoot){ var ml = [].concat.apply([], E.mobLoot(st, r.units) || []).filter(Boolean), mk = r.units.filter(function(x){ return x.side === 'E' && !x.alive && !x.escaped; }).map(function(x){ return x.id; });
+      if (curStage === S.stage) S.mimicPend = { m: mk, loot: ml };
+      S.adv = { up: false }; S.bellGold = 0; save();
+      setTimeout(function(){ closeBattle(); if (S.mimicPend){ scrollPend = true; renderAll(); showMimicPop(); } else evGo(); }, skipNow ? 0 : 650); return; }
     if (curEv && curEv.kind === 'mobs' && E.mobLoot){ var mp = [].concat.apply([], E.mobLoot(st, r.units) || []).filter(Boolean), g0m = S.gold;
       if (curStage === S.stage && mp.length) S.mobPend = mp;
       S.adv = { up: false }; S.bellGold = 0; save();
@@ -4914,14 +4948,14 @@ img.rimg{image-rendering:auto!important}
   $('feDown').addEventListener('click', function(){ setFE(((S.ui && S.ui.forceEvery) || 0) - 1); });
   $('feUp').addEventListener('click', function(){ setFE(((S.ui && S.ui.forceEvery) || 0) + 1); });
   // 이벤트 스테이지 종류 켜고 끄기: S.ui.evOff → D.events.off
-  var EVK_NM = { campfire: '모닥불', merchant: '방랑상인', chest: '보물상자', altar: '초월 제단', mobs: '몹', fairy: '요정', groll: '돈고블린 룰렛' };
+  var EVK_NM = { mimic: '미믹', campfire: '모닥불', merchant: '방랑상인', chest: '보물상자', altar: '초월 제단', mobs: '몹', fairy: '요정', groll: '돈고블린 룰렛' };
   function applyEvOff(){ if (D.events) D.events.off = ((S.ui && S.ui.evOff) || []).slice(); }
   function renderEvOff(){ var box = $('evKinds'); if (!box || !D.events) return; var off = (S.ui && S.ui.evOff) || [];
     box.innerHTML = (D.events.stageKinds || []).map(function(k){ var on = off.indexOf(k) < 0; return '<button class="ghost evk' + (on ? '' : ' off') + '" data-evk="' + k + '">' + (EVK_NM[k] || k) + ' ' + (on ? 'ON' : 'OFF') + '</button>'; }).join(''); }
   $('evKinds').addEventListener('click', function(e){ var b = e.target.closest('[data-evk]'); if (!b) return; var k = b.dataset.evk; S.ui = S.ui || {}; var off = (S.ui.evOff || []).slice(), i = off.indexOf(k);
     if (i >= 0) off.splice(i, 1); else off.push(k); S.ui.evOff = off; applyEvOff(); save(); renderEvOff(); });
   /* 테스트용 이벤트 바로가기: S.ui.evDock(false면 끔), S.ui.evDockFold(접힘). 간격은 도구의 forceEvery와 같은 값 */
-  var ED_NM = { goblin: '돈고블린', merc: '떠돌이 용병' }, ED_HIDE = ['mobs', 'goblin']; /* 바로가기 목록에서만 빼요 (사용자: 메인 화면에선 몹 빼자) */
+  var ED_NM = { goblin: '돈고블린', merc: '떠돌이 용병' }, ED_HIDE = ['mobs', 'goblin', 'chest']; /* chest: 미믹 판으로 바꿈 */ /* 바로가기 목록에서만 빼요 (사용자: 메인 화면에선 몹 빼자) */
   function edKinds(){ var V = D.events || {}, out = (V.stageKinds || []).slice(); Object.keys(V.weights || {}).forEach(function(k){ if (out.indexOf(k) < 0) out.push(k); }); return out.filter(function(k){ return ED_HIDE.indexOf(k) < 0; }); }
   function edBusy(){ return !!bt || !!S.offer || !!S.pending || oeBusy || altBusy || !$('roul').hidden; }
   function renderDock(){ var dk = $('evDock'); if (!dk) return; var on = !(S.ui && S.ui.evDock === false), fold = !!(S.ui && S.ui.evDockFold), busy = edBusy(), fe = (S.ui && S.ui.forceEvery) || 0;
@@ -5202,7 +5236,7 @@ img.rimg{image-rendering:auto!important}
   var LV1_POS = [506, 184]; // 적 중반열 가운데 칸
   function lvKind(){ return E.levelPickKind ? E.levelPickKind(D, plv() - (S.lvPicks || 0) + 1, S.units, S.skills) : null; } // 이번 픽의 레벨 값으로 종류
   function isLvPick(){ while ((S.lvPicks || 0) > 0 && !bt && D.player && D.player.levelPick && lvKind() == null) S.lvPicks--; // 후보가 없는 레벨은 건너뛰어요
-    return !bt && (S.lvPicks || 0) > 0 && !!(D.player && D.player.levelPick) && !S.offer && !S.pending && !S.mobPend && !S.evOffer && S.stage < E.stageCount(D); }
+    return !bt && (S.lvPicks || 0) > 0 && !!(D.player && D.player.levelPick) && !S.offer && !S.pending && !S.mobPend && !S.mimicPend && !S.evOffer && S.stage < E.stageCount(D); }
   function lvCands(kind){ if (kind === 'skill') return S.units.filter(function(u){ return !hero(u.id).mob && E.unitSkills && E.unitSkills(D, u)[0].lv < ((D.transcend || {}).maxLv || 5); }).map(function(u){ return u.uid; });
     if (kind === 'hero') return S.units.filter(function(u){ return !hero(u.id).mob; }).map(function(u){ return 'h:' + u.id; }).filter(function(x, i, a){ return a.indexOf(x) === i; });
     return (S.skills || []).filter(function(s){ return !skMaxed(s.id); }).map(function(s){ return 's:' + s.id; }); }
@@ -5234,6 +5268,7 @@ img.rimg{image-rendering:auto!important}
     if (k === 'oddeven') return av('goblin');
     if (k === 'campfire') return CFIMG.ev_campfire ? '<span class="cfspr"></span>' : '<span class="fkimg emo">🔥</span>';
     if (k === 'chest') return av('chest');
+    if (k === 'mimic') return av('mimic');
     if (k === 'mobs') return av((ev.ids || [])[0]);
     return evIcon(k); }
   function forkHtml(){ var IF = (D.events && D.events.info) || {}, q = function(s){ return String(s || '').replace(/"/g, '&quot;'); };
@@ -5243,6 +5278,7 @@ img.rimg{image-rendering:auto!important}
   function forkPv(ev){ var k = ev.kind, o = '', ic = function(x){ return '<i class="fkpi">' + x + '</i>'; }, uq = function(a){ return a.filter(function(x, i){ return a.indexOf(x) === i; }); };
     if (k === 'mobs') o = uq([].concat.apply([], ev.drops || []).map(function(x){ return x.split(':')[0] === 'g' ? 'g' : x; })).slice(0, 3).map(function(x){ return ic(lootIcon(x === 'g' ? 'g:1' : x)); }).join('');
     else if (k === 'chest') o = ic(lootIcon('g:1')) + ic(lootIcon('m:1')) + ic('<b class="fkq">?</b>');
+    else if (k === 'mimic') o = ic(lootIcon('g:1')) + ic('<b class="fkq">?</b>');
     else if (k === 'merchant'){ var M = D.events.merchant || {}; o = ic('<b class="fkq">?</b>') + '<b class="fkn">×' + ((M.skills || 0) + (M.heroes || 0)) + '</b>'; }
     else if (k === 'altar') o = ic('<i class="upmk"></i>');
     else if (k === 'campfire') o = (ev.ids || []).slice(0, 3).map(function(id){ return ic(av(id)); }).join('');
@@ -5362,6 +5398,7 @@ img.rimg{image-rendering:auto!important}
     else if (ev && ev.kind === 'merchant') txt = EI('merchant', '🧳') + '방랑상인';
     else if (ev && ev.kind === 'chest') txt = EI('chest', '🧰') + '보물상자';
     else if (ev && ev.kind === 'mobs') txt = EI('mobs', '👾') + '몹';
+    else if (ev && ev.kind === 'mimic') txt = EI('mimic', '🧰') + '미믹';
     else if (ev && ev.kind === 'fairy') txt = EI('fairy', '🧚') + '요정';
     else if (ev && ev.kind === 'oddeven') txt = EI('goblin', '💰') + '돈고블린 홀짝';
     else if (ev && ev.kind === 'groll') txt = EI('goblin', '💰') + '돈고블린 룰렛';
@@ -5383,7 +5420,7 @@ img.rimg{image-rendering:auto!important}
     if (oe){ $('evBet').disabled = oeBusy || k >= mx || S.gold < E.oddEvenBet(D, S.stage); $('evBet').querySelectorAll('.oedots i').forEach(function(d, i){ d.classList.toggle('on', i < k); d.hidden = i >= mx; }); } } /* 말 걸기: 위 가운데(종·초월 자리) */
   function renderBell(){ renderTalk(); var b = $('bellBtn'); if (!b || !D.bell) { if (b) b.hidden = true; return; } if ((bt && curEv && curEv.kind === 'chest') || (!bt && S.event && S.event.kind === 'chest')){ b.hidden = true; return; } /* 보물상자 판: 용 버튼 없음 */
     var B = D.bell, mx = bellMax(), n = Math.min((bt ? curBell : S.bell) || 0, mx), bStg = bt ? curStage : S.stage, bEv = bt ? curEv : S.event, /* 전투 중엔 시작할 때 값 */ im = BELLIMG[Math.max(1, n)];
-    b.hidden = (!bt && noFight()) || bStg >= E.stageCount(D) || !!(bEv && (bEv.kind === 'mobs' || bEv.kind === 'oddeven')); b.className = 'bell b' + n + (mx ? '' : ' lock') + (bt ? ' inbt' : ''); b.disabled = !mx;
+    b.hidden = (!bt && noFight()) || bStg >= E.stageCount(D) || !!(bEv && (bEv.kind === 'mobs' || bEv.kind === 'mimic' || bEv.kind === 'oddeven')); b.className = 'bell b' + n + (mx ? '' : ' lock') + (bt ? ' inbt' : ''); b.disabled = !mx;
     b.querySelector('.bic').innerHTML = im ? '<img src="img/p/ui_foe' + Math.max(1, n) + '.png" alt="">' : '🔔';
     b.querySelector('.bdots').innerHTML = [1, 2, 3].slice(0, mx).map(function(i){ return '<i' + (i <= n ? ' class="on"' : '') + '></i>'; }).join('');
     var bg1 = E.bellGold ? E.bellGold(D, S.stage, n, n + 1, plv()) : 0, nx = b.querySelector('.bnext');
