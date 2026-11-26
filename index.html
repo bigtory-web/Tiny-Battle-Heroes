@@ -2878,7 +2878,8 @@ img.rimg{image-rendering:auto!important}
 #trWin .rbtns::before,#trWin .rbtns::after{content:'';flex:1;height:10px;background:linear-gradient(#c9a6ff,#c9a6ff) center/100% 2px no-repeat,linear-gradient(#c9a6ff,#c9a6ff) 25% 50%/6px 6px no-repeat,linear-gradient(#ffd34d,#ffd34d) 60% 50%/10px 10px no-repeat;opacity:.55}
 #trWin .rbtns::after{transform:scaleX(-1)}
 /* 고르기 전: 원 빛 빼고 +만 껌뻑, 단상 색 = 메인 노랑·재료 파랑 / 초월: 배경이 바뀌는 센 연출 (2026-11-26 사용자) */
-#trWin .trslot:not(.full) .trglow{display:none}
+#trWin .trslot .trglow{display:none} /* 영웅 뒤 둥근 후광 전부 없앰 */
+#trWin .trslot .trplus{bottom:calc(38px + 25 * var(--P));z-index:3} /* + = 영웅이 설 자리 가운데 */
 #trWin .trslot.next .trplus{animation:trblink .8s steps(1) infinite}
 @keyframes trblink{50%{opacity:.15}}
 #trWin .trslot > .rped{filter:sepia(1) saturate(3.2) drop-shadow(0 0 4px var(--tc))}
