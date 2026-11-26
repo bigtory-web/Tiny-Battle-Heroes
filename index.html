@@ -3045,6 +3045,8 @@ img.rimg{image-rendering:auto!important}
 #trWin .trstage{position:relative}
 #trWin .trmid{position:relative;flex:none;display:flex;z-index:4}
 #trWin .trsk{position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px;white-space:nowrap}
+/* 화살표 중심 = 두 단상 중심 높이, 스킬 아이콘은 화살표 위 (2026-11-26 사용자: "화살표 정중앙") */ #trWin .trmid{align-self:flex-end;margin-bottom:45px} #trWin .trmid .trarrow{margin-bottom:0} #trWin .trmid .trsk{top:auto;bottom:calc(100% + 10px)}
+/* 등록 = 초록, 해제 = 어두운 초록 (CLAUDE.md 짝 버튼 색) */ #trWin .rbtns button.trreg:not(:disabled){--bb:#35a047!important;--bh:#74d183!important;--bl:#1f6b2e!important;background-color:#35a047!important} #trWin .rbtns button.trreg.off:not(:disabled){--bb:#226b31!important;--bh:#3f8c4d!important;--bl:#12401c!important;background-color:#226b31!important}
 #trWin .trsk small{font:400 11px var(--display);color:#f3e6c4;text-shadow:0 1px 0 #17141d,1px 0 0 #17141d,-1px 0 0 #17141d,0 -1px 0 #17141d}
 #trWin .trdust{position:absolute;inset:7px;overflow:hidden;pointer-events:none;z-index:1}
 #trWin .trslot > .rstars{position:absolute;pointer-events:none;z-index:4;left:calc(50% - 55 * var(--P));bottom:calc(38px + 34 * var(--P));width:calc(110 * var(--P));height:calc(76 * var(--P))}
@@ -3822,7 +3824,7 @@ img.rimg{image-rendering:auto!important}
       '#roul:not(.chestpop) .rbox.vic .rstage{background:' + url([[0, [104, 76, 24]], [.28, [84, 58, 18]], [.52, [62, 40, 16]], [.76, [42, 26, 12]]], [255, 220, 112], 23, 46, 36, .11) + '#2a1a0c!important;image-rendering:pixelated}' + /* 승리 = 위 금빛, 아래 짙은 갈색, 가운데 뒤 후광 (2026-11-26 사용자) */
       '#roul .rbox.groll .rstage{background:' + url([[0, [48, 24, 10]], [.3, [70, 36, 10]], [.6, [92, 50, 12]], [.82, [76, 28, 20]]], [255, 204, 66], 24, 42, 32, .1) + '#46240a!important;image-rendering:pixelated}' +
       '#roul .rbox.dais .rstage{background:' + url([[0, [22, 16, 52]], [.3, [36, 24, 76]], [.55, [56, 36, 104]], [.8, [74, 46, 120]]], [190, 140, 255], 24, 40, 30, .1) + '#241650!important;image-rendering:pixelated}' + /* 양탄자 = 요정과 같은 질감, 보라 (2026-11-26 사용자) */
-      '#trWin .trstage,#trWin .trstage.charge,#trWin .trstage.done{background:' + url([[0, [14, 10, 30]], [.35, [20, 12, 42]], [.65, [28, 16, 56]]], [150, 92, 236], 27, 58, 34, .22) + '#0c0818!important;image-rendering:pixelated}' + /* 초월 = 보라 도트 디더, 가운데 은은히 밝게 (2026-11-26 사용자: "도트 느낌 더") */
+      '#trWin .trstage,#trWin .trstage.charge,#trWin .trstage.done{background:' + url([[0, [13, 11, 23]], [.35, [18, 14, 31]], [.65, [24, 19, 41]]], [116, 88, 168], 27, 58, 34, .18) + '#0c0818!important;image-rendering:pixelated}' + /* 초월 = 보라 도트 디더, 가운데 은은히 밝게 (2026-11-26 사용자: "도트 느낌 더") */
       '#mimicPop .mmrow{position:relative;background:' + url([[0, [38, 24, 8]], [.35, [52, 34, 10]], [.65, [68, 46, 14]], [.82, [50, 32, 10]]], [255, 206, 90], 30, 58, 36, .11) + '#2a1a08!important;image-rendering:pixelated} #mimicPop .mmrow .mmc{z-index:2} #mimicPop .mmrow .mmnone{position:relative;z-index:2}' + /* 미믹 결과 = 어두운 금갈색 디더 (2026-11-26 사용자: "너무 허전함") */
       '#roul .rbox.fairy .rstage{background:' + url([[0, [28, 19, 52]], [.25, [29, 26, 62]], [.45, [26, 36, 66]], [.65, [20, 47, 64]], [.82, [18, 54, 60]]], [236, 158, 232], 24, 40, 30, .085) + '#1c1334!important;image-rendering:pixelated}';
     document.body.appendChild(s); })();
@@ -5326,8 +5328,11 @@ img.rimg{image-rendering:auto!important}
   }
   /* 용병 동작: 대기 2바퀴 → 공격 1번 → 반복 (2026-11-26 사용자) */
   var mercAnim = null;
+  function showFrame(t0){ var IDLE = 180, ATK = 150, T = (performance.now() - t0) % (8 * IDLE + 4 * ATK); return T < 8 * IDLE ? 1 + Math.floor(T / IDLE) % 4 : 5 + Math.min(3, Math.floor((T - 8 * IDLE) / ATK)); } /* 대기 2바퀴 → 공격 1번 (용병·초월 결과) */
+  /* 초월 결과 단상 영웅도 같은 동작 (2026-11-26 사용자) */
+  setInterval(function(){ var av0 = document.querySelector('#trWin .trstage.done .trfig .av'); if (!av0 || !trDone) return; var u = U(trDone.uid); if (!u || ANIM_IDS.indexOf(u.id) < 0) return; if (!av0.dataset.t0) av0.dataset.t0 = performance.now(); var f = u.id + '_a' + showFrame(+av0.dataset.t0); if (av0.dataset.f === f || !IMGS[f]) return; av0.dataset.f = f; delete av0.dataset.oid; av0.style.backgroundImage = 'url(' + (IMGS[f].toDataURL ? IMGS[f].toDataURL() : IMGS[f].src) + ')'; }, 60);
   setInterval(function(){ var m = mercAnim, w = $('evWin'); if (!m || !w || w.hidden) return; var pic = w.querySelector('.rpic'); if (!pic) return;
-    var IDLE = 180, ATK = 150, T = (performance.now() - m.t0) % (8 * IDLE + 4 * ATK), n = T < 8 * IDLE ? 1 + Math.floor(T / IDLE) % 4 : 5 + Math.min(3, Math.floor((T - 8 * IDLE) / ATK)), f = m.id + '_a' + n;
+    var f = m.id + '_a' + showFrame(m.t0);
     if (f === m.f || !IMGS[f]) return; m.f = f; OUTLN = m.nk; pic.style.backgroundImage = 'url(' + outlinedURL(f, NOLINE) + ')'; pic.style.setProperty('--o1', 'url(' + outlinedURL(f, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(f, '#ffffff') + ')'); OUTLN = 0; }, 60);
   $('evWin').addEventListener('click', function(e){
     var o = S.evOffer; if (!o) return;
@@ -5855,14 +5860,14 @@ img.rimg{image-rendering:auto!important}
     var rg = w.querySelector('.trreg'); if (rg) rg.remove(); var b = w.querySelector('.rbtns button'); b.textContent = '확인'; b.dataset.tr = 'ok'; b.disabled = false; }
   function trFit(){ var w = $('trWin'); if (!w) return; var b = w.querySelector('.rbox'), i = w.querySelector('.trinfo'); if (b && i) i.style.setProperty('height', b.offsetHeight + 'px', 'important'); } /* 두 창 높이 맞춤 */
   function trRender(){ var w = $('trWin'); if (!w) return; setTimeout(trFit, 0); if (trDone) return trResult(w); var a = altA != null && U(altA), m = altM != null && U(altM), kind = a && m ? trKind(a, m) : null, st = w.querySelector('.trstage');
-    st.innerHTML = trSlot('A', altA) + '<span class="trmid"><i class="trarrow' + (kind ? ' on' : '') + '"></i>' + (m ? '<span class="trsk">' + skFrame(ultIconEl(hero(m.id)), HG(m.id).col) + '<small>' + ultName(hero(m.id)) + '</small></span>' : '') + '</span>' + trSlot('M', altM) + '<i class="trwarn"><b>재료</b>로 사용된 히어로는 사라집니다.</i>'; trDust(st); /* 화살표는 재료 -> 메인 (왼쪽) */
+    st.innerHTML = trSlot('A', altA) + '<span class="trmid"><i class="trarrow' + (kind ? ' on' : '') + '"></i>' + (m ? '<span class="trsk">' + skFrame(ultIconEl(hero(m.id)), HG(m.id).col) + '<small>' + ultName(hero(m.id)) + '</small></span>' : '') + '</span>' + trSlot('M', altM) + '<i class="trwarn"><b>재료</b> 로 사용된 히어로는 사라집니다.</i>'; trDust(st); /* 화살표는 재료 -> 메인 (왼쪽) */
     st.querySelectorAll('.trslot').forEach(function(s){ var x = U(s.dataset.tr === 'A' ? altA : altM); pedestal(s, s.dataset.tr === 'A' ? '#ffd34d' : '#5ab4ff'); });
     trInfo(w.querySelector('.trinfo'));
     var ids = S.team.filter(function(x){ return x && U(x); }); /* 백팩 영웅은 백팩 칸에서 */ trBag();
     w.querySelector('.trlist').innerHTML = ids.map(function(id){ var u = U(id), on = id === altA ? 'A' : id === altM ? 'M' : '', ok = on || trCan(u);
       return '<button class="trc' + (on ? ' on k' + on : '') + (id === trSeen ? ' seen' : '') + '" type="button" data-tr="pick" data-uid="' + id + '" style="--hg:' + HG(u.id).col + '"' + (ok ? '' : ' aria-disabled="true"') + '>' + heroFr(u.id, u.star, isTr(u)) + (on ? '<b>' + (on === 'A' ? '메인' : '재료') + '</b>' : '') + '</button>'; }).join('');
     w.querySelector('[data-tr="go"]').disabled = !kind || altDone();
-    var rb = w.querySelector('.trreg'), su = trSeen != null && U(trSeen), on = su && (trSeen === altA || trSeen === altM); rb.textContent = on ? '해제' : '등록'; rb.disabled = trAnim || altDone() || !(on || trCanReg(su)); }
+    var rb = w.querySelector('.trreg'), su = trSeen != null && U(trSeen), on = su && (trSeen === altA || trSeen === altM); rb.textContent = on ? '해제' : '등록'; rb.classList.toggle('off', !!on); rb.disabled = trAnim || altDone() || !(on || trCanReg(su)); }
   function trDo(){ var a = altA, m = altM, w = $('trWin'); if (!w || a == null || m == null || altDone() || !trKind(U(a), U(m))) return; var mid = U(m).id; trAnim = true;
     w.querySelector('[data-tr="go"]').disabled = true; var st = w.querySelector('.trstage'), fg = st.querySelector('.sA .trfig'); if (fg){ var sl = fg.parentNode; st.style.setProperty('--cx', (sl.offsetLeft + fg.offsetLeft + fg.offsetWidth / 2) + 'px'); st.style.setProperty('--cy', (sl.offsetTop + fg.offsetTop + fg.offsetHeight * .62) + 'px'); } /* 회전 중심 = 메인 영웅 */
     st.classList.add('suck', 'charge'); /* 재료가 메인 쪽으로 빨려 들어감 + 배경이 보라로 바뀌고 흔들림 */
