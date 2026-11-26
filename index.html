@@ -2589,6 +2589,21 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 #roul:not(.chestpop) .rbox .rstage.onped .rpic.loot.relic{width:calc(63 * var(--P))!important;height:calc(63 * var(--P))!important;left:calc(50% - 31.5 * var(--P))!important;bottom:calc(38px + 22 * var(--P))!important;background:url(img/p/relic_ring.png) 0 0/100% 100% no-repeat!important;image-rendering:pixelated;filter:drop-shadow(0 0 8px var(--rg,#d9dde8))!important}
 #roul .rbox .rpic.loot.relic img.lic{width:calc(42 * var(--P))!important;height:calc(42 * var(--P))!important;position:relative;z-index:1}
 #roul .rstage .rpic.loot.relic::before{content:'';position:absolute;inset:0;pointer-events:none;background:var(--rg,#d9dde8);-webkit-mask:url(img/p/relic_ring_glow.png) 0 0/100% 100% no-repeat;mask:url(img/p/relic_ring_glow.png) 0 0/100% 100% no-repeat;image-rendering:pixelated}
+/* 용병 팝업 포인트: 어스름 여관 배경 + 안 도는 조명 하나, 초록 리본 띠 */
+#evWin .rbox .rstage{background:radial-gradient(60% 70% at 50% 38%,rgba(255,214,140,.30),transparent 70%),linear-gradient(#1b2130 0 55%,#2b2530 55% 70%,#3a2c24 70%)!important}
+#evWin .mercline{margin:10px 6px;padding:0;background:none;box-shadow:none;text-shadow:none;display:flex;justify-content:center}
+#evWin .mercline span{position:relative;display:flex;align-items:center;gap:10px;padding:8px 18px;min-width:240px;justify-content:center;background:#24452a;color:#f3ffe8;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #5fcf6a;font:400 18px var(--display);text-shadow:0 2px 0 #17141d}
+#evWin .mercline span::before,#evWin .mercline span::after{content:'';position:absolute;top:8px;bottom:-6px;width:26px;z-index:-1;background:#3f7a44;box-shadow:0 0 0 2px #17141d;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,40% 50%)}
+#evWin .mercline span::before{left:-18px} #evWin .mercline span::after{right:-18px;transform:scaleX(-1)}
+#evWin .mercline span{isolation:isolate} #evWin .mercline b{font-weight:400}
+#evWin .mshake{width:24px;height:24px;display:block}
+#evWin .mswords{width:24px;height:24px;display:block;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%2317141d' d='M0 0h3v1h1v1h1v1h2V2h1V1h1V0h3v3h-1v1h-1v1h-1v2h1v1h1v1h1v1h1v3H9v-1H8v-1H7V9H5v1H4v1H3v1H0V9h1V8h1V7h1V5H2V4H1V3H0z'/%3E%3Cpath fill='%23dfe6f0' d='M1 1h1v1h1v1h1v1h1v1h2V4h1V3h1V2h1V1h1v1h-1v1H9v1H8v1H7v2h1v1H7V7H5v1H4V7h1V5H4V4H3V3H2V2H1z'/%3E%3Cpath fill='%23c9892a' d='M2 8h2v2H2zM8 8h2v2H8zM1 10h1v1H1zM10 10h1v1h-1z'/%3E%3C/svg%3E") 0 0/24px 24px no-repeat;image-rendering:pixelated}
+/* 모닥불 룰렛: 밤 + 아래에서 비추는 주황 불빛 일렁임, 불씨. 빛줄기 없음 */
+#roul .rbox.camp .rstage{background:radial-gradient(70% 55% at 50% 100%,rgba(255,140,40,.55),transparent 70%),linear-gradient(#0f1224,#1d1626 60%,#2a1a18)!important}
+#roul .rbox.camp .rstage .rfx{display:none}
+#roul .rbox.camp .rstage::after{content:'';position:absolute;inset:6px;pointer-events:none;z-index:1;background:radial-gradient(3px 3px at 18% 80%,#ffb347 60%,transparent),radial-gradient(2px 2px at 32% 65%,#ffd27a 60%,transparent),radial-gradient(3px 3px at 71% 85%,#ff8a2a 60%,transparent),radial-gradient(2px 2px at 84% 55%,#ffb347 60%,transparent),radial-gradient(2px 2px at 60% 40%,#ffd27a 60%,transparent),radial-gradient(60% 40% at 50% 100%,rgba(255,120,30,.35),transparent);animation:campfx 1.4s steps(6) infinite}
+@keyframes campfx{0%{transform:translateY(6px);opacity:.65}50%{opacity:1}100%{transform:translateY(-10px);opacity:.65}}
+#roul .rbox.camp .rstrip{box-shadow:0 0 0 2px #17141d,0 0 0 4px #ff8a2a,0 0 12px 2px rgba(255,138,42,.55)!important}
 </style>
 </head>
 <body>
@@ -3291,7 +3306,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     stage.classList.add('onped'); stage.style.setProperty('--P', P.toFixed(4) + 'px'); el.firstChild.style.backgroundImage = 'url(' + pedRune(col || '#d9dde8') + ')'; }
   function showOffer(key){
     var p = LP(key), box = $('roul'), pic = box.querySelector('.rpic');
-    box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); rayFx(key); if (!box.classList.contains('chestpop')) pedestal(box.querySelector('.rstage'), GR(lootTier(key)).col); $('rUp').hidden = !upOK(key);
+    box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); box.querySelector('.rbox').classList.toggle('camp', S.offerMode === 'camp'); rayFx(key); if (!box.classList.contains('chestpop')) pedestal(box.querySelector('.rstage'), GR(lootTier(key)).col); $('rUp').hidden = !upOK(key);
     pic.style.imageRendering = p.type === 'h' && IMGS[p.id] ? 'pixelated' : '';
     var rk = qN(), rq = { k: rk, css: 66 * qR() / (sApp() * (window.devicePixelRatio || 1)) };
     var lm = Math.max(2, Math.round(qR() * 64 * .8 / 24)); document.documentElement.style.setProperty('--rlq', (24 * lm / (sApp() * (window.devicePixelRatio || 1))).toFixed(2) + 'px'); /* 유물·골드 그림도 영웅과 같은 크기(영웅이 칸에서 차지하는 높이 약 80%), 24px 원본의 정수배 장치 px */ document.documentElement.style.setProperty('--rpq', (p.type === 'h' && IMGS[p.id] ? rq.css : 114) + 'px'); rpAnim.nk = p.type === 'h' ? rq.k : 0; OUTLN = rpAnim.nk;
@@ -4617,15 +4632,21 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     var id = o.id, h2 = hero(id), col = HG(id).col, box = w.querySelector('.evbox'), q = function(s){ return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;'); };
     box.className = 'evbox merc';
     box.innerHTML = '<div class="rbox reveal rl' + lootTier('h:' + id) + '" style="--gcol:' + col + ';--el:' + col + '"><button class="spX" type="button" data-evleave="1" title="닫기">✕</button><div class="rt">떠돌이 용병</div>' +
-      '<div class="rstage"><div class="rfx"><i class="rays"></i></div><div class="rpic"></div><div class="rtags" style="--tg:' + col + '">' + tagHtml(h2) + '</div>' +
+      '<div class="rstage"><div class="rpic"></div><div class="rtags" style="--tg:' + col + '">' + tagHtml(h2) + '</div>' +
       (h2.ult ? '<div class="rsk" style="--rg:' + col + '" data-tipt="' + q(ultName(h2)) + '" data-tiptx="' + q(ultDescFull(h2, h2.ult, 1)) + '">' + ultIcon(h2, 28) + '</div>' : '') + '<div class="rname">' + h2.name + '</div></div>' +
-      '<div class="mercline">합류를 원해요</div><div class="rbtns"><button class="go" type="button" data-evmerc="1"' + (S.gold >= o.price ? '' : ' disabled') + '>영입(' + g(o.price) + ')</button><button class="go again" type="button" data-evleave="1">거절</button></div></div>';
+      '<div class="mercline"><span><i class="mshake"></i><b>합류를 원해요!</b><i class="mswords"></i></span></div><div class="rbtns"><button class="go" type="button" data-evmerc="1"' + (S.gold >= o.price ? '' : ' disabled') + '>영입(' + g(o.price) + ')</button><button class="go again" type="button" data-evleave="1">거절</button></div></div>';
     var pic = box.querySelector('.rpic');
     if (IMGS[id]){ w.style.setProperty('--rpq', (66 * qR() / (sApp() * (window.devicePixelRatio || 1))).toFixed(2) + 'px'); OUTLN = qN(); pic.style.backgroundImage = 'url(' + outlinedURL(id, gc(id)) + ')'; pic.style.setProperty('--o1', 'url(' + outlinedURL(id, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(id, '#ffffff') + ')'); /* 룰렛 결과처럼 외곽선 깜빡임에 필요 */ OUTLN = 0; pic.style.imageRendering = 'pixelated'; }
     else pic.innerHTML = AV[id];
     pedestal(box.querySelector('.rstage'), col);
+    mercAnim = IMGS[id] && ANIM_IDS.indexOf(id) >= 0 ? { id: id, nk: qN(), t0: performance.now(), f: '' } : null;
     w.hidden = false;
   }
+  /* 용병 동작: 대기 2바퀴 → 공격 1번 → 반복 (2026-11-26 사용자) */
+  var mercAnim = null;
+  setInterval(function(){ var m = mercAnim, w = $('evWin'); if (!m || !w || w.hidden) return; var pic = w.querySelector('.rpic'); if (!pic) return;
+    var IDLE = 180, ATK = 150, T = (performance.now() - m.t0) % (8 * IDLE + 4 * ATK), n = T < 8 * IDLE ? 1 + Math.floor(T / IDLE) % 4 : 5 + Math.min(3, Math.floor((T - 8 * IDLE) / ATK)), f = m.id + '_a' + n;
+    if (f === m.f || !IMGS[f]) return; m.f = f; OUTLN = m.nk; pic.style.backgroundImage = 'url(' + outlinedURL(f, gc(m.id)) + ')'; pic.style.setProperty('--o1', 'url(' + outlinedURL(f, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(f, '#ffffff') + ')'); OUTLN = 0; }, 60);
   $('evWin').addEventListener('click', function(e){
     var o = S.evOffer; if (!o) return;
     var b = e.target.closest('[data-evmerc],[data-evleave]'); if (!b || b.disabled) return;
