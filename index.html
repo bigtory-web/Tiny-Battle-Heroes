@@ -116,6 +116,22 @@ button{font:inherit;color:inherit;cursor:pointer}
 .sbody{padding:10px 8px;flex:1}
 .sfoot{position:sticky;bottom:0;padding:10px 16px calc(10px + var(--sb));background:rgba(18,19,31,.94);border-top:1px solid var(--line)}
 .vsbar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:0 4px 8px}
+#amb{position:absolute;inset:9px;z-index:3;overflow:hidden;pointer-events:none}
+#amb s{position:absolute;width:3px;height:3px;text-decoration:none}
+#amb[data-k=altar]{background:linear-gradient(rgba(90,40,170,.22),rgba(90,40,170,.08) 55%,rgba(150,100,230,.3))}
+#amb[data-k=altar] s{background:#e3d2ff;box-shadow:0 0 5px 1px #a77bff;animation:ambrise linear infinite}
+#amb[data-k=campfire]{background:radial-gradient(ellipse at 50% 75%,rgba(255,150,40,.26),rgba(200,80,20,.2) 55%,rgba(90,30,40,.26))}
+#amb[data-k=campfire] s{background:#ffb347;box-shadow:0 0 4px 1px #ff7a1a;animation:ambrise linear infinite}
+#amb[data-k=mimic]{background:radial-gradient(ellipse at 55% 60%,rgba(12,8,24,.18),rgba(12,8,24,.42))}
+#amb[data-k=mimic] s{width:8px;height:6px;background:#ffd34d;box-shadow:inset 0 -2px #b8861c,0 0 0 1px #17141d;animation:ambglint steps(1) infinite}
+#amb[data-k=fairy]{background:linear-gradient(rgba(255,160,220,.14),rgba(255,200,230,.04) 60%,rgba(140,230,180,.12))}
+#amb[data-k=fairy] s{width:6px;height:4px;background:#ffb3de;box-shadow:2px 2px #ff8ac8;animation:ambfall linear infinite}
+#amb[data-k=groll]{background:radial-gradient(ellipse at 25% 0,rgba(255,220,90,.26),transparent 55%),radial-gradient(ellipse at 75% 0,rgba(255,220,90,.26),transparent 55%);animation:ambcasino 2.4s steps(2) infinite}
+#amb[data-k=groll] s{background:#fff3b0;box-shadow:0 -3px #ffd34d,0 3px #ffd34d,-3px 0 #ffd34d,3px 0 #ffd34d;animation:ambglint steps(1) infinite,ambrise 7s linear infinite}
+@keyframes ambrise{0%{translate:0 0;opacity:0}20%,70%{opacity:.8}100%{translate:6px -60px;opacity:0}}
+@keyframes ambfall{0%{translate:0 0;rotate:0deg;opacity:0}12%,80%{opacity:.9}100%{translate:-50px 260px;rotate:360deg;opacity:0}}
+@keyframes ambglint{50%{filter:brightness(1.7)}}
+@keyframes ambcasino{50%{opacity:.6}}
 .vsbar .p{font:400 20px var(--display)} .vsbar .me{color:var(--green)} .vsbar .them{color:#ff9a8a;text-align:right}
 .vsbar .vs{font:400 30px var(--display);color:var(--gold);text-shadow:0 3px 0 #7a4a00;background:none;padding:0;margin:0;display:block}
 .field{position:relative;aspect-ratio:480/380;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:linear-gradient(180deg,#26304d,#1a2a1d)}
@@ -2949,7 +2965,7 @@ img.rimg{image-rendering:auto!important}
         <div class="hud" id="hud"><span class="it hudbag" title="백팩"><img class="hi" src="img/p/hud_bag.png" alt=""></span><span class="hudits" id="hudItems"></span><span class="hudbtns"><button class="hbtn" id="spdBtn" type="button" title="배속"><span class="spem">⏩</span>X1.5</button><button class="hbtn" id="skipBtn" type="button" title="건너뛰기" disabled><span class="spem">⏭️</span>스킵</button></span><span class="hudits" id="hudStg"></span></div>
         <div class="arena" id="arena"><div class="dps a" id="dpsA" hidden><div class="dpsh" data-dps="A"><b>우리 DPS</b></div><div class="dpsb"></div></div><div class="dps e" id="dpsE" hidden><div class="dpsh" data-dps="E"><b>상대 DPS</b></div><div class="dpsb"></div></div><div class="evban" id="evBan" hidden></div><div class="evmerch" id="evMerch" hidden></div><div class="hinfo left" id="hinfo" hidden></div>
           <div class="evdock" id="evDock" hidden><button class="edtab" id="edTab" type="button">이벤트</button><div class="edbody"><div class="edfe" title="0이면 평소 확률, N이면 스테이지 N개마다 이벤트 스테이지가 꼭 나와요"><button id="edFeDown" type="button">−</button><b id="edFe">간격 0</b><button id="edFeUp" type="button">+</button></div><div class="edlist" id="edList"></div></div></div><div class="field" id="field"></div>
-          <canvas id="cv" width="720" height="400" aria-label="전투 화면" hidden></canvas>
+          <canvas id="cv" width="720" height="400" aria-label="전투 화면" hidden></canvas><div id="amb" aria-hidden="true"></div>
           <div class="vsbar" id="vsBar" hidden><div class="tbar a" id="tbA"></div><b class="vsb" id="vsB">VS</b><div class="tbar e" id="tbE"></div></div><div class="skbar a" id="skA"></div>
           <div class="erow"><div class="skbar e" id="skE"></div><div class="lootprev" id="lootPrev"></div></div><button class="talkBtn" id="talkBtn" type="button" title="말 걸기"><span class="tic"></span></button><div class="evacts" id="evActs" hidden><button class="evact" id="evTalk" type="button"><span class="eai"></span><b>말 걸기</b></button><button class="evact" id="evBet" type="button" hidden><span class="eai"><img class="timg" src="img/p/hud_gold.png" alt=""><span class="oedots"><i></i><i></i><i></i></span></span><b>돈 넣기</b></button></div><button class="altGoBtn" id="altGoBtn" type="button" title="초월하기" disabled><span class="cbox"><img class="trico" src="img/p/ui_transcend.png" alt="" onerror="this.outerHTML='<i class=altspr></i>'"></span><b>초월하기</b></button><button class="bell" id="bellBtn" type="button"><span class="cbox"><span class="bic"></span><span class="bdots"></span></span><span class="bnext" hidden></span></button>
           <div class="bres" id="res" hidden></div>
@@ -5576,6 +5592,12 @@ img.rimg{image-rendering:auto!important}
     m.hidden = true; } /* 예전 상인 그림(merchant.png)이 새 상인 위에 겹쳐 있던 자리: 안 띄움 */
   // ───── 위험 종: 누를 때마다 0→1→2→3→0. 길게 누르거나 우클릭하면 0 ─────
   var BELLIMG = {}; [1, 2, 3].forEach(function(n){ var im = new Image(); im.onload = function(){ BELLIMG[n] = true; renderBell(); }; im.src = 'img/p/ui_foe' + n + '.png'; });
+  /* 이벤트 판 분위기: 배경 그림은 그대로, 색·빛·앞 효과만 덮음. 편성·전투 둘 다 (2026-11-26 사용자) */
+  var AMB = { altar: [18, 0, 100, 45, 100], campfire: [10, 0, 100, 40, 100], mimic: [9, 4, 96, 68, 90], fairy: [16, 0, 100, 0, 40], groll: [16, 0, 100, 15, 90] }; /* [알갱이 수, 가로 최소·최대 %, 세로 최소·최대 %] */
+  function ambSync(){ var el = $('amb'), ev = bt ? curEv : S.event, k = ev && (bt || (S.stage < E.stageCount(D) && !isLvPick())) && AMB[ev.kind] ? ev.kind : ''; if (!el || (el.dataset.k || '') === k) return; el.dataset.k = k; var a = AMB[k], o = '';
+    for (var i = 0; a && i < a[0]; i++){ var du = (4 + Math.random() * 4).toFixed(2); o += '<s style="left:' + (a[1] + Math.random() * (a[2] - a[1])).toFixed(1) + '%;top:' + (a[3] + Math.random() * (a[4] - a[3])).toFixed(1) + '%;animation-duration:' + du + 's;animation-delay:' + (-Math.random() * du).toFixed(2) + 's"></s>'; }
+    el.innerHTML = o; }
+  setInterval(ambSync, 300);
   function renderTalk(){ var t = $('talkBtn'); if (t) t.querySelector('.tic').innerHTML = campImg('ui_talk', '💬', 'timg'); var et = $('evTalk'); if (et) et.querySelector('.eai').innerHTML = campImg('ui_talk', '💬', 'timg'); }
   function grollBtn(gr){ var b = $('evBet'), lab = b.querySelector('b'), dots = b.querySelector('.oedots'), n = $('grLeft'); if (!n){ n = document.createElement('span'); n.id = 'grLeft'; n.className = 'grleft'; b.parentNode.insertBefore(n, b); }
     b.classList.toggle('groll', gr); var ti = b.querySelector('.timg'), want = gr ? 'img/p/ev_goblin.png' : 'img/p/hud_gold.png'; if (ti && ti.getAttribute('src') !== want) ti.src = want; n.hidden = true; if (dots) dots.hidden = gr;
