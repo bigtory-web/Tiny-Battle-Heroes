@@ -197,7 +197,7 @@ b.pasx{display:inline-flex;align-items:center;justify-content:center;width:100%;
 .slot.on.picked .av.pic{filter:drop-shadow(2px 0 0 #ffd34d) drop-shadow(-2px 0 0 #ffd34d) drop-shadow(0 2px 0 #ffd34d) drop-shadow(0 -2px 0 #ffd34d) drop-shadow(0 0 6px rgba(255,211,77,.7));animation:pkav .7s steps(2) infinite}
 @keyframes pkav{50%{filter:drop-shadow(2px 0 0 #fff3b0) drop-shadow(-2px 0 0 #fff3b0) drop-shadow(0 2px 0 #fff3b0) drop-shadow(0 -2px 0 #fff3b0) drop-shadow(0 0 10px rgba(255,211,77,.9))}}
 .slot.on.picked .av:not(.pic){filter:drop-shadow(0 0 4px #ffd34d)}
-#field.padhold .pad{opacity:0;animation:none!important}
+#field.padhold .pad,#field.padhold .dsomen{opacity:0;animation:none!important}
 #field.padshow .pad{animation:padin .45s cubic-bezier(.3,1.6,.5,1) both}
 #field .pad.nw{animation:padin .45s cubic-bezier(.3,1.6,.5,1) both}
 @keyframes padin{0%{transform:translate(-50%,-46.8%) scale(.2);opacity:0}100%{transform:translate(-50%,-46.8%);opacity:1}}
@@ -677,10 +677,10 @@ html,body{overflow:hidden;background:#0b0c14}
 @keyframes flick{50%{filter:brightness(1.6) drop-shadow(0 0 0 #fff);transform:translateY(-3px)}}
 /* 멈춘 순간 (모든 등급): 고리가 퍼지고 그림이 툭 튀어나와요 */
 .rbox.reveal .rpic{animation:popin .45s cubic-bezier(.3,1.7,.5,1)}
-.rbox.reveal .ring{animation:ringo .6s ease-out}
+.rbox.reveal .ring{animation:ringo .3s ease-out}
 .rbox.reveal .rgrade{opacity:1;animation:fadeup .3s .2s both}
-@keyframes popin{0%{transform:scale(.4)}100%{transform:scale(1)}}
-@keyframes ringo{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(9)}}
+@keyframes popin{0%{transform:scale(.6)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes ringo{0%{opacity:.95;transform:scale(1)}100%{opacity:0;transform:scale(5)}}
 /* 연출 2단계(희귀): 등급색 광선이 천천히 돌아요 */
 .rbox.gr2.reveal .rays{opacity:.22;animation:spinr 10s linear infinite}
 .rbox.gr2.reveal .rpic{filter:drop-shadow(0 0 10px var(--gcol,#4fa3ff))}
@@ -781,11 +781,13 @@ html,body{overflow:hidden;background:#0b0c14}
 
 /* 전리품 카드: 제목 줄·결과 한 줄 빼고, 등급 고리는 사각 */
 .rbox .rt,.rbox .rres{display:none!important}
-.rfx .ring{border-radius:0!important}
+.rfx .ring{border:0!important;border-radius:50%!important;background:radial-gradient(closest-side,#fff 0,var(--gcol,#fff) 50%,transparent)} /* 둥근 빛 한 번 (2026-11-26 사용자: "사각형이 이상해") */
+.rburst{display:none!important} /* 한 번에 하나씩: 네모 조각 없음 */
+.rbox.reveal.rl3:not(.still) .rstage,.rbox.reveal.rl4:not(.still) .rstage{outline:3px solid transparent;outline-offset:-3px;animation:stflash .6s ease-out .45s} @keyframes stflash{25%{outline-color:var(--gcol,#fff);filter:brightness(1.25)}}
 
 /* 받은 순간 연출 (글자 없음) */
 .rbox.got .rpic{animation:gotf .55s steps(4)}
-.rbox.got .ring{animation:ringo .6s ease-out}
+.rbox.got .ring{animation:ringo .3s ease-out}
 @keyframes gotf{0%{filter:brightness(3.2)}50%{filter:brightness(1.8)}100%{filter:none}}
 /* 캐릭터 정보 판넬 (픽셀 판넬) */
 .hinfo{position:absolute;top:70px;z-index:20;width:208px;padding:8px 9px;background:#221e2b;color:#f3e6c4;pointer-events:none;
@@ -1297,9 +1299,9 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 @keyframes dashf{0%{transform:translate(-50%,-100%)}35%{transform:translate(calc(-50% + 26px),-100%) skewX(-8deg)}100%{transform:translate(-50%,-100%)}}
 #field .whoosh{position:absolute;inset:0;z-index:950;pointer-events:none;background:repeating-linear-gradient(180deg,transparent 0 22px,rgba(255,255,255,.55) 22px 24px,transparent 24px 41px,rgba(255,255,255,.3) 41px 42px,transparent 42px 63px);-webkit-mask:linear-gradient(90deg,transparent,#000 20%,#000 70%,transparent);mask:linear-gradient(90deg,transparent,#000 20%,#000 70%,transparent);animation:whoosh .7s ease-in-out both}
 @keyframes whoosh{0%{opacity:0;transform:translateX(60%) scaleX(.4)}30%{opacity:.9}70%{opacity:.7}100%{opacity:0;transform:translateX(-60%) scaleX(1.4)}}
-#field .unit.fspawn{animation:fspawn .6s steps(6) both}
-#field .unit.fspawn::before{content:'';position:absolute;left:50%;bottom:-6px;width:80%;height:16px;margin-left:-40%;border-radius:50%;background:radial-gradient(ellipse,rgba(255,240,210,.85),rgba(255,240,210,0) 70%);animation:fpuff .6s ease-out both;animation-delay:inherit;pointer-events:none}
-@keyframes fspawn{0%{opacity:0;transform:translate(-50%,-100%) scale(.2,1.6);filter:brightness(4)}45%{opacity:1;transform:translate(-50%,-100%) scale(1.2,.85);filter:brightness(2)}75%{transform:translate(-50%,-100%) scale(.95,1.05)}100%{opacity:1;transform:translate(-50%,-100%);filter:none}}
+#field .unit.fspawn{animation:fspawn .45s ease-in both}
+#field .unit.fspawn::before{content:'';position:absolute;left:50%;bottom:-6px;width:80%;height:16px;margin-left:-40%;border-radius:50%;background:radial-gradient(ellipse,rgba(214,180,130,.95),rgba(214,180,130,0) 70%);animation:fpuff .4s ease-out both;animation-delay:calc(var(--d,0s) + .27s);pointer-events:none}
+@keyframes fspawn{0%{opacity:0;transform:translate(-50%,-165%)}25%{opacity:1}60%{transform:translate(-50%,-100%) scale(1.14,.84)}80%{transform:translate(-50%,-100%) scale(.96,1.05)}100%{opacity:1;transform:translate(-50%,-100%)}} /* 분홍·흰 번쩍 없이 떨어지듯 (2026-11-26 사용자) */
 @keyframes fpuff{0%{opacity:0;transform:scale(.3)}40%{opacity:1}100%{opacity:0;transform:scale(1.8)}}
 @keyframes foein{from{transform:translate(calc(-50% + var(--fw,720px)),-100%)}to{transform:translate(-50%,-100%)}}
 #field .unit.newin{animation:newin .6s steps(6) both}
@@ -2698,7 +2700,6 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 #evWin .mswords{width:24px;height:24px;display:block;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%2317141d' d='M0 0h3v1h1v1h1v1h2V2h1V1h1V0h3v3h-1v1h-1v1h-1v2h1v1h1v1h1v1h1v3H9v-1H8v-1H7V9H5v1H4v1H3v1H0V9h1V8h1V7h1V5H2V4H1V3H0z'/%3E%3Cpath fill='%23dfe6f0' d='M1 1h1v1h1v1h1v1h1v1h2V4h1V3h1V2h1V1h1v1h-1v1H9v1H8v1H7v2h1v1H7V7H5v1H4V7h1V5H4V4H3V3H2V2H1z'/%3E%3Cpath fill='%23c9892a' d='M2 8h2v2H2zM8 8h2v2H8zM1 10h1v1H1zM10 10h1v1h-1z'/%3E%3C/svg%3E") 0 0/24px 24px no-repeat;image-rendering:pixelated}
 /* 모닥불 룰렛: 밤 + 아래에서 비추는 주황 불빛 일렁임, 불씨. 빛줄기 없음 */
 #roul .rbox.camp .rstage{background:radial-gradient(70% 55% at 50% 100%,rgba(255,140,40,.55),transparent 70%),linear-gradient(#0f1224,#1d1626 60%,#2a1a18)!important}
-#roul .rbox.camp .rstage .rfx{display:none}
 #roul .rbox.camp .rstage::after{content:'';position:absolute;inset:6px;pointer-events:none;z-index:1;background:radial-gradient(3px 3px at 18% 80%,#ffb347 60%,transparent),radial-gradient(2px 2px at 32% 65%,#ffd27a 60%,transparent),radial-gradient(3px 3px at 71% 85%,#ff8a2a 60%,transparent),radial-gradient(2px 2px at 84% 55%,#ffb347 60%,transparent),radial-gradient(2px 2px at 60% 40%,#ffd27a 60%,transparent),radial-gradient(60% 40% at 50% 100%,rgba(255,120,30,.35),transparent);animation:campfx 1.4s steps(6) infinite}
 @keyframes campfx{0%{transform:translateY(6px);opacity:.65}50%{opacity:1}100%{transform:translateY(-10px);opacity:.65}}
 #roul .rbox.camp .rstrip{box-shadow:none!important} /* 2026-11-26 사용자: "이 주황색 외곽 이걸 없애 달라고 한 거였어" */
@@ -3804,18 +3805,18 @@ img.rimg{image-rendering:auto!important}
     el.style.setProperty('--sc', col || '#fff'); var near = !!stage.closest('.rbox.camp'), md = near ? 'c' : 'a'; if (el.firstChild && el.dataset.m === md) return; el.dataset.m = md; var n = 6, o = ''; /* 모닥불: 영웅 몸 가까이, 절반 (2026-11-26 사용자) */ /* 개수·빈도는 등급과 상관없이 같고 색만 다름. 결과 그림 왼쪽·위·오른쪽 반원, 단상 위로는 안 내려감 (2026-11-26 사용자) */
     for (var i = 0; i < n; i++){ var a = (i + Math.random() * .7) / n * Math.PI, f = Math.random(), x = 50 + Math.cos(a) * (near ? 19 + f * 9 : 32 + f * 16), y = 94 - Math.sin(a) * (near ? 44 + f * 14 : 80 + f * 10), sz = Math.random() < .45 ? 3 : 2, du = (1.6 + Math.random() * 1.4).toFixed(2), dl = (-Math.random() * 3).toFixed(2); o += '<s class="s' + sz + '" style="left:' + x.toFixed(1) + '%;top:' + y.toFixed(1) + '%;animation-delay:-' + (i * .4).toFixed(1) + 's"></s>'; }
     el.innerHTML = o; }
-  /* 룰렛 결과 = 아이콘 뒤 폭죽(2026-11-26 사용자: "아이콘 뒤에 폭죽 아래에서 위로 올라가며 터지듯"). 멈추면 3발 엇갈려, 그 뒤 2.4초에 한 발. 색은 모든 팝업 같은 축하 색 한 벌(흰 심지 + 분홍·하늘·연노랑, 어두운 1px 테두리) */
-  var FWC = ['#ff6fb5', '#59d6ff', '#fff27a', '#ffffff'];
+  /* 룰렛 결과 = 아이콘 뒤 폭죽(2026-11-26 사용자: "아이콘 뒤에 폭죽 아래에서 위로 올라가며 터지듯"). 멈추면 3발 엇갈려, 그 뒤 2.4초에 한 발. 색은 모든 팝업 같은 축하 색 한 벌(선명한 빨강·주황·노랑·하늘·초록, 어두운 1px 테두리) */
+  var FWC = ['#ff2d3f', '#ff8a00', '#ffe100', '#12b4ff', '#22d34a'];
   function fwShot(host){ var W = host.clientWidth, H = host.clientHeight; if (!W || !host.animate || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
     var x = W * (.28 + Math.random() * .44), y = H * (.16 + Math.random() * .22), put = function(cls, l, t, col){ var e = document.createElement('i'); e.className = cls; e.style.cssText = 'left:' + l + 'px;top:' + t + 'px;color:' + col; host.appendChild(e); return e; };
-    var r = put('fwr', x, y, '#ffffff'), turn = Math.random() * 4 | 0; r.animate([{ transform: 'translateY(' + (H - y - 20) + 'px)', opacity: .3 }, { transform: 'none', opacity: 1 }], { duration: 520, easing: 'cubic-bezier(.2,.6,.4,1)' }).onfinish = function(){ r.remove();
-      for (var i = 0; i < 8; i++){ (function(a){ var s = put('fws' + (i % 2 ? ' m' : ''), x, y, FWC[(i + turn) % 4]), d = i % 2 ? 17 : 26; s.animate([{ transform: 'none', opacity: 1 }, { transform: 'translate(' + Math.cos(a) * d * .8 + 'px,' + Math.sin(a) * d * .8 + 'px)', opacity: 1, offset: .45 }, { transform: 'translate(' + Math.cos(a) * d + 'px,' + (Math.sin(a) * d + 9) + 'px) scale(.5)', opacity: 0 }], { duration: 760, easing: 'ease-out' }).onfinish = function(){ s.remove(); }; })(i / 8 * 6.283); } }; }
+    var r = put('fwr', x, y, '#ffffff'), turn = Math.random() * 5 | 0; r.animate([{ transform: 'translateY(' + (H - y - 20) + 'px)', opacity: .3 }, { transform: 'none', opacity: 1 }], { duration: 520, easing: 'cubic-bezier(.2,.6,.4,1)' }).onfinish = function(){ r.remove();
+      for (var i = 0; i < 8; i++){ (function(a){ var s = put('fws' + (i % 2 ? ' m' : ''), x, y, FWC[(i + turn) % 5]), d = i % 2 ? 17 : 26; s.animate([{ transform: 'none', opacity: 1 }, { transform: 'translate(' + Math.cos(a) * d * .8 + 'px,' + Math.sin(a) * d * .8 + 'px)', opacity: 1, offset: .45 }, { transform: 'translate(' + Math.cos(a) * d + 'px,' + (Math.sin(a) * d + 9) + 'px) scale(.5)', opacity: 0 }], { duration: 760, easing: 'ease-out' }).onfinish = function(){ s.remove(); }; })(i / 8 * 6.283); } }; }
   function fwFx(stage, busy){ if (!stage) return; var host = stage.querySelector(':scope > .rfw');
     if (!host){ host = document.createElement('i'); host.className = 'rfw'; stage.insertBefore(host, stage.querySelector(':scope > .rpic, :scope > .dsrug') || null); }
     if (busy) host._busy = busy; if (host._t) return; var next = 0, quiet = true;
     host._t = setInterval(function(){ if (!host.isConnected){ clearInterval(host._t); host._t = 0; return; }
       if (!host.offsetParent || (host._busy && host._busy())){ quiet = true; return; } var now = Date.now();
-      if (quiet){ quiet = false; next = now + 2400; [0, 280, 620].forEach(function(d){ setTimeout(function(){ if (host.isConnected) fwShot(host); }, d); }); }
+      if (quiet){ quiet = false; next = now + 2400; (host.closest('.rl3,.rl4') ? [450, 730, 1070, 1400, 1650] : [450, 730, 1070]).forEach(function(d){ setTimeout(function(){ if (host.isConnected) fwShot(host); }, d); }); }
       else if (now >= next){ next = now + 2400; fwShot(host); } }, 150); }
   function rayFx(key){ var rb = $('roul').querySelector('.rbox'), t = lootTier(key); rb.classList.remove('rl1', 'rl2', 'rl3', 'rl4'); rb.classList.add('rl' + t); rb.style.setProperty('--gcol', GR(t).col); fwFx(rb.querySelector('.rstage'), function(){ return rb.classList.contains('spin') || rb.classList.contains('gwait'); }); } /* 뒤 빛줄기: 1등급 없음, 2등급 이상은 등급색, 높을수록 진하고 빠르게. 도는 중 칸이 바뀌면 같이 바뀜 */
   /* 룬 단상 (2026-11-26 사용자 확정): 영웅 도트와 같은 밀도(1칸 = P css px, 장치 px 정수배). 발 = 단상 윗끝에서 10.5칸 아래, 이름판은 단상 아래. 룬은 등급색으로 반짝 */
@@ -5196,8 +5197,8 @@ img.rimg{image-rendering:auto!important}
     var wl = document.createElement('i'); wl.className = 'whoosh'; fd.appendChild(wl); // 바람 줄
     setTimeout(function(){ fd.classList.remove('scrollin'); wl.remove(); // 휘리릭이 끝나면 다음 판 적이 그 자리에 생겨나요
       var alt0 = .35; fd.classList.add('gridin'); setTimeout(function(){ fd.classList.remove('gridin'); }, 400); /* 모든 판: 칸이 먼저 나타나요 */ if (fd.classList.contains('altstage')){ fd.classList.add('altshow'); setTimeout(function(){ fd.classList.remove('altshow', 'altstage'); }, 1300); } /* 제단: 칸 먼저, 배치는 뒤에 */
-      var nF = 0; fd.querySelectorAll('.unit:not([data-uid])').forEach(function(el, i){ nF = i + 1; el.style.animationDelay = (alt0 + i * .08) + 's'; el.classList.add('fspawn'); setTimeout(function(){ el.classList.remove('fspawn'); el.style.animationDelay = ''; }, 700 + i * 80); });
-      setTimeout(function(){ fd.classList.remove('padhold'); fd.classList.add('padshow'); setTimeout(function(){ fd.classList.remove('padshow'); }, 600); }, 900 + nF * 80); }, 700); /* 칸이 먼저 (.35초) 나온 뒤 발판 */
+      var nF = 0; [].slice.call(fd.querySelectorAll('.unit:not([data-uid])')).sort(function(a, b){ return a.offsetLeft - b.offsetLeft; }).forEach(function(el, i){ nF = i + 1; el.style.animationDelay = (alt0 + i * .1) + 's'; el.style.setProperty('--d', (alt0 + i * .1) + 's'); el.classList.add('fspawn'); setTimeout(function(){ el.classList.remove('fspawn'); el.style.animationDelay = ''; }, 900 + i * 100); });
+      setTimeout(function(){ fd.classList.remove('padhold'); fd.classList.add('padshow'); setTimeout(function(){ fd.classList.remove('padshow'); }, 600); }, 900 + nF * 100); }, 700); /* 칸이 먼저 (.35초) 나온 뒤 발판 */
     if (newHeroUid != null){ var ne = fd.querySelector('.unit[data-uid="' + newHeroUid + '"]'); newHeroUid = null; if (ne){ ne.classList.add('newin'); setTimeout(function(){ ne.classList.remove('newin'); }, 700); } } }
   var relSnap = null;
   function relicMap(){ var TS = teamSpec(), T2 = TS.map(function(sp){ return { slot: sp.slot, star: sp.star }; }), m = {}; (S.skills || []).forEach(function(s){ var RT = E.relicTargets(D, s.id, T2); if (RT) m[s.id] = RT.map(function(i){ return TS[i].tuid; }); }); return m; }
@@ -5239,7 +5240,7 @@ img.rimg{image-rendering:auto!important}
     if (b.dataset.evleave){ S.evOffer = null; save(); $('evWin').hidden = true; renderAll(); tryWinAfter(); return; }
     if (b.dataset.evmerc){ if (S.gold < o.price) return; S.gold -= o.price; S.evOffer = null; recruitFrom(o.id); save();
       var done = function(){ $('evWin').hidden = true; renderAll(); tryWinAfter(); }; if (S.pending){ done(); return; }
-      this.querySelectorAll('button').forEach(function(x){ x.disabled = true; }); fwFx(this.querySelector('.rstage')); setTimeout(done, 1900); return; }
+      this.querySelectorAll('button').forEach(function(x){ x.disabled = true; }); fwFx(this.querySelector('.rstage')); setTimeout(done, 2400); return; }
   });
   var offerIds = [];
   function takeMobLoot(){ var L = S.mobPend || [], g0 = S.gold; S.mobPend = null; L.forEach(grantLoot);
