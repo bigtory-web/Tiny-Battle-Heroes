@@ -3000,6 +3000,9 @@ img.rimg{image-rendering:auto!important}
 #tab-shop .srow2 .stile.lockd{background:linear-gradient(#08070b 0 3px,#0e0c13 3px 6px,#131019 6px calc(100% - 3px),#2e2938 calc(100% - 3px))!important;box-shadow:inset 3px 0 0 #08070b,inset -2px 0 0 #2a2533!important}
 #tab-shop .stile.lockd em{color:#f3e6c4!important}
 /* 규칙: 빈 칸은 주변 바탕보다 늘 더 어둡게, "+"는 옅게 (2026-11-26 사용자: "이건 규칙이야") */
+#field .vsmark{width:var(--vsw,64px)!important;height:var(--vsh,48px)!important} #field .vsmark img{width:var(--vsw,64px)!important;height:var(--vsh,48px)!important;image-rendering:pixelated!important;animation-name:vsbob3!important} @keyframes vsbob3{50%{transform:translateY(calc(-2 * var(--dp,.75px)))}} /* 흐림 고침: 정수배 도트 (2026-11-26) */
+/* 용 버튼을 유물 칸 크기에 맞춤: 아이콘 36(원본 24의 정수배) (2026-11-26 사용자: "스킬만큼 작게") */ #bellBtn.bell .cbox{width:44px!important;height:56px!important;gap:1px!important} #bellBtn.bell .bic,#bellBtn.bell .bic img{width:36px!important;height:36px!important;line-height:36px!important;font-size:26px!important} #bellBtn.bell .bic img{image-rendering:pixelated!important} #bellBtn.bell .bdots i{width:9px!important;height:9px!important} #bellBtn.bell.inbt .cbox{width:auto!important;height:32px!important;padding:0 4px!important} #bellBtn.bell.inbt .bic,#bellBtn.bell.inbt .bic img{width:24px!important;height:24px!important;line-height:24px!important}
+#shopBuy .bp b.no,#shopBuy:disabled .bp b.no{color:#ff8a80!important} /* 모자라면 버튼 값도 빨강 */
 .bagcol .chip.bagempty,.lbag .chip.bagempty{background-color:#140c06!important;box-shadow:inset 0 0 0 1px #4a2f1a,0 0 0 1px #17141d!important} .lbag .chip.bagempty,.bagcol .chip.bagempty{background-image:linear-gradient(#8a6a48,#8a6a48),linear-gradient(#8a6a48,#8a6a48)!important;background-position:center!important;background-repeat:no-repeat!important;background-size:18px 4px,4px 18px!important}
 #skA .skc.empty,#skE .skc.empty,#skA i.skc.empty{background:#0b090f!important;box-shadow:inset 0 0 0 1px #2e2938,0 0 0 1px #17141d!important;opacity:.92!important}
 /* 미믹킹: 보라 52칸 */
@@ -3238,7 +3241,7 @@ img.rimg{image-rendering:auto!important}
      소수 배율(1.81배, 0.907배 등)에서 pixelated로 그리면 점 크기가 들쭉날쭉하거나 줄이 빠져서 깨져 보임. N은 화면에 그려지는 크기(무대 배율×dpr 포함)에 맞춰 2~6배.
      새로 생기는 img(화면을 다시 그릴 때)와 src가 바뀌는 img도 따라가요. (2026-11-25 기획 세션 요청) */
   var SMc = {};
-  function smoothImg(im){ if (im.dataset.sm) return; var src = im.currentSrc || im.src; if (!src || src.indexOf('data:') === 0 || src.indexOf('img/') < 0) return;
+  function smoothImg(im){ if (im.dataset.sm || im.hasAttribute('data-raw')) return; /* data-raw = 정수배 도트 그대로 */ var src = im.currentSrc || im.src; if (!src || src.indexOf('data:') === 0 || src.indexOf('img/') < 0) return;
     if (!im.complete || !im.naturalWidth){ if (!im._smw){ im._smw = 1; im.addEventListener('load', function(){ im._smw = 0; smoothImg(im); }, { once: true }); } return; }
     var nw = im.naturalWidth, nh = im.naturalHeight; if (nw > 72 || nh > 72) return;
     var cs = getComputedStyle(im); if (cs.imageRendering !== 'pixelated' && cs.imageRendering !== 'crisp-edges') return;
@@ -3267,7 +3270,7 @@ img.rimg{image-rendering:auto!important}
   /* 화면 = 기준 640×360을 정수배로 (2026-11-26 사용자: 640×360). 판은 960×540으로 설계해 배율 = 정수 × 2/3. 화면 점(dpr 곱) 기준, 남는 곳은 빈 띠. 캐릭터 1점 = 화면 정수 점이 늘 지켜져 UI와 비율이 같아요. 예전: 창의 85%로 부드럽게 */
   var STAGE_N = 1; /* 판 정수배: 캐릭터·단상 크기는 이 값에만 비례 */
   function fitStage(){ var app = document.querySelector('.app'); if (!app) return; var sw = window.innerWidth, sh = window.innerHeight, dpr = window.devicePixelRatio || 1; if (!sw || !sh) return;
-    var n = Math.max(1, Math.floor(Math.min(sw * dpr / 640, sh * dpr / 360) + .001)), k = n * 2 / 3 / dpr; STAGE_N = n; var snap = function(v){ return Math.max(0, Math.round(v * dpr) / dpr); };
+    var n = Math.max(1, Math.floor(Math.min(sw * dpr / 640, sh * dpr / 360) + .001)), k = n * 2 / 3 / dpr; STAGE_N = n; var rt = document.documentElement.style, du = 3 / (2 * n), vm = Math.round(4 * n / 3); rt.setProperty('--dp', du + 'px'); rt.setProperty('--vsw', 32 * vm * du + 'px'); rt.setProperty('--vsh', 24 * vm * du + 'px'); /* VS = 원본 32x24의 정수배 */ var snap = function(v){ return Math.max(0, Math.round(v * dpr) / dpr); };
     app.style.transform = 'scale(' + k + ')'; app.style.left = snap((sw - 960 * k) / 2) + 'px'; app.style.top = snap((sh - 540 * k) / 2) + 'px';
     var rh = document.getElementById('rotateHint'); if (rh) rh.hidden = !(sh > sw); }
   window.addEventListener('resize', fitStage); fitStage();
@@ -3680,7 +3683,7 @@ img.rimg{image-rendering:auto!important}
     }
     setTimeout(function(){ drawFieldBars(fbars); }, 0);
     function padPos(i){ var p = POS.A[i], u = S.team[i], cp = u && S.pos && S.pos[u]; return cp ? [cp.x, cp.y] : [p[0], p[1]]; }
-    var vsHtml = noFight() || isLvPick() || isFork() ? '' : '<b class="vsmark" style="left:50%;top:' + (100 * (74 + OFF + FOOT) / H) + '%"><img class="vsv" src="img/p/ui_vs_v.png" alt=""><img class="vss" src="img/p/ui_vs_s.png" alt="V S"></b>'; /* 배치 화면(전투 판)만, 전투가 시작되면 tilesHtml째 빠져요 */
+    var vsHtml = noFight() || isLvPick() || isFork() ? '' : '<b class="vsmark" style="left:50%;top:' + (100 * (74 + OFF + FOOT) / H) + '%"><img class="vsv" data-raw="1" src="img/p/ui_vs_v.png" alt=""><img class="vss" data-raw="1" src="img/p/ui_vs_s.png" alt="V S"></b>'; /* 배치 화면(전투 판)만, 전투가 시작되면 tilesHtml째 빠져요 */
     var tilesHtml = bt ? '' : vsHtml + '<i class="hexg" style="background-image:url(' + hexURL(PK().field + (isLvPick() ? 'lv1' + lvKind() : isFork() ? 'fork' : isAltar() ? 'alt' : 'ev'), hexCells().A.map(function(c){ return cellUid(c) ? 1 : 0; }).join('') + hexCells().E.map(function(c){ return !scrollPend && !noFight() && st.team.some(function(u){ var p = FP[u.slot]; return p && p[0] === c[0] && p[1] === c[1]; }) ? 1 : 0; }).join('')) + ')"></i>' + (scrollPend || noFight() ? '' : st.team.filter(function(u){ return u.boss && FP[u.slot]; }).map(function(u){ var q = FP[u.slot]; return '<i class="pad dais" style="left:' + (100 * zx(q[0]) / W) + '%;top:' + (100 * (zy(q[1]) + OFF + FOOT) / H) + '%;background-image:url(' + DAISURL + ')" data-tipt="보스 단상" data-tiptx="' + daisDesc() + '"></i>'; }).join(''));
     function cellStyle(k){ var q = k.split(','); return 'left:' + (100 * zx(q[0]) / W) + '%;top:' + (100 * (zy(+q[1]) + OFF + FOOT) / H) + '%'; }
     var PD = S.pads || {}, padsHtml = bt ? '' : Object.keys(PD).filter(function(k){ return k.indexOf(',') > 0; }).map(function(k){ return '<i class="pad' + (padNew === k ? ' nw' : '') + '" style="' + cellStyle(k) + ';background-image:url(' + padURL(PD[k]) + ')"' + padTipAttr(PD[k]) + '></i>' + (padNew === k ? '<i class="rugw" style="' + cellStyle(k) + '"><i></i><u></u></i>' : ''); }).join('') +
@@ -5533,7 +5536,7 @@ img.rimg{image-rendering:auto!important}
       if (shopSel.t === 'merch'){ var wm = merchOffer(), im = wm && wm.stock[shopSel.i]; if (im){ cur = im.price; isM = im.cur === 'mana'; if (im.base > im.price) was = im.base; } }
       else if (shopSel.t === 'hero'){ var hh = (S.shop.heroes || [])[shopSel.i]; if (hh) cur = hh.price; }
       else { var sid = S.shop.stock[shopSel.i]; if (sid){ var pc = (S.shop.sold.indexOf(shopSel.i) >= 0 && (S.shop.soldCost || {})[shopSel.i]) || buyPrice(sid); isM = pc.mana > 0; cur = isM ? pc.mana : pc.gold; } }
-      bt.innerHTML = '<span class="bl">구매</span>' + (cur == null ? '' : '<span class="bp">' + (was ? '<s>' + was.toLocaleString() + '</s>' : '') + (isM ? manaIcon('mni') : gi) + '<b' + (was ? ' class="deal"' : '') + '>' + cur.toLocaleString() + '</b></span>') + (shopSel.t === 'merch' && im && im.off ? '<i class="boff">' + im.off + '%</i>' : ''); } }
+      bt.innerHTML = '<span class="bl">구매</span>' + (cur == null ? '' : '<span class="bp">' + (was ? '<s>' + was.toLocaleString() + '</s>' : '') + (isM ? manaIcon('mni') : gi) + '<b class="' + (was ? 'deal ' : '') + ((isM ? (S.mana || 0) : S.gold) < cur ? 'no' : '') + '">' + cur.toLocaleString() + '</b></span>') + (shopSel.t === 'merch' && im && im.off ? '<i class="boff">' + im.off + '%</i>' : ''); } }
   function _rsiCore(){
     var nm = $('shopName'), ds = $('shopDesc'), bt2 = $('shopBuy'), mine = S.skills;
     $('shopInfo').hidden = false; // 상점 창 안 고정 칸
@@ -5953,7 +5956,7 @@ img.rimg{image-rendering:auto!important}
     b.style.setProperty('--rg', GR(n + 1).col); /* 기본 일반 · 1 고급 · 2 희귀 · 3 전설 (팁 테두리와 같음) */
     b.hidden = (!bt && noFight()) || bStg >= E.stageCount(D) || !!(bEv && (bEv.kind === 'mobs' || bEv.kind === 'mimic' || bEv.kind === 'oddeven')); b.className = 'bell b' + n + (mx ? '' : ' lock') + (bt ? ' inbt' : ''); b.disabled = !mx;
     var up = b.dataset.n != null && n > +b.dataset.n; b.dataset.n = n; var bic = b.querySelector('.bic'); if (up && bic.animate) bic.animate([{ transform: 'scale(1.5) translateY(-4px)' }, { transform: 'scale(.92)' }, { transform: 'none' }], { duration: 320, easing: 'ease-out' });
-    bic.innerHTML = im ? '<img src="img/p/ui_foe' + Math.max(1, n) + '.png" alt="">' : '🔔';
+    bic.innerHTML = im ? '<img data-raw="1" src="img/p/ui_foe' + Math.max(1, n) + '.png" alt="">' : '🔔';
     b.querySelector('.bdots').innerHTML = [1, 2, 3].slice(0, mx).map(function(i){ return '<i' + (i <= n ? ' class="on"' : '') + '></i>'; }).join('');
     var bg1 = E.bellGold ? E.bellGold(D, S.stage, n, n + 1, plv()) : 0, nx = b.querySelector('.bnext');
     // 다음 1번 울릴 때 생기는 효과만 한 줄로 (다 울렸으면 숨김)
