@@ -528,12 +528,12 @@
   // owned(가진 스킬)를 주면 가진 스킬은 등급업 값으로 쳐요. price는 그 재화의 값이에요
   function merchantOff(data, plv) { var P = data.player, M = data.events.merchant; return P && P.merchantOff ? P.merchantOff[Math.max(0, Math.min((plv || 1) - 1, P.merchantOff.length - 1))] : Math.round((1 - (M.discount != null ? M.discount : (M.priceMul || 1))) * 100); } // 방랑상인 할인율(%)
   function merchantPrice(data, v, plv) { var M = data.events.merchant, d = 1 - merchantOff(data, plv) / 100; return v > 0 ? Math.max(M.minPrice || 1, Math.round(v * d)) : 0; }
-  function rollMerchant(data, n, rnd, plv, owned) { var M = data.events.merchant, out = [];
+  function rollMerchant(data, n, rnd, plv, owned) { var M = data.events.merchant, out = [], PL = data.player, li = Math.max(0, (plv || 1) - 1), nH = PL && PL.merchantHeroes ? PL.merchantHeroes[Math.min(li, PL.merchantHeroes.length - 1)] : M.heroes, nS = PL && PL.merchantSlots ? PL.merchantSlots[Math.min(li, PL.merchantSlots.length - 1)] - nH : M.skills; /* 2026-11-26: 상품 수가 플레이어 레벨 따라 */
     var sk = skillPool(data).filter(function (x) { return (x.grade || 1) >= M.minGrade && canTake(data, owned || [], x.id, 999); }).map(function (x) { return x.id; });
-    for (var i = 0; i < M.skills && sk.length; i++) { var id = sk.splice(Math.floor(rnd() * sk.length), 1)[0], bp = skillBuyPrice(data, id, n, owned || []), g = merchantPrice(data, bp.gold, plv), mn = bp.gold > 0 ? 0 : merchantPrice(data, bp.mana);
+    for (var i = 0; i < nS && sk.length; i++) { var id = sk.splice(Math.floor(rnd() * sk.length), 1)[0], bp = skillBuyPrice(data, id, n, owned || []), g = merchantPrice(data, bp.gold, plv), mn = bp.gold > 0 ? 0 : merchantPrice(data, bp.mana);
       out.push({ type: 's', id: id, gold: g, mana: mn, price: g || mn, cur: g ? 'gold' : 'mana' }); }
     var gotH = [];
-    for (var j = 0; j < M.heroes; j++) { var hid = pickHeroByGrade(data, rnd, (plv || 1) + 2, gotH), hp = merchantPrice(data, M.heroPrice * heroGrade(data, hid) * Math.pow(data.shop.priceGrowth, n), plv); gotH.push(hid);
+    for (var j = 0; j < nH; j++) { var hid = pickHeroByGrade(data, rnd, (plv || 1) + 2, gotH), hp = merchantPrice(data, M.heroPrice * heroGrade(data, hid) * Math.pow(data.shop.priceGrowth, n), plv); gotH.push(hid);
       out.push({ type: 'h', id: hid, gold: hp, mana: 0, price: hp, cur: 'gold' }); } // 상인은 레벨 +2 확률로 조금 더 좋은 영웅
     return out; }
   function merchantNoBattle(data) { var M = data.events && data.events.merchant; return !!(M && M.battle === false); }
