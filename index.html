@@ -5551,7 +5551,7 @@ img.rimg{image-rendering:auto!important}
     var lines = '', nodes = '';
     vis.forEach(function(id){ var it = all[id], N = it.N, b = at(id), n = Math.min(up.nodes[id] || 0, N.cost.length), max = n >= N.cost.length, can = !max && up.medals >= N.cost[n];
       (N.req || []).forEach(function(q){ if (all[q] && vis.indexOf(q) >= 0){ var a = at(q); lines += '<path d="M' + a[0] + ' ' + a[1] + (a[0] === b[0] || a[1] === b[1] ? 'L' + b[0] + ' ' + b[1] : 'V' + (b[1] - CH2 / 2) + 'H' + b[0] + 'V' + b[1]) + '"' + (n ? ' class="on"' : '') + '/>'; /* 가로·세로만 */ } });
-      nodes += '<button type="button" class="upn' + (max ? ' max' : can ? ' can' : '') + (n ? '' : ' zero') + '" data-upn="' + id + '" style="--uc:' + UPCOL[it.L.id] + ';left:' + b[0] + 'px;top:' + b[1] + 'px"><span>' + (it.L.job ? N.name : N.name.replace(' +1', '')) + '</span>' + (N.cost.length > 1 ? '<em>' + n + '</em>' : '') + '</button>'; });
+      nodes += '<button type="button" class="upn' + (max ? ' max' : can ? ' can' : '') + (n ? '' : ' zero') + '" data-upn="' + id + '" style="--uc:' + UPCOL[it.L.id] + ';left:' + b[0] + 'px;top:' + b[1] + 'px"><span>' + (it.L.job ? N.name : N.name.replace(' +1', '')) + '</span>' + (N.cost.length > 1 && n ? '<em>' + n + '</em>' : '') + '</button>'; });
     var W = 10 * CW, H = 8 * CH2;
     var web = '<div class="upmap" style="width:' + W + 'px;height:' + H + 'px"><svg width="' + W + '" height="' + H + '">' + lines + '</svg>' + nodes + '</div>';
     var per = (M.totalLv || {}).per || 5, ex = E.metaExp(D, up), lv = E.metaLevel(D, up), un = ((M.totalLv || {}).unlock || {})[lv + 1];
