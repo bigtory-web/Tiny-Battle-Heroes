@@ -3225,8 +3225,9 @@ img.rimg{image-rendering:auto!important}
   new MutationObserver(function(ms){ ms.forEach(function(m){ if (m.type === 'attributes'){ var el = m.target; if (el.style && el.style.backgroundImage && el.style.backgroundImage.indexOf('image-set') < 0){ delete el.dataset.smb; smoothInline(el); } } else m.addedNodes.forEach(function(n){ if (n.nodeType === 1) smoothInlineAll(n); }); }); }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
   setTimeout(function(){ smoothCssRules(); smoothInlineAll(document.body); }, 0);
   /* 화면 = 기준 640×360을 정수배로 (2026-11-26 사용자: 640×360). 판은 960×540으로 설계해 배율 = 정수 × 2/3. 화면 점(dpr 곱) 기준, 남는 곳은 빈 띠. 캐릭터 1점 = 화면 정수 점이 늘 지켜져 UI와 비율이 같아요. 예전: 창의 85%로 부드럽게 */
+  var STAGE_N = 1; /* 판 정수배: 캐릭터·단상 크기는 이 값에만 비례 */
   function fitStage(){ var app = document.querySelector('.app'); if (!app) return; var sw = window.innerWidth, sh = window.innerHeight, dpr = window.devicePixelRatio || 1; if (!sw || !sh) return;
-    var n = Math.max(1, Math.floor(Math.min(sw * dpr / 640, sh * dpr / 360) + .001)), k = n * 2 / 3 / dpr, snap = function(v){ return Math.max(0, Math.round(v * dpr) / dpr); };
+    var n = Math.max(1, Math.floor(Math.min(sw * dpr / 640, sh * dpr / 360) + .001)), k = n * 2 / 3 / dpr; STAGE_N = n; var snap = function(v){ return Math.max(0, Math.round(v * dpr) / dpr); };
     app.style.transform = 'scale(' + k + ')'; app.style.left = snap((sw - 960 * k) / 2) + 'px'; app.style.top = snap((sh - 540 * k) / 2) + 'px';
     var rh = document.getElementById('rotateHint'); if (rh) rh.hidden = !(sh > sw); }
   window.addEventListener('resize', fitStage); fitStage();
@@ -3583,7 +3584,7 @@ img.rimg{image-rendering:auto!important}
   var QC = { t: -1e9, cs: 1 };
   function sApp(){ var a = document.querySelector('.app'); return a ? a.getBoundingClientRect().width / 960 || 1 : 1; }
   function devPerUnit(){ if (bt && csB) return csB; var now = performance.now(); if (now - QC.t > 250){ var f = $('field'), w = f ? f.clientWidth : 0; QC.cs = w ? w * sApp() / 720 * (window.devicePixelRatio || 1) : (window.devicePixelRatio || 1); QC.t = now; } return QC.cs; }
-  function qKauto(){ return Math.max(1, Math.round(79 * uScale() * devPerUnit() / 64)); } /* 가장 가까운 정수배 (2026-11-25 사용자: 2배. 1920×950에서 r 2.34 -> k 2) */
+  function qKauto(){ return STAGE_N * Math.max(1, Math.round(79 * uScale() * devPerUnit() / 64 / STAGE_N)); } /* 640×360 기준에서 정수배를 정하고 판 배수를 곱함: 창이 달라도 캐릭터:UI 비율이 같음 (화면 구조 2단계, 2026-11-26) */
   function unitPct(){ var p = S && S.ui && S.ui.unitPct; return p >= -50 && p <= 50 ? p : 0; } /* 도구 탭에서 고른 자동 크기 대비 % (−30~+30, 0이면 정수배 그대로) */
   function qR(){ return unitPx(false) * devPerUnit() / 64; } /* 원본 1px이 장치 px 몇 개인지(소수 가능) */
   function qN(){ var r = qR(); return Math.abs(r - Math.round(r)) < .02 ? Math.max(1, Math.round(r)) : Math.max(2, Math.ceil(r) + 1); } /* 외곽선 그림을 키울 정수배: 정수 크기면 그 배율, 아니면 한 단계 위(부드럽게 줄임) */
@@ -3819,7 +3820,7 @@ img.rimg{image-rendering:auto!important}
     box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); box.querySelector('.rbox').classList.toggle('camp', S.offerMode === 'camp'); box.querySelector('.rbox').classList.toggle('vic', !S.offerMode); /* 전투 승리 */ box.querySelector('.rbox').classList.toggle('fairy', S.offerMode === 'fairy'); if (S.offerMode === 'fairy') fairyDeco(box.querySelector('.rstage')); if (S.offerMode === 'groll') bulbDeco(box.querySelector('.rstage')); box.querySelector('.rbox').classList.toggle('groll', S.offerMode === 'groll'); rayFx(key); if (!box.classList.contains('chestpop')) pedestal(box.querySelector('.rstage'), GR(lootTier(key)).col); $('rUp').hidden = !upOK(key);
     pic.style.imageRendering = p.type === 'h' && IMGS[p.id] ? 'pixelated' : '';
     var rk = qN(), rq = { k: rk, css: 66 * qR() / (sApp() * (window.devicePixelRatio || 1)) };
-    var lm = Math.max(2, Math.round(qR() * 64 * .8 / 24)); document.documentElement.style.setProperty('--rlq', (24 * lm / (sApp() * (window.devicePixelRatio || 1))).toFixed(2) + 'px'); /* 유물·골드 그림도 영웅과 같은 크기(영웅이 칸에서 차지하는 높이 약 80%), 24px 원본의 정수배 장치 px */ document.documentElement.style.setProperty('--rpq', (p.type === 'h' && IMGS[p.id] ? rq.css : 114) + 'px'); rpAnim.nk = p.type === 'h' ? rq.k : 0; OUTLN = rpAnim.nk;
+    var lm = 2 * STAGE_N; document.documentElement.style.setProperty('--rlq', (24 * lm / (sApp() * (window.devicePixelRatio || 1))).toFixed(2) + 'px'); /* 유물·골드 그림도 영웅과 같은 크기(영웅이 칸에서 차지하는 높이 약 80%), 24px 원본의 정수배 장치 px */ document.documentElement.style.setProperty('--rpq', (p.type === 'h' && IMGS[p.id] ? rq.css : 114) + 'px'); rpAnim.nk = p.type === 'h' ? rq.k : 0; OUTLN = rpAnim.nk;
     if (p.type === 'h'){ var id = p.id; pic.innerHTML = IMGS[id] ? '' : AV[id]; pic.style.backgroundImage = IMGS[id] ? 'url(' + outlinedURL(id, NOLINE) + ')' : 'none'; pic.style.setProperty('--gc', gc(id)); if (IMGS[id]){ pic.style.setProperty('--o1', 'url(' + outlinedURL(id, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(id, '#ffffff') + ')'); } OUTLN = 0; /* 결과가 뜨면 외곽선 파랑↔흰색 */ pic.classList.remove('loot'); }
     else { pic.style.backgroundImage = 'none'; pic.innerHTML = p.type === 'g' && !box.classList.contains('chestpop') ? '<img class="gbag" data-smb="1" src="img/p/ui_goldbag.png" alt="">' : lootIcon(key); pic.classList.add('loot'); } pic.classList.toggle('gold', p.type === 'g' && !box.classList.contains('chestpop'));
     rpAnim.id = p.type === 'h' && ANIM_IDS.indexOf(p.id) >= 0 ? p.id : null; /* 프레임 시트 영웅은 룰렛 큰 그림도 대기 1~4 반복 */
