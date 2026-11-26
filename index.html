@@ -3120,7 +3120,7 @@ img.rimg{image-rendering:auto!important}
     <div class="camp3">
       <aside class="lbag" id="lbag"><div class="ubagbox"><div class="bagcol bagdrawer open ubag" id="bagDrawer"><div class="bagin"><div class="roster" id="roster"></div></div></div></div></aside>
       <div class="mid">
-        <div class="hud" id="hud"><span class="it hudbag" title="백팩"><img class="hi" src="img/p/hud_bag.png" alt=""></span><span class="hudits" id="hudItems"></span><span class="hudbtns"><button class="hbtn" id="spdBtn" type="button" title="배속"><span class="spem">⏩</span>X1.5</button><button class="hbtn" id="skipBtn" type="button" title="건너뛰기" disabled>스킵</button><button class="hbtn" id="punchBtn" type="button" title="원펀치(시험용): 이번 스테이지를 승리로 처리">원펀치</button><button class="hbtn" id="jumpBtn" type="button" title="스테이지 이동(시험용): 고르면 바로 그 판 편성 화면">이동 ▾</button></span><span class="hudits" id="hudStg"></span></div>
+        <div class="hud" id="hud"><span class="it hudbag" title="백팩"><img class="hi" src="img/p/hud_bag.png" alt=""></span><span class="hudits" id="hudItems"></span><span class="hudbtns"><button class="hbtn" id="spdBtn" type="button" title="배속 (Q)"><span class="spem">⏩</span>X1.5</button><button class="hbtn" id="skipBtn" type="button" title="건너뛰기 (W)" disabled>스킵</button><button class="hbtn" id="punchBtn" type="button" title="원펀치(시험용): 이번 스테이지를 승리로 처리 (E)">원펀치</button><button class="hbtn" id="jumpBtn" type="button" title="스테이지 이동(시험용): 고르면 바로 그 판 편성 화면">이동 ▾</button></span><span class="hudits" id="hudStg"></span></div>
         <div class="arena" id="arena"><div class="dps a" id="dpsA" hidden><div class="dpsh" data-dps="A"><b>우리 DPS</b></div><div class="dpsb"></div></div><div class="dps e" id="dpsE" hidden><div class="dpsh" data-dps="E"><b>상대 DPS</b></div><div class="dpsb"></div></div><div class="evban" id="evBan" hidden></div><div class="evmerch" id="evMerch" hidden></div><div class="hinfo left" id="hinfo" hidden></div>
           <div class="evdock" id="evDock" hidden><button class="edtab" id="edTab" type="button">이벤트</button><div class="edbody"><div class="edfe" title="0이면 평소 확률, N이면 스테이지 N개마다 이벤트 스테이지가 꼭 나와요"><button id="edFeDown" type="button">−</button><b id="edFe">간격 0</b><button id="edFeUp" type="button">+</button></div><div class="edlist" id="edList"></div></div></div><div class="field" id="field"></div>
           <canvas id="cv" width="720" height="400" aria-label="전투 화면" hidden></canvas><div id="amb" aria-hidden="true"></div>
@@ -3706,7 +3706,7 @@ img.rimg{image-rendering:auto!important}
       return '<button class="chip' + (li >= BM ? ' over' : '') + '" data-uid="' + u.uid + '" data-id="' + u.id + '" title="' + h.name + '" style="--el:' + ELC[h.el] + ';--gcol:' + g.col + '">' + av(u.id) + starsIn(u.star, u.id, isTr(u)) + '</button>';
     }).join('') + (function(){ var e = ''; for (var i = list.length; i < bagMax(); i++) e += '<i class="chip bagempty"></i>'; return e; })() + lockedBag(Math.max(list.length, BM));
     var used = usedCost(), c = cap();
-    var over = false; /* 출전 코스트 제도는 없어요. 출전 제한은 전장 칸 수(PK().field)뿐 */ $('fightBtn').disabled = done || teamSpec().length === 0 || !!S.pending || !!S.offer || !!S.padPend || over; $('fightBtn').textContent = '전투 시작'; /* 늘 원래 글자, 못 누르면 회색만 (예전: 캠페인 완료·발판 깔기·전리품을 먼저 정해 주세요·백팩에서 버릴 것을 골라 주세요) */
+    var over = false; /* 출전 코스트 제도는 없어요. 출전 제한은 전장 칸 수(PK().field)뿐 */ $('fightBtn').disabled = done || teamSpec().length === 0 || !!S.pending || !!S.offer || !!S.padPend || over; $('fightBtn').textContent = '전투 시작'; $('fightBtn').title = '전투 시작 (Space)'; /* 늘 원래 글자, 못 누르면 회색만 (예전: 캠페인 완료·발판 깔기·전리품을 먼저 정해 주세요·백팩에서 버릴 것을 골라 주세요) */
     if (noFight()){ $('fightBtn').disabled = !!S.offer || !!S.pending || (isOddEven() && oeBusy) || altBusy || (isCamp() && !S.units.length); $('fightBtn').innerHTML = '<img class="exi" src="img/p/ui_exit.png" alt="떠나기">'; $('fightBtn').title = '떠나기'; } if ($('fightBtn').disabled && !done && (!!S.offer || !!S.pending || !!S.padPend || (isOddEven() && oeBusy) || altBusy || !$('roul').hidden)) /* 진행 중이어도 글자 그대로 회색 (2026-11-24) */ $('fightBtn').classList.toggle('busyhide', $('fightBtn').disabled && $('fightBtn').textContent.trim() === '진행 중'); /* 진행 중이면 숨김 */ updEvActs(); /* 영웅이 하나도 없는 첫 모닥불은 먼저 말 걸기 */ /* 이벤트 판: 전투 시작은 꺼 두고 말 걸기·떠나기는 오른쪽 위 버튼으로 */
     $('fightBtn').style.visibility = isFork() || isLvPick() ? 'hidden' : '';
     renderPending(); renderHud();
@@ -4449,6 +4449,14 @@ img.rimg{image-rendering:auto!important}
       var r = b.getBoundingClientRect(); L.style.top = (r.bottom + 4) + 'px'; L.style.left = Math.max(4, Math.min(r.left, innerWidth - L.offsetWidth - 4)) + 'px'; });
     L.addEventListener('click', function(e){ var t = e.target.closest('[data-jump]'); if (t) jumpStage(+t.dataset.jump); });
     document.addEventListener('pointerdown', function(e){ if (!L.hidden && !L.contains(e.target) && !b.contains(e.target)) L.hidden = true; }, true); })();
+  /* 단축키 (2026-11-26 사용자): 스페이스=전투 시작, Q 배속, W 스킵, E 원펀치. 회색·숨김 버튼은 안 먹고, 창이 떠 있으면 전투를 시작하지 않음 */
+  function keyWinOpen(){ return shopOpen() || ['hinfo', 'roul', 'chestPop', 'mimicPop', 'mobLoot', 'bagOver', 'evWin', 'lvPop', 'res', 'resPop', 'trWin', 'dsWin', 'jumpList'].some(function(id){ var x = $(id); return x && !x.hidden && x.getClientRects().length > 0; }) || !!document.querySelector('.gover:not([hidden])'); }
+  document.addEventListener('keydown', function(e){ var id = { Space: 'fightBtn', KeyQ: 'spdBtn', KeyW: 'skipBtn', KeyE: 'punchBtn' }[e.code], t = e.target;
+    if (!id || e.ctrlKey || e.metaKey || e.altKey || (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)))) return;
+    e.preventDefault(); if (t && t.tagName === 'BUTTON') t.blur(); if (e.repeat) return; /* 방금 누른 버튼이 스페이스로 또 눌리지 않게 */
+    var b = $(id); if (b.disabled || !b.getClientRects().length || getComputedStyle(b).visibility === 'hidden') return;
+    if ((id === 'fightBtn' && (bt || noFight() || keyWinOpen())) || (id === 'punchBtn' && !bt && keyWinOpen())) return;
+    b.click(); });
   $('skipBtn').addEventListener('click', function(){ if (!bt || done) return; closeInspect(); skipNow = true; while (!bt.result) bt.step(); for (var j = logI; j < bt.log.length; j++) if (bt.log[j].kind === 'die') killXp(bt.log[j].uid, true); logI = bt.log.length; done = true; draw(0); finishBattle(); });
 
   var tpw = null;
