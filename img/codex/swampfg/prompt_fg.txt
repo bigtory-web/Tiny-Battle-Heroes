@@ -1,0 +1,17 @@
+Look at:
+- img/p/bg_swamp.png : the swamp battle field background of our pixel art game (teal sky and water, green mangrove foliage, brown trunks, olive-brown mud ground, small teal puddles).
+- img/p/fg_field.png : the foreground strip we made for chapter 1 (meadow). Use the SAME layout and height, but with swamp things.
+
+Generate ONE new image with your image generation tool and save it as img/codex/swampfg/fg_raw.png.
+
+Make a SWAMP FOREGROUND decoration strip that will be overlaid at the very bottom edge of the swamp background, IN FRONT of the characters, to add depth. Chunky pixel art with clear square pixels, flat cel shading, dark green/brown outlines, same palette family as the swamp background but darker and richer (it is closer to the camera).
+
+Composition (very wide, very low strip):
+- Spans the FULL width from the left edge to the right edge and sits on the BOTTOM edge of the image.
+- LEFT CORNER and RIGHT CORNER are tall clumps: cattail reeds, big broad swamp leaves, ferns, mossy dark gray-green rocks, a gnarled mangrove root, a few small pale mushrooms. Their height is about 11 percent of the image width.
+- Toward the CENTER it gets much lower: the middle half of the width has only a few very low sparse swamp grass tufts, a tiny lily leaf or pebble, height under 3 percent of the image width, with gaps, so characters standing behind stay fully visible.
+- Left and right corners are different from each other (not mirrored).
+- Everything is cut off naturally by the bottom edge (no ground slab, no water band, no dirt background).
+
+[Format] Plain solid #FF00FF magenta everywhere except the plants, roots and rocks. No sky, no shadow on the magenta, no text, no border. No blur, no anti-aliasing against the magenta. Landscape image.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

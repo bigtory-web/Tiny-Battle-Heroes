@@ -1,0 +1,13 @@
+Look at img/p/bg_swamp.png : the swamp battle field background of our pixel art game. The water meets the olive-brown mud ground in a dead straight flat line (about 64 percent down the image), which looks unclear and artificial.
+
+Generate ONE new image with your image generation tool and save it as img/codex/swampfg/shore_raw.png.
+
+Make ONLY a SHORELINE strip that will be pasted over that straight line: one very long, very low horizontal band spanning the FULL width from the left edge to the right edge, placed in the vertical middle of the image.
+- A clearly readable muddy bank: an irregular wavy top edge with a thin light wet-mud highlight and a darker brown shadow line where it touches the water.
+- Along it, unevenly spaced: small mossy rocks, short swamp grass tufts, a few small cattail reeds, small bumps of mud sticking into the water. Some stretches nearly bare, no repeating pattern.
+- The bottom edge of the band is also irregular and ends in the same olive-brown mud color as the ground of the background (so it blends into the ground).
+- The whole band height is only about 4 to 5 percent of the image width (reeds may be a little taller).
+Chunky pixel art with clear square pixels, same pixel size and palette as the background, flat cel shading.
+
+[Format] Plain solid #FF00FF magenta everywhere except the band. No sky, no water fill, no text, no border. No blur, no anti-aliasing against the magenta. Landscape image.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
