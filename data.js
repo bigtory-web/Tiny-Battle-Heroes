@@ -298,10 +298,10 @@ var IDLE_DATA = {
       { id: 'gust',    grade: 2, name: '돌풍',     icon: '🌪️', cd: 9,  price: 160, kind: 'knockback', amount: 70, dur: 0.8, desc: '적 전체를 뒤로 밀어내고 {d}초 동안 멈추게 한다.' },
       // ── 시너지 스킬: tag = 종족(race)·직업(job)·속성(el) 조건 ──
       // only: true → 조건에 맞는 아군에게만 효과. per: 조건에 맞는 살아 있는 아군 1명마다 효과 +per배 (0명이면 기본값만)
-      { id: 'howl',    grade: 2, name: '야성의 포효', icon: '🐾', cd: 9,  price: 150, kind: 'atkBuff', amount: 0.4, dur: 4, tag: { race: 'beast' }, only: true, desc: '{d}초 동안 수인 아군의 공격력이 {a}% 오른다.' },
-      { id: 'grove',   grade: 2, name: '숲의 축복', icon: '🍃', cd: 10, price: 160, kind: 'healPct', amount: 0.05, tag: { race: 'elf' }, per: 0.5, desc: '아군 체력을 {a}% 회복한다. 엘프 1명마다 효과가 50% 커진다.' },
-      { id: 'pact',    grade: 3, name: '피의 계약', icon: '🩸', cd: 11, price: 180, kind: 'nuke', amount: 0.35, tag: { race: 'demon' }, per: 0.5, desc: '적 전체에게 아군 평균 공격력의 {a}%만큼 피해를 준다. 마족 1명마다 효과가 50% 커진다.' },
-      { id: 'unity',   grade: 1, name: '인간의 단결', icon: '🤝', cd: 12, price: 140, kind: 'shieldPct', amount: 0.05, tag: { race: 'human' }, per: 0.25, desc: '아군에게 최대 체력의 {a}%만큼 보호막을 씌운다. 인간 1명마다 효과가 25% 커진다.' },
+      { id: 'howl',    grade: 2, name: '야성의 포효', icon: '🐾', cd: 9,  price: 150, kind: 'atkBuff', amount: 0.5, /* 2026-11-26 종족 유물 +25%: 0.4 */ dur: 4, tag: { race: 'beast' }, only: true, desc: '{d}초 동안 수인 아군의 공격력이 {a}% 오른다.' },
+      { id: 'grove',   grade: 2, name: '숲의 축복', icon: '🍃', cd: 10, price: 160, kind: 'healPct', amount: 0.06, /* 2026-11-26 종족 유물 +20%: 0.05 */ tag: { race: 'elf' }, per: 0.5, desc: '아군 체력을 {a}% 회복한다. 엘프 1명마다 효과가 50% 커진다.' },
+      { id: 'pact',    grade: 3, name: '피의 계약', icon: '🩸', cd: 11, price: 180, kind: 'nuke', amount: 0.44, /* 2026-11-26 종족 유물 +25%: 0.35 */ tag: { race: 'demon' }, per: 0.5, desc: '적 전체에게 아군 평균 공격력의 {a}%만큼 피해를 준다. 마족 1명마다 효과가 50% 커진다.' },
+      { id: 'unity',   grade: 1, name: '인간의 단결', icon: '🤝', cd: 12, price: 140, kind: 'shieldPct', amount: 0.06, /* 2026-11-26 종족 유물 +20%: 0.05 */ tag: { race: 'human' }, per: 0.25, desc: '아군에게 최대 체력의 {a}%만큼 보호막을 씌운다. 인간 1명마다 효과가 25% 커진다.' },
       { id: 'bulwark', grade: 2, name: '방패벽', icon: '🧱', cd: 10, price: 160, kind: 'shieldPct', amount: 0.3, tag: { job: 'guardian' }, only: true, desc: '기사 아군에게 최대 체력의 {a}%만큼 보호막을 씌운다.' },
       { id: 'volley',  grade: 3, name: '일제 사격', icon: '🏹', cd: 8,  price: 180, kind: 'volley', amount: 1.5, tag: { job: 'archer' }, only: true, desc: '궁수 아군이 각자 무작위 적에게 공격력의 {a}%만큼 피해를 준다.' },
       { id: 'arcane',  grade: 3, name: '마력 공명', icon: '🔮', cd: 10, price: 170, kind: 'energyAll', amount: 40, tag: { job: 'mage' }, only: true, desc: '마법사 아군의 궁극기 에너지를 {a} 채운다.' },
@@ -322,7 +322,7 @@ var IDLE_DATA = {
       { id: 'starcrown', grade: 3, name: '별빛 왕관', icon: '👑', cd: 0, price: 180, kind: 'starCrown', trigger: 'line', amount: 0.02, desc: '[별] 아군 별 합계 1개마다 아군 전체 공격력이 {a}% 오른다.' },
       { id: 'steppingstone', grade: 2, name: '디딤돌', icon: '🪨', cd: 0, price: 150, kind: 'starStep', trigger: 'death', amount: 40, desc: '[별] ★1·★2 아군이 쓰러지면 같은 열에서 별이 가장 높은 아군의 궁극기 에너지가 {a} 찬다.' },
       { id: 'fervor',  grade: 1, name: '전장의 열기', icon: '🔥', cd: 0, price: 120, kind: 'stack', trigger: 'attack', amount: 0.005, max: 30, desc: '아군이 평타를 칠 때마다 아군 공격력이 {a}% 오른다. 최대 {m}번 쌓인다.' },
-      { id: 'resolve', grade: 2, name: '인간의 기세', icon: '⚔️', cd: 0, price: 150, kind: 'stack', trigger: 'attack', tag: { race: 'human' }, amount: 0.02, max: 15, desc: '[인간] 인간 아군이 평타를 칠 때마다 인간 아군 공격력이 {a}% 오른다. 최대 {m}번 쌓인다.' },
+      { id: 'resolve', grade: 2, name: '인간의 기세', icon: '⚔️', cd: 0, price: 150, kind: 'stack', trigger: 'attack', tag: { race: 'human' }, amount: 0.025, /* 2026-11-26 종족 유물 +25%: 0.02 */ max: 15, desc: '[인간] 인간 아군이 평타를 칠 때마다 인간 아군 공격력이 {a}% 오른다. 최대 {m}번 쌓인다.' },
       { id: 'kindle',  grade: 3, name: '불씨', icon: '🕯️', cd: 0, price: 180, kind: 'stack', trigger: 'burn', tag: { el: 'fire' }, amount: 0.02, max: 20, desc: '[불] 화상 피해가 들어갈 때마다 불 아군 공격력이 {a}% 오른다. 최대 {m}번 쌓인다.' },
       { id: 'pulse',   grade: 3, name: '숲의 맥박', icon: '🌿', cd: 0, price: 180, kind: 'stack', trigger: 'haste', tag: { el: 'forest' }, to: 'self', amount: 0.03, max: 12, desc: '[숲] 숲 아군이 가속을 얻을 때마다 그 아군 공격력이 {a}% 오른다. 최대 {m}번 쌓인다.' },
       { id: 'rime',    grade: 3, name: '서리 손아귀', icon: '🧊', cd: 0, price: 180, kind: 'stack', trigger: 'chill', tag: { el: 'water' }, amount: 0.02, max: 15, desc: '[얼음] 얼음으로 적을 느리게 할 때마다 얼음 아군 공격력이 {a}% 오른다. 최대 {m}번 쌓인다.' },
