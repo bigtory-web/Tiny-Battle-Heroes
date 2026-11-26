@@ -349,7 +349,7 @@ img.lic.padic{object-fit:contain}
 .tip.bellpop .tipn{display:block;text-align:center}
 .bfrow{display:flex;justify-content:center;gap:6px;margin-top:6px}
 .bfc{width:56px;padding:4px 0 3px;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;background:#17141d;box-shadow:inset 0 0 0 2px #5d5470;color:#f3e6c4;cursor:help;filter:grayscale(1);opacity:.45}
-.bfc.on{filter:none;opacity:1;box-shadow:inset 0 0 0 2px #ffd34d} .bfc.sel{box-shadow:inset 0 0 0 2px #fff;opacity:1}
+.bfc.on{filter:none;opacity:1} .bfc.sel{box-shadow:inset 0 0 0 2px #ffd34d;opacity:1} /* 노란 테두리 = 지금 설명이 보이는 카드 */
 .bfc i{font-style:normal;font-size:20px;line-height:24px} .bfc em{font-style:normal;font:400 10px var(--display);white-space:nowrap}
 .bfdesc{margin-top:5px;min-height:34px;font:400 11px/1.5 var(--body)}
 .nightmsg{position:absolute;left:50%;top:50%;z-index:900;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;white-space:nowrap;animation:nightmsg 2.8s ease-out both}
@@ -2853,9 +2853,6 @@ img.rimg{image-rendering:auto!important}
 .rfw .fwr{position:absolute;width:2px;height:10px;margin-left:-1px;background:linear-gradient(currentColor,transparent)}
 .rfw .fws{position:absolute;width:2px;height:2px;margin:-1px;background:currentColor;box-shadow:-2px 0 currentColor,2px 0 currentColor,0 -2px currentColor,0 2px currentColor}
 .rfw .fws.m{width:3px;height:3px;box-shadow:-3px 0 currentColor,3px 0 currentColor,0 -3px currentColor,0 3px currentColor}
-#furyRow{position:absolute;top:calc(100% + 4px);display:flex;gap:3px;pointer-events:auto} #furyRow[hidden]{display:none}
-#furyRow i{display:flex;align-items:center;justify-content:center;width:28px;height:28px;background:rgba(23,20,29,.8);box-shadow:inset 0 0 0 2px #17141d;cursor:help}
-#furyRow img{width:24px;height:24px;image-rendering:pixelated;filter:grayscale(1);opacity:.4} #furyRow i.on img{filter:none;opacity:1}
 /* 초월: 보고 있는 영웅 노란 테두리. 아래 줄 [등록/해제](파랑)·[초월](노랑) 같은 너비 */
 #trWin .rbtns{display:flex!important;justify-content:center;gap:8px} #trWin .rbtns button{width:150px!important}
 #trWin .trc.seen,#roster .chip.trsel{outline:3px solid #ffd34d!important;outline-offset:-1px}
@@ -5870,8 +5867,8 @@ img.rimg{image-rendering:auto!important}
     var BF = B.fx || {}, fxBox = $('bellFx'), stB = (n && !b.hidden) ? E.stageTeam(D, bStg, bEv, n, bt ? curPlv : plv()) : null, got = (stB && stB.bellFx) || [];
     var cand = !bt && n < mx && B.tiers && B.tiers[n] ? B.tiers[n] : null; /* 전투 중엔 다음 단계 안내 없음 */
     var fxL = function(id){ var d = BF[id] || { name: id, icon: '', desc: '' }; return d.icon + ' <b class="fxn">' + d.name + '</b> · ' + d.desc; };
-    if (B.tiers && !chestEv && mx){ b.dataset.tipt = n ? n + '단계' : '기본'; b.dataset.tipg = n + 1; /* 테두리 = 등급색: 기본 일반 · 1 고급 · 2 희귀 · 3 전설 (2026-11-26 사용자) */
-      b.dataset.tiptx = '<div class="bfrow">' + B.tiers.map(function(t, i){ var id = (i < n && got[i]) || t[0], d = BF[id] || { name: id, icon: '' }; return '<button type="button" class="bfc' + (i < n ? ' on' : '') + '" data-bfx="' + id + '"' + (cand && i === n && bg1 > 0 ? ' data-bfg="' + bg1.toLocaleString() + '"' : '') + '><i>' + d.icon + '</i><em>' + d.name + '</em></button>'; }).join('') + '</div><div class="bfdesc"></div>'; }
+    if (B.tiers && !chestEv && mx){ b.dataset.tipt = '분노 ' + n + '단계'; var sel = Math.max(0, n - 1), selId = (sel < n && got[sel]) || B.tiers[sel][0], selG = cand && sel === n && bg1 > 0 ? ' (+' + bg1.toLocaleString() + 'G)' : ''; b.dataset.tipg = n + 1; /* 테두리 = 등급색: 기본 일반 · 1 고급 · 2 희귀 · 3 전설 (2026-11-26 사용자) */
+      b.dataset.tiptx = '<div class="bfrow">' + B.tiers.map(function(t, i){ var id = (i < n && got[i]) || t[0], d = BF[id] || { name: id, icon: '' }; return '<button type="button" class="bfc' + (i < n ? ' on' : '') + (i === sel ? ' sel' : '') + '" data-bfx="' + id + '"' + (cand && i === n && bg1 > 0 ? ' data-bfg="' + bg1.toLocaleString() + '"' : '') + '><i>' + d.icon + '</i><em>' + d.name + '</em></button>'; }).join('') + '</div><div class="bfdesc">' + ((BF[selId] || {}).desc || '') + selG + '</div>'; }
     else { delete b.dataset.tipt; delete b.dataset.tiptx; }
     if (tipEl === b){ if (b.dataset.tiptx) showTip(b); else hideTip(); } // 열려 있는 종 툴팁도 새 값으로
     if (nx && B.tiers){ nx.hidden = true; } else if (nx){ nx.hidden = !mx || n >= mx; nx.innerHTML = chestEv ? '다음 단계: <b>상자 강화</b> (체력 +' + Math.round((D.events.chest.bell || {}).hp * 100) + '% · 보상 +' + Math.round((D.events.chest.bell || {}).reward * 100) + '%)' : '다음 단계: 적 영웅 ' + (B.enemy || 1) + '명 추가 · <b>+' + bg1.toLocaleString() + 'G</b>' + ''; }
@@ -5880,14 +5877,6 @@ img.rimg{image-rendering:auto!important}
   (function foeBlink(){ setTimeout(function(){ var b = $('bellBtn'), im = b && b.querySelector('.bic img');
     if (im && !b.hidden && !b.classList.contains('b0')){ var src = im.getAttribute('src'); if (src.indexOf('_blink') < 0){ im.setAttribute('src', src.replace('.png', '_blink.png')); setTimeout(function(){ im.setAttribute('src', src); }, 120); } }
     foeBlink(); }, 2500 + Math.random() * 1500); })();
-  /* 적 HP 아래 분노 아이콘 3개. 상태는 위 가운데 용 버튼(bellBtn)에서 읽음 */
-  function furySync(){ var bb = $('bellBtn'), box = $('vsBar'); if (!box) return; var B = D.bell, row = $('furyRow'), chest = !!(S.event && S.event.kind === 'chest'), mx = bb && !bb.hidden && B && B.tiers && !chest ? bellMax() : 0;
-    if (!row){ row = document.createElement('div'); row.id = 'furyRow'; box.appendChild(row); } row.hidden = !mx; if (tipEl && row.contains(tipEl)) hideTip(); if (!mx){ row.innerHTML = ''; return; }
-    var n = Math.min((bt ? curBell : S.bell) || 0, mx), stg = bt ? curStage : S.stage, ev = bt ? curEv : S.event, got = n ? (E.stageTeam(D, stg, ev, n, bt ? curPlv : plv()).bellFx || []) : [], gold = !bt && E.bellGold && n + 1 > (S.bellPaid || 0) ? E.bellGold(D, S.stage, n, n + 1, plv()) : 0, o = '';
-    B.tiers.slice(0, mx).forEach(function(t, i){ var d = (B.fx || {})[(i < n && got[i]) || t[0]] || { name: '', icon: '', desc: '' }, tx = d.icon + ' <b class="fxn">' + d.name + '</b> · ' + d.desc + (i === n && gold > 0 ? ' (+' + gold.toLocaleString() + 'G)' : '');
-      o += '<i class="' + (i < n ? 'on' : '') + '" data-tipt="' + (i + 1) + '단계" data-tipg="' + (i + 2) + '" data-tiptx="' + tx.replace(/"/g, '&quot;') + '"><img src="img/p/ui_foe' + (i + 1) + '.png" alt=""></i>'; });
-    row.innerHTML = o; row.style.left = $('tbE').offsetLeft + 'px'; }
-  var _renderBell = renderBell; renderBell = function(){ _renderBell(); furySync(); };
   function bellMax(){ return E.bellMax ? E.bellMax(D, S.stage, bt ? curEv : S.event) : (D.bell ? D.bell.max : 0); }
   function foeSlots(){ return S.stage < E.stageCount(D) ? E.stageTeam(D, S.stage, S.event, S.bell || 0, bt ? curPlv : plv()).team.map(function(u){ return { slot: u.slot, key: u.id + (u.merc ? '*' : '') + (u.boss ? '!' : '') }; }) : []; }
   function newFoeSlots(old, now){ var pool = old.map(function(o){ return o.key; }); return now.filter(function(o){ var i = pool.indexOf(o.key); if (i >= 0){ pool.splice(i, 1); return false; } return true; }).map(function(o){ return o.slot; }); }
