@@ -2626,6 +2626,19 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
 /* 돈고블린 룰렛: 받기(노랑) / 포기(파랑) 같은 크기 */
 #roul .rbox.groll .rbtns{display:flex;justify-content:center;gap:10px}
 #roul .rbox.groll .rbtns #rYes,#roul .rbox.groll .rbtns #rNo{width:110px!important;flex:none!important;height:34px;font-size:16px!important;text-decoration:none;margin:0!important}
+/* 상점: 상품 이름 주황, UP TO 배지 없음, 할인율은 아이콘 왼쪽 아래 반듯한 라벨 */
+#tab-shop .shopInfo .sname{color:#ff9a3a}
+#tab-shop .shopInfo .sname small{color:#c9b98f}
+#tab-shop.wander .spRight[data-disc]::after{content:none!important}
+#tab-shop .stile .rib{left:3px!important;top:auto!important;bottom:25px;width:auto!important;transform:none!important;padding:0 4px;font-size:12px!important;line-height:15px!important;box-shadow:inset 0 0 0 1px #17141d!important}
+#tab-shop.wander .stile .synn{top:1px!important}
+#tab-shop .spRight #shopBuy{position:relative}
+#shopBuy .bl{display:block;width:100%;text-align:center}
+#shopBuy .bp{position:absolute;right:7px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:3px;padding:2px 7px;background:#2a2108;box-shadow:inset 0 0 0 2px #17141d;color:#fff3dc;font:400 13px/16px var(--display);text-shadow:none!important;white-space:nowrap}
+#shopBuy .bp img,#shopBuy .bp .mni{width:14px;height:14px;image-rendering:pixelated}
+#shopBuy .bp s{color:#a89a80;text-decoration-thickness:2px;margin-right:2px}
+#shopBuy .bp b{font-weight:400;color:#ffe27a}
+#shopBuy:disabled .bp{background:#3a3442} #shopBuy:disabled .bp b{color:#e6e0ee}
 </style>
 </head>
 <body>
@@ -4860,7 +4873,12 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
   function renderShopInfo(){ _rsiCore(); var nm = $('shopName'), bt = $('shopBuy'); if (battleOn() && !bt.hidden) bt.disabled = true;
     nm.querySelectorAll('small').forEach(function(x){ x.remove(); });
     if (shopSel && ['stock', 'hero', 'merch'].indexOf(shopSel.t) >= 0 && !bt.hidden) bt.textContent = '구매';
-    if (shopSel && shopSel.t === 'merch' && !bt.hidden){ var wm = merchOffer(), im = wm && wm.stock[shopSel.i]; if (im && im.base > im.price) bt.innerHTML = '구매 <s class="was">' + im.base.toLocaleString() + '</s> <b class="now">' + (im.cur === 'mana' ? manaIcon('mni') : (HUDOK.gold ? '<img src="img/p/hud_gold.png" alt="">' : '🪙')) + im.price.toLocaleString() + '</b>'; } }
+    /* 구매 버튼: "구매"는 가운데, 값은 오른쪽 어두운 칸 (방랑상점은 할인 전 취소선 + 할인 후) (2026-11-26 사용자) */
+    if (shopSel && !bt.hidden && ['stock', 'hero', 'merch'].indexOf(shopSel.t) >= 0){ var gi = HUDOK.gold ? '<img src="img/p/hud_gold.png" alt="">' : '🪙', was = 0, cur = null, isM = false;
+      if (shopSel.t === 'merch'){ var wm = merchOffer(), im = wm && wm.stock[shopSel.i]; if (im){ cur = im.price; isM = im.cur === 'mana'; if (im.base > im.price) was = im.base; } }
+      else if (shopSel.t === 'hero'){ var hh = (S.shop.heroes || [])[shopSel.i]; if (hh) cur = hh.price; }
+      else { var sid = S.shop.stock[shopSel.i]; if (sid){ var pc = (S.shop.sold.indexOf(shopSel.i) >= 0 && (S.shop.soldCost || {})[shopSel.i]) || buyPrice(sid); isM = pc.mana > 0; cur = isM ? pc.mana : pc.gold; } }
+      bt.innerHTML = '<span class="bl">구매</span>' + (cur == null ? '' : '<span class="bp">' + (was ? '<s>' + was.toLocaleString() + '</s>' : '') + (isM ? manaIcon('mni') : gi) + '<b>' + cur.toLocaleString() + '</b></span>'); } }
   function _rsiCore(){
     var nm = $('shopName'), ds = $('shopDesc'), bt2 = $('shopBuy'), mine = S.skills;
     $('shopInfo').hidden = false; // 상점 창 안 고정 칸
