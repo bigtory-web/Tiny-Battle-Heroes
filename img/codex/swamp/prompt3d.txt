@@ -1,0 +1,11 @@
+Look at img/codex/swamp/swamp3_src_v3.png : our mangrove swamp battle background.
+
+Edit it and save the result as img/codex/swamp/swamp3_src.png. Request: the big tree roots draw too much attention. Add MORE TREES AND LEAFY GROWTH in the root area so the roots are mostly hidden:
+- place more smaller and medium mangrove trees, with full leafy crowns, IN FRONT of the roots of the big trees and in the gaps between them, standing in the water; add some leafy bushes and tall reeds at the water line;
+- vary their height, size and spacing so nothing looks copied or evenly lined up;
+- after the change only small parts of the big roots peek out here and there (about a quarter of what is visible now);
+- keep the big trees' upper trunks and crowns visible, and keep the new front crowns lower than the big crowns so the depth still reads.
+
+Keep the sky, clouds, big tree crowns, water color, lily pads, the mud ground and puddles exactly the same. Same art style, same colors, same size and aspect ratio.
+
+No characters, no text, no UI. Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

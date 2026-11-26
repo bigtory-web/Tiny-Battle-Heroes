@@ -1,0 +1,12 @@
+Look at img/codex/potion/ref_relics.png : our existing 24x24 pixel-art item icons. Make ONE new icon in exactly the same style (24x24 pixel grid, thick dark brown 1px outline, chunky clear shapes, 3-step shading, bright highlight).
+
+The icon: a LIFE POTION. It belongs to a set of 8 potions that are told apart by three things: bottle shape, liquid color, and a sticker label on the front.
+- bottle shape for this one: a round HEART-SHAPED glass bottle (two soft lobes at the shoulders, narrowing to the bottom), short neck, brown cork stopper
+- liquid color: fresh bright GREEN, filled to about three quarters, with a glass highlight on the left
+- front sticker: a big cream-colored paper label in the middle with a simple red HEART symbol on it (the label about 10 art pixels wide, so the heart reads clearly)
+
+The bottle fills most of the grid (about 20 art pixels wide, 22 tall), centered.
+
+Generate ONE new image with your image generation tool and save it as img/codex/potion/life_src.png
+Large crisp square pixels, no anti-aliasing, no gradients, no shadow, flat solid #FF00FF magenta background, no text.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
