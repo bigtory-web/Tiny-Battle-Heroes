@@ -2589,7 +2589,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 #roul .rbox.camp .rstage .rfx{display:none}
 #roul .rbox.camp .rstage::after{content:'';position:absolute;inset:6px;pointer-events:none;z-index:1;background:radial-gradient(3px 3px at 18% 80%,#ffb347 60%,transparent),radial-gradient(2px 2px at 32% 65%,#ffd27a 60%,transparent),radial-gradient(3px 3px at 71% 85%,#ff8a2a 60%,transparent),radial-gradient(2px 2px at 84% 55%,#ffb347 60%,transparent),radial-gradient(2px 2px at 60% 40%,#ffd27a 60%,transparent),radial-gradient(60% 40% at 50% 100%,rgba(255,120,30,.35),transparent);animation:campfx 1.4s steps(6) infinite}
 @keyframes campfx{0%{transform:translateY(6px);opacity:.65}50%{opacity:1}100%{transform:translateY(-10px);opacity:.65}}
-#roul .rbox.camp .rstrip{box-shadow:0 0 0 2px #17141d,0 0 0 4px #ff8a2a,0 0 12px 2px rgba(255,138,42,.55)!important}
+#roul .rbox.camp .rstrip{box-shadow:none!important} /* 2026-11-26 사용자: "이 주황색 외곽 이걸 없애 달라고 한 거였어" */
 /* 유물 원 틀: 그림(rimg)에 틀이 들어 있어 감싸던 사각 칸은 지움 */
 img.rimg{image-rendering:pixelated;border-radius:50%}
 #skA .skc:has(img.rimg),#skE .skc:has(img.rimg),#tab-shop .stile.sk .ic:has(img.rimg){background:none!important;box-shadow:none!important;border:0!important;clip-path:none!important}
@@ -2725,7 +2725,8 @@ img.rimg{image-rendering:auto!important}
 #roul .rbox.fairy .rstage > .fvine{display:block;position:absolute;left:7px;top:7px;width:40px;height:40px;pointer-events:none;z-index:3;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' shape-rendering='crispEdges'%3E%3Cpath fill='%233f9a6a' d='M0 0h14v1H9v1H2v7H1v5H0z'/%3E%3Cpath fill='%236fd39a' d='M7 2h3v1h1v1H8V3H7zM13 1h2v1h2v1h-3V2h-1zM2 8h1v1h1v2H3v-1H2zM1 13h1v1h2v2H2v-1H1z'/%3E%3Cpath fill='%23ff9ed2' d='M3 2h3v1h1v3H6v1H3V6H2V3h1z'/%3E%3Cpath fill='%23fff0a0' d='M4 4h1v1H4z'/%3E%3Cpath fill='%23a8e4ff' d='M11 2h2v1h-2zM2 11h1v2H2z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
 #roul .rbox.fairy .rstage > .fvine.b{top:auto;bottom:7px;transform:scaleY(-1)}
 #roul .rbox.fairy .rstage > .fvine.r{left:auto;right:7px;transform:scaleX(-1)}
-#roul .rbox.fairy .rstage > .fvine.r.b{right:54px;transform:scale(-1,-1)} /* 우하단 스킬 칸(44px)을 안 가리게 그 왼쪽 */
+#roul .rbox.fairy .rstage > .fvine.r.b{right:7px;transform:scale(-1,-1)}
+#roul .rbox.fairy .rsk{bottom:50px!important} /* 우하단 모서리는 꽃(좌하단과 대칭), 스킬 칸은 그 위 (2026-11-26 사용자) */
 #roul .rbox.fairy .rstrip{box-shadow:none!important} /* 2026-11-26 사용자: 요정 띠 바깥 테두리 뺌 */
 /* 상점 칸: 할인 딱지·UP이 얼굴을 가리지 않게 (2026-11-26 사용자: "대가리부분아니잖아"). 자르기는 공통 170%·위 40% 그대로 */
 #tab-shop .stile .upmk{top:-6px!important}
