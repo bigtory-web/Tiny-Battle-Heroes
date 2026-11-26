@@ -3044,9 +3044,7 @@ img.rimg{image-rendering:auto!important}
 #trWin .trline{position:absolute;left:0;right:0;bottom:10px;display:flex;align-items:center;justify-content:center;gap:5px;z-index:3;white-space:nowrap}
 #trWin .trslot .trline .trtag{position:static;transform:none;padding:2px 5px;line-height:14px}
 #trWin .trline .trnm{position:static}
-/* 안내 = 재료 딱지 바로 아래, 재료 쪽 파랑 (2026-11-26 사용자) */
-#trWin .trslot .trline{bottom:30px}
-#trWin .trwarn{position:absolute;left:-20px;right:-20px;bottom:3px;text-align:center;font:400 10px/12px var(--display);font-style:normal;color:#7cc2ff;text-shadow:1px 0 #17141d,-1px 0 #17141d,0 1px #17141d,0 -1px #17141d;pointer-events:none;z-index:3;white-space:nowrap}
+#trWin .trwarn{position:absolute;left:0;right:0;top:14px;text-align:center;font:400 12px var(--display);font-style:normal;color:#f0b0a0;text-shadow:1px 0 #17141d,-1px 0 #17141d,0 1px #17141d,0 -1px #17141d;pointer-events:none;z-index:3}
 #trWin .trstage.done .trtag{display:none} /* 결과 화면엔 "메인" 딱지 없음 (2026-11-26 사용자) */
 #trWin .trstage.done::after{content:'';position:absolute;inset:0;background:#fff;pointer-events:none;z-index:6;animation:finfl .7s ease-out forwards}
 #trWin .rbox:has(.trstage.charge){background:#2a1648!important}
@@ -5783,7 +5781,7 @@ img.rimg{image-rendering:auto!important}
       if (k === 'pick') return trPick(uid); });
     trRender(); }
   function trSlot(k, uid){ var u = uid != null && U(uid), nm = k === 'A' ? '메인' : '재료';
-    return '<button class="trslot s' + k + (!u && !trDone && (k === 'A' ? altA == null : altA != null && altM == null) ? ' next' : '') + (u ? ' full' : '') + '" type="button" data-tr="' + k + '"' + ' disabled><i class="trglow"></i>' + (u ? '<span class="trfig">' + av(u.id) + starsIn(u.star, u.id, isTr(u)) + '</span>' : '<span class="trplus">+</span>') + '<span class="trline"><b class="trtag">' + nm + '</b>' + (u ? '<span class="trnm">' + hero(u.id).name + '</span>' : '') + '</span>' + (k === 'M' && !trDone ? '<i class="trwarn">재료로 사용된<br>히어로는 사라집니다.</i>' : '') + '</button>'; }
+    return '<button class="trslot s' + k + (!u && !trDone && (k === 'A' ? altA == null : altA != null && altM == null) ? ' next' : '') + (u ? ' full' : '') + '" type="button" data-tr="' + k + '"' + ' disabled><i class="trglow"></i>' + (u ? '<span class="trfig">' + av(u.id) + starsIn(u.star, u.id, isTr(u)) + '</span>' : '<span class="trplus">+</span>') + '<span class="trline"><b class="trtag">' + nm + '</b>' + (u ? '<span class="trnm">' + hero(u.id).name + '</span>' : '') + '</span></button>'; }
   function trDust(st, quiet){ var o = quiet ? '' : [[10, 16, ' l'], [88, 24, ' m'], [48, 10, ''], [30, 70, ' m'], [72, 66, ''], [92, 78, ' l']].map(function(s, i){ return '<s class="tw' + s[2] + '" style="left:' + s[0] + '%;top:' + s[1] + '%;animation-delay:-' + (i * .4).toFixed(1) + 's"></s>'; }).join('');
     st.insertAdjacentHTML('beforeend', '<i class="trdust">' + o + '</i>'); }
   /* 초월 뒤: 팝업을 닫지 않고 메인만 남겨 얻은 스킬을 보여 줌. 확인과 X 둘 다 닫기 */
@@ -5795,7 +5793,7 @@ img.rimg{image-rendering:auto!important}
     var rg = w.querySelector('.trreg'); if (rg) rg.remove(); var b = w.querySelector('.rbtns button'); b.textContent = '확인'; b.dataset.tr = 'ok'; b.disabled = false; }
   function trFit(){ var w = $('trWin'); if (!w) return; var b = w.querySelector('.rbox'), i = w.querySelector('.trinfo'); if (b && i) i.style.setProperty('height', b.offsetHeight + 'px', 'important'); } /* 두 창 높이 맞춤 */
   function trRender(){ var w = $('trWin'); if (!w) return; setTimeout(trFit, 0); if (trDone) return trResult(w); var a = altA != null && U(altA), m = altM != null && U(altM), kind = a && m ? trKind(a, m) : null, st = w.querySelector('.trstage');
-    st.innerHTML = trSlot('A', altA) + '<span class="trmid"><i class="trarrow' + (kind ? ' on' : '') + '"></i>' + (m ? '<span class="trsk">' + skFrame(ultIconEl(hero(m.id)), HG(m.id).col) + '<small>' + ultName(hero(m.id)) + '</small></span>' : '') + '</span>' + trSlot('M', altM); trDust(st); /* 화살표는 재료 -> 메인 (왼쪽) */
+    st.innerHTML = trSlot('A', altA) + '<span class="trmid"><i class="trarrow' + (kind ? ' on' : '') + '"></i>' + (m ? '<span class="trsk">' + skFrame(ultIconEl(hero(m.id)), HG(m.id).col) + '<small>' + ultName(hero(m.id)) + '</small></span>' : '') + '</span>' + trSlot('M', altM) + '<i class="trwarn">재료로 사용된 히어로는 사라집니다.</i>'; trDust(st); /* 화살표는 재료 -> 메인 (왼쪽) */
     st.querySelectorAll('.trslot').forEach(function(s){ var x = U(s.dataset.tr === 'A' ? altA : altM); pedestal(s, s.dataset.tr === 'A' ? '#ffd34d' : '#5ab4ff'); });
     trInfo(w.querySelector('.trinfo'));
     var ids = S.team.filter(function(x){ return x && U(x); }); /* 백팩 영웅은 백팩 칸에서 */ trBag();

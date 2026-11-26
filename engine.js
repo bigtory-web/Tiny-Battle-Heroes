@@ -825,6 +825,7 @@
     Object.keys(tr).forEach(function (k) { for (var i = 0; i < tr[k]; i++) out.push({ from: k, lv: 1, main: false }); }); return out.slice(0, TR.maxSkills || 3); }
   // a에 재료 m을 넣을 수 있는지: 'up'(같은 스킬 하나 더) | 'add'(새 스킬) | null
   function canTranscend(data, a, m) { var TR = data.transcend; if (!TR || !TR.enabled || !a || !m || a.uid === m.uid) return null;
+    if (TR.trMaterial === false && m.tr && Object.keys(m.tr).length) return null; // 2026-11-26: 이미 초월한 영웅은 재료로도 못 써요(사용자: "이미 초월한건 재료로도 못쓰게 하자. 일단은.")
     var sk = unitSkills(data, a), same = sk.filter(function (s) { return s.from === m.id; })[0];
     return sk.length < (TR.maxSkills || 3) ? (same ? 'up' : 'add') : null; } // 'up' = 같은 스킬 하나 더
   // 초월: m(재료)을 a에 넣어요. m은 사라져요. 반환: { unit: a, kind: 'up'|'add', from, lv } (안 되면 null)
