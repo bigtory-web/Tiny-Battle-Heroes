@@ -1,0 +1,13 @@
+Look at the image img/p/bg_field.png (the battle field background of our pixel art game: flat cel-shaded pixel art with dark outlines, mauve-gray rocks, olive and yellow-green bushes and grass tufts, red-brown dirt ground). Generate ONE new image with your image generation tool and save it as img/codex/fg/fg_raw.png.
+
+Make a FOREGROUND decoration strip that will be overlaid at the very bottom edge of that background, IN FRONT of the characters, to add depth. Same art style, same palette family and same pixel size feel as the background, but a little darker and richer (it is closer to the camera).
+
+Composition (very wide, very low strip):
+- It spans the FULL width of the image from the left edge to the right edge and sits on the BOTTOM edge of the image.
+- LEFT CORNER and RIGHT CORNER are tall clumps: mauve-gray rocks, fern leaves, leafy bushes, grass blades, a few small white flowers. Their height is about 11 percent of the image width.
+- Toward the CENTER it gets much lower: the middle half of the width has only very low sparse grass tufts and a few tiny pebbles, height under 3 percent of the image width, with some gaps, so characters standing behind it stay fully visible.
+- Left and right corners are different from each other (not mirrored).
+- Everything is cut off naturally by the bottom edge (no visible base line, no ground slab, no dirt background).
+
+[Format] Plain solid #FF00FF magenta everywhere except the plants and rocks (the entire upper area is flat magenta). No sky, no ground fill, no shadow on the magenta, no text, no border. Crisp pixel art, no blur, no anti-aliasing against the magenta. Landscape image.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
