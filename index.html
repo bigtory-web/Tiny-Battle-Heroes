@@ -5020,7 +5020,7 @@ img.rimg{image-rendering:auto!important}
   /* 팝업 안에서 돌리기 (2026-11-26 사용자): "룰렛하기"는 팝업만 열고, 팝업의 "돌리기 N G"로 돌림. 받기/포기 뒤에도 같은 팝업에서 다시 */
   var grOpen = false;
   /* 열면 후보가 처음부터 띠에 다 보임(전투 룰렛과 같은 배치). 돌리기 전: 돌리기 버튼 하나 / 결과: 받기·포기 (2026-11-26 사용자) */
-  function grollPool(){ var g = S.grollPool; if (!g || g.st !== S.stage){ var c = E.rollGroll(D, S.stage, Math.random, plv()) || []; g = S.grollPool = { st: S.stage, c: c }; save(); } return g.c; }
+  function grollPool(){ return E.rollGroll(D, S.stage, null, plv(), S.skills || []) || []; } /* rnd null = 같은 판에서는 늘 같은 구성 (별도 표, 기획 v658) */
   function grollIdle(){ if (!isGroll()) return; var pool = grollPool(); if (!pool.length) return; grOpen = true;
     var r = $('roul'), box = r.querySelector('.rbox'), cost = E.grollCost(D, S.stage, plv()), mx = E.grollSpins(D, plv()), left = Math.max(0, mx - grollUsed());
     S.offerMode = 'groll'; S.offerDecided = false; S.offerGone = []; offerIds = S.offerIds = pool.slice(); startRoulette(pool, pool[0], true);
@@ -5033,9 +5033,9 @@ img.rimg{image-rendering:auto!important}
   function grollHtml(){ var gx = 506, gy = 184; return '<div class="unit cfh oegob" style="left:' + (100 * gx / W) + '%;top:' + (100 * (gy + OFF + FOOT) / H) + '%;z-index:' + gy + '"><div class="cfslot">' + av('goblin') + '</div></div>'; }
   function grollSpin(){ if (!isGroll() || S.offer || S.pending) return; if ($('rSpin')) $('rSpin').hidden = true; var cost = E.grollCost(D, S.stage, plv()), n = grollUsed(); if (n >= E.grollSpins(D, plv()) || S.gold < cost) return;
     var c = grollPool(); if (!c || !c.length) return;
-    S.grollPool = null; /* 다음에 열 때는 새 후보 */
+    
     S.gold -= cost; S.grollN = { st: S.stage, n: n + 1 }; S.offer = c[E.lootPick(D, c, plv(), Math.random)]; offerIds = S.offerIds = c.slice(); S.offerPlv = null; S.offerMode = 'groll'; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; save(); oeCoins(document.querySelector('#hud .goldit'), document.querySelector('#field .oegob'), 4); renderAll(); startRoulette(offerIds, S.offer); }
-  function finishGroll(){ grOpen = false; S.grollN = null; S.grollPool = null; S.event = nextEvent(false); S.bell = 0; S.bellGold = 0; save(); evGo(); }
+  function finishGroll(){ grOpen = false; S.grollN = null; S.event = nextEvent(false); S.bell = 0; S.bellGold = 0; save(); evGo(); }
   function oddEvenHtml(){ var bet = E.oddEvenBet ? E.oddEvenBet(D, S.stage) * oeK() : 0, ok = oeK() > 0 && !oeBusy, gx = 506, gy = 184; /* 2026-11-24: 적 쪽 5번 칸(보물상자와 같은 자리) */
     return '<div class="unit cfh oegob" style="left:' + (100 * gx / W) + '%;top:' + (100 * (gy + OFF + FOOT) / H) + '%;z-index:' + gy + '"><div class="cfslot">' + av('goblin') + '</div></div>' +
       '<div class="oebox" id="oeBox"><div class="oedie" id="oeDie">' + dieFace(5) + '</div><div class="oebet">' + (HUDOK.gold ? '<img src="img/p/hud_gold.png" alt="">' : '🪙') + '<b>' + bet.toLocaleString() + '</b></div>' +
