@@ -126,11 +126,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 #amb[data-k=mimic] s{width:7px;height:7px;background:#ffd34d;box-shadow:inset -2px -2px #b8861c,0 0 0 1px #17141d;opacity:0;animation:ambpop .9s linear forwards}
 #amb[data-k=mimic] s.d{width:auto;height:auto;background:none;box-shadow:none}
 #amb s.d::before{content:attr(data-c);font:400 15px var(--display);color:#ffe27a;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d}
-/* 방랑상인: 할인 % 딱지와 금빛 가루, 가운데는 맑게 */
+/* 방랑상인: 주황 % 만, 가운데는 맑게 */
 #amb[data-k=merchant]{background:linear-gradient(rgba(150,100,20,.14),rgba(150,100,20,0) 40%),radial-gradient(ellipse at 50% 62%,rgba(120,75,10,0) 52%,rgba(120,75,10,.22))}
-#amb[data-k=merchant] s{background:#ffe27a;box-shadow:0 0 5px 1px rgba(255,200,60,.9);animation:ambrise linear infinite}
-#amb[data-k=merchant] s.d{width:auto;height:auto;padding:0 3px;background:#d8443e;box-shadow:0 0 0 1px #17141d}
-#amb[data-k=merchant] s.d::before{font-size:11px;color:#fff;text-shadow:none}
+#amb[data-k=merchant] s{width:auto;height:auto;animation:ambrise linear infinite}
+#amb[data-k=merchant] s.d::before{font-size:17px;color:#ff8a3d;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d}
 @keyframes ambpop{0%{translate:0 0;opacity:1}40%{translate:calc(var(--dx) * .55) -34px;opacity:1}80%{opacity:1}100%{translate:var(--dx) 6px;opacity:0}}
 #amb[data-k=fairy]{background:linear-gradient(rgba(255,160,220,.14),rgba(255,200,230,.04) 60%,rgba(140,230,180,.12))}
 #amb[data-k=fairy] s{width:6px;height:4px;background:#ffb3de;box-shadow:2px 2px #ff8ac8;animation:ambfall linear infinite}
@@ -5607,9 +5606,9 @@ img.rimg{image-rendering:auto!important}
   // ───── 위험 종: 누를 때마다 0→1→2→3→0. 길게 누르거나 우클릭하면 0 ─────
   var BELLIMG = {}; [1, 2, 3].forEach(function(n){ var im = new Image(); im.onload = function(){ BELLIMG[n] = true; renderBell(); }; im.src = 'img/p/ui_foe' + n + '.png'; });
   /* 이벤트 판 분위기: 배경 그림은 그대로, 색·빛·앞 효과만 덮음. 편성·전투 둘 다 (2026-11-26 사용자) */
-  var AMB = { altar: [18, 0, 100, 45, 100], campfire: [10, 0, 100, 40, 100], mimic: [0], fairy: [16, 0, 100, 0, 40], groll: [15, 2, 98, 82, 100], merchant: [16, 3, 97, 20, 95] }; /* [알갱이 수, 가로 최소·최대 %, 세로 최소·최대 %] */
+  var AMB = { altar: [18, 0, 100, 45, 100], campfire: [10, 0, 100, 40, 100], mimic: [0], fairy: [16, 0, 100, 0, 40], groll: [15, 2, 98, 82, 100], merchant: [10, 3, 97, 20, 95] }; /* [알갱이 수, 가로 최소·최대 %, 세로 최소·최대 %] */
   function ambSync(){ var el = $('amb'), ev = bt ? curEv : S.event, k = ev && (bt || (S.stage < E.stageCount(D) && !isLvPick())) && AMB[ev.kind] ? ev.kind : ''; if (!el || (el.dataset.k || '') === k) return; el.dataset.k = k; var a = AMB[k], o = '';
-    for (var i = 0; a && i < a[0]; i++){ var du = (4 + Math.random() * 4).toFixed(2); o += '<s' + (k === 'groll' ? ' class="g' + i % 3 + '" data-c="' + ['7', '★', '♣'][i % 3] + '"' : k === 'merchant' && i % 3 === 0 ? ' class="d" data-c="%"' : '') + ' style="left:' + (a[1] + Math.random() * (a[2] - a[1])).toFixed(1) + '%;top:' + (a[3] + Math.random() * (a[4] - a[3])).toFixed(1) + '%;animation-duration:' + du + 's;animation-delay:' + (-Math.random() * du).toFixed(2) + 's"></s>'; }
+    for (var i = 0; a && i < a[0]; i++){ var du = (4 + Math.random() * 4).toFixed(2); o += '<s' + (k === 'groll' ? ' class="g' + (i % 2 ? 2 : 0) + '" data-c="' + (i % 2 ? '♣' : '7') + '"' : k === 'merchant' ? ' class="d" data-c="%"' : '') + ' style="left:' + (a[1] + Math.random() * (a[2] - a[1])).toFixed(1) + '%;top:' + (a[3] + Math.random() * (a[4] - a[3])).toFixed(1) + '%;animation-duration:' + du + 's;animation-delay:' + (-Math.random() * du).toFixed(2) + 's"></s>'; }
     el.innerHTML = o; }
   setInterval(ambSync, 300);
   /* 미믹 판: 미믹 몸에서 금화가 톡 튀었다 떨어짐. 미믹마다 3~5초, 엇갈리게. 쓰러지거나 도망친 미믹은 없음 */
