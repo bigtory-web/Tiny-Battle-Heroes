@@ -2842,6 +2842,8 @@ img.rimg{image-rendering:auto!important}
 .altseer .dlr,.oegob .dlr{display:block;flex:none;height:100%;aspect-ratio:1;background:url(img/p/ev_dealer_anim.png) 0 0/800% 100% no-repeat;image-rendering:pixelated;animation:trader 2s steps(8,jump-none) infinite}
 .altseer .dlr{background-image:url(img/p/ev_seeress_anim.png)}
 /* 요정 팝업 */
+/* 용병 영입·거절 = 같은 너비 (2026-11-26 사용자: "같게") */
+.evbox.merc .rbtns button{width:143px!important;white-space:nowrap}
 /* 룰렛형 팝업 장식 자리(팝업기준안 2-7): 큰 칸 좌우 끝·세로 가운데·끝이 바깥. 팝업마다 그림(background)만 따로 */
 .dvine{position:absolute;left:21px;top:calc(50% - 26px);width:52px;height:52px;pointer-events:none;z-index:3;transform:rotate(-45deg)} .dvine.r{left:auto;right:21px;transform:rotate(135deg)}
 #roul .rstage > .fdust,#roul .rstage > .fvine{display:none}
@@ -3764,6 +3766,7 @@ img.rimg{image-rendering:auto!important}
     var s = document.createElement('style');
     s.textContent = '#evWin .rbox .rstage{background:' + url([[0, [15, 31, 26]], [.3, [19, 40, 30]], [.55, [25, 50, 35]], [.72, [30, 44, 30]]], [226, 190, 96], 20, 40, 32, .09) + '#0f1f1a!important;image-rendering:pixelated}' +
       '#roul .rbox.camp .rstage{background:' + url([[0, [15, 18, 36]], [.25, [20, 20, 37]], [.45, [29, 22, 38]], [.7, [36, 24, 31]], [.85, [42, 26, 24]]], [255, 140, 40], 27, 56, 30, .14) + /* 불빛 중심 = 큰 칸 가운데 (2026-11-26 사용자) */ '#0f1224!important;image-rendering:pixelated}' +
+      '#roul:not(.chestpop) .rbox.vic .rstage{background:' + url([[0, [104, 76, 24]], [.28, [84, 58, 18]], [.52, [62, 40, 16]], [.76, [42, 26, 12]]], [255, 220, 112], 23, 46, 36, .11) + '#2a1a0c!important;image-rendering:pixelated}' + /* 승리 = 위 금빛, 아래 짙은 갈색, 가운데 뒤 후광 (2026-11-26 사용자) */
       '#roul .rbox.groll .rstage{background:' + url([[0, [48, 24, 10]], [.3, [70, 36, 10]], [.6, [92, 50, 12]], [.82, [76, 28, 20]]], [255, 204, 66], 24, 42, 32, .1) + '#46240a!important;image-rendering:pixelated}' +
       '#roul .rbox.fairy .rstage{background:' + url([[0, [28, 19, 52]], [.25, [29, 26, 62]], [.45, [26, 36, 66]], [.65, [20, 47, 64]], [.82, [18, 54, 60]]], [236, 158, 232], 24, 40, 30, .085) + '#1c1334!important;image-rendering:pixelated}';
     document.body.appendChild(s); })();
@@ -3787,7 +3790,7 @@ img.rimg{image-rendering:auto!important}
     stage.classList.add('onped'); stage.style.setProperty('--P', P.toFixed(4) + 'px'); el.firstChild.style.backgroundImage = 'url(' + pedRune(col || '#d9dde8') + ')'; }
   function showOffer(key){
     var p = LP(key), box = $('roul'), pic = box.querySelector('.rpic');
-    box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); box.querySelector('.rbox').classList.toggle('camp', S.offerMode === 'camp'); box.querySelector('.rbox').classList.toggle('fairy', S.offerMode === 'fairy'); if (S.offerMode === 'fairy') fairyDeco(box.querySelector('.rstage')); if (S.offerMode === 'groll') bulbDeco(box.querySelector('.rstage')); box.querySelector('.rbox').classList.toggle('groll', S.offerMode === 'groll'); rayFx(key); if (!box.classList.contains('chestpop')) pedestal(box.querySelector('.rstage'), GR(lootTier(key)).col); $('rUp').hidden = !upOK(key);
+    box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); box.querySelector('.rbox').classList.toggle('camp', S.offerMode === 'camp'); box.querySelector('.rbox').classList.toggle('vic', !S.offerMode); /* 전투 승리 */ box.querySelector('.rbox').classList.toggle('fairy', S.offerMode === 'fairy'); if (S.offerMode === 'fairy') fairyDeco(box.querySelector('.rstage')); if (S.offerMode === 'groll') bulbDeco(box.querySelector('.rstage')); box.querySelector('.rbox').classList.toggle('groll', S.offerMode === 'groll'); rayFx(key); if (!box.classList.contains('chestpop')) pedestal(box.querySelector('.rstage'), GR(lootTier(key)).col); $('rUp').hidden = !upOK(key);
     pic.style.imageRendering = p.type === 'h' && IMGS[p.id] ? 'pixelated' : '';
     var rk = qN(), rq = { k: rk, css: 66 * qR() / (sApp() * (window.devicePixelRatio || 1)) };
     var lm = Math.max(2, Math.round(qR() * 64 * .8 / 24)); document.documentElement.style.setProperty('--rlq', (24 * lm / (sApp() * (window.devicePixelRatio || 1))).toFixed(2) + 'px'); /* 유물·골드 그림도 영웅과 같은 크기(영웅이 칸에서 차지하는 높이 약 80%), 24px 원본의 정수배 장치 px */ document.documentElement.style.setProperty('--rpq', (p.type === 'h' && IMGS[p.id] ? rq.css : 114) + 'px'); rpAnim.nk = p.type === 'h' ? rq.k : 0; OUTLN = rpAnim.nk;
@@ -3850,7 +3853,7 @@ img.rimg{image-rendering:auto!important}
   function againPrice(){ return E.lootRerollPrice(D, S.offerRerolls || 0, S.stage - 1); } // 가격 식은 엔진에만
   function leftPool(){ var all = (S.offerIds && S.offerIds.length ? S.offerIds : [S.offer]).filter(function(x, i, a){ return a.indexOf(x) === i; }), gone = S.offerGone || [];
     return all.filter(function(x){ return gone.indexOf(x) < 0 && x !== S.offer; }); }
-  function rerollLeft(){ var mx = E.rerollMax ? E.rerollMax(D, plv()) : Infinity; return { mx: mx, n: Math.max(0, mx - (S.offerRerolls || 0)) }; }
+  function rerollLeft(){ var ev = (S.offerMode === 'camp' || S.offerMode === 'fairy') && E.eventRerolls, mx = ev ? E.eventRerolls(D, plv()) : E.rerollMax ? E.rerollMax(D, plv()) : Infinity; /* 모닥불·요정은 레벨별 따로 */ return { mx: mx, n: Math.max(0, mx - (S.offerRerolls || 0)) }; }
   function renderAgain(){ var b = $('rAgain'), p = againPrice(), left = leftPool().length, R = rerollLeft();
     b.innerHTML = '리셋 ' + Math.floor(p).toLocaleString() + 'G'; /* 후보가 없으면 회색만 (예전: 마지막 후보예요) */
     b.disabled = !left || S.gold < p || R.n <= 0;
@@ -3864,7 +3867,7 @@ img.rimg{image-rendering:auto!important}
     $('rX').hidden = pend; // 백팩이 꽉 찬 고르기 중에는 닫을 수 없어요
     if (S.offerMode === 'mobs'){ $('rAgain').hidden = true; $('roul').querySelectorAll('.rstrip span').forEach(function(sp){ sp.classList.add('res'); }); $('roul').querySelector('.rmeta').textContent = ''; }
     if (S.offerMode === 'fairy'){ if (!(D.recruit.reroll || {}).fairy) $('rAgain').hidden = true; $('rX').hidden = !decided || pend; } /* reroll.fairy면 요정 룰렛도 리셋 */
-    if (S.offerMode === 'camp' || S.offerMode === 'lvpick'){ $('rAgain').hidden = true; $('rX').hidden = !decided || pend; }
+    if (S.offerMode === 'camp' || S.offerMode === 'lvpick'){ if (S.offerMode === 'lvpick' || !(D.recruit.reroll || {}).campfire) $('rAgain').hidden = true; $('rX').hidden = !decided || pend; }
     if (S.offerMode === 'groll'){ $('rAgain').hidden = true; $('rNo').hidden = decided || pend; $('rNo').textContent = '포기'; $('rX').hidden = false; $('rX').disabled = !decided; /* 결과 정하기 전: 닫기 막음(회색) */ if ($('rSpin')) $('rSpin').hidden = true; $('rLeft').hidden = true; } /* 리셋 없음: 받기 / 포기 */
     $('rRes').hidden = true; $('rRes').innerHTML = S.offerLast || '';
     $('rPend').hidden = !pend; $('rPend').innerHTML = pend ? pendHtml() : ''; $('roul').querySelector('.rbox').classList.toggle('pendmode', pend);
