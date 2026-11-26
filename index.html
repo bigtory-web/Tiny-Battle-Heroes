@@ -2836,14 +2836,7 @@ img.rimg{image-rendering:auto!important}
 #mimicPop .mmrow{height:116px}
 /* 돈고블린 레버 장식: 팝업 오른쪽 바깥 */
 #roul .rbox:not(.groll) > #grLever{display:none}
-#roul .rbox > #grLever{position:absolute;left:calc(100% + 10px);top:50%;margin-top:-66px;width:44px;height:112px;z-index:6;pointer-events:none}
-#grLever .lvbase{position:absolute;left:4px;bottom:0;width:36px;height:30px;background:#5d5470;box-shadow:inset 0 0 0 2px #17141d,inset 0 5px 0 -1px #8c8399}
-#grLever .lvrod{position:absolute;left:18px;bottom:24px;width:8px;height:66px;background:#d9dde8;box-shadow:inset 0 0 0 2px #17141d;transform-origin:50% 100%}
-#grLever .lvknob{position:absolute;left:8px;top:0;width:28px;height:28px;background:#d8443e;box-shadow:inset 4px 4px 0 #ff8a80,inset -4px -4px 0 #8a1f1c;clip-path:polygon(8px 0,20px 0,20px 4px,24px 4px,24px 8px,28px 8px,28px 20px,24px 20px,24px 24px,20px 24px,20px 28px,8px 28px,8px 24px,4px 24px,4px 20px,0 20px,0 8px,4px 8px,4px 4px,8px 4px)}
-#grLever.pull .lvknob{animation:lvpullk .6s steps(6)}
-#grLever.pull .lvrod{animation:lvpullr .6s steps(6)}
-@keyframes lvpullk{40%{transform:translateY(52px)}}
-@keyframes lvpullr{40%{transform:scaleY(.2)}}
+#roul .rbox > #grLever{position:absolute;left:100%;top:50%;margin-top:-67px;width:36px;height:134px;z-index:6;pointer-events:none;background:url(img/p/ev_goblin_lever.png) 0 0/100% 100% no-repeat;image-rendering:pixelated} /* 움직이지 않는 장식 그림 (2026-11-26 사용자) */
 /* 파랑 일반 미믹: 44칸 (도트 1칸 = 갈색과 같게) */
 .foe > .mhop.g2{background-image:url(img/p/mimic_g2_hop.png)}
 #mimicPop .mmc.g2 b{left:-7px;right:-7px;top:-14px;}
@@ -5323,13 +5316,12 @@ img.rimg{image-rendering:auto!important}
     S.offerMode = 'groll'; S.offerDecided = false; S.offerGone = []; offerIds = S.offerIds = pool.slice(); startRoulette(pool, pool.indexOf(S.roulAt) >= 0 ? S.roulAt : pool[0], true);
     box.classList.add('groll', 'gwait'); box.classList.remove('spin', 'pendmode', 'camp'); box.querySelector('.rmeta').textContent = '';
     $('rWait').hidden = true; $('rRes').hidden = true; $('rPend').hidden = true; box.querySelector('.rbtns').hidden = false; ['rYes', 'rNo', 'rAgain', 'rExit'].forEach(function(b){ $(b).hidden = true; });
-    var sp = $('rSpin'); if (!sp){ sp = document.createElement('button'); sp.id = 'rSpin'; sp.type = 'button'; sp.className = 'go'; box.querySelector('.rbtns').insertBefore(sp, $('rYes')); sp.addEventListener('click', function(){ if (!this.disabled){ leverPull(); grollSpin(); } }); }
+    var sp = $('rSpin'); if (!sp){ sp = document.createElement('button'); sp.id = 'rSpin'; sp.type = 'button'; sp.className = 'go'; box.querySelector('.rbtns').insertBefore(sp, $('rYes')); sp.addEventListener('click', function(){ if (!this.disabled){ grollSpin(); } }); }
     leverDeco(box);
     sp.hidden = false; sp.textContent = '돌리기 ' + cost.toLocaleString() + 'G'; sp.disabled = !left || S.gold < cost;
     var rl = $('rLeft'); rl.hidden = false; rl.textContent = '횟수 ' + left + '/' + mx; rl.classList.toggle('z', !left); $('rX').hidden = false; $('rX').disabled = false; }
-  /* 레버는 꾸밈 (누를 수 없음): 돌리기 버튼을 누르면 저절로 당겨짐 (2026-11-26 사용자: "그냥 디자인 말한 거였어") */
-  function leverDeco(box){ if (box.querySelector(':scope > #grLever')) return; box.insertAdjacentHTML('beforeend', '<i id="grLever" aria-hidden="true"><i class="lvrod"></i><i class="lvknob"></i><i class="lvbase"></i></i>'); }
-  function leverPull(){ var l = $('grLever'); if (!l) return; l.classList.remove('pull'); void l.offsetWidth; l.classList.add('pull'); }
+  /* 레버는 꾸밈: 누를 수 없고 움직이지 않음 */
+  function leverDeco(box){ if (!box.querySelector(':scope > #grLever')) box.insertAdjacentHTML('beforeend', '<i id="grLever" aria-hidden="true"></i>'); }
   function grollClose(){ grOpen = false; S.offerMode = null; save(); $('roul').hidden = true; var b = $('roul').querySelector('.rbox'); delete b.dataset.grs; if ($('rSpin')) $('rSpin').hidden = true; renderAll(); }
   function grollHtml(){ var gx = 506, gy = 184; return '<div class="unit cfh oegob" style="left:' + (100 * gx / W) + '%;top:' + (100 * (gy + OFF + FOOT) / H) + '%;z-index:' + gy + '"><div class="cfslot"><i class="dlr" role="img" aria-label="돈고블린"></i></div></div>'; }
   function grollSpin(){ if (!isGroll() || S.offer || S.pending) return; if ($('rSpin')) $('rSpin').hidden = true; var cost = E.grollCost(D, S.stage, plv()), n = grollUsed(); if (n >= E.grollSpins(D, plv()) || S.gold < cost) return;
