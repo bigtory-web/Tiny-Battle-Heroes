@@ -229,6 +229,7 @@ b.pasx{display:inline-flex;align-items:center;justify-content:center;width:100%;
 #dsWin .dscorner img{width:32px;height:32px;image-rendering:pixelated}
 #dsWin .dskinds{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;margin-top:6px}
 #dsWin .dskinds i{display:flex;align-items:center;justify-content:center;height:38px;background:#1d1a24;box-shadow:inset 0 0 0 2px var(--pc)}
+#dsWin .dskinds i{cursor:pointer} #dsWin .dskinds i.view{background:#4a4358;box-shadow:0 0 0 2px #fff}
 #dsWin .dskinds img{width:32px;height:32px;image-rendering:pixelated}
 #dsWin .dskinds i.lit,#dsWin .dskinds i.win{background:#4a4358;box-shadow:0 0 0 2px #ffe27a}
 #dsWin .rbtns{display:flex!important;justify-content:center;align-items:center;position:relative}
@@ -5560,11 +5561,11 @@ img.rimg{image-rendering:auto!important}
     var w = document.createElement('div'); w.id = 'dsWin'; w.className = 'evwin';
     w.innerHTML = '<div class="rbox"><button class="spX" type="button" data-ds="x" title="닫기">✕</button><div class="rt">양탄자</div><div class="dsstage"></div><div class="dskinds">' + daisKinds().map(function(v){ return '<i data-v="' + v + '" style="--pc:' + daisCol() + '" title="' + padName(v) + '"><img src="' + padIc(v) + '" alt="' + padWord(v) + '"></i>'; }).join('') + '</div><div class="rbtns"></div></div>';
     w.querySelector('.dsstage').style.setProperty('--gc', daisCol()); document.body.appendChild(w); popAdd(w, true); daisRun();
-    w.addEventListener('click', function(e){ e.stopPropagation(); var b = e.target.closest('[data-ds]'); if (!b || b.disabled) return; var k = b.dataset.ds;
+    w.addEventListener('click', function(e){ e.stopPropagation(); var c = e.target.closest('.dskinds i[data-v]'); if (c){ if (!daisBusy){ var own = c.dataset.v === S.event.tag; daisShow(c.dataset.v, own, !own); } return; } /* 후보 누르면 큰 칸에 미리보기 (2026-11-26 사용자) */ var b = e.target.closest('[data-ds]'); if (!b || b.disabled) return; var k = b.dataset.ds;
       if (k === 'rr') return daisSpin();
       if (k === 'get') return daisTake();
       daisClose(); renderForm(); }); }
-  function daisShow(v, win){ var w = $('dsWin'); if (!w) return; w.querySelectorAll('.dskinds i').forEach(function(c){ var on = c.dataset.v === v; c.classList.toggle('lit', on && !win); c.classList.toggle('win', on && !!win); });
+  function daisShow(v, win, peek){ var w = $('dsWin'); if (!w) return; w.querySelectorAll('.dskinds i').forEach(function(c){ var on = c.dataset.v === v; c.classList.toggle('view', !!peek && on); if (peek) return; c.classList.toggle('lit', on && !win); c.classList.toggle('win', on && !!win); }); /* peek = 보기만: 결과(노란 테두리)는 그대로 */
     w.querySelector('.dsstage').classList.toggle('win', !!win);
     var tip = v ? '이 칸에 선 영웅은 ' + padWord(v) + (padRace(v) ? ' 종족이' : ' 속성이') + ' 더해져요. ' + padWord(v) + ' 조건 유물·' + padWord(v) + ' 시너지에 들어가요' : '';
     w.querySelector('.dsstage').innerHTML = (v ? '<img class="dsrug' + (win ? ' win' : '') + '" src="' + padURL(v) + '" alt="">' : '<em>?</em>') + '<i class="dsped rped"><i class="rrune" style="background-image:url(' + pedRune(daisCol()) + ')"></i></i>' + (v ? '<b class="dsnm" style="color:' + daisCol() + '">' + padName(v) + '</b><span class="dscorner" style="--pc:' + daisCol() + '" data-tipt="' + padName(v) + '" data-tiptx="' + tip + '"><img src="' + padIc(v) + '" alt="' + padName(v) + '"></span>' : '') ; if (win) fwFx(w.querySelector('.dsstage'), '#d9c4ff', function(){ return daisBusy; }); }
