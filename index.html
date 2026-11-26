@@ -2837,6 +2837,11 @@ img.rimg{image-rendering:auto!important}
 /* 돈고블린 레버 장식: 팝업 오른쪽 바깥 */
 #roul .rbox:not(.groll) > #grLever{display:none}
 #roul .rbox > #grLever{position:absolute;left:100%;top:50%;margin-top:-67px;width:36px;height:134px;z-index:6;pointer-events:none;background:url(img/p/ev_goblin_lever.png) 0 0/100% 100% no-repeat;image-rendering:pixelated} /* 움직이지 않는 장식 그림 (2026-11-26 사용자) */
+/* 도는 동안만 레버가 빛남: 움직이지 않고 빛만 (2026-11-26 사용자) */
+#roul .rbox.groll.spin > #grLever{animation:lvglow .48s steps(2) infinite}
+@keyframes lvglow{0%,100%{filter:brightness(1) drop-shadow(0 0 2px #ffd34d)}50%{filter:brightness(1.45) drop-shadow(0 0 7px #ffe27a)}}
+#roul .rbox.groll.spin > #grLever::after{content:'';position:absolute;left:8px;top:8px;width:4px;height:4px;background:#fff;box-shadow:0 -4px #fff,0 4px #fff,-4px 0 #fff,4px 0 #fff,0 -8px #ffe27a,0 8px #ffe27a,-8px 0 #ffe27a,8px 0 #ffe27a;animation:lvstar .64s steps(1) infinite}
+@keyframes lvstar{50%{opacity:0}}
 /* 파랑 일반 미믹: 44칸 (도트 1칸 = 갈색과 같게) */
 .foe > .mhop.g2{background-image:url(img/p/mimic_g2_hop.png)}
 #mimicPop .mmc.g2 b{left:-7px;right:-7px;top:-14px;}
