@@ -2435,6 +2435,10 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
 #cloudRow .ghost.on{box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #ffd34d!important}
 /* 편성 화면 앞쪽 아래 장식: 캐릭터 위, 구름 그림자(340)·막대·별 아래, 누르기는 통과 */
 #field::after{content:'';position:absolute;left:0;right:0;bottom:0;height:20%;z-index:335;pointer-events:none;background:url(img/p/fg_field.png) 0 100% / 100% 100% no-repeat;image-rendering:pixelated}
+#field > .cellhl{position:absolute;z-index:0;width:calc(100% * 78 / 720);height:calc(100% * 56 / 400);transform:translate(-50%,-50%);background:no-repeat center/100% 100%;pointer-events:none;animation:cellhl 1.2s ease-in-out infinite}
+@keyframes cellhl{50%{opacity:.65}}
+/* 구름 그림자: 겹침 모드(multiply)를 뺌. 검정+투명도는 곱하기와 결과가 같고, 겹침 모드는 전장을 따로 합성해 그림이 번질 수 있음 */
+#field > .cloudsh{mix-blend-mode:normal!important}
 </style>
 </head>
 <body>
@@ -2582,7 +2586,8 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
     if (!im.complete || !im.naturalWidth){ if (!im._smw){ im._smw = 1; im.addEventListener('load', function(){ im._smw = 0; smoothImg(im); }, { once: true }); } return; }
     var nw = im.naturalWidth, nh = im.naturalHeight; if (nw > 72 || nh > 72) return;
     var cs = getComputedStyle(im); if (cs.imageRendering !== 'pixelated' && cs.imageRendering !== 'crisp-edges') return;
-    var r = im.getBoundingClientRect(), disp = r.width || nw * 1.5, N = Math.max(2, Math.min(6, Math.ceil(disp / nw) + 1)), key = src + '@' + N, u = SMc[key];
+    var r = im.getBoundingClientRect(), dsc = r.width * (window.devicePixelRatio || 1) / nw; if (r.width && dsc >= .98 && Math.abs(dsc - Math.round(dsc)) < .02) return; /* 장치 px로 정수배면 최근접이 가장 또렷 (요정 등) */
+    var disp = r.width || nw * 1.5, N = Math.max(2, Math.min(6, Math.ceil(disp / nw) + 1)), key = src + '@' + N, u = SMc[key];
     if (!u){ var c = document.createElement('canvas'); c.width = nw * N; c.height = nh * N; var x = c.getContext('2d'); x.imageSmoothingEnabled = false; x.drawImage(im, 0, 0, c.width, c.height); try { u = SMc[key] = c.toDataURL(); } catch (e){ return; } }
     if (parseFloat(cs.width) === nw && parseFloat(cs.height) === nh){ im.style.width = nw + 'px'; im.style.height = nh + 'px'; } /* 따로 크기를 안 준 그림은 원래 크기를 고정 */
     im.dataset.sm = '1'; im.dataset.osrc = src; im.src = u; im.style.imageRendering = 'auto'; }
@@ -2646,7 +2651,7 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
   var BG = new Image(), BGD = new Image(); /* 낮·노을 배경 */
   var FG = new Image(), FGD = new Image(), FGN = new Image(); FG.src = 'img/p/fg_field.png'; FGD.src = 'img/p/fg_field_dusk.png'; FGN.src = 'img/p/fg_field_night.png'; /* 앞쪽 아래 장식(720×80): 캐릭터보다 앞. 2026-11-26 */
   /* 배경을 BGUP px 위로 올림(2026-11-26 사용자: 9칸이 뒷배경 바위와 겹쳐 보임). 아래 빈 띠는 맨 아래 땅을 뒤집어 이어 붙임. 전투 캔버스와 편성 화면이 같은 합성 그림을 씀 */
-  var BGUP = 30;
+  var BGUP = 48; /* 30 -> 48 (2026-11-26): 윗줄 칸이 절벽 밑동 풀과 아직 겹침 */
   function bgRaise(src, done){ var im = new Image(); im.onload = function(){ var c = document.createElement('canvas'); c.width = im.width; c.height = im.height; var x = c.getContext('2d'); x.drawImage(im, 0, -BGUP); x.translate(0, im.height); x.scale(1, -1); x.drawImage(im, 0, im.height - BGUP, im.width, BGUP, 0, 0, im.width, BGUP); c.complete = true; c.naturalWidth = c.width; c.naturalHeight = c.height; done(c); }; im.src = src; }
   bgRaise('img/p/bg_field.png', function(c){ BG = c; try { var st = document.createElement('style'); st.textContent = '.field{background:url(' + c.toDataURL() + ') 50% 100% / 100% auto no-repeat,#b8a0a6}'; document.head.appendChild(st); } catch (e) {} });
   bgRaise('img/p/bg_field_dusk.png', function(c){ BGD = c; });
@@ -3348,6 +3353,13 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
   function tapCell(e){ var f = $('field'); if (!f || !e.target.closest('#field')) return null; var r = f.getBoundingClientRect(), wx = (e.clientX - r.left) / r.width * W, wy = (e.clientY - r.top) / r.height * H - OFF - FOOT;
     if (wx > W / 2) return null; var c = nearCell(hexCells().A, wx, wy); return c && (c[0] - wx) * (c[0] - wx) + (c[1] - wy) * (c[1] - wy) < 46 * 46 ? c : null; } /* 눌린 자리의 내 쪽 칸 (그림이 이웃 칸을 덮어도 칸 기준) */
   function cellUid(c){ var P = S.pos || {}; for (var i = 0; i < S.team.length; i++){ var u = S.team[i]; if (u && P[u] && P[u].x === c[0] && P[u].y === c[1]) return u; } return null; }
+  var HLURL = {};
+  function hlURL(kind){ if (HLURL[kind]) return HLURL[kind]; var c = document.createElement('canvas'); c.width = 78; c.height = 56; var x = c.getContext('2d'); x.beginPath(); [[0, -27], [38, -13], [38, 13], [0, 27], [-38, 13], [-38, -13]].forEach(function(q, i){ var px = Math.round(39 + q[0]) + .5, py = Math.round(28 + q[1]) + .5; if (i) x.lineTo(px, py); else x.moveTo(px, py); }); x.closePath();
+    x.fillStyle = kind === 'no' ? 'rgba(255,82,70,.34)' : 'rgba(255,244,80,.34)'; x.fill(); x.strokeStyle = kind === 'no' ? 'rgba(255,130,115,.95)' : 'rgba(255,248,130,.95)'; x.lineWidth = 2; x.stroke(); return HLURL[kind] = c.toDataURL(); }
+  /* 고른 영웅이 갈 수 있는 내 쪽 칸: 노란 형광. 백팩 영웅인데 전장이 꽉 찼으면 빈 칸은 붉은색(영웅이 있는 칸은 자리 바꿈·합성이 되므로 노랑) (2026-11-26 사용자) */
+  function cellHl(){ var f = $('field'); if (!f) return; f.querySelectorAll(':scope > .cellhl').forEach(function(x){ x.remove(); }); if (!sel || bt || !U(sel.uid) || $('tab-camp').classList.contains('busy')) return;
+    var me = sel.uid, onF = S.team.indexOf(me) >= 0, room = onF || freeSlot(U(me).id) != null;
+    hexCells().A.forEach(function(c){ var occ = cellUid(c); if (occ === me) return; var i = document.createElement('i'); i.className = 'cellhl'; i.style.left = (100 * c[0] / W) + '%'; i.style.top = (100 * (c[1] + OFF + FOOT) / H) + '%'; i.style.backgroundImage = 'url(' + hlURL(occ || room ? 'ok' : 'no') + ')'; i.dataset.smb = '1'; f.appendChild(i); }); }
   function tapPlace(e){ var tg = e.target; if (!sel || !U(sel.uid) || tg.closest('.padtgt, .altA, .altM, .altslot, button:not(.chip):not(.slot), .foe')) return false;
     var me = sel.uid, onF = S.team.indexOf(me) >= 0, c = tapCell(e), occ = c ? cellUid(c) : null, t = tg.closest('#roster .chip[data-uid], #field .slot.on'), other = occ || (!c && t ? +t.dataset.uid : null);
     function done(){ clearSel(); e.preventDefault(); return true; }
@@ -3449,7 +3461,7 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
   (function(){ ['roul', 'chestPop', 'res', 'mobLoot', 'bagOver', 'gameOver', 'evWin'].forEach(function(id){ if ($(id)) popAdd($(id), true); }); if ($('pendBox')) popAdd($('pendBox'), false); })();
   function showInfo(html, side){ var p = $('hinfo'); if (shopOpen()) setShop(false); /* 창은 한 번에 하나 */ p.innerHTML = (html.indexOf('data-hix') < 0 ? '<button class="hi-x" data-hix="1" type="button" title="닫기">✕</button>' : '') + html; /* 모든 상세 창에 닫기 ✕ */ p.className = 'hinfo ' + side; p.hidden = false; }
   function hideInfo(){ $('hinfo').hidden = true; }
-  new MutationObserver(function(){ if ($('hinfo').hidden) delete $('field').dataset.sf; }).observe($('hinfo'), { attributes: true, attributeFilter: ['hidden'] }); /* 상세 창이 닫히면 적 선택 라인도 풀림 */
+  new MutationObserver(function(){ if ($('hinfo').hidden){ delete $('field').dataset.sf; document.querySelectorAll('#field > .cellhl').forEach(function(x){ x.remove(); }); } }).observe($('hinfo'), { attributes: true, attributeFilter: ['hidden'] }); /* 상세 창이 닫히면 적 선택 라인도 풀림 */
   (function(){ var sc = document.createElement('div'); sc.id = 'shopScrim'; sc.className = 'shopscrim'; $('tab-shop').parentNode.insertBefore(sc, $('tab-shop'));
     var eat = false; sc.addEventListener('pointerdown', function(e){ e.stopPropagation(); e.preventDefault(); if (shopOpen()){ setShop(false); eat = true; setTimeout(function(){ eat = false; }, 400); } });
     document.addEventListener('click', function(e){ if (eat){ eat = false; e.stopPropagation(); e.preventDefault(); } }, true); })(); /* 상점 밖을 누르면 상점부터 닫혀요 (그 누름은 아래로 안 넘어가요) */
@@ -3468,8 +3480,8 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
   function ownInfo(uid){ var u = U(uid); if (!u) return ''; return infoHtml(u.id, lvOf(u.id), u.star, gmul(u.star), false, false, u); }
   function applySel(side){
     document.querySelectorAll('.picked').forEach(function(x){ x.classList.remove('picked'); });
-    var el = selEl(); markTargets(0, false); if (!el){ sel = null; hideInfo(); return; }
-    el.classList.add('picked'); markTargets(sel.uid, true);
+    var el = selEl(); markTargets(0, false); if (!el){ sel = null; cellHl(); hideInfo(); return; }
+    el.classList.add('picked'); markTargets(sel.uid, true); cellHl();
     var onField = S.team.indexOf(sel.uid) >= 0, u = U(sel.uid), same = S.units.filter(function(x){ return x.uid !== u.uid && E.canMerge(D, u, x); }).length;
     var altOn = isAltar() && !isLvPick(), altOk = altOn && !altBusy && !altDone() && !hero(u.id).mob && sel.uid !== altA && sel.uid !== altM && (altA == null || !!trKind(U(altA), u));
     var btn = '<button class="hi-x" data-hix="1" type="button" title="닫기">✕</button>' + '<div class="hi-btns">' + (altOn ? '<button class="hi-b alt" data-hi="alt"' + (altOk ? '' : ' disabled') + '>초월</button>' : '') + sellBtn(u) + '</div>';
