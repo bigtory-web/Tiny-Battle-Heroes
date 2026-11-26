@@ -2877,7 +2877,7 @@ img.rimg{image-rendering:auto!important}
 #trWin .rbtns{align-items:center}
 /* 고르기 전: 원 빛 빼고 +만 껌뻑, 단상 색 = 메인 노랑·재료 파랑 / 초월: 배경이 바뀌는 센 연출 (2026-11-26 사용자) */
 #trWin .trslot .trglow{display:none} /* 영웅 뒤 둥근 후광 전부 없앰 */
-#trWin .trslot .trplus{bottom:calc(38px + 25 * var(--P));z-index:3} /* + = 영웅이 설 자리 가운데 */
+#trWin .trslot .trplus{bottom:calc(38px + 40 * var(--P));z-index:3} /* + = 단상 위로 영웅 키 절반쯤 (2026-11-26 사용자) */
 #trWin .trslot .trtag{top:28px} /* 딱지는 위 테두리에서 떼어 단상 위 공간에 (2026-11-26 사용자) */
 #trWin .trslot.next .trplus{animation:trblink .8s steps(1) infinite}
 @keyframes trblink{50%{opacity:.15}}
@@ -2887,9 +2887,9 @@ img.rimg{image-rendering:auto!important}
 #trWin .trstage.charge{background:radial-gradient(circle at 30% 55%,#8a52e0,#2a1450 45%,#0c0818 80%)!important;animation:trquake .16s steps(2) infinite}
 #trWin .trstage.done{background:radial-gradient(circle at 50% 55%,#8a52e0,#32195c 45%,#0c0818 80%)!important}
 #trWin .trstage.done .trslot.sA > .rped{--tc:#c9a6ff;filter:sepia(1) saturate(3.2) hue-rotate(220deg) drop-shadow(0 0 6px #c9a6ff)}
-#trWin .trstage.charge::before,#trWin .trstage.done::before{content:'';position:absolute;left:50%;top:55%;width:720px;height:720px;margin:-360px 0 0 -360px;background:repeating-conic-gradient(rgba(201,166,255,.4) 0 8deg,transparent 8deg 20deg);animation:spinr 1.6s linear infinite;pointer-events:none}
+#trWin .trstage.charge::before{content:'';position:absolute;left:50%;top:55%;width:720px;height:720px;margin:-360px 0 0 -360px;background:repeating-conic-gradient(rgba(201,166,255,.4) 0 8deg,transparent 8deg 20deg);animation:spinr 1.6s linear infinite;pointer-events:none}
 #trWin .trstage.charge::before{left:30%}
-#trWin .trstage.done::before{background:repeating-conic-gradient(rgba(201,166,255,.36) 0 8deg,transparent 8deg 20deg);animation-duration:10s}
+#trWin .trstage.done .trtag{display:none} /* 결과 화면엔 "메인" 딱지 없음 (2026-11-26 사용자) */
 #trWin .trstage.done::after{content:'';position:absolute;inset:0;background:#fff;pointer-events:none;z-index:6;animation:finfl .7s ease-out forwards}
 #trWin .rbox:has(.trstage.charge){background:#2a1648!important}
 @keyframes trquake{50%{translate:3px -2px}}
