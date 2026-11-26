@@ -1,0 +1,8 @@
+Look at img/gemini/ref/skill_drums_x8.png : an item icon of our game (24x24 pixel art, shown 8x enlarged on white). Match this pixel art style, pixel size and density.
+Generate ONE new image with your image generation tool and save it as img/codex/gold/gold_b.png
+
+A pixel art ITEM ICON of a GOLD POUCH: a plump round brown leather drawstring pouch tied with a cord, gold coins slightly spilling out of the opening on top and one or two coins at its foot, a small shine on a coin.
+- Exactly a 24x24 art pixel grid (one art pixel = 32 image pixels, image 768x768), fill about 22x22 art pixels, centered.
+- 1 art pixel dark outline (#2a1409), 3 to 4 flat tones of leather, bright warm gold coins, no gradients, no anti-aliasing, no finer detail than the grid.
+[Format] Plain solid #FF00FF magenta background, no text, no shadow.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
