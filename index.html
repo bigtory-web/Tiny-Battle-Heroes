@@ -2724,6 +2724,8 @@ img.rimg{image-rendering:auto!important}
 @keyframes fdust{0%{translate:0 0;opacity:0}20%{opacity:.55}50%{translate:4px -26px}80%{opacity:.45}100%{translate:-2px -54px;opacity:0}}
 #roul .rbox.fairy .rstage > .fvine{display:block;position:absolute;left:7px;top:7px;width:40px;height:40px;pointer-events:none;z-index:3;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' shape-rendering='crispEdges'%3E%3Cpath fill='%233f9a6a' d='M0 0h14v1H9v1H2v7H1v5H0z'/%3E%3Cpath fill='%236fd39a' d='M7 2h3v1h1v1H8V3H7zM13 1h2v1h2v1h-3V2h-1zM2 8h1v1h1v2H3v-1H2zM1 13h1v1h2v2H2v-1H1z'/%3E%3Cpath fill='%23ff9ed2' d='M3 2h3v1h1v3H6v1H3V6H2V3h1z'/%3E%3Cpath fill='%23fff0a0' d='M4 4h1v1H4z'/%3E%3Cpath fill='%23a8e4ff' d='M11 2h2v1h-2zM2 11h1v2H2z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
 #roul .rbox.fairy .rstage > .fvine.b{top:auto;bottom:7px;transform:scaleY(-1)}
+#roul .rbox.fairy .rstage > .fvine.r{left:auto;right:7px;transform:scaleX(-1)}
+#roul .rbox.fairy .rstage > .fvine.r.b{right:54px;transform:scale(-1,-1)} /* 우하단 스킬 칸(44px)을 안 가리게 그 왼쪽 */
 #roul .rbox.fairy .rstrip{box-shadow:none!important} /* 2026-11-26 사용자: 요정 띠 바깥 테두리 뺌 */
 /* 상점 칸: 할인 딱지·UP이 얼굴을 가리지 않게 (2026-11-26 사용자: "대가리부분아니잖아"). 자르기는 공통 170%·위 40% 그대로 */
 #tab-shop .stile .pr{translate:0 6px}
@@ -3447,7 +3449,7 @@ img.rimg{image-rendering:auto!important}
   /* 요정 팝업: 떠오르는 요정 가루 + 왼쪽 위·아래 꽃 덩굴 (2026-11-26 사용자) */
   function fairyDeco(stage){ if (!stage || stage.querySelector(':scope > .fdust')) return; var o = '', C = ['#ffb3de', '#a8e4ff', '#fff3b0'];
     for (var i = 0; i < 16; i++){ var du = (5 + Math.random() * 4).toFixed(2); o += '<s style="left:' + (4 + Math.random() * 92).toFixed(1) + '%;top:' + (35 + Math.random() * 62).toFixed(1) + '%;background:' + C[i % 3] + ';animation-duration:' + du + 's;animation-delay:' + (-Math.random() * du).toFixed(2) + 's"></s>'; }
-    stage.insertAdjacentHTML('beforeend', '<i class="fdust">' + o + '</i><i class="fvine"></i><i class="fvine b"></i>'); }
+    stage.insertAdjacentHTML('beforeend', '<i class="fdust">' + o + '</i><i class="fvine"></i><i class="fvine b"></i><i class="fvine r"></i><i class="fvine r b"></i>'); }
   function starFx(stage, tier, col){ if (!stage) return; var el = stage.querySelector(':scope > .rstars'); if (!el){ el = document.createElement('i'); el.className = 'rstars'; stage.appendChild(el); }
     el.style.setProperty('--sc', col || '#fff'); if (el.firstChild) return; var n = 23, o = ''; /* 개수·빈도는 등급과 상관없이 같고 색만 다름. 결과 그림 왼쪽·위·오른쪽 반원, 단상 위로는 안 내려감 (2026-11-26 사용자) */
     for (var i = 0; i < n; i++){ var a = (i + Math.random() * .7) / n * Math.PI, f = Math.random(), x = 50 + Math.cos(a) * (32 + f * 16), y = 94 - Math.sin(a) * (80 + f * 10), sz = Math.random() < .45 ? 3 : 2, du = (1.6 + Math.random() * 1.4).toFixed(2), dl = (-Math.random() * 3).toFixed(2); o += '<s class="s' + sz + '" style="left:' + x.toFixed(1) + '%;top:' + y.toFixed(1) + '%;animation-duration:' + du + 's;animation-delay:' + dl + 's"></s>'; }
