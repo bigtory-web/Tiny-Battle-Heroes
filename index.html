@@ -2495,7 +2495,6 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 .hinfo > .hi-body > *{flex:none}
 /* 룰렛: 캐릭터 발밑 돌 받침 (3단 픽셀) */
 #roul:not(.chestpop) .rbox .rstage .rpic:not(.loot){position:relative;z-index:2}
-#roul:not(.chestpop) .rbox .rstage:has(.rpic:not(.loot))::before{content:'';position:absolute;left:50%;bottom:34px;width:132px;height:24px;margin-left:-66px;z-index:1;pointer-events:none;background:linear-gradient(#b9b1c4 0 6px,#8c8399 6px 12px,#5d5470 12px 18px,#3b3546 18px);clip-path:polygon(12px 0,calc(100% - 12px) 0,calc(100% - 12px) 3px,calc(100% - 6px) 3px,calc(100% - 6px) 6px,100% 6px,100% 18px,calc(100% - 6px) 18px,calc(100% - 6px) 21px,calc(100% - 12px) 21px,calc(100% - 12px) 100%,12px 100%,12px 21px,6px 21px,6px 18px,0 18px,0 6px,6px 6px,6px 3px,12px 3px)}
 .merchnpc .cfslot{display:flex;align-items:flex-end;justify-content:center}
 .merchnpc .mnimg{display:block;flex:none;height:100%;aspect-ratio:1;background:url(img/p/ev_trader_anim.png) 0 0/800% 100% no-repeat;image-rendering:pixelated;transform:scaleX(-1);animation:trader 2s steps(8,jump-none) infinite}
 @keyframes trader{to{background-position:100% 0}}
@@ -2542,9 +2541,14 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 #evWin .evbox.merc{width:auto!important;max-height:none!important;overflow:visible!important;padding:0!important;background:none!important;box-shadow:none!important;clip-path:none!important}
 #evWin .rbox{width:400px!important;position:relative;overflow:visible!important}
 #evWin .rbox .rstage .rpic{width:var(--rpq,114px)!important;height:var(--rpq,114px)!important;background-size:var(--rpq,114px) var(--rpq,114px)!important;position:relative;z-index:2;filter:none!important}
-#evWin .rbox .rstage::before{content:'';position:absolute;left:50%;bottom:34px;width:132px;height:24px;margin-left:-66px;z-index:1;pointer-events:none;background:linear-gradient(#b9b1c4 0 6px,#8c8399 6px 12px,#5d5470 12px 18px,#3b3546 18px);clip-path:polygon(12px 0,calc(100% - 12px) 0,calc(100% - 12px) 3px,calc(100% - 6px) 3px,calc(100% - 6px) 6px,100% 6px,100% 18px,calc(100% - 6px) 18px,calc(100% - 6px) 21px,calc(100% - 12px) 21px,calc(100% - 12px) 100%,12px 100%,12px 21px,6px 21px,6px 18px,0 18px,0 6px,6px 6px,6px 3px,12px 3px)}
 #evWin .mercline{margin:8px 0;padding:10px 0;text-align:center;font:400 18px var(--display);color:#f3e6c4;background:#1d1a24;box-shadow:inset 0 0 0 2px #17141d;text-shadow:0 2px 0 #17141d}
 #evWin .rbtns{display:flex;justify-content:center;gap:10px}
+.rstage > .rped{position:absolute;left:calc(50% - 48 * var(--P));bottom:38px;width:calc(96 * var(--P));height:calc(35 * var(--P));z-index:1;pointer-events:none;background:url(img/p/pedestal.png) 0 0/100% 100% no-repeat;image-rendering:pixelated}
+.rped > .rrune{position:absolute;inset:0;background:0 0/100% 100% no-repeat;image-rendering:pixelated;animation:rrune 1.6s steps(4) infinite}
+@keyframes rrune{0%,100%{opacity:.55;filter:none}50%{opacity:1;filter:brightness(1.35) drop-shadow(0 0 3px currentColor)}}
+#roul:not(.chestpop) .rbox .rstage.onped .rpic:not(.loot),#evWin .rbox .rstage.onped .rpic{position:absolute!important;left:calc(50% - 33 * var(--P));bottom:calc(38px + 23.5 * var(--P));margin:0!important;z-index:2}
+#roul:not(.chestpop) .rbox .rstage.onped .rpic.loot{position:absolute!important;left:calc(50% - var(--rlq,96px) / 2);bottom:calc(38px + 25 * var(--P));width:var(--rlq,96px)!important;height:var(--rlq,96px)!important;margin:0!important;z-index:2}
+#roul:not(.chestpop) .rbox .rstage.onped .rname,#evWin .rbox .rstage.onped .rname{bottom:6px!important;z-index:4}
 </style>
 </head>
 <body>
@@ -3239,9 +3243,15 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     if (gr === 3){ var r = $('roul'); r.classList.remove('flash'); void r.offsetWidth; r.classList.add('flash'); }
   }
   function rayFx(key){ var rb = $('roul').querySelector('.rbox'), t = lootTier(key); rb.classList.remove('rl1', 'rl2', 'rl3', 'rl4'); rb.classList.add('rl' + t); rb.style.setProperty('--gcol', GR(t).col); } /* 뒤 빛줄기: 1등급 없음, 2등급 이상은 등급색, 높을수록 진하고 빠르게. 도는 중 칸이 바뀌면 같이 바뀜 */
+  /* 룬 단상 (2026-11-26 사용자 확정): 영웅 도트와 같은 밀도(1칸 = P css px, 장치 px 정수배). 발 = 단상 윗끝에서 10.5칸 아래, 이름판은 단상 아래. 룬은 등급색으로 반짝 */
+  var PEDRUNE = new Image(), PEDC = {}; PEDRUNE.src = 'img/p/pedestal_rune.png';
+  function pedRune(col){ if (PEDC[col]) return PEDC[col]; if (!PEDRUNE.complete || !PEDRUNE.naturalWidth) return 'img/p/pedestal_rune.png'; var c = document.createElement('canvas'); c.width = 96; c.height = 35; var x = c.getContext('2d'); x.drawImage(PEDRUNE, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = col; x.fillRect(0, 0, 96, 35); return PEDC[col] = c.toDataURL(); }
+  function pedestal(stage, col){ if (!stage) return; var P = qR() / (sApp() * (window.devicePixelRatio || 1)), el = stage.querySelector(':scope > .rped');
+    if (!el){ el = document.createElement('i'); el.className = 'rped'; el.dataset.smb = '1'; el.innerHTML = '<i class="rrune" data-smb="1"></i>'; stage.appendChild(el); }
+    stage.classList.add('onped'); stage.style.setProperty('--P', P.toFixed(4) + 'px'); el.firstChild.style.backgroundImage = 'url(' + pedRune(col || '#d9dde8') + ')'; }
   function showOffer(key){
     var p = LP(key), box = $('roul'), pic = box.querySelector('.rpic');
-    box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); rayFx(key); $('rUp').hidden = !upOK(key);
+    box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); rayFx(key); if (!box.classList.contains('chestpop')) pedestal(box.querySelector('.rstage'), GR(lootTier(key)).col); $('rUp').hidden = !upOK(key);
     pic.style.imageRendering = p.type === 'h' && IMGS[p.id] ? 'pixelated' : '';
     var rk = qN(), rq = { k: rk, css: 66 * qR() / (sApp() * (window.devicePixelRatio || 1)) };
     var lm = Math.max(2, Math.round(qR() * 64 * .8 / 24)); document.documentElement.style.setProperty('--rlq', (24 * lm / (sApp() * (window.devicePixelRatio || 1))).toFixed(2) + 'px'); /* 유물·골드 그림도 영웅과 같은 크기(영웅이 칸에서 차지하는 높이 약 80%), 24px 원본의 정수배 장치 px */ document.documentElement.style.setProperty('--rpq', (p.type === 'h' && IMGS[p.id] ? rq.css : 114) + 'px'); rpAnim.nk = p.type === 'h' ? rq.k : 0; OUTLN = rpAnim.nk;
@@ -4567,6 +4577,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     var pic = box.querySelector('.rpic');
     if (IMGS[id]){ w.style.setProperty('--rpq', (66 * qR() / (sApp() * (window.devicePixelRatio || 1))).toFixed(2) + 'px'); OUTLN = qN(); pic.style.backgroundImage = 'url(' + outlinedURL(id, gc(id)) + ')'; pic.style.setProperty('--o1', 'url(' + outlinedURL(id, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(id, '#ffffff') + ')'); /* 룰렛 결과처럼 외곽선 깜빡임에 필요 */ OUTLN = 0; pic.style.imageRendering = 'pixelated'; }
     else pic.innerHTML = AV[id];
+    pedestal(box.querySelector('.rstage'), col);
     w.hidden = false;
   }
   $('evWin').addEventListener('click', function(e){
