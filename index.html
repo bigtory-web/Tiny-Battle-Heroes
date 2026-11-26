@@ -2831,8 +2831,8 @@ img.rimg{image-rendering:auto!important}
 #roul .rbox.fairy .rstage > .fvine.r{left:auto;right:7px;transform:scaleX(-1)}
 #roul .rbox.fairy .rstage > .fvine.r.b{right:7px;transform:scale(-1,-1)}
 /* 테두리 말고 가운데 단상 양옆에서 감싸듯 (2026-11-26 사용자) */
-#roul .rbox.fairy .rstage > .fvine{left:calc(50% - 112px);top:auto;bottom:34px;width:52px;height:52px;transform:scaleY(-1)}
-#roul .rbox.fairy .rstage > .fvine.r{left:auto;right:calc(50% - 112px);transform:scale(-1,-1)}
+#roul .rbox.fairy .rstage > .fvine{left:calc(50% - 112px);top:calc(50% - 26px);bottom:auto;width:52px;height:52px;transform:scale(-1,-1)} /* 단상 양옆, 칸 세로 가운데, 꺾인 끝이 바깥(왼쪽은 왼쪽) (2026-11-26 사용자) */
+#roul .rbox.fairy .rstage > .fvine.r{left:auto;right:calc(50% - 112px);transform:scaleY(-1)}
 #roul .rbox.fairy .rstage > .fvine.b{display:none}
 #roul .rbox.fairy .rstrip{box-shadow:none!important} /* 2026-11-26 사용자: 요정 띠 바깥 테두리 뺌 */
 /* 상점 칸: 할인 딱지·UP이 얼굴을 가리지 않게 (2026-11-26 사용자: "대가리부분아니잖아"). 자르기는 공통 170%·위 40% 그대로 */
@@ -5781,7 +5781,7 @@ img.rimg{image-rendering:auto!important}
     b.classList.toggle('groll', gr); var ti = b.querySelector('.timg'), want = gr ? 'img/p/ev_goblin.png' : 'img/p/hud_gold.png'; if (ti && ti.getAttribute('src') !== want) ti.src = want; n.hidden = true; if (dots) dots.hidden = gr;
     if (!gr){ lab.textContent = '돈 넣기'; return; } lab.textContent = '룰렛 돌리기'; b.disabled = !!S.offer || !!S.pending || !!(S.event && S.event.grEnd); }
   function updEvActs(){ var box = $('evActs'); if (!box) return; var ok = !bt && !isLvPick() && !isFork(), tk = ok && (isCamp() || isFairy() || isMerch() || isDais()), busy = !!S.offer || !!S.pending;
-    $('evTalk').hidden = !tk; var dsv = tk && isDais() ? S.event : null; $('evTalk').querySelector('b').textContent = dsv ? '양탄자 보기' : '말 걸기'; if (dsv) busy = busy || !!dsv.dsDone; $('evTalk').disabled = busy; $('evTalk').classList.toggle('busyhide', busy); $('evBet').classList.toggle('busyhide', oeBusy); var oe = ok && isOddEven(), k = oeK(), mx = oeMax(), gr = ok && isGroll(); $('evBet').hidden = !oe && !gr; box.hidden = !tk && !oe && !gr; grollBtn(gr);
+    $('evTalk').hidden = !tk; var dsv = tk && isDais() ? S.event : null; $('evTalk').querySelector('b').textContent = '말 걸기'; if (dsv) busy = busy || !!dsv.dsDone; $('evTalk').disabled = busy; $('evTalk').classList.toggle('busyhide', busy); $('evBet').classList.toggle('busyhide', oeBusy); var oe = ok && isOddEven(), k = oeK(), mx = oeMax(), gr = ok && isGroll(); $('evBet').hidden = !oe && !gr; box.hidden = !tk && !oe && !gr; grollBtn(gr);
     if (oe){ $('evBet').disabled = oeBusy || k >= mx || S.gold < E.oddEvenBet(D, S.stage); $('evBet').querySelectorAll('.oedots i').forEach(function(d, i){ d.classList.toggle('on', i < k); d.hidden = i >= mx; }); } } /* 말 걸기: 위 가운데(종·초월 자리) */
   function renderBell(){ renderTalk(); var b = $('bellBtn'); if (!b || !D.bell) { if (b) b.hidden = true; return; } if ((bt && curEv && curEv.kind === 'chest') || (!bt && S.event && S.event.kind === 'chest')){ b.hidden = true; return; } /* 보물상자 판: 용 버튼 없음 */
     var B = D.bell, mx = bellMax(), n = Math.min((bt ? curBell : S.bell) || 0, mx), bStg = bt ? curStage : S.stage, bEv = bt ? curEv : S.event, /* 전투 중엔 시작할 때 값 */ im = BELLIMG[Math.max(1, n)];
