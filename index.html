@@ -2864,6 +2864,21 @@ img.rimg{image-rendering:auto!important}
 #trWin .rbtns button.go{height:39px;min-width:78px;padding:10px 22px;font:700 16px var(--display);box-sizing:border-box}
 /* 초월 팝업과 상세 창은 틈·겹침 없이 맞붙임 (2026-11-26 사용자: "붙게 하라는 의미였어") */
 #trWin{gap:0!important}
+/* 초월 팝업 손보기 (2026-11-26 사용자): 넓은 버튼, 영웅이 단상 앞, 재료 반전, 후보 = 얼굴, 가운데 옮길 스킬, 결과 반짝임, 데코 */
+#trWin .rbtns button.go{min-width:180px}
+#trWin .trslot .trfig{z-index:3}
+#trWin .trslot.sM .trfig .av{transform:scaleX(-1)}
+#trWin .trc .hic.hicf > .av.pic{background-size:var(--fs,170%) auto!important;background-position:var(--fx,50%) var(--fy,40%)!important}
+#trWin .trstage{position:relative}
+#trWin .trmid{position:relative;flex:none;display:flex;z-index:4}
+#trWin .trsk{position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px;white-space:nowrap}
+#trWin .trsk small{font:400 11px var(--display);color:#f3e6c4;text-shadow:0 1px 0 #17141d,1px 0 0 #17141d,-1px 0 0 #17141d,0 -1px 0 #17141d}
+#trWin .trdust{position:absolute;inset:7px;overflow:hidden;pointer-events:none;z-index:1}
+#trWin .trdust s{position:absolute;width:2px;height:2px;opacity:0;text-decoration:none;animation:fdust 7s linear infinite}
+#trWin .trslot > .rstars{position:absolute;pointer-events:none;z-index:4;left:calc(50% - 55 * var(--P));bottom:calc(38px + 34 * var(--P));width:calc(110 * var(--P));height:calc(76 * var(--P))}
+#trWin .rbtns{align-items:center}
+#trWin .rbtns::before,#trWin .rbtns::after{content:'';flex:1;height:10px;background:linear-gradient(#c9a6ff,#c9a6ff) center/100% 2px no-repeat,linear-gradient(#c9a6ff,#c9a6ff) 25% 50%/6px 6px no-repeat,linear-gradient(#ffd34d,#ffd34d) 60% 50%/10px 10px no-repeat;opacity:.55}
+#trWin .rbtns::after{transform:scaleX(-1)}
 #trWin .trinfo{margin:0!important;align-self:center!important}
 /* 결과 창: 닫힌 상자(0)로 놓였다가 열릴 때 0→3 */
 #mimicPop .mmc b{left:-7px;right:-7px;top:-14px;background:url(img/p/mimic_open.png) 0 0/400% 100% no-repeat}
@@ -5445,15 +5460,17 @@ img.rimg{image-rendering:auto!important}
     trRender(); }
   function trSlot(k, uid){ var u = uid != null && U(uid), nm = k === 'A' ? '메인' : '재료';
     return '<button class="trslot s' + k + (!u && !trDone && (k === 'A' ? altA == null : altA != null && altM == null) ? ' next' : '') + (u ? ' full' : '') + '" type="button" data-tr="' + k + '"' + (u && !trDone ? '' : ' disabled') + '><i class="trglow"></i><b class="trtag">' + nm + '</b>' + (u ? '<span class="trfig">' + av(u.id) + starsIn(u.star, u.id) + '</span><span class="trnm">' + hero(u.id).name + '</span>' : '<span class="trplus">+</span>') + '</button>'; }
+  function trDust(st){ var o = ''; for (var i = 0; i < 14; i++){ var du = (5 + Math.random() * 4).toFixed(2); o += '<s style="left:' + (4 + Math.random() * 92).toFixed(1) + '%;top:' + (35 + Math.random() * 60).toFixed(1) + '%;background:' + ['#ffd34d', '#5ab4ff', '#d9dde8'][i % 3] + ';animation-duration:' + du + 's;animation-delay:' + (-Math.random() * du).toFixed(2) + 's"></s>'; }
+    st.insertAdjacentHTML('beforeend', '<i class="trdust">' + o + '</i>'); }
   /* 초월 뒤: 팝업을 닫지 않고 메인만 남겨 얻은 스킬을 보여 줌. 버튼은 확인 하나 (X 없음) */
   function trResult(w){ var u = U(trDone.uid), hm = hero(trDone.mid), sk = ultName(hm), st = w.querySelector('.trstage');
-    st.innerHTML = trSlot('A', trDone.uid); st.querySelectorAll('.trslot').forEach(function(s){ s.disabled = true; pedestal(s, '#ffd34d'); });
-    var r = w.querySelector('.trres'); r.hidden = false; r.innerHTML = ultIcon(hm, 40) + '<b>[' + sk + '] 획득</b>';
+    st.innerHTML = trSlot('A', trDone.uid); st.querySelectorAll('.trslot').forEach(function(s){ s.disabled = true; pedestal(s, '#ffd34d'); starFx(s, 4, '#ffd34d'); }); trDust(st);
+    var r = w.querySelector('.trres'); r.hidden = false; r.innerHTML = skFrame(ultIconEl(hm), HG(trDone.mid).col) + '<b>' + sk + ' 스킬 획득</b>';
     w.querySelector('.trlist').hidden = true; w.querySelector('.spX').hidden = true; trSeen = trDone.uid; trInfo(w.querySelector('.trinfo')); trBag();
     var b = w.querySelector('.rbtns button'); b.textContent = '확인'; b.dataset.tr = 'ok'; b.disabled = false; }
   function trFit(){ var w = $('trWin'); if (!w) return; var b = w.querySelector('.rbox'), i = w.querySelector('.trinfo'); if (b && i) i.style.setProperty('height', b.offsetHeight + 'px', 'important'); } /* 두 창 높이 맞춤 */
   function trRender(){ var w = $('trWin'); if (!w) return; setTimeout(trFit, 0); if (trDone) return trResult(w); var a = altA != null && U(altA), m = altM != null && U(altM), kind = a && m ? trKind(a, m) : null, st = w.querySelector('.trstage');
-    st.innerHTML = trSlot('A', altA) + '<i class="trarrow' + (kind ? ' on' : '') + '"></i>' + trSlot('M', altM); /* 화살표는 재료 -> 메인 (왼쪽) */
+    st.innerHTML = trSlot('A', altA) + '<span class="trmid"><i class="trarrow' + (kind ? ' on' : '') + '"></i>' + (m ? '<span class="trsk">' + skFrame(ultIconEl(hero(m.id)), HG(m.id).col) + '<small>' + ultName(hero(m.id)) + '</small></span>' : '') + '</span>' + trSlot('M', altM); trDust(st); /* 화살표는 재료 -> 메인 (왼쪽) */
     st.querySelectorAll('.trslot').forEach(function(s){ var x = U(s.dataset.tr === 'A' ? altA : altM); pedestal(s, x ? HG(x.id).col : '#6b6478'); });
     trInfo(w.querySelector('.trinfo'));
     var ids = S.team.filter(function(x){ return x && U(x); }); /* 백팩 영웅은 백팩 칸에서 */ trBag();
