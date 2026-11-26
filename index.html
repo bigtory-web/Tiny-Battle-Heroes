@@ -2766,7 +2766,7 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
 #shopBuy .bp{position:absolute;right:7px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:3px;padding:2px 7px;background:#2a2108;box-shadow:inset 0 0 0 2px #17141d;color:#fff3dc;font:400 13px/16px var(--display);text-shadow:none!important;white-space:nowrap}
 #shopBuy .bp img,#shopBuy .bp .mni{width:14px;height:14px;image-rendering:pixelated}
 #shopBuy .bp s{color:#a89a80;text-decoration-thickness:2px;margin-right:2px}
-#shopBuy .bp b{font-weight:400;color:#ffe27a}
+#shopBuy .bp b{font-weight:400;color:#fff;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d} /* 구매 버튼 가격 흰색 (2026-11-26 사용자) */
 #shopBuy:disabled .bp{background:#3a3442} #shopBuy:disabled .bp b{color:#e6e0ee}
 #roul .rbox.groll .rbtns #rSpin{width:150px;height:36px;font-size:16px;margin:0}
 #roul .rbox.groll .rbtns #rSpin[hidden]{display:none}
@@ -2989,7 +2989,7 @@ img.rimg{image-rendering:auto!important}
 /* 파랑 일반 미믹: 44칸 (도트 1칸 = 갈색과 같게) */
 .foe > .mhop.g2{background-image:url(img/p/mimic_g2_hop.png)}
 /* 할인된 가격: 주황 + 살짝 기울임 (2026-11-26 사용자) */
-#tab-shop b.deal,#shopBuy .bp b.deal{display:inline-block;transform:skewX(-9deg);color:#ff8a3d!important;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d,1px 1px #17141d!important;font-weight:400}
+#tab-shop b.deal,#shopBuy .bp b.deal{display:inline-block;transform:skewX(-9deg);color:#7dff6a!important; /* 할인가 = 밝은 초록, 구매 불가(빨강)와 구분 */text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d,1px 1px #17141d!important;font-weight:400}
 /* 초월 팝업 = 룰렛 팝업과 같은 값: 틀 400·여백 18/22·간격 6, 큰 칸 200, 띠, 버튼, 깔개 (2026-11-26 사용자) */
 #trWin{background:rgba(10,8,14,.28)!important}
 #trWin .rbox{width:400px!important;padding:18px 22px!important;gap:6px!important}
