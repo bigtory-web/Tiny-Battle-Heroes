@@ -1,0 +1,8 @@
+Look at img/codex/gold/gold3.png (our approved three gold coin baskets: little / medium / a bundle) .
+Generate ONE new image with your image generation tool and save it as img/codex/gold/gold5.png
+
+Redraw the SAME three baskets as SMALL 32x32 game icons. Keep the same design, colors, woven wicker basket and order (a few coins / low heap / taller heap), only gold coins, coins with a tiny star, no sparkle.
+- LOW RESOLUTION: each basket is exactly 30 art pixels wide (about 640 image pixels, one art pixel = 21 image pixels), and 24 to 30 art pixels tall. The three baskets FILL the picture: they are large, with only narrow gaps (about 60 image pixels) between them. Crisp square pixels, 1 art pixel dark outline (#2a1209), no anti-aliasing, no gradients, no detail finer than the grid.
+- Image 2172x724, three icons in one row, basket bottoms on the same line.
+[Format] Plain solid #FF00FF magenta background, no text, no shadow.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
