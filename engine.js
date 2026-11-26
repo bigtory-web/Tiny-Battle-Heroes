@@ -459,7 +459,7 @@
           afterUlt(u, u.stats.healed - hb); }
         else { if (TG === 'lowest' || TG === 'random') { var nt = pickTarget(u); if (nt && dist(u, nt) <= u.reach) tg = u.tgt = nt; }
           magic = false; var am = 1; if (u.boostN > 0) { am *= 1 + u.boostV; u.boostN--; } if (has(u, 'secondHit')) { u.atkC = (u.atkC || 0) + 1; if (u.atkC % 2 === 0) am *= 1 + u.pv; }
-          hurt(u, tg, am); trig('attack', u); u.energy = Math.min(B.energyMax, u.energy + (u.trig ? (u.trig.kind === 'hits' ? B.energyMax / u.trig.n : 0) : EN.onAttack)); afterAttack(u, tg); // 발동 타입: N번째 공격마다 에너지
+          hurt(u, tg, am); trig('attack', u); u.energy = Math.min(B.energyMax, u.energy + (u.trig ? (u.trig.kind === 'hits' ? B.energyMax / u.trig.n : 0) : EN.onAttack + (JP(u).attackEnergy || 0))); afterAttack(u, tg); /* 마법사: 평타 때 에너지 더 */ // 발동 타입: N번째 공격마다 에너지
           if (u.pas && u.pas.kind === 'splash') alive(foes(u)).forEach(function (x) { if (x !== tg && dist(x, tg) <= 70) hurt(u, x, u.pv); }); }
         if (!alive(E).length) { result = 'win'; break; }
         if (!alive(A).length) { result = 'lose'; break; }
