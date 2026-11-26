@@ -541,11 +541,10 @@
   // 단상 1개 뽑기: 'r:beast' 같은 종족이나 'fire' 같은 속성. not을 주면 그것과 다른 걸 뽑아요(다시 돌리기)
   function rollDais(data, rnd, not) { var DS = (data.events && data.events.dais) || {}, K = DS.kinds || { race: 1, el: 1 }, rc = Object.keys(data.races || {}).filter(function (r) { return r !== 'monster'; }).map(function (r) { return 'r:' + r; }), el = Object.keys(data.elements.names);
     for (var tries = 0; tries < 20; tries++) { var pool = rnd() * ((K.race || 0) + (K.el || 0)) < (K.race || 0) ? rc : el, v = pool[Math.floor(rnd() * pool.length)]; if (v !== not) return v; } return v; }
-  // 단상 칸 뽑기(2026-11-26, 사용자: "역시 단상 칸에서 랜덤이어야겟어 … 룰렛처럼"): 우리 쪽 칸(battle.arena.pos 번호) 중 단상이 없는 칸 하나. 단상이 이미 max개면 가장 먼저 놓은 단상이 사라지고 새 칸에 깔려요(화면은 "단상 보기" 때 대체된다고 알림, 2026-11-26 사용자: "단상인 곳은 제외하고 랜덤하고. 다 단상이면 단상보기 누를때 대체된다고 뜨도록")
-  // occ: 영웅이 서 있는 칸 번호들. 빈 칸(영웅도 양탄자도 없음) 중에서 먼저 고르고, 빈 칸이 없으면 영웅이 선 칸도 넣어요(2026-11-26 사용자: "빈슬롯 중에서 하고 없으면 있는 슬롯도 포함하라고")
-  function rollDaisCell(data, rnd, pads, occ) { var n = data.battle.arena.pos.length, has = Object.keys(pads || {}).map(Number), oc = (occ || []).map(Number), pool = [], i;
-    for (i = 0; i < n; i++) if (has.indexOf(i) < 0 && oc.indexOf(i) < 0) pool.push(i);
-    if (!pool.length) for (i = 0; i < n; i++) if (has.indexOf(i) < 0) pool.push(i);
+  // 양탄자 칸 뽑기(2026-11-26): 우리 쪽 칸(battle.arena.pos 번호) 중 양탄자가 없는 칸에서 무작위. 모든 칸에 양탄자가 있을 때만 양탄자 칸 중 하나를 골라 덮어요(개수 제한 없음. 사용자: "빈슬롯 중에서 하고 없으면 있는 슬롯도 포함", "빈칸이 이렇게 많은데 왜?")
+  function rollDaisCell(data, rnd, pads) { var n = data.battle.arena.pos.length, has = Object.keys(pads || {}).map(Number), pool = [], i;
+    for (i = 0; i < n; i++) if (has.indexOf(i) < 0) pool.push(i);
+    if (!pool.length) pool = has;
     return pool.length ? pool[Math.floor(rnd() * pool.length)] : 0; }
   function daisRerolls(data, plv) { var P = data.player && data.player.daisReroll; return P ? P[Math.max(0, Math.min((plv || 1) - 1, P.length - 1))] : 0; }
   // 돈고블린 홀짝: 걸 골드(스테이지 n), 결과 판정. pick = 'odd' | 'even', roll = 1~6 같은 숫자
@@ -845,7 +844,7 @@
     function startHero() { var id = R.startHero; if (campfireAtStart(data)) { var ids = rollCampfire(data, rnd, 1); id = ids.splice(lootPick(data, ids, 1, rnd), 1)[0]; events.campfire.seen++; for (var sp = 1; sp < (data.events.campfire.startPicks || 1) && ids.length; sp++) { var x2 = ids.splice(lootPick(data, ids, 1, rnd), 1)[0]; newUnit(units, x2, 1); levels[x2] = data.startLevel; } } newUnit(units, id, 1); levels[id] = data.startLevel;
       startExtras(data, rnd, [id]).forEach(function (x) { newUnit(units, x, 1); levels[x] = data.startLevel; }); }
     var log = [], attempts = 0, battleTime = 0, idleTime = 0, seed = (opts.seed || 1) * 7919, rnd = makeRng(seed + 5);
-    var recruits = { new: 0, merge: 0, star: 0, max: 0, dropped: 0 }, skills = [], pads = {}, daisOrder = [], xp = 0, plv = 1, shop = rollShop(data, rnd, 1), rerolls = 0, sold = 0, spent = 0, stuck = false, mana = 0, manaGot = 0, manaSpent = 0;
+    var recruits = { new: 0, merge: 0, star: 0, max: 0, dropped: 0 }, skills = [], pads = {}, xp = 0, plv = 1, shop = rollShop(data, rnd, 1), rerolls = 0, sold = 0, spent = 0, stuck = false, mana = 0, manaGot = 0, manaSpent = 0;
     // 상점 봇: 진열된 것 중 살 수 있는 걸 앞에서부터 사요. 반환: 산 개수
     function shopping() { var n = 0, again = true;
       while (again) { again = false;
@@ -865,7 +864,7 @@
     // 체력이 0이 되면 판 전체를 처음(1-1)으로: 영웅·스킬·골드·마나스톤·경험치를 모두 잃어요
     function resetRun() { runs.push({ best: best, time: time - runStart }); runStart = time;
       units.length = 0; levels = {}; startHero();
-      skills.length = 0; pads = {}; daisOrder = []; gold = 0; mana = 0; xp = 0; plv = 1; stage = 0; best = 0; tries = 0; streak = 0; bellPaidN = 0; life = LF.max; stood = false; lastHp = 0; shop = rollShop(data, rnd, 1, skills); shopH = rollShopHeroes(data, rnd, 1, 0); }
+      skills.length = 0; pads = {}; gold = 0; mana = 0; xp = 0; plv = 1; stage = 0; best = 0; tries = 0; streak = 0; bellPaidN = 0; life = LF.max; stood = false; lastHp = 0; shop = rollShop(data, rnd, 1, skills); shopH = rollShopHeroes(data, rnd, 1, 0); }
     var lastHp = 0, bells = { rung: 0, lost: 0 }, fails = [], bellPaidN = 0; // bellPaidN: 이 판에서 골드를 이미 받은 종 횟수 // fails[n] = 스테이지 n에서 진 횟수
     var events = { goblin: { seen: 0, caught: 0, missed: 0 }, merchant: { seen: 0, bought: 0 }, merc: { seen: 0, hired: 0 }, campfire: { seen: 0 }, chest: { seen: 0, tiers: 0, gold: 0 } };
     startHero(); // 첫 영웅 (모닥불이면 3명 중 룰렛으로 1명)
@@ -928,7 +927,7 @@
           var host = units.filter(function (x) { return team.some(function (t) { return t.uid === x.uid; }) && canTranscend(data, x, wk); }).sort(function (a, b) { return (canTranscend(data, b, wk) === 'up') - (canTranscend(data, a, wk) === 'up'); })[0];
           if (host) { transcend(data, units, host.uid, wk.uid); recruits.transcend = (recruits.transcend || 0) + 1; } });
         continue; }
-      if (ev && ev.kind === 'dais') { /* 봇: 다시 돌리지 않고, 단상 없는 무작위 칸(rollDaisCell)에 놓아요. max개면 가장 먼저 놓은 것이 사라져요 */ events.dais.got = (events.dais.got || 0) + 1; var DM2 = (data.events.dais || {}).max || 2, dc = rollDaisCell(data, rnd, pads, team.map(function (x) { return x.slot; })); while (daisOrder.length >= DM2) delete pads[daisOrder.shift()]; pads[dc] = ev.tag; daisOrder.push(dc); continue; }
+      if (ev && ev.kind === 'dais') { /* 봇: 다시 돌리지 않고, 양탄자 없는 무작위 칸(rollDaisCell)에 놓아요. 다 차 있으면 그 칸을 덮어요 */ events.dais.got = (events.dais.got || 0) + 1; pads[rollDaisCell(data, rnd, pads)] = ev.tag; continue; }
       if (ev && ev.kind === 'groll') { events.groll = events.groll || { passed: 0 }; events.groll.passed++; continue; } // 봇: 돈고블린 룰렛은 안 돌리고 지나가요
       if (ev && ev.kind === 'oddeven') { events.oddeven.passed = (events.oddeven.passed || 0) + 1; continue; } // 봇: 내기는 안 하고 지나가요(기대값 0)
       if (ev && ev.kind === 'fairy') { if (ev.ids.length) { var fid = ev.ids[lootPick(data, ev.ids, plv, rnd)]; if (canTake(data, skills, fid, data.player ? perk(data, plv).skillSlots : 0)) takeSkill(data, skills, fid); } continue; } // 요정: 룰렛으로 유물 1개
