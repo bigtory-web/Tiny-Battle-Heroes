@@ -5524,7 +5524,7 @@ img.rimg{image-rendering:auto!important}
   var UPCOL = { start: '#9a5a24', bag: '#7a5230', shop: '#1f6e6a', event: '#8a3f58', h_guardian: '#46657f', h_warrior: '#8c3b30', h_assassin: '#5b3a5e', h_archer: '#5e6b2a', h_mage: '#35417f', h_bard: '#8a6a1e', h_all: '#6b5f78' };
   var upSel = null;
   /* 칸 자리(가로 칸, 세로 칸). 가운데 = 모닥불. 데이터에 새 칸이 생기면 여기에 자리를 더해요 */
-  var UPPOS = { start: [0, 0], bag: [-1, -1], relic: [-2, -1], potion: [-1, -2], shopSlot: [-1, 0], shopReset: [-2, 0], shopGrade: [-3, 0], merchSlot: [-1, 1], merchHero: [-2, 1], merchOff: [-1, 2],
+  var UPPOS = { start: [0, 0], bag: [-1, -1], relic: [-2, -1], potion: [-1, -2], shopSlot: [-1, 0], shopReset: [-2, 0], shopGrade: [-3, 0], merchSlot: [-1, 1], merchHero: [-2, 1], merchOff: [-1, 2], swampSlot: [-2, 2],
     startGold: [1, 0], life: [1, -1], clearGold: [2, 0], lootReset: [3, 0], lootGrade: [4, 0], campfire: [1, 1], eventReset: [2, 1], daisReset: [3, 1], groll: [1, 2], mimic: [2, 2], chest: [3, 2],
     t_hp: [0, 3], t_atk: [0, 4], g_hp: [-3, 4], g_def: [-3, 5], w_atk: [-2, 4], w_hp: [-2, 5], a_atk: [-1, 4], a_crit: [-1, 5], r_atk: [1, 4], r_crit: [1, 5], m_atk: [2, 4], m_hp: [2, 5], b_hp: [3, 4], b_def: [3, 5] };
   function upEffect(N){ if (/\+\d+$/.test(N.name)) return N.name; if (N.hero) return (N.hero === 'crit' ? '치명타 확률 +' : ({ atk: '공격력 +', hp: '체력 +', def: '방어력 +' })[N.hero]) + Math.round(N.add * 100) + '%'; if (N.shift) return '높은 등급이 레벨 1만큼 먼저 나와요'; return N.name + ' +' + N.add + (N.key === 'merchantOff' ? '%' : ''); }
