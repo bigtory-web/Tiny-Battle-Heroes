@@ -2549,12 +2549,17 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 #roul:not(.chestpop) .rbox .rstage.onped .rpic:not(.loot),#evWin .rbox .rstage.onped .rpic{position:absolute!important;left:calc(50% - 33 * var(--P));bottom:calc(38px + 23.5 * var(--P));margin:0!important;z-index:2}
 #roul:not(.chestpop) .rbox .rstage.onped .rpic.loot{position:absolute!important;left:calc(50% - var(--rlq,96px) / 2);bottom:calc(38px + 25 * var(--P));width:var(--rlq,96px)!important;height:var(--rlq,96px)!important;margin:0!important;z-index:2}
 #roul:not(.chestpop) .rbox .rstage.onped .rname,#evWin .rbox .rstage.onped .rname{bottom:6px!important;z-index:4}
-/* X 닫기 공통: 창 틀 오른쪽 위 모서리에 걸침(같은 자리), 굵은 픽셀 ✕를 정가운데 (2026-11-26 사용자) */
-.spX,.rx,#shopX,.gover.ll .llx,.hinfo .hi-x,.hinfo.left .hi-x,#hinfo.hinfo .hi-x,#hinfo.hinfo.left .hi-x,.popx,#tab-shop.shopPop #shopX,#evWin .rbox .spX,.oebox .spX{position:absolute!important;top:-18px!important;right:-18px!important;left:auto!important;bottom:auto!important;margin:0!important;width:36px!important;height:36px!important;padding:0!important;font-size:0!important;line-height:0!important;z-index:60!important}
+/* X 닫기: 자리는 예전 그대로, 굵은 픽셀 ✕를 정가운데 (2026-11-26 사용자: "위치 이상"은 버튼 안 ✕ 얘기였음) */
+.spX,.rx,#shopX,.gover.ll .llx,.hinfo .hi-x,.hinfo.left .hi-x,#hinfo.hinfo .hi-x,#hinfo.hinfo.left .hi-x,.popx,#tab-shop.shopPop #shopX,#evWin .rbox .spX,.oebox .spX{font-size:0!important;line-height:0!important}
 .spX::before,.rx::before,#shopX::before,.gover.ll .llx::before,.hinfo .hi-x::before,.popx::before{content:''!important;position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-10px 0 0 -9px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-1 -1 15 15' shape-rendering='crispEdges'%3E%3Crect x='-1' y='-1' width='5' height='5' fill='%2317141d'/%3E%3Crect x='9' y='-1' width='5' height='5' fill='%2317141d'/%3E%3Crect x='0' y='0' width='5' height='5' fill='%2317141d'/%3E%3Crect x='8' y='0' width='5' height='5' fill='%2317141d'/%3E%3Crect x='1' y='1' width='5' height='5' fill='%2317141d'/%3E%3Crect x='7' y='1' width='5' height='5' fill='%2317141d'/%3E%3Crect x='2' y='2' width='5' height='5' fill='%2317141d'/%3E%3Crect x='6' y='2' width='5' height='5' fill='%2317141d'/%3E%3Crect x='3' y='3' width='5' height='5' fill='%2317141d'/%3E%3Crect x='5' y='3' width='5' height='5' fill='%2317141d'/%3E%3Crect x='4' y='4' width='5' height='5' fill='%2317141d'/%3E%3Crect x='4' y='4' width='5' height='5' fill='%2317141d'/%3E%3Crect x='5' y='5' width='5' height='5' fill='%2317141d'/%3E%3Crect x='3' y='5' width='5' height='5' fill='%2317141d'/%3E%3Crect x='6' y='6' width='5' height='5' fill='%2317141d'/%3E%3Crect x='2' y='6' width='5' height='5' fill='%2317141d'/%3E%3Crect x='7' y='7' width='5' height='5' fill='%2317141d'/%3E%3Crect x='1' y='7' width='5' height='5' fill='%2317141d'/%3E%3Crect x='8' y='8' width='5' height='5' fill='%2317141d'/%3E%3Crect x='0' y='8' width='5' height='5' fill='%2317141d'/%3E%3Crect x='9' y='9' width='5' height='5' fill='%2317141d'/%3E%3Crect x='-1' y='9' width='5' height='5' fill='%2317141d'/%3E%3Crect x='0' y='0' width='3' height='3' fill='%23fff'/%3E%3Crect x='10' y='0' width='3' height='3' fill='%23fff'/%3E%3Crect x='1' y='1' width='3' height='3' fill='%23fff'/%3E%3Crect x='9' y='1' width='3' height='3' fill='%23fff'/%3E%3Crect x='2' y='2' width='3' height='3' fill='%23fff'/%3E%3Crect x='8' y='2' width='3' height='3' fill='%23fff'/%3E%3Crect x='3' y='3' width='3' height='3' fill='%23fff'/%3E%3Crect x='7' y='3' width='3' height='3' fill='%23fff'/%3E%3Crect x='4' y='4' width='3' height='3' fill='%23fff'/%3E%3Crect x='6' y='4' width='3' height='3' fill='%23fff'/%3E%3Crect x='5' y='5' width='3' height='3' fill='%23fff'/%3E%3Crect x='5' y='5' width='3' height='3' fill='%23fff'/%3E%3Crect x='6' y='6' width='3' height='3' fill='%23fff'/%3E%3Crect x='4' y='6' width='3' height='3' fill='%23fff'/%3E%3Crect x='7' y='7' width='3' height='3' fill='%23fff'/%3E%3Crect x='3' y='7' width='3' height='3' fill='%23fff'/%3E%3Crect x='8' y='8' width='3' height='3' fill='%23fff'/%3E%3Crect x='2' y='8' width='3' height='3' fill='%23fff'/%3E%3Crect x='9' y='9' width='3' height='3' fill='%23fff'/%3E%3Crect x='1' y='9' width='3' height='3' fill='%23fff'/%3E%3Crect x='10' y='10' width='3' height='3' fill='%23fff'/%3E%3Crect x='0' y='10' width='3' height='3' fill='%23fff'/%3E%3C/svg%3E") center/100% 100% no-repeat;image-rendering:pixelated}
-.shopPop .spHead #shopReroll{right:26px!important}
-.rcol #shopX{position:static!important}
-#hinfo.hinfo.right{right:22px!important} /* 오른쪽 위 X가 전장 밖에서 잘리지 않게 */
+/* 방랑상점: 할인 배지(상품 영역 오른쪽 위), 상품 리본, 구매 버튼 가격 */
+#tab-shop.wander[data-disc]::after{content:none!important}
+#tab-shop .spRight{position:relative}
+#tab-shop.wander .spRight[data-disc]::after{content:attr(data-disc);position:absolute;top:6px;right:5px;width:46px;padding:4px 0;white-space:pre-wrap;text-align:center;font:400 13px/1.15 var(--display);color:#fff3dc;background:#d8443e;box-shadow:inset 0 0 0 2px #17141d;transform:rotate(6deg);pointer-events:none;word-spacing:2px}
+#tab-shop .stile .rib{position:absolute;left:-8px;top:5px;z-index:5;width:42px;transform:rotate(-34deg);text-align:center;font:400 11px/14px var(--display);font-style:normal;color:#fff;background:#d8443e;box-shadow:0 0 0 1px #17141d;pointer-events:none}
+#tab-shop.wander .stile .synn{top:34px}
+#shopBuy .was{opacity:.55;margin-left:6px;text-decoration:line-through;text-decoration-thickness:2px}
+#shopBuy .now{font-weight:400;margin-left:4px} #shopBuy .now img{width:14px;height:14px;image-rendering:pixelated;vertical-align:-2px;margin-right:2px}
 </style>
 </head>
 <body>
@@ -2872,7 +2877,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   });
   // 상점 팝업 열기·닫기 (전장 화면은 그대로)
   function shopOpen(){ return !$('tab-shop').hidden; }
-  function setShop(on){ $('tab-shop').hidden = !on; $('arena').classList.toggle('shopping', on); document.querySelectorAll('[data-go="shop"]').forEach(function(sb){ sb.classList.toggle('on', on); });
+  function setShop(on){ $('tab-shop').hidden = !on; $('arena').classList.toggle('shopping', on); document.querySelectorAll('[data-go="shop"]').forEach(function(sb){ sb.classList.toggle('on', on && !merchShow); /* 방랑상점은 말 걸기로 연 것 */ });
     if (!on){ shopSel = null; sellArm = null; merchShow = false; } else if (!$('hinfo').hidden){ $('hinfo').hidden = true; sel = null; if (typeof relSel !== 'undefined') relSel = null; document.querySelectorAll('.picked').forEach(function(x){ x.classList.remove('picked'); }); } /* 상점을 열면 상세 창 닫기 */ renderShop(); }
   function showTab(t){
     if (t === 'shop'){ if ($('tab-camp').hidden) showTab('camp'); setShop(!shopOpen()); return; }
@@ -3695,7 +3700,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   });
   var leaveArm = '';
   function evKey(){ return S.stage + ':' + ((S.event || {}).kind || ''); }
-  function evActed(){ var ev = S.event || {}; if (isAltar()) return (ev.trCount || 0) > 0; if (isMerch()){ var wo = S.evOffer; return !!(wo && wo.bought && wo.bought.length); } if (isCamp() || isFairy()) return !!S.offerGot || !!S.offerDecided; return false; } /* 홀짝은 굴리면 바로 떠나요 */
+  function evActed(){ var ev = S.event || {}; if (isAltar()) return (ev.trCount || 0) > 0; if (isMerch()){ var wo = S.evOffer; return !!(wo && ((wo.bought && wo.bought.length) || wo.rerolls)); } if (isCamp() || isFairy()) return !!S.offerGot || !!S.offerDecided; return false; } /* 홀짝은 굴리면 바로 떠나요 */
   function evLeaveSync(){ var w = $('lvWarn'); if (!w){ w = document.createElement('i'); w.id = 'lvWarn'; w.className = 'lvwarn'; w.textContent = '아무 행동도 하지 않으셨습니다. 한 번 더 터치하면 이벤트를 스킵합니다.'; $('fightBtn').parentNode.appendChild(w); } if (leaveArm && leaveArm !== evKey()) leaveArm = ''; w.hidden = !leaveArm || !$('arena').classList.contains('evstage'); var fb = $('fightBtn'); fb.classList.toggle('busyhide', fb.disabled && fb.textContent.trim() === '진행 중'); }
   $('fightBtn').addEventListener('click', function(e){ if ($('arena').classList.contains('evstage') && !this.disabled && !evActed() && leaveArm !== evKey()){ e.stopImmediatePropagation(); leaveArm = evKey(); evLeaveSync(); } }, true);
   $('fightBtn').addEventListener('click', function(){ if (isLvPick() || isFork()) return; leaveArm = ''; if (isAltar()) finishAltar(); else if (isOddEven()){ if (!oeBusy) finishOddEven(); } else if (isFairy() || isCamp()) finishCamp(); else if (isMerch()) leaveMerch(); else if (bagCount() > bagMax() || S.skills.length > PK().skillSlots) showOver(); else startBattle(); });
@@ -4720,7 +4725,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   function shopNg(){ if (S.shop.ng == null){ var ng = 0; if (lastNg != null) ng = lastNg; else { var st = S.shop.stock; while (ng < st.length && !(buyPrice(st[ng]).mana > 0)) ng++; } S.shop.ng = ng; } lastNg = null; return S.shop.ng; }
   var merchShow = false;
   function merchOffer(){ return merchShow && !bt && S.evOffer && S.evOffer.kind === 'merchant' ? S.evOffer : null; }
-  function renderShop(){ var wo = merchOffer(); $('tab-shop').classList.toggle('wander', !!wo); var off = wo && E.merchantOff ? E.merchantOff(D, plv()) : 0; if (off > 0) $('tab-shop').dataset.disc = Math.round(off) + '% 할인'; else delete $('tab-shop').dataset.disc; $('tab-shop').querySelector('.spHead b').textContent = wo ? '방랑상점' : '상점';
+  function renderShop(){ var wo = merchOffer(); $('tab-shop').classList.toggle('wander', !!wo); var off = wo && E.merchantOff ? E.merchantOff(D, plv()) : 0; var sr = $('tab-shop').querySelector('.spRight'); if (sr){ if (off > 0) sr.dataset.disc = 'UP TO ' + Math.round(off) + '%'; else delete sr.dataset.disc; } $('tab-shop').querySelector('.spHead b').textContent = wo ? '방랑상점' : '상점';
     if (wo){ renderMerchShop(wo); return; }
     var SL = PK().skillSlots, mine = S.skills, anyBuy = false, OPEN = PK().shopSlots || S.shop.stock.length;
     if (S.shop.stock.length < OPEN){ var add = newStock().filter(function(id){ return S.shop.stock.indexOf(id) < 0; }); while (S.shop.stock.length < OPEN && add.length) S.shop.stock.push(add.shift()); S.shop.ng = null; save(); } /* 레벨업으로 열린 칸은 바로 채워요 */
@@ -4749,10 +4754,12 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
       if (it.type === 's'){ var d = E.skillById(D, it.id), ml = myLv(it.id); cls = 'stile sk' + gCls(it.id, ml || undefined) + (ml && !skMaxed(it.id) ? ' up' : ''); attr = gAttr(it.id, ml || undefined); ic = skIcon(d) + '</span>' + synN(d) + '<span hidden>'; }
       else { cls = 'stile mhero'; attr = ' style="--gcol:' + HG(it.id).col + '"'; ic = heroFr(it.id); }
       var pr = '<span class="pr' + (mana ? ' mana' : '') + (payOk ? '' : ' no') + '">' + (mana ? manaIcon('mni') : (HUDOK.gold ? '<img src="img/p/hud_gold.png" alt="">' : '🪙')) + it.price.toLocaleString() + '</span>';
-      return '<button class="' + cls + (done ? ' sold' : '') + (on ? ' sel' : '') + '"' + attr + ' data-sel="merch:' + i + '" type="button"><span class="ic">' + ic + '</span>' + pr + '</button>'; }); /* 할인된 값만 (원래 값 표시 뺌) */
+      return '<button class="' + cls + (done ? ' sold' : '') + (on ? ' sel' : '') + '"' + attr + ' data-sel="merch:' + i + '" type="button">' + (it.off ? '<i class="rib">' + it.off + '%</i>' : '') + '<span class="ic">' + ic + '</span>' + pr + '</button>'; }); /* 리본 = 그 상품 할인율 */
     var MS = (D.player && D.player.merchantSlots) || [], open = MS[Math.min(MS.length, plv()) - 1] || 0, max = MS.length ? Math.max.apply(null, MS) : 6; /* 3칸 x 2줄, 왼쪽부터. 레벨로 안 열린 칸은 일반 상점과 같은 잠금 표시 (2026-11-26 사용자) */
     while (t.length < max){ var ci = t.length, L = 0; if (ci >= open) for (var q = 0; q < MS.length && !L; q++) if (MS[q] > ci) L = q + 1; t.push(L ? '<span class="stile lockd"><em>🔒 Lv' + L + '</em></span>' : '<span class="stile empty keep"></span>'); }
-    $('stock').innerHTML = '<div class="srow2 g six"><span class="rowic"></span>' + t.join('') + '</div>'; $('shopReroll').hidden = true; renderShopInfo(); }
+    $('stock').innerHTML = '<div class="srow2 g six"><span class="rowic"></span>' + t.join('') + '</div>';
+    var MR = D.events.merchant.reroll, rr = $('shopReroll'); if (MR){ var left = Math.max(0, merchRRMax() - (o.rerolls || 0)), off2 = !left || S.gold < MR.cost; rr.innerHTML = '<button class="spRe' + (off2 ? ' no' : '') + '" data-reroll="1" type="button"' + (off2 || battleOn() ? ' disabled' : '') + ' title="리셋 · 상품을 모두 새로 뽑아요"><img class="uic" src="img/p/ui_reroll.png" alt="">' + MR.cost + 'G (' + left + ')</button>'; } rr.hidden = !MR; renderShopInfo(); }
+  function merchRRMax(){ var m = (D.events.merchant.reroll || {}).max || [0]; return m[Math.min(m.length, plv()) - 1] || 0; }
   // 상점이 열려 있을 때 전장 왼쪽 위 '내 유물' 아이콘: 고른 것 표시 (누르면 팔기)
   function shopAutoSel(){ if (!shopOpen()) return false;
     var L = [].slice.call(document.querySelectorAll('#stock [data-sel]')), cur = shopSel ? L.findIndex(function(b){ return b.dataset.sel === shopSel.t + ':' + shopSel.i; }) : -1;
@@ -4764,7 +4771,8 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   function battleOn(){ return !!bt; } /* 전투 중이면 구매 버튼 꺼짐(2026-11-25 사용자) */
   function renderShopInfo(){ _rsiCore(); var nm = $('shopName'), bt = $('shopBuy'); if (battleOn() && !bt.hidden) bt.disabled = true;
     nm.querySelectorAll('small').forEach(function(x){ x.remove(); });
-    if (shopSel && ['stock', 'hero', 'merch'].indexOf(shopSel.t) >= 0 && !bt.hidden) bt.textContent = '구매'; }
+    if (shopSel && ['stock', 'hero', 'merch'].indexOf(shopSel.t) >= 0 && !bt.hidden) bt.textContent = '구매';
+    if (shopSel && shopSel.t === 'merch' && !bt.hidden){ var wm = merchOffer(), im = wm && wm.stock[shopSel.i]; if (im && im.base > im.price) bt.innerHTML = '구매 <s class="was">' + im.base.toLocaleString() + '</s> <b class="now">' + (im.cur === 'mana' ? manaIcon('mni') : (HUDOK.gold ? '<img src="img/p/hud_gold.png" alt="">' : '🪙')) + im.price.toLocaleString() + '</b>'; } }
   function _rsiCore(){
     var nm = $('shopName'), ds = $('shopDesc'), bt2 = $('shopBuy'), mine = S.skills;
     $('shopInfo').hidden = false; // 상점 창 안 고정 칸
@@ -4801,7 +4809,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     shopSel = { t: v[0], i: +v[1] }; sellArm = null; renderShop();
   });
   $('shopX').addEventListener('click', function(){ setShop(false); });
-  $('shopReroll').addEventListener('click', function(e){ var b = e.target.closest('[data-reroll]'); if (!b || b.disabled || merchOffer() || battleOn()) return; e.stopPropagation(); var rp = E.refreshPrice(D, S.shop.rerolls || 0);
+  $('shopReroll').addEventListener('click', function(e){ var b = e.target.closest('[data-reroll]'); if (!b || b.disabled || battleOn()) return; e.stopPropagation(); var wr = merchOffer(); if (wr){ var MR = D.events.merchant.reroll; if (!MR || S.gold < MR.cost || (wr.rerolls || 0) >= merchRRMax()) return; S.gold -= MR.cost; wr.rerolls = (wr.rerolls || 0) + 1; wr.stock = E.rollMerchant(D, S.stage, Math.random, plv(), S.skills || []); wr.bought = []; shopSel = null; save(); renderAll(); return; } var rp = E.refreshPrice(D, S.shop.rerolls || 0);
     if (S.gold < rp || (S.shop.rerolls || 0) >= (D.shop.refreshMax || Infinity)) return; S.gold -= rp; S.shop = { stock: newStock(), rerolls: (S.shop.rerolls || 0) + 1, sold: [], ng: lastNg }; shopSel = null; save(); renderAll(); });
   $('shopBuy').addEventListener('click', function(){
     if (!shopSel || battleOn()) return;
