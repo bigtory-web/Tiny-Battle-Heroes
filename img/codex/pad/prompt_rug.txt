@@ -1,0 +1,12 @@
+Look at these images:
+- img/codex/pad/fire_src.png = our current FIRE floor pad (flat pointed-top hexagon, stone rim). THIS IS THE ONE TO EDIT.
+- img/codex/pad/hex_template.png = the hexagon shape and proportions.
+
+Turn it into a small CARPET / RUG laid flat on the floor cell. Keep the same hexagon proportions, the same deep red-orange field, the thin ring and the big flame symbol. Change the rim and the edges:
+- No stone, no metal, no gems. The border is WOVEN FABRIC: a dark outline, a gold-ochre woven band with a simple repeating stitched zigzag or diamond pattern, then a thin inner stripe.
+- FRINGE: short TASSELS of cream-gold thread hanging out along the two vertical sides (left and right edges), 4 to 5 art pixels long, evenly spaced, clearly readable as a rug fringe. The six corners have a slightly bigger tassel knot. The top and bottom slanted edges stay clean with the woven band.
+- The surface has a very subtle woven texture (sparse darker pixels), soft cloth feeling, completely flat, seen straight from above.
+Generate ONE new image with your image generation tool and save it as img/codex/pad/rug_src.png
+Crisp square pixels on the same grid as the input, no anti-aliasing, no gradients, 1 art pixel dark outline.
+[Format] Plain solid #FF00FF magenta background, no text, no shadow, nothing else.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
