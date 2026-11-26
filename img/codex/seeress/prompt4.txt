@@ -1,0 +1,15 @@
+Look at these images:
+- img/pixellab/knight_v2_x8.png = the BODY and FACE TEMPLATE and style standard of our game: about 1.8 heads tall, big round head, the face placement and face size, 3/4 view seen slightly from above, thick dark brown outline, soft shading, muted colors.
+- img/codex/seeress/prev_x8.png = our current draft of a blindfolded seeress with a balance scale. Use it for the DESIGN AND COLORS ONLY. What is WRONG with it: the face is unbalanced and looks broken (the blindfold is a flat stiff stripe pasted on, the face under it is shapeless and off center, the chin and cheeks do not read, the forehead and bangs look cut). Do NOT copy its face; draw the head again properly.
+
+Draw the character NEW, as the same doll as the knight in a different outfit, and save ONE image as img/codex/seeress/OUTNAME
+- Head and face: exactly the knight's head shape and face position. A round soft face with clear cheeks and a small chin, centered under the bangs for a 3/4 view. Instead of eyes, a soft cloth BLINDFOLD wraps around the head where the knight's eyes are, following the round shape of the head (curved, not a straight bar), same height as the knight's eyes, the viewer's LEFT side 1 art pixel lower than the right. About as much skin visible below it as the knight has below the eyes. NO mouth, no nose line: plain skin.
+- Bangs: neat bangs above the blindfold framing the face on both sides.
+- Hair: very long pale mint-silver hair with one low tie near the ends.
+- Headpiece: a thin gold circlet across the forehead with ONE BROOCH in the middle above the face: gold rim, violet gem. Nothing on top of the head.
+- Colors: blindfold, ribbon, long skirt and sash are the same VIOLET as the gem (like #6b3fd0, darker shade #4a2c9a, light #a584ff), NOT navy. Ivory-white layered robe with wide sleeves and gold trim. No necklace.
+- Item: she holds a GOLD BALANCE SCALE by the ring at its top, big and readable, out to the side of the body: horizontal beam, thin chains, two wide round pans, level. It does not cover the face.
+- Calm standing pose, feet on the ground.
+- Pixel art, same pixel grid and same character size as the knight template: crisp square pixels, no anti-aliasing, no gradients, no finer detail, 1 art pixel outline with no gaps. Image 1024x1024, centered.
+[Format] Plain solid #FF00FF magenta background, no text, no shadow.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
