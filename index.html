@@ -962,6 +962,9 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .hinfo .hi-skrow{min-height:52px;gap:10px}
 .hinfo .hi-skrow .hi-skd{margin-top:3px;line-height:1.55}
 .hinfo .hi-tags{margin-top:5px;gap:4px}
+/* 머리 칸: 이름 영역 높이 = 아이콘 높이 50, 윗줄은 위 끝·태그는 아래 끝 (2026-11-26 사용자: "아이콘은 이름있는곳하고 높이맞춰") */
+.hinfo .hi-top > div{height:50px;display:flex;flex-direction:column;justify-content:space-between;align-self:center}
+.hinfo .hi-top > div > b{line-height:1.05} .hinfo .hi-top > div > b:only-child{margin:auto 0} .hinfo .hi-top .hi-tags{margin-top:0}
 .hinfo .hi-btns{margin-top:10px}
 .hinfo .hi-pas{margin:0;font-size:11px}
 .hinfo .hi-btns{margin-top:auto}
