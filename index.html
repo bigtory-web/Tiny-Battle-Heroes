@@ -3009,6 +3009,7 @@ img.rimg{image-rendering:auto!important}
 /* 노림 얼굴: 어두운 바탕, 등급색 없이 편 색(우리 초록·적 빨강) (2026-11-26 사용자) */ #field .aimfaces b{background:#17141d!important;box-shadow:0 0 0 2px #4fd06a,0 0 0 3px #17141d!important} #field .aimfaces b.en{box-shadow:0 0 0 2px #ff5a4a,0 0 0 3px #17141d!important} #field .aimfaces .hic{background:#17141d!important} #field .aimfaces .hic::after{display:none!important}
 /* 초월 영웅 = 96단위(판 배수의 정수배 도트), 전장 영웅과 같은 크기 (2026-11-26 사용자: "캐릭터가 작아") */ #trWin .trslot .trfig{width:96px!important;height:96px!important;left:calc(50% - 48px)!important;bottom:58px!important}
 /* 빨려 들어갈 때 넘어가는 스킬 아이콘도 메인 쪽으로 */ #trWin .trstage.suck .trsk{transition:transform .55s steps(7) .08s,opacity .55s steps(7) .08s;transform:translateX(calc(-50% - 96px)) scale(.3)!important;opacity:0}
+#field .vsmark{display:none!important} /* VS 숨김 (2026-11-26 사용자: "가운데 VS 마크 빼자"). 되돌리려면 이 줄 삭제 */
 #field .vsmark{width:var(--vsw,64px)!important;height:var(--vsh,48px)!important} #field .vsmark img{width:var(--vsw,64px)!important;height:var(--vsh,48px)!important;image-rendering:pixelated!important;animation-name:vsbob3!important} @keyframes vsbob3{50%{transform:translateY(calc(-2 * var(--dp,.75px)))}} /* 흐림 고침: 정수배 도트 (2026-11-26) */
 /* 분노 단계 점 숨김: 시험 (2026-11-26 사용자: "점 세개 일단빼봐"). 되돌리려면 이 두 줄 삭제 */
 #bellBtn.bell .bdots{display:none!important} #bellBtn.bell:not(.inbt) .cbox{height:44px!important}
