@@ -227,7 +227,7 @@ b.pasx{display:inline-flex;align-items:center;justify-content:center;width:100%;
 #dsWin .rbtns{display:flex!important;justify-content:center;align-items:center;position:relative}
 #dsWin .rbtns button{width:116px!important;white-space:nowrap;padding-left:6px!important;padding-right:6px!important}
 #dsWin .dsleft{position:absolute;right:0;font:400 11px var(--display);color:#ffd34d}
-#dsWin .dsswap{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px;padding:4px 8px;background:#2a1720;box-shadow:inset 0 0 0 2px #d8443e;font:400 13px var(--display);color:#f3e6c4}
+#dsWin .dskinds{position:relative} #dsWin .dsswap{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;gap:8px;padding:4px 8px;background:#2a1720;box-shadow:inset 0 0 0 2px #d8443e;font:400 13px var(--display);color:#f3e6c4}
 #dsWin .dsswap img{width:47px;height:31px;image-rendering:pixelated} #dsWin .dsswap b{font-weight:400;margin-right:3px}
 #field .dsgone{position:absolute;transform:translate(-50%,-46.8%);width:calc(100% * 78 / 720);height:calc(100% * 56 / 400);z-index:900;pointer-events:none;background:rgba(216,68,62,.55);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);animation:dsomen 1s ease-in-out infinite}
 /* 예고: 바닥 빛이 일렁이고 빛가루가 오르며 희미한 ? */
@@ -2347,11 +2347,12 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
 .dps .dbar s{background:#f2b53a!important;box-shadow:inset 0 2px 0 #ffe08a,inset 0 -2px 0 #9a6416}
 .dps.e .dbar s{background:#e0554f!important;box-shadow:inset 0 2px 0 #ff9a8a,inset 0 -2px 0 #8a1f26}
 .dps .rbar s{background:#a77bff!important;box-shadow:inset 0 2px 0 #d4b8ff,inset 0 -2px 0 #6b3fc4}
+.dps .dr{position:relative} .dps .dn b{display:inline-block} .dps .dult{display:inline-block}
 /* 영웅 줄 = 늘 두 줄: 숫자+막대 / 받음·회복·보호막·궁. 0이면 빈 자리 (2026-11-26 사용자) */
-.dps .dr:not(.drel) .dn{justify-content:flex-start;gap:6px;height:18px} .dps .dr:not(.drel) .dn b{min-width:46px} .dps.e .dr:not(.drel) .dn b{text-align:right}
-.dps .dr:not(.drel) .dn .dbar{flex:1;margin:0}
-.dps .dr:not(.drel) .d2{display:grid;grid-template-columns:1fr 1fr 1fr 26px;align-items:center;height:16px;overflow:visible}
-.dps .d2 span{white-space:nowrap} .dps.e .dr:not(.drel) .d2{direction:rtl} .dps.e .d2 > *{direction:ltr;text-align:right}
+.dps .dr .dn{justify-content:flex-start;gap:6px;height:18px} .dps .dr .dn b{min-width:46px} .dps.e .dr .dn b{text-align:right}
+.dps .dr .dn .dbar{flex:1;margin:0}
+.dps .dr .d2{display:grid;grid-template-columns:1fr 1fr 1fr 26px;align-items:center;height:16px;overflow:visible}
+.dps .d2 span{white-space:nowrap} .dps.e .dr .d2{direction:rtl} .dps.e .d2 > *{direction:ltr;text-align:right}
 .dps .d2{margin-top:3px;font:400 11px/1.4 var(--display);color:#f3e6c4}
 .dt{display:inline-block;margin-right:2px;padding:0 3px;font:400 10px/14px var(--display);font-style:normal;color:#fff;background:var(--tc,#5d5470);box-shadow:0 0 0 1px #17141d;text-shadow:none}
 .dt.r{--tc:#c84a4a}.dt.g{--tc:#3f8a4a}.dt.b{--tc:#3f6fc2}.dt.o{--tc:#d96a2a}
@@ -4259,19 +4260,39 @@ img.rimg{image-rendering:auto!important}
   function dtIc(c){ var d = DTIC[c]; return '<img class="dti" src="img/p/' + d[1] + '.png" width="16" height="16" alt="' + d[0] + '" title="' + d[0] + '">'; } /* DPS 항목 아이콘: 이미지 세션 정식 그림(16x16) */
   function dpsFmt(n){ n = Math.round(n || 0); return n >= 10000 ? (n / 1000).toFixed(n >= 100000 ? 0 : 1) + 'k' : n.toLocaleString(); }
   (function(){ ['A', 'E'].forEach(function(side){ var h = $('dps' + side).querySelector('.dpsh'), m = document.createElement('button'); m.type = 'button'; m.className = 'dpsm'; m.innerHTML = '<i>캐릭터</i><i>유물</i>'; h.parentNode.insertBefore(m, h.nextSibling); m.addEventListener('click', function(){ S.ui = S.ui || {}; S.ui['dpsRel' + side] = !S.ui['dpsRel' + side]; save(); renderDps(); }); }); })(); /* 캐릭터/유물 전환: 같은 창 안에서 바뀜 */
-  function dpsRelHtml(list){ if (!list.length) return '<small class="d2">유물 없음</small>'; var mx = Math.max(1, list.reduce(function(m, s){ var st = s.stats || {}; return Math.max(m, (st.dealt || 0) + (st.healed || 0) + (st.shield || 0)); }, 0));
-    return list.slice().sort(function(x, y){ var a = x.stats || {}, b = y.stats || {}; return ((b.dealt || 0) + (b.healed || 0) + (b.shield || 0)) - ((a.dealt || 0) + (a.healed || 0) + (a.shield || 0)); }).map(function(s){ var st = s.stats || {}, d = s.def || E.skillById(D, s.id), v = [], tot = (st.dealt || 0) + (st.healed || 0) + (st.shield || 0), key = 'R' + (d && d.id), w = Math.round(100 * tot / mx), w0 = DPSW[key] == null ? w : DPSW[key]; DPSW[key] = w;
-      if (st.dealt > 0) v.push('' + dtIc('o') + '' + dpsFmt(st.dealt)); if (st.healed > 0) v.push('' + dtIc('g') + '' + dpsFmt(st.healed)); if (st.shield > 0) v.push('' + dtIc('b') + '' + dpsFmt(st.shield));
-      return '<div class="dr drel"><span class="dav rav" style="--sg:' + skG(d.id).col + '">' + skIconHtml(d) + '</span><div class="dm"><div class="dn"><b>' + (v.join(' ') || '–') + '</b><em class="dult">' + (st.casts ? '×' + st.casts : '상시') + '</em></div><i class="dbar rbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i></div></div>'; }).join(''); }
+  var DPS_STILL = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function dpsAnim(el, frames, ms){ if (el && el.animate && !DPS_STILL) el.animate(frames, { duration: ms, easing: 'ease-out' }); }
+  /* rows = [{ k, html, dead, n(숫자), c(궁·발동 횟수) }] 순위대로 */
+  function dpsPaint(body, rows){ var now = performance.now(), old = {}, fresh = false;
+    [].slice.call(body.children).forEach(function(el){ if (el.dataset.k) old[el.dataset.k] = el; else el.remove(); });
+    var els = rows.map(function(r){ var el = old[r.k]; if (!el){ el = document.createElement('div'); el.dataset.k = r.k; el._n = r.n; el._c = r.c; fresh = true; } delete old[r.k];
+      el.className = 'dr' + (r.rel ? ' drel' : '') + (r.dead ? ' dead' : '');
+      if (el._h !== r.html){ el._h = r.html; el.innerHTML = r.html; }
+      if (r.n > el._n) dpsAnim(el.querySelector('.dn b'), [{ transform: 'scale(1.22)', color: '#ffe27a' }, { transform: 'scale(1)' }], 220);
+      if (r.c > el._c){ var hot = el.querySelector(r.rel ? '.dav' : '.dult'); dpsAnim(hot, [{ transform: 'scale(1.9)', filter: 'brightness(2.4) drop-shadow(0 0 6px #ffe27a)' }, { transform: 'scale(1)', filter: 'none' }], 500); }
+      el._n = r.n; el._c = r.c; return el; });
+    Object.keys(old).forEach(function(k){ old[k].remove(); fresh = true; });
+    if (!fresh && bt && now - (body._t || 0) < 500){ return; }
+    body._t = now; var top = els.map(function(el){ return el.parentNode === body ? el.offsetTop : null; });
+    if (els.every(function(el, i){ return body.children[i] === el; })) return;
+    els.forEach(function(el){ body.appendChild(el); });
+    els.forEach(function(el, i){ if (top[i] == null) return; var d = top[i] - el.offsetTop; if (!d) return;
+      el.style.zIndex = d > 0 ? 2 : 1; dpsAnim(el, [{ transform: 'translateY(' + d + 'px)' }, { transform: 'none' }], 380);
+      if (d > 0) dpsAnim(el, [{ filter: 'brightness(2.2)', boxShadow: '0 0 0 2px #ffe27a, 0 0 12px #ffd34d' }, { filter: 'none' }], 700); }); }
+  function dpsRelRows(list){ var n = function(s){ return s.def && s.def.trigger === 'line' ? -1 : s.fired || 0; }, amt = function(s){ var st = s.stats || {}; return (st.dealt || 0) + (st.healed || 0); };
+    var mx = Math.max(1, list.reduce(function(m, s){ return Math.max(m, n(s)); }, 0));
+    return list.slice().sort(function(x, y){ return n(y) - n(x) || amt(y) - amt(x); }).map(function(s){ var st = s.stats || {}, d = s.def || E.skillById(D, s.id), c = n(s), key = 'R' + d.id, w = Math.round(100 * Math.max(0, c) / mx), w0 = DPSW[key] == null ? w : DPSW[key]; DPSW[key] = w;
+      var cell = function(i, v){ return '<span>' + (v > 0 ? dtIc(i) + dpsFmt(v) : '') + '</span>'; };
+      return { k: 'r' + d.id, rel: true, n: c, c: c, html: '<span class="dav rav" style="--sg:' + skG(d.id).col + '">' + skIconHtml(d) + '</span><div class="dm"><div class="dn"><b>' + (c < 0 ? '상시' : c + '회') + '</b><i class="dbar rbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i></div><small class="d2">' + cell('o', st.dealt) + cell('g', st.healed) + '</small></div>' }; }); }
   function renderDps(){ var B = bt || dpsLast; ['A', 'E'].forEach(function(side){ var box = $('dps' + side); if (!box) return; if (!B){ box.hidden = true; return; } box.hidden = false;
     var off = !!(S.ui && S.ui.dpsOff); box.classList.toggle('off', off); if (off) return;
     var rel = !!(S.ui && S.ui['dpsRel' + side]); box.querySelectorAll('.dpsm i').forEach(function(i, k){ i.classList.toggle('on', !!k === rel); });
-    if (rel){ box.querySelector('.dpsb').innerHTML = dpsRelHtml((side === 'A' ? B.skills : B.enemySkills) || []); return; }
+    var body = box.querySelector('.dpsb');
+    if (rel){ var sk = (side === 'A' ? B.skills : B.enemySkills) || []; if (!sk.length){ body.innerHTML = '<small class="d2">유물 없음</small>'; return; } dpsPaint(body, dpsRelRows(sk)); return; }
     var list = (side === 'A' ? B.A : B.E).filter(function(u){ return !u.h.mob || u.stats.dealt > 0; }).slice().sort(function(x, y){ return y.stats.dealt - x.stats.dealt; });
     var mx = Math.max(1, list.reduce(function(m, u){ return Math.max(m, u.stats.dealt); }, 0));
-    function row(ic, dealt, sub, dead){ return '<div class="dr' + (dead ? ' dead' : '') + '"><span class="dav">' + ic + '</span><div class="dm"><div class="dn"><b>' + Math.round(dealt).toLocaleString() + '</b></div><i class="dbar"><s style="width:' + Math.round(100 * dealt / mx) + '%"></s></i>' + (sub ? '<small>' + sub + '</small>' : '') + '</div></div>'; }
-    box.querySelector('.dpsb').innerHTML = list.map(function(u){ var s = u.stats, cell = function(c, v){ return '<span>' + (v > 0 ? dtIc(c) + dpsFmt(v) : '') + '</span>'; }, key = side + u.uid, w = Math.round(100 * s.dealt / mx), w0 = DPSW[key] == null ? w : DPSW[key]; DPSW[key] = w;
-      return '<div class="dr' + (u.alive ? '' : ' dead') + '"><span class="dav">' + heroFr(u.id, 0) + '</span><div class="dm"><div class="dn"><b>' + dpsFmt(s.dealt) + '</b><i class="dbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i></div><small class="d2">' + cell('r', s.taken) + cell('g', s.healed) + cell('b', s.shield) + '<em class="dult" aria-label="궁 ' + (s.ults || 0) + '">' + (s.ults ? BOLT + s.ults : '') + '</em></small></div></div>'; }).join(''); }); }
+    dpsPaint(body, list.map(function(u){ var s = u.stats, cell = function(c, v){ return '<span>' + (v > 0 ? dtIc(c) + dpsFmt(v) : '') + '</span>'; }, key = side + u.uid, w = Math.round(100 * s.dealt / mx), w0 = DPSW[key] == null ? w : DPSW[key]; DPSW[key] = w;
+      return { k: 'u' + u.uid, dead: !u.alive, n: Math.round(s.dealt), c: s.ults || 0, html: '<span class="dav">' + heroFr(u.id, 0) + '</span><div class="dm"><div class="dn"><b>' + dpsFmt(s.dealt) + '</b><i class="dbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i></div><small class="d2">' + cell('r', s.taken) + cell('g', s.healed) + cell('b', s.shield) + '<em class="dult" aria-label="궁 ' + (s.ults || 0) + '">' + (s.ults ? BOLT + s.ults : '') + '</em></small></div>' }; })); }); }
   $('dpsBtn').addEventListener('click', function(){ S.ui = S.ui || {}; S.ui.dpsOff = !S.ui.dpsOff; save(); dpsBtnSync(); renderDps(); }); /* DPS 창 켜고 끄는 길은 이 버튼 하나 (상점 아래) */
   function dpsBtnSync(){ $('dpsBtn').classList.toggle('on', !(S.ui && S.ui.dpsOff)); } dpsBtnSync();
   function stepMarch(el){ if (!march) return; march.t += el; var k = Math.min(1, march.t / march.dur), e = k * k * (3 - 2 * k);
@@ -4295,7 +4316,7 @@ img.rimg{image-rendering:auto!important}
     bt.E.forEach(function(u){ if (MOBSZ[u.h.mob]) tpw.E[u.slot] = mobPw(u); }); // 몹 전투력은 능력치로
     logI = 0; acc = 0; fxs = []; shots = []; combos = {}; seqHit = {}; ultAt = {}; arrows = []; uxs = []; UC = {}; bolts = []; skArrowSrc = null; pops = []; knocks = {}; hitStop = {}; blinks = {}; skDmg = { A: 0, E: 0 }; if (HAS_FX) FX.clear(); banners = []; ultPops = []; graves = {}; lunges = {}; flash = 0; done = false;
     $('res').hidden = true; $('field').style.visibility = 'hidden'; cv.hidden = false; $('skipBtn').disabled = false;
-    $('tab-camp').classList.add('busy'); $('fightBtn').disabled = true; dpsLast = null; DPSW = {}; /* 새 전투: DPS 기록 새로 */ $('fightBtn').classList.add('busyhide'); /* 전투 중에는 숨김 */ $('spdBtn').disabled = false;
+    $('tab-camp').classList.add('busy'); $('fightBtn').disabled = true; dpsLast = null; DPSW = {}; document.querySelectorAll('.dps .dpsb').forEach(function(b){ b.innerHTML = ''; }); /* 새 전투: DPS 기록 새로 */ $('fightBtn').classList.add('busyhide'); /* 전투 중에는 숨김 */ $('spdBtn').disabled = false;
     cancelAnimationFrame(raf); last = performance.now(); raf = requestAnimationFrame(loop);
   }
   var SPDS = [1, 1.5, 2, 4]; $('spdBtn').innerHTML = '<span class="spem">⏩</span>X' + speed;
@@ -5471,11 +5492,14 @@ img.rimg{image-rendering:auto!important}
     var P = S.pads || (S.pads = {}), old = P[cell]; P[cell] = tag; var after = rel.map(function(d){ return synInfo(d); }); if (old) P[cell] = old; else delete P[cell];
     return head + rel.map(function(d, i){ return before[i] && after[i] && before[i].n !== after[i].n ? '<span>' + d.name + ' · ' + after[i].lab + ' ' + before[i].n + '→' + after[i].n + '</span>' : ''; }).join(''); }
   /* 팝업: 가운데 당첨 단상, 아래 9종 띠 룰렛. 칸은 고정이라 종류만 돌림 */
-  function daisClose(){ document.querySelectorAll('#field .dsgone').forEach(function(x){ x.remove(); }); var w = $('dsWin'); if (w) (w.parentNode.classList.contains('popw') ? w.parentNode : w).remove(); daisBusy = false; }
+  var daisArm = false;
+  function daisDisarm(){ daisArm = false; document.querySelectorAll('#field .dsgone, #dsWin .dsswap').forEach(function(x){ x.remove(); }); }
+  function daisWarn(old){ daisArm = true; var v = S.pads[old]; $('dsWin').querySelector('.dskinds').insertAdjacentHTML('beforeend', '<div class="dsswap" role="alert"><img src="' + padURL(v) + '" alt=""><span><b style="color:' + padCol(v) + '">' + padName(v) + '</b>가 사라지고 바뀌어요.<br>한 번 더 누르면 바뀌어요</span></div>'); $('field').insertAdjacentHTML('beforeend', '<i class="dsgone" style="' + daisAt(old) + '"></i>'); }
+  function daisClose(){ daisDisarm(); var w = $('dsWin'); if (w) (w.parentNode.classList.contains('popw') ? w.parentNode : w).remove(); daisBusy = false; }
   function daisOpen(){ if (!isDais() || S.event.dsDone || S.offer || S.pending) return; if (shopOpen()) setShop(false); clearSel(); hideInfo(); hideTip(); daisClose();
     var w = document.createElement('div'); w.id = 'dsWin'; w.className = 'evwin';
-    w.innerHTML = '<div class="rbox"><button class="spX" type="button" data-ds="x" title="닫기">✕</button><div class="rt">양탄자</div><div class="dsstage"></div><div class="dskinds">' + daisKinds().map(function(v){ return '<i data-v="' + v + '" style="--pc:' + padCol(v) + '" title="' + padName(v) + '"><img src="' + padURL(v) + '" alt="' + padWord(v) + '"></i>'; }).join('') + '</div>' + (daisOld() ? '<div class="dsswap"><img src="' + padURL(S.pads[daisOld()]) + '" alt=""><span><b style="color:' + padCol(S.pads[daisOld()]) + '">' + padName(S.pads[daisOld()]) + '</b>가 사라지고 대체돼요</span></div>' : '') + '<div class="rbtns"></div></div>';
-    document.body.appendChild(w); popAdd(w, true); daisPaint(); if (daisOld()) $('field').insertAdjacentHTML('beforeend', '<i class="dsgone" style="' + daisAt(daisOld()) + '"></i>');
+    w.innerHTML = '<div class="rbox"><button class="spX" type="button" data-ds="x" title="닫기">✕</button><div class="rt">양탄자</div><div class="dsstage"></div><div class="dskinds">' + daisKinds().map(function(v){ return '<i data-v="' + v + '" style="--pc:' + padCol(v) + '" title="' + padName(v) + '"><img src="' + padURL(v) + '" alt="' + padWord(v) + '"></i>'; }).join('') + '</div><div class="rbtns"></div></div>';
+    document.body.appendChild(w); popAdd(w, true); daisPaint();
     w.addEventListener('click', function(e){ e.stopPropagation(); var b = e.target.closest('[data-ds]'); if (!b || b.disabled) return; var k = b.dataset.ds;
       if (k === 'rr') return daisSpin();
       if (k === 'get') return daisTake();
@@ -5488,11 +5512,11 @@ img.rimg{image-rendering:auto!important}
     if (!daisBusy) daisShow(has ? ev.tag : null, has);
     w.querySelector('.rbtns').innerHTML = '<button class="go" type="button" data-ds="get"' + (daisBusy ? ' disabled' : '') + '>받기</button><button class="go again" type="button" data-ds="rr"' + (left && !daisBusy && S.gold >= price ? '' : ' disabled') + '>리셋 ' + price.toLocaleString() + 'G</button><span class="dsleft">리셋 ' + left + '/' + mx + '</span>';
     w.querySelector('.spX').disabled = daisBusy; }
-  function daisSpin(){ var ev = S.event; if (!isDais() || ev.dsDone || daisBusy || !$('dsWin')) return; var price = Math.floor(daisPrice()); if ((ev.dsRr || 0) >= E.daisRerolls(D, plv()) || S.gold < price) return; S.gold -= price; ev.tag = E.rollDais(D, Math.random, ev.tag); ev.dsRr = (ev.dsRr || 0) + 1; renderHud();
+  function daisSpin(){ var ev = S.event; if (!isDais() || ev.dsDone || daisBusy || !$('dsWin')) return; var price = Math.floor(daisPrice()); if ((ev.dsRr || 0) >= E.daisRerolls(D, plv()) || S.gold < price) return; daisDisarm(); S.gold -= price; ev.tag = E.rollDais(D, Math.random, ev.tag); ev.dsRr = (ev.dsRr || 0) + 1; renderHud();
     save(); /* 결과는 먼저 저장 */ daisBusy = true; daisPaint();
     var kinds = daisKinds(), steps = 18 + kinds.indexOf(ev.tag), n = 0;
     (function tick(){ if (!$('dsWin') || S.event !== ev){ daisBusy = false; return; } daisShow(kinds[n % kinds.length]); if (n++ >= steps){ setTimeout(function(){ daisBusy = false; daisPaint(); }, 280); return; } setTimeout(tick, 55 + Math.pow(n / steps, 3) * 260); })(); }
-  function daisTake(){ var ev = S.event; if (!isDais() || ev.dsDone || daisBusy) return; S.pads = S.pads || {}; var old = daisOld(); if (old && old !== ev.dsCell) delete S.pads[old]; S.pads[ev.dsCell] = ev.tag; padNew = ev.dsCell; ev.dsDone = true; save(); daisClose(); daisFx = true; renderAll(); setTimeout(function(){ daisFx = false; }, 1200); }
+  function daisTake(){ var ev = S.event; if (!isDais() || ev.dsDone || daisBusy) return; S.pads = S.pads || {}; var old = daisOld(); if (old && !daisArm) return daisWarn(old); if (old && old !== ev.dsCell) delete S.pads[old]; S.pads[ev.dsCell] = ev.tag; padNew = ev.dsCell; ev.dsDone = true; save(); daisClose(); daisFx = true; renderAll(); setTimeout(function(){ daisFx = false; }, 1200); }
   function finishDais(){ daisClose(); daisFx = false; S.event = nextEvent(false); S.bell = 0; S.bellGold = 0; save(); evGo(); }
   /* 이벤트 대사 말풍선: 들어와 캐릭터가 나타난 뒤 한 번(enter), 이벤트를 마치고 팝업이 닫힌 뒤 한 번(done). 타이핑. 사라지지 않고 남음 (2026-11-26 사용자) */
   var SPK_AT = { campfire: '.unit.cfh:not(.fairy):not(.merchnpc):not(.oegob):not(.altseer):not(.fork):not(.altA):not(.altM)', merchant: '.unit.merchnpc', groll: '.unit.oegob', fairy: '.unit.cfh.fairy', altar: '.unit.altseer', dais: '.unit.dsheep' /* 양 그림이 오면 이 칸에 세움 */ };
