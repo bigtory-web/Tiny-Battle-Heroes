@@ -2717,6 +2717,14 @@ img.rimg{image-rendering:auto!important}
 /* 돈고블린 = 카지노 딜러 아이들 8칸 (방랑상인과 같은 틀, 좌우 반전은 .oegob .cfslot이 함) */
 .oegob .cfslot{display:flex;align-items:flex-end;justify-content:center}
 .oegob .dlr{display:block;flex:none;height:100%;aspect-ratio:1;background:url(img/p/ev_dealer_anim.png) 0 0/800% 100% no-repeat;image-rendering:pixelated;animation:trader 2s steps(8,jump-none) infinite}
+/* 요정 팝업 */
+#roul .rstage > .fdust,#roul .rstage > .fvine{display:none}
+#roul .rbox.fairy .rstage > .fdust{display:block;position:absolute;inset:7px;overflow:hidden;pointer-events:none;z-index:1}
+#roul .fdust s{position:absolute;width:2px;height:2px;opacity:0;text-decoration:none;animation:fdust 7s linear infinite}
+@keyframes fdust{0%{translate:0 0;opacity:0}20%{opacity:.55}50%{translate:4px -26px}80%{opacity:.45}100%{translate:-2px -54px;opacity:0}}
+#roul .rbox.fairy .rstage > .fvine{display:block;position:absolute;left:7px;top:7px;width:40px;height:40px;pointer-events:none;z-index:3;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' shape-rendering='crispEdges'%3E%3Cpath fill='%233f9a6a' d='M0 0h14v1H9v1H2v7H1v5H0z'/%3E%3Cpath fill='%236fd39a' d='M7 2h3v1h1v1H8V3H7zM13 1h2v1h2v1h-3V2h-1zM2 8h1v1h1v2H3v-1H2zM1 13h1v1h2v2H2v-1H1z'/%3E%3Cpath fill='%23ff9ed2' d='M3 2h3v1h1v3H6v1H3V6H2V3h1z'/%3E%3Cpath fill='%23fff0a0' d='M4 4h1v1H4z'/%3E%3Cpath fill='%23a8e4ff' d='M11 2h2v1h-2zM2 11h1v2H2z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
+#roul .rbox.fairy .rstage > .fvine.b{top:auto;bottom:7px;transform:scaleY(-1)}
+#roul .rbox.fairy .rstrip{box-shadow:0 0 0 2px #17141d,0 0 0 4px #ff9ed2,0 0 12px 2px rgba(168,228,255,.45)!important}
 </style>
 </head>
 <body>
@@ -3421,8 +3429,13 @@ img.rimg{image-rendering:auto!important}
       return 'url(' + c.toDataURL() + ') 50% 100%/480px 200px no-repeat '; }
     var s = document.createElement('style');
     s.textContent = '#evWin .rbox .rstage{background:' + url([[0, [15, 31, 26]], [.3, [19, 40, 30]], [.55, [25, 50, 35]], [.72, [30, 44, 30]]], [226, 190, 96], 20, 40, 32, .09) + '#0f1f1a!important;image-rendering:pixelated}' +
-      '#roul .rbox.camp .rstage{background:' + url([[0, [15, 18, 36]], [.25, [20, 20, 37]], [.45, [29, 22, 38]], [.7, [36, 24, 31]], [.85, [42, 26, 24]]], [255, 140, 40], 50, 56, 32, .14) + '#0f1224!important;image-rendering:pixelated}';
+      '#roul .rbox.camp .rstage{background:' + url([[0, [15, 18, 36]], [.25, [20, 20, 37]], [.45, [29, 22, 38]], [.7, [36, 24, 31]], [.85, [42, 26, 24]]], [255, 140, 40], 50, 56, 32, .14) + '#0f1224!important;image-rendering:pixelated}' +
+      '#roul .rbox.fairy .rstage{background:' + url([[0, [28, 19, 52]], [.25, [29, 26, 62]], [.45, [26, 36, 66]], [.65, [20, 47, 64]], [.82, [18, 54, 60]]], [236, 158, 232], 24, 40, 30, .085) + '#1c1334!important;image-rendering:pixelated}';
     document.body.appendChild(s); })();
+  /* 요정 팝업: 떠오르는 요정 가루 + 왼쪽 위·아래 꽃 덩굴 (2026-11-26 사용자) */
+  function fairyDeco(stage){ if (!stage || stage.querySelector(':scope > .fdust')) return; var o = '', C = ['#ffb3de', '#a8e4ff', '#fff3b0'];
+    for (var i = 0; i < 16; i++){ var du = (5 + Math.random() * 4).toFixed(2); o += '<s style="left:' + (4 + Math.random() * 92).toFixed(1) + '%;top:' + (35 + Math.random() * 62).toFixed(1) + '%;background:' + C[i % 3] + ';animation-duration:' + du + 's;animation-delay:' + (-Math.random() * du).toFixed(2) + 's"></s>'; }
+    stage.insertAdjacentHTML('beforeend', '<i class="fdust">' + o + '</i><i class="fvine"></i><i class="fvine b"></i>'); }
   function starFx(stage, tier, col){ if (!stage) return; var el = stage.querySelector(':scope > .rstars'); if (!el){ el = document.createElement('i'); el.className = 'rstars'; stage.appendChild(el); }
     el.style.setProperty('--sc', col || '#fff'); if (el.firstChild) return; var n = 23, o = ''; /* 개수·빈도는 등급과 상관없이 같고 색만 다름. 결과 그림 왼쪽·위·오른쪽 반원, 단상 위로는 안 내려감 (2026-11-26 사용자) */
     for (var i = 0; i < n; i++){ var a = (i + Math.random() * .7) / n * Math.PI, f = Math.random(), x = 50 + Math.cos(a) * (32 + f * 16), y = 94 - Math.sin(a) * (80 + f * 10), sz = Math.random() < .45 ? 3 : 2, du = (1.6 + Math.random() * 1.4).toFixed(2), dl = (-Math.random() * 3).toFixed(2); o += '<s class="s' + sz + '" style="left:' + x.toFixed(1) + '%;top:' + y.toFixed(1) + '%;animation-duration:' + du + 's;animation-delay:' + dl + 's"></s>'; }
@@ -3436,7 +3449,7 @@ img.rimg{image-rendering:auto!important}
     stage.classList.add('onped'); stage.style.setProperty('--P', P.toFixed(4) + 'px'); el.firstChild.style.backgroundImage = 'url(' + pedRune(col || '#d9dde8') + ')'; }
   function showOffer(key){
     var p = LP(key), box = $('roul'), pic = box.querySelector('.rpic');
-    box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); box.querySelector('.rbox').classList.toggle('camp', S.offerMode === 'camp'); box.querySelector('.rbox').classList.toggle('groll', S.offerMode === 'groll'); rayFx(key); if (!box.classList.contains('chestpop')) pedestal(box.querySelector('.rstage'), GR(lootTier(key)).col); $('rUp').hidden = !upOK(key);
+    box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); box.querySelector('.rbox').classList.toggle('camp', S.offerMode === 'camp'); box.querySelector('.rbox').classList.toggle('fairy', S.offerMode === 'fairy'); if (S.offerMode === 'fairy') fairyDeco(box.querySelector('.rstage')); box.querySelector('.rbox').classList.toggle('groll', S.offerMode === 'groll'); rayFx(key); if (!box.classList.contains('chestpop')) pedestal(box.querySelector('.rstage'), GR(lootTier(key)).col); $('rUp').hidden = !upOK(key);
     pic.style.imageRendering = p.type === 'h' && IMGS[p.id] ? 'pixelated' : '';
     var rk = qN(), rq = { k: rk, css: 66 * qR() / (sApp() * (window.devicePixelRatio || 1)) };
     var lm = Math.max(2, Math.round(qR() * 64 * .8 / 24)); document.documentElement.style.setProperty('--rlq', (24 * lm / (sApp() * (window.devicePixelRatio || 1))).toFixed(2) + 'px'); /* 유물·골드 그림도 영웅과 같은 크기(영웅이 칸에서 차지하는 높이 약 80%), 24px 원본의 정수배 장치 px */ document.documentElement.style.setProperty('--rpq', (p.type === 'h' && IMGS[p.id] ? rq.css : 114) + 'px'); rpAnim.nk = p.type === 'h' ? rq.k : 0; OUTLN = rpAnim.nk;
