@@ -2596,11 +2596,16 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 #credits .crev{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 12px;max-width:300px} #credits .crev span{display:flex;align-items:center;gap:3px} #credits .crev img{width:24px!important;height:24px!important;image-rendering:pixelated}
 #credits .rpok{border:0;cursor:pointer;padding:10px 30px;font:700 18px var(--display);white-space:nowrap}
 #credits .rpok{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:none;z-index:5} #credits.end .rpok{display:block} #credits.end{cursor:default}
+#credits{top:6px!important;right:6px!important;bottom:6px!important;user-select:none;-webkit-user-select:none} #credits .crscroll{-webkit-mask-image:linear-gradient(transparent,#000 22px,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(transparent,#000 22px,#000 calc(100% - 22px),transparent)} /* 전장 틀 안으로, 위아래는 사라지듯 (2026-11-26 사용자) */
 #credits.end .crscroll{bottom:70px;overflow-y:auto;overscroll-behavior:contain;cursor:grab;touch-action:pan-y;scrollbar-width:thin;scrollbar-color:#8a7652 transparent} #credits.end .crscroll::-webkit-scrollbar{width:6px} #credits.end .crscroll::-webkit-scrollbar-thumb{background:#8a7652;border-radius:0} #credits.end .crscroll::-webkit-scrollbar-track{background:rgba(23,20,29,.4)}
 #credits .rfw{z-index:4}
 /* 끝난 판: 적·막대·전투 UI 숨기고, 우리 영웅은 제자리에서 기뻐함 */
 #arena.ending canvas.fbar,#arena.ending .vsmark,#arena.ending #bellBtn,#arena.ending #abar,#arena.ending #vsBar,#arena.ending #skE,#arena.ending .foe,#arena.ending .dpswrap{visibility:hidden!important}
-#arena.ending.marching #field{background-repeat:repeat-x!important} #arena.ending.marching #field .hexg{opacity:0} #arena.ending.marching #field .unit[data-uid] .slot{animation:scrhop .27s cubic-bezier(.3,.6,.4,1) infinite} #arena.ending.marching #field .unit[data-uid]:nth-child(even) .slot{animation-delay:.07s}
+#arena.ending #field .hexg,#arena.ending #field .pad,#arena.ending #field .vsmark,#arena.ending #field .cellhl{visibility:hidden!important} /* 끝 장면: 칸 격자·깔개 숨김 */
+#arena.ending.marching #field{background-repeat:repeat-x!important} #arena.ending.marching #field .unit[data-uid] .slot{animation:crrun .22s steps(4) infinite} #arena.ending.marching #field .unit[data-uid]:nth-child(even) .slot{animation-delay:-.11s} #arena.ending.marching #field .unit[data-uid]:nth-child(3n) .slot{animation-delay:-.05s}
+@keyframes crrun{0%,100%{transform:translateY(0) skewX(-7deg)}50%{transform:translateY(-6px) skewX(-10deg)}}
+#arena.ending.marching #field .unit[data-uid]::before{content:"";position:absolute;left:12%;bottom:4px;width:5px;height:5px;background:#d8bfa0;box-shadow:-8px -3px 0 -1px #d8bfa0,-15px 1px 0 -1px #c4a888;animation:crdust .33s steps(3) infinite;pointer-events:none}
+@keyframes crdust{0%{transform:translateX(0);opacity:.9}100%{transform:translateX(-14px) translateY(-4px);opacity:0}}
 
 /* 패배 팝업 */
 #resPop .dfc{position:relative;width:348px;height:432px;flex:none}
@@ -5195,14 +5200,16 @@ img.rimg{image-rendering:auto!important}
     o = document.createElement('div'); o.id = 'credits';
     o.innerHTML = '<div class="crscroll"><div class="crin"><h2>모험 완료!</h2><div class="crst">' + st.map(function(r){ return '<span>' + r[0] + '</span><b>' + r[1] + '</b>'; }).join('') + '</div>' + (evs ? '<div><h3>만난 이벤트</h3><div class="crev">' + evs + '</div></div>' : '') + (top || sub ? '<div class="crmvp">' + top + '<div>' + sub + '</div></div>' : '') + '</div></div><button class="rpok" type="button">처음부터</button>';
     A.appendChild(o); o.querySelector('.rpok').onclick = function(ev){ ev.stopPropagation(); newRun(); };
-    var sc = o.querySelector('.crscroll'), box = o.querySelector('.crin'), run = null, finish = function(){ box.style.transform = ''; o.classList.add('end'); sc.scrollTop = sc.scrollHeight; A.classList.remove('marching'); if (run){ run.cancel(); run = null; } };
+    var sc = o.querySelector('.crscroll'), box = o.querySelector('.crin'), run = null, fd = $('field'), P = 1500 /* 한 화면 달리는 시간 */, finish = function(){ box.style.transform = ''; o.classList.add('end'); sc.scrollTop = sc.scrollHeight; if (run) setTimeout(brake, 500); };
+    /* 지금 속도에서 부드럽게 줄여 처음 배경 위치(화면 너비의 정수배)에서 멈춤 */ var brake = function(){ if (!run || !o.isConnected) return; var w = fd.clientWidth, ph = ((run.currentTime || 0) % P) / P, end = ph > .6 ? 2 : 1, dist = (end - ph) * w, ms = 2 * dist / w * P, stop = fd.animate([{ backgroundPositionX: -ph * w + 'px' }, { backgroundPositionX: -end * w + 'px' }], { duration: ms, easing: 'cubic-bezier(.33,.66,.66,1)', fill: 'forwards' }); run.cancel(); run = null;
+      setTimeout(function(){ fd.querySelectorAll('.unit[data-uid] .slot').forEach(function(x){ x.getAnimations().forEach(function(m){ m.updatePlaybackRate(.5); }); }); }, ms * .55); stop.onfinish = function(){ stop.cancel(); A.classList.remove('marching'); }; };
     /* 끝난 뒤 마우스로 끌어서도 스크롤 (휠·터치는 기본 동작) */
     var drag = null; sc.addEventListener('pointerdown', function(ev){ if (o.classList.contains('end') && ev.pointerType === 'mouse'){ drag = { y: ev.clientY, t: sc.scrollTop }; sc.setPointerCapture(ev.pointerId); } });
     sc.addEventListener('pointermove', function(ev){ if (drag) sc.scrollTop = drag.t - (ev.clientY - drag.y) / (sc.getBoundingClientRect().height / (sc.offsetHeight || 1)); }); ['pointerup', 'pointercancel'].forEach(function(t){ sc.addEventListener(t, function(){ drag = null; }); });
     if (RS.credits || !box.animate || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)){ finish(); return; }
     var B = o.clientHeight, y0 = Math.round(B * .45), y1 = Math.min(0, B - 70 - box.offsetHeight), T = Math.max(1000, (y0 - y1) / 34 * 1000), an = box.animate([{ transform: 'translateY(' + y0 + 'px)' }, { transform: 'translateY(' + y1 + 'px)' }], { duration: T, easing: 'linear', fill: 'forwards' }); an.onfinish = function(){ an.cancel(); finish(); RS.credits = true; save(); };
-    /* 같은 길이: 85%까지 일정하게, 마지막 15%에서 감속. 화면 너비의 정수배를 흘러 처음 배경에서 멈춤 */ var fd = $('field'), dist = Math.max(1, Math.round(T / 2800)) * fd.clientWidth; A.classList.add('marching'); run = fd.animate([{ backgroundPositionX: '0px', offset: 0 }, { backgroundPositionX: -dist * .919 + 'px', offset: .85, easing: 'cubic-bezier(.33,.66,.66,1)' }, { backgroundPositionX: -dist + 'px', offset: 1 }], { duration: T, fill: 'forwards' });
-    o.addEventListener('click', function(){ if (o.classList.contains('end')) return; an.playbackRate = 7; if (run) run.playbackRate = 7; fd.querySelectorAll('.unit[data-uid] .slot').forEach(function(x){ x.getAnimations().forEach(function(m){ m.playbackRate = 2; }); }); });
+    A.classList.add('marching'); run = fd.animate([{ backgroundPositionX: '0px' }, { backgroundPositionX: -fd.clientWidth + 'px' }], { duration: P, iterations: Infinity });
+    o.addEventListener('click', function(){ if (!o.classList.contains('end')) an.playbackRate = 7; });
     fwFx(o, function(){ return true; }); var host = o.querySelector(':scope > .rfw'); [250, 600, 950, 1350].forEach(function(d){ setTimeout(function(){ if (host && host.isConnected) fwShot(host); }, d); }); }
   function newRun(){ var keep = { modules: S.modules || {}, ui: S.ui };
     var n = fresh(); n.modules = keep.modules; if (keep.ui) n.ui = keep.ui; n.skills = []; n.mana = 0; n.xp = 0; n.life = D.life ? D.life.max : 10; n.streak = 0; n.bell = 0; n.bellGold = 0; n.bellPaid = 0;
