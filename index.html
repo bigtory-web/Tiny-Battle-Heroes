@@ -2543,11 +2543,11 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 #evWin .rbox .rstage .rpic{width:var(--rpq,114px)!important;height:var(--rpq,114px)!important;background-size:var(--rpq,114px) var(--rpq,114px)!important;position:relative;z-index:2;filter:none!important}
 #evWin .mercline{margin:8px 0;padding:10px 0;text-align:center;font:400 18px var(--display);color:#f3e6c4;background:#1d1a24;box-shadow:inset 0 0 0 2px #17141d;text-shadow:0 2px 0 #17141d}
 #evWin .rbtns{display:flex;justify-content:center;gap:10px}
-.rstage > .rped{position:absolute;left:calc(50% - 48 * var(--P));bottom:38px;width:calc(96 * var(--P));height:calc(35 * var(--P));z-index:1;pointer-events:none;background:url(img/p/pedestal.png) 0 0/100% 100% no-repeat;image-rendering:pixelated}
+.rstage > .rped{position:absolute;left:calc(50% - 48 * var(--P));bottom:38px;width:calc(96 * var(--P));height:calc(33 * var(--P));z-index:1;pointer-events:none;background:url(img/p/pedestal.png) 0 0/100% 100% no-repeat;image-rendering:pixelated}
 .rped > .rrune{position:absolute;inset:0;background:0 0/100% 100% no-repeat;image-rendering:pixelated;animation:rrune 1.6s steps(4) infinite}
 @keyframes rrune{0%,100%{opacity:.55;filter:none}50%{opacity:1;filter:brightness(1.35) drop-shadow(0 0 3px currentColor)}}
-#roul:not(.chestpop) .rbox .rstage.onped .rpic:not(.loot),#evWin .rbox .rstage.onped .rpic{position:absolute!important;left:calc(50% - 33 * var(--P));bottom:calc(38px + 23.5 * var(--P));margin:0!important;z-index:2}
-#roul:not(.chestpop) .rbox .rstage.onped .rpic.loot{position:absolute!important;left:calc(50% - var(--rlq,96px) / 2);bottom:calc(38px + 25 * var(--P));width:var(--rlq,96px)!important;height:var(--rlq,96px)!important;margin:0!important;z-index:2}
+#roul:not(.chestpop) .rbox .rstage.onped .rpic:not(.loot),#evWin .rbox .rstage.onped .rpic{position:absolute!important;left:calc(50% - 33 * var(--P));bottom:calc(38px + 21.5 * var(--P));margin:0!important;z-index:2}
+#roul:not(.chestpop) .rbox .rstage.onped .rpic.loot{position:absolute!important;left:calc(50% - var(--rlq,96px) / 2);bottom:calc(38px + 23 * var(--P));width:var(--rlq,96px)!important;height:var(--rlq,96px)!important;margin:0!important;z-index:2}
 #roul:not(.chestpop) .rbox .rstage.onped .rname,#evWin .rbox .rstage.onped .rname{bottom:6px!important;z-index:4}
 /* X 닫기: 자리는 예전 그대로, 굵은 픽셀 ✕를 정가운데 (2026-11-26 사용자: "위치 이상"은 버튼 안 ✕ 얘기였음) */
 .spX,.rx,#shopX,.gover.ll .llx,.hinfo .hi-x,.hinfo.left .hi-x,#hinfo.hinfo .hi-x,#hinfo.hinfo.left .hi-x,.popx,#tab-shop.shopPop #shopX,#evWin .rbox .spX,.oebox .spX{font-size:0!important;line-height:0!important}
@@ -2572,6 +2572,12 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 .chip .av,.stile .ic,.stile .hic,.stile .av{border-radius:0!important}
 #tab-shop .srow2 .stile.lockd,.lbag #roster .chip.baglock{clip-path:none!important;border-radius:0!important;background:linear-gradient(#17141d 0 3px,#221d2a 3px 6px,#2b2634 6px calc(100% - 3px),#3a3446 calc(100% - 3px))!important;box-shadow:inset 3px 0 0 #1a1621,inset -2px 0 0 #4a4358,inset 0 -1px 0 #554d66,0 0 0 2px #17141d!important}
 #shopReroll .spRe{min-width:96px!important;padding:0 12px!important;justify-content:center;white-space:nowrap} /* 리셋 버튼 넓힘 (2026-11-26 사용자) */
+/* 잠긴 칸: 새 자물쇠(12x16의 2배, 위) + 조건 글자 "LV3"가 주인공 (2026-11-26 사용자) */
+#tab-shop .stile.lockd em,.baglock em{display:flex!important;flex-direction:column;align-items:center;gap:4px;font:400 16px/16px var(--display)!important;color:#f3e6c4!important;text-shadow:0 2px 0 #17141d;font-style:normal;letter-spacing:.02em}
+#tab-shop .stile.lockd em::before{content:'';width:24px;height:32px;background:url(img/p/ui_lock.png) 0 0/24px 32px no-repeat;image-rendering:pixelated}
+.lbag #roster .chip.baglock{gap:0}
+.baglock em{gap:1px;font-size:14px!important;line-height:14px!important}
+.baglock em::before{content:'';width:24px;height:32px;background:url(img/p/ui_lock.png) 0 0/24px 32px no-repeat;image-rendering:pixelated}
 </style>
 </head>
 <body>
@@ -2839,7 +2845,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   function PL(){ return D.player ? E.playerLevel(D, S.xp) : { level: 1, cur: 0, need: 1, max: true }; }
   function plv(){ return PL().level; }
   /* 아직 안 열린 칸: 늘 최대 칸까지 회색 잠금 칸 + 열리는 레벨 (2026-11-26 사용자) */
-  function lockedBag(from){ if (!D.player || !E.perk) return ''; var max = E.perk(D, 99).bag || 0, e = ''; for (var i = from; i < max; i++){ var L = 1; while (L < 99 && E.perk(D, L).bag < i + 1) L++; e += '<i class="chip baglock" title="Lv' + L + '에 열려요"><b></b><em>Lv' + L + '</em></i>'; } return e; }
+  function lockedBag(from){ if (!D.player || !E.perk) return ''; var max = E.perk(D, 99).bag || 0, e = ''; for (var i = from; i < max; i++){ var L = 1; while (L < 99 && E.perk(D, L).bag < i + 1) L++; e += '<i class="chip baglock" title="Lv' + L + '에 열려요"><em>LV' + L + '</em></i>'; } return e; }
   function bagMax(){ return PK().bag || R.bag; } // 백팩 칸 수: 플레이어 레벨에 따라 (2026-11-23)
   function PK(){ return D.player ? E.perk(D, plv()) : { field: R.fieldSlots, skillSlots: D.skills.slots, shopGrade: null }; }
   if (!S.shop) restock(); else if (!S.shop.heroes){ S.shop.heroes = newHeroes(); S.shop.hsold = []; } // 옛 저장: 영웅 줄 한 번 채우기
@@ -3268,7 +3274,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   function rayFx(key){ var rb = $('roul').querySelector('.rbox'), t = lootTier(key); rb.classList.remove('rl1', 'rl2', 'rl3', 'rl4'); rb.classList.add('rl' + t); rb.style.setProperty('--gcol', GR(t).col); } /* 뒤 빛줄기: 1등급 없음, 2등급 이상은 등급색, 높을수록 진하고 빠르게. 도는 중 칸이 바뀌면 같이 바뀜 */
   /* 룬 단상 (2026-11-26 사용자 확정): 영웅 도트와 같은 밀도(1칸 = P css px, 장치 px 정수배). 발 = 단상 윗끝에서 10.5칸 아래, 이름판은 단상 아래. 룬은 등급색으로 반짝 */
   var PEDRUNE = new Image(), PEDC = {}; PEDRUNE.src = 'img/p/pedestal_rune.png';
-  function pedRune(col){ if (PEDC[col]) return PEDC[col]; if (!PEDRUNE.complete || !PEDRUNE.naturalWidth) return 'img/p/pedestal_rune.png'; var c = document.createElement('canvas'); c.width = 96; c.height = 35; var x = c.getContext('2d'); x.drawImage(PEDRUNE, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = col; x.fillRect(0, 0, 96, 35); return PEDC[col] = c.toDataURL(); }
+  function pedRune(col){ if (PEDC[col]) return PEDC[col]; if (!PEDRUNE.complete || !PEDRUNE.naturalWidth) return 'img/p/pedestal_rune.png'; var c = document.createElement('canvas'); c.width = 96; c.height = 33; var x = c.getContext('2d'); x.drawImage(PEDRUNE, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = col; x.fillRect(0, 0, 96, 33); return PEDC[col] = c.toDataURL(); }
   function pedestal(stage, col){ if (!stage) return; var P = qR() / (sApp() * (window.devicePixelRatio || 1)), el = stage.querySelector(':scope > .rped');
     if (!el){ el = document.createElement('i'); el.className = 'rped'; el.dataset.smb = '1'; el.innerHTML = '<i class="rrune" data-smb="1"></i>'; stage.appendChild(el); }
     stage.classList.add('onped'); stage.style.setProperty('--P', P.toFixed(4) + 'px'); el.firstChild.style.backgroundImage = 'url(' + pedRune(col || '#d9dde8') + ')'; }
@@ -4757,7 +4763,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     var rp = E.refreshPrice(D, S.shop.rerolls);
     var HS = D.shop.heroes || (S.shop.heroes || []).length ? S.shop.heroes || [] : [], hrow = HS.map(function(it, i){ if ((S.shop.hsold || []).indexOf(i) >= 0) return '<span class="stile empty"></span>'; var on = shopSel && shopSel.t === 'hero' && shopSel.i === i; if (S.gold >= it.price) anyBuy = true;
       return '<button class="stile mhero' + (on ? ' sel' : '') + '" style="--gcol:' + HG(it.id).col + '" data-sel="hero:' + i + '" type="button"><span class="ic">' + heroFr(it.id) + '</span>' + priceTag(it.price, S.gold >= it.price) + '</button>'; });
-    var cells = tiles.slice(); for (var ci = cells.length; ci < 6; ci++){ var lv = shopLockLv(ci); cells.push(lv ? '<span class="stile lockd"><em>🔒 Lv' + lv + '</em></span>' : '<span class="stile empty"></span>'); }
+    var cells = tiles.slice(); for (var ci = cells.length; ci < 6; ci++){ var lv = shopLockLv(ci); cells.push(lv ? '<span class="stile lockd"><em>LV' + lv + '</em></span>' : '<span class="stile empty"></span>'); }
     $('stock').innerHTML = (hrow.length ? '<div class="srow2 h"><span class="rowic">' + (HUDOK.gold ? '<img class="mni" src="img/p/hud_gold.png" alt="">' : '🪙') + '</span>' + hrow.join('') + '</div>' : '') + '<div class="srow2 g six"><span class="rowic"></span>' + cells.join('') + '</div>'; /* 2행×3열 */
     var rMax = D.shop.refreshMax || Infinity, rLeft = Math.max(0, rMax - (S.shop.rerolls || 0)), rOff = !rLeft || S.gold < rp, rDis = rOff || battleOn();
     $('shopReroll').innerHTML = '<button class="spRe' + (rOff ? ' no' : '') + '" data-reroll="1" type="button"' + (rDis ? ' disabled' : '') + ' title="리셋 · 열린 칸을 모두 새로 뽑아요">' + '리셋 ' + rp.toLocaleString() + 'G</button>'; rrCount(isFinite(rMax) ? rLeft : null, rMax); /* 2026-11-23: 상점 오른쪽 위 주사위 버튼으로 되돌림 */
@@ -4773,7 +4779,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
       var pr = '<span class="pr' + (mana ? ' mana' : '') + (payOk ? '' : ' no') + '">' + (mana ? manaIcon('mni') : (HUDOK.gold ? '<img src="img/p/hud_gold.png" alt="">' : '🪙')) + it.price.toLocaleString() + '</span>';
       return '<button class="' + cls + (done ? ' sold' : '') + (on ? ' sel' : '') + '"' + attr + ' data-sel="merch:' + i + '" type="button">' + (it.off ? '<i class="rib">' + it.off + '%</i>' : '') + '<span class="ic">' + ic + '</span>' + pr + '</button>'; }); /* 리본 = 그 상품 할인율 */
     var MS = (D.player && D.player.merchantSlots) || [], open = MS[Math.min(MS.length, plv()) - 1] || 0, max = MS.length ? Math.max.apply(null, MS) : 6; /* 3칸 x 2줄, 왼쪽부터. 레벨로 안 열린 칸은 일반 상점과 같은 잠금 표시 (2026-11-26 사용자) */
-    while (t.length < max){ var ci = t.length, L = 0; if (ci >= open) for (var q = 0; q < MS.length && !L; q++) if (MS[q] > ci) L = q + 1; t.push(L ? '<span class="stile lockd"><em>🔒 Lv' + L + '</em></span>' : '<span class="stile empty keep"></span>'); }
+    while (t.length < max){ var ci = t.length, L = 0; if (ci >= open) for (var q = 0; q < MS.length && !L; q++) if (MS[q] > ci) L = q + 1; t.push(L ? '<span class="stile lockd"><em>LV' + L + '</em></span>' : '<span class="stile empty keep"></span>'); }
     $('stock').innerHTML = '<div class="srow2 g six"><span class="rowic"></span>' + t.join('') + '</div>';
     var MR = D.events.merchant.reroll, rr = $('shopReroll'); if (MR){ var left = Math.max(0, merchRRMax() - (o.rerolls || 0)), off2 = !left || S.gold < MR.cost; rr.innerHTML = '<button class="spRe' + (off2 ? ' no' : '') + '" data-reroll="1" type="button"' + (off2 || battleOn() ? ' disabled' : '') + ' title="리셋 · 상품을 모두 새로 뽑아요">' + '리셋 ' + MR.cost + 'G</button>'; rrCount(left, merchRRMax()); } rr.hidden = !MR; if (!MR) rrCount(null); renderShopInfo(); }
   /* 남은 횟수는 버튼 왼쪽 바깥에 "리셋 1/1" (룰렛과 같은 글) */
