@@ -133,6 +133,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 #amb[data-k=mimic]{transition:opacity .9s}
 #amb[data-k=mimic].bt{opacity:0}
 @keyframes ambpop{0%{translate:0 0;scale:1;opacity:1}30%{translate:calc(var(--dx) * .7) -110px;opacity:.95}65%{translate:calc(var(--dx) * 1.3) -95px;opacity:.5}100%{translate:calc(var(--dx) * 1.8) -55px;scale:1.5;opacity:0}} /* 퍼지면서 서서히 사라짐 (2026-11-26 사용자) */
+/* 양탄자 판: 남보라 밤하늘 물, 초승달·별, 바람에 둥실 가는 털뭉치. 가운데 땅은 맑게 (2026-11-26 사용자: "배경연출도 털뭉치나 달 별") */
+#amb[data-k=dais]{background:linear-gradient(rgba(48,28,120,.42),rgba(70,45,140,.12) 30%,rgba(70,45,140,0) 48%),radial-gradient(ellipse at 50% 62%,rgba(55,30,120,0) 55%,rgba(55,30,120,.22))}
+#amb[data-k=dais] b{position:absolute;right:13%;top:9%;width:30px;height:30px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%23f1e7ff' d='M4 0h4v1H6v1H5v1H4v2H3v3h1v1h1v1h2v1h4v1h-1v1H8v1H4v-1H2v-1H1V8H0V4h1V2h1V1h2z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;filter:drop-shadow(0 0 7px #c9aaff);animation:dsfloat 5s ease-in-out infinite}
+#amb[data-k=dais] s{background:#fff;box-shadow:-3px 0 #cdb6ff,3px 0 #cdb6ff,0 -3px #cdb6ff,0 3px #cdb6ff;animation:rugtwink ease-in-out infinite;opacity:0}
+#amb[data-k=dais] i{position:absolute;left:-8%;width:36px;aspect-ratio:18/13;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 13' shape-rendering='crispEdges'%3E%3Cpath fill='%2317141d' d='M5 0h4v1h2v1h3v1h2v2h1v1h1v4h-1v2h-2v1h-3v-1h-2v1H6v-1H4v1H2v-1H1v-2H0V5h1V3h2V2h2z'/%3E%3Cpath fill='%233a2c7e' d='M6 1h3v1h2v1h3v1h1v2h1v1h1v2h-1v2h-2v1h-1v-1h-3v1H8v-1H6v1H5v-1H3v1H2V9H1V6h1V4h2V3h2z'/%3E%3Cpath fill='%236a55c4' d='M6 2h3v1H6zM3 4h2v2H3zM11 4h3v1h-3z'/%3E%3Cpath fill='%23fff' d='M8 5h1v1H8zM12 7h1v1h-1z'/%3E%3Cpath fill='%23bfe4ff' d='M5 8h1v1H5z'/%3E%3Cpath fill='%23e2c4ff' d='M14 8h1v1h-1z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;opacity:.75;animation:woolgo linear infinite}
+@keyframes woolgo{0%{left:-8%;translate:0 0}25%{translate:0 -10px}50%{translate:0 4px}75%{translate:0 -8px}100%{left:106%;translate:0 0}}
 #amb[data-k=fairy]{background:linear-gradient(rgba(255,160,220,.14),rgba(255,200,230,.04) 60%,rgba(140,230,180,.12))}
 #amb[data-k=fairy] s{width:6px;height:4px;background:#ffb3de;box-shadow:2px 2px #ff8ac8;animation:ambfall linear infinite}
 #amb[data-k=groll]{background:radial-gradient(ellipse at 25% 0,rgba(255,220,90,.26),transparent 55%),radial-gradient(ellipse at 75% 0,rgba(255,220,90,.26),transparent 55%);animation:ambcasino 2.4s steps(2) infinite}
@@ -204,6 +210,7 @@ b.pasx{display:inline-flex;align-items:center;justify-content:center;width:100%;
 /* 말꼬리: 3px 계단 */
 #spk .tl{position:absolute;left:calc(50% - 9px);top:calc(100% - 3px);width:18px;height:9px;background:linear-gradient(#d9c49a,#d9c49a) 3px 0/12px 3px,linear-gradient(#d9c49a,#d9c49a) 6px 3px/6px 3px,linear-gradient(#17141d,#17141d) 0 0/18px 3px,linear-gradient(#17141d,#17141d) 3px 3px/12px 3px,linear-gradient(#17141d,#17141d) 6px 6px/6px 3px;background-repeat:no-repeat}
 #field .dsobj b{font:400 40px var(--display);color:#ffd34d;text-shadow:0 2px 0 #17141d,2px 0 #17141d,-2px 0 #17141d,0 -2px #17141d;animation:upmkbob .8s steps(2) infinite}
+#field .dsfx b{background:linear-gradient(0deg,rgba(217,196,255,.95),rgba(170,110,255,0))} #field .dsfx s{background:#e2c4ff}
 #field .dsfx{position:absolute;transform:translate(-50%,-46.8%);width:calc(100% * 78 / 720);height:calc(100% * 56 / 400);z-index:900;pointer-events:none;font-style:normal}
 /* 당첨 연출: 빛기둥 + 사방으로 튀는 반짝이 */
 .dsfx b{position:absolute;left:18%;right:18%;bottom:50%;height:190%;background:linear-gradient(0deg,rgba(255,236,150,.95),rgba(255,211,77,0));animation:dspillar 1.1s ease-out forwards}
@@ -242,12 +249,29 @@ b.pasx{display:inline-flex;align-items:center;justify-content:center;width:100%;
 #field .dsgone{position:absolute;transform:translate(-50%,-46.8%);width:calc(100% * 78 / 720);height:calc(100% * 56 / 400);z-index:900;pointer-events:none;background:rgba(216,68,62,.55);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);animation:dsomen 1s ease-in-out infinite}
 /* 예고: 바닥 빛이 일렁이고 빛가루가 오르며 희미한 ? */
 #field .dsomen{position:absolute;transform:translate(-50%,-46.8%);width:calc(100% * 78 / 720);height:calc(100% * 56 / 400);z-index:2;pointer-events:none;font-style:normal}
-#field .dsomen u{position:absolute;inset:2%;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:radial-gradient(closest-side,#fff 0,rgba(226,196,255,.95) 30%,rgba(150,90,240,.75) 65%,rgba(255,226,122,.9));animation:dsomen .9s ease-in-out infinite}
-#field .dsomen em{position:absolute;left:-22%;right:-22%;top:-12%;bottom:-12%;border-radius:50%;border:3px dashed #ffe27a;box-shadow:0 0 12px 3px rgba(190,130,255,.9),inset 0 0 12px rgba(190,130,255,.8);animation:dsring 3s linear infinite}
-#field .dsomen p{position:absolute;left:14%;right:14%;bottom:45%;height:260%;margin:0;background:linear-gradient(0deg,rgba(210,170,255,.85),rgba(170,110,255,0));animation:dsomen 1.3s ease-in-out infinite}
-#field .dsomen s{position:absolute;bottom:35%;width:4px;height:4px;background:#fff3b0;box-shadow:0 0 6px 2px #a77bff;text-decoration:none;animation:ambrise 1.8s linear infinite}
-#field .dsomen b{position:absolute;left:0;right:0;bottom:80%;text-align:center;font:400 34px var(--display);color:#fff3b0;text-shadow:0 2px 0 #17141d,2px 0 #17141d,-2px 0 #17141d,0 -2px #17141d,0 0 12px #a77bff;animation:upmkbob .8s steps(2) infinite}
-@keyframes dsring{from{transform:rotate(0) scale(1)}50%{transform:rotate(180deg) scale(1.12)}to{transform:rotate(360deg) scale(1)}}
+#field .dsomen u{position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 76 54' preserveAspectRatio='none' shape-rendering='crispEdges'%3E%3Cpolygon points='38,1 75,14 75,40 38,53 1,40 1,14' fill='%238a5ce8' fill-opacity='.42' stroke='%23d9c4ff' stroke-width='1.5'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;animation:dsbreath 2.4s ease-in-out infinite}
+#field .dsomen p{position:absolute;left:31%;right:31%;bottom:48%;height:220%;margin:0;background:linear-gradient(0deg,rgba(201,170,255,.5),rgba(170,130,255,.18) 55%,rgba(170,130,255,0));animation:dsbreath 3s ease-in-out infinite}
+#field .dsomen s{position:absolute;bottom:30%;width:3px;height:3px;background:#fff;box-shadow:0 0 4px 1px #a77bff;text-decoration:none;opacity:0;animation:dsrise 3.2s linear infinite}
+#field .dsomen s:nth-of-type(3n+1){background:#bfe4ff} #field .dsomen s:nth-of-type(3n+2){background:#d9c4ff}
+#field .dsomen i{position:absolute;left:34%;right:34%;top:52%;height:12%;border-radius:50%;background:rgba(13,11,38,.4);animation:dsshade 2.4s ease-in-out infinite}
+#field .dsomen b{position:absolute;left:24%;width:52%;bottom:60%;aspect-ratio:18/13;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 13' shape-rendering='crispEdges'%3E%3Cpath fill='%2317141d' d='M5 0h4v1h2v1h3v1h2v2h1v1h1v4h-1v2h-2v1h-3v-1h-2v1H6v-1H4v1H2v-1H1v-2H0V5h1V3h2V2h2z'/%3E%3Cpath fill='%233a2c7e' d='M6 1h3v1h2v1h3v1h1v2h1v1h1v2h-1v2h-2v1h-1v-1h-3v1H8v-1H6v1H5v-1H3v1H2V9H1V6h1V4h2V3h2z'/%3E%3Cpath fill='%236a55c4' d='M6 2h3v1H6zM3 4h2v2H3zM11 4h3v1h-3z'/%3E%3Cpath fill='%23fff' d='M8 5h1v1H8zM12 7h1v1h-1z'/%3E%3Cpath fill='%23bfe4ff' d='M5 8h1v1H5z'/%3E%3Cpath fill='%23e2c4ff' d='M14 8h1v1h-1z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;filter:drop-shadow(0 0 5px #a77bff);animation:dsfloat 2.4s ease-in-out infinite}
+@keyframes dsbreath{50%{opacity:.5}}
+@keyframes dsrise{0%{translate:0 0;opacity:0}25%{opacity:1}100%{translate:0 -46px;opacity:0}}
+@keyframes dsfloat{50%{translate:0 -6px}}
+@keyframes dsshade{50%{scale:.75;opacity:.6}}
+/* 깔린 양탄자: 칸에 꼭 맞는 납작한 밤하늘 깔개, 종류색은 가운데 문양에만. 별 반짝임·숨 쉬는 테두리, 영웅이 서면 발밑 빛 (2026-11-26 사용자: 보라 계열) */
+#field .pad.rug{width:calc(100% * 76 / 720);height:calc(100% * 54 / 400);transform:translate(-50%,-50%);background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 76 54' preserveAspectRatio='none' shape-rendering='crispEdges'%3E%3Cpolygon points='38,1 75,14 75,40 38,53 1,40 1,14' fill='%232a1f58' stroke='%2317141d' stroke-width='2'/%3E%3Cpolygon points='38,5 71,16 71,38 38,49 5,38 5,16' fill='none' stroke='%238a6fe0' stroke-width='3' stroke-dasharray='4 3'/%3E%3Cpolygon points='38,9 65,18 65,36 38,45 11,36 11,18' fill='%233b2d78' stroke='%235a46a8' stroke-width='1'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
+#field .pad.rug em{position:absolute;left:29%;width:42%;top:30%;height:40%;background:no-repeat center/contain;image-rendering:pixelated;filter:drop-shadow(0 0 3px #d9c4ff)}
+#field .pad.rug::after{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 76 54' preserveAspectRatio='none' shape-rendering='crispEdges'%3E%3Cpolygon points='38,1 75,14 75,40 38,53 1,40 1,14' fill='none' stroke='%23d9c4ff' stroke-width='2'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;animation:rugbreath 3.4s ease-in-out infinite}
+#field .pad.rug s{position:absolute;left:24%;top:26%;width:3px;height:3px;background:#fff;box-shadow:-3px 0 #d9c4ff,3px 0 #d9c4ff,0 -3px #d9c4ff,0 3px #d9c4ff;opacity:0;animation:rugtwink 4.2s ease-in-out infinite}
+#field .pad.rug s+s{left:72%;top:66%;animation-delay:2.1s}
+#field .pad.rug.on::before{content:'';position:absolute;left:14%;right:14%;bottom:46%;height:85%;background:linear-gradient(0deg,rgba(201,170,255,.75),rgba(170,130,255,0));animation:dsbreath 2s ease-in-out infinite}
+#field .rugw{position:absolute;width:calc(100% * 76 / 720);height:calc(100% * 54 / 400);transform:translate(-50%,-50%);z-index:2;pointer-events:none;font-style:normal} #field .rugw u{position:absolute;left:24%;width:52%;bottom:45%;aspect-ratio:18/13;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 13' shape-rendering='crispEdges'%3E%3Cpath fill='%2317141d' d='M5 0h4v1h2v1h3v1h2v2h1v1h1v4h-1v2h-2v1h-3v-1h-2v1H6v-1H4v1H2v-1H1v-2H0V5h1V3h2V2h2z'/%3E%3Cpath fill='%233a2c7e' d='M6 1h3v1h2v1h3v1h1v2h1v1h1v2h-1v2h-2v1h-1v-1h-3v1H8v-1H6v1H5v-1H3v1H2V9H1V6h1V4h2V3h2z'/%3E%3Cpath fill='%236a55c4' d='M6 2h3v1H6zM3 4h2v2H3zM11 4h3v1h-3z'/%3E%3Cpath fill='%23fff' d='M8 5h1v1H8zM12 7h1v1h-1z'/%3E%3Cpath fill='%23bfe4ff' d='M5 8h1v1H5z'/%3E%3Cpath fill='%23e2c4ff' d='M14 8h1v1h-1z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;opacity:0;animation:rugtuft .5s ease-in forwards}
+#field .pad.rug.nw,#field.padshow .pad.rug{animation:rugin .9s ease-out both}
+@keyframes rugbreath{0%,100%{opacity:.12}50%{opacity:.7}}
+@keyframes rugtwink{0%,70%,100%{opacity:0;scale:.4}80%{opacity:1;scale:1}90%{opacity:0;scale:.6}}
+@keyframes rugin{0%,45%{transform:translate(-50%,-50%) scale(.12,.5);opacity:0}55%{opacity:1}80%{transform:translate(-50%,-50%) scale(1.14,.96)}100%{transform:translate(-50%,-50%);opacity:1}}
+@keyframes rugtuft{0%{translate:0 -70px;opacity:0}25%{opacity:1}85%{opacity:1}100%{translate:0 0;opacity:0}}
 @keyframes dsomen{50%{opacity:.55;filter:brightness(1.5)}}
 @keyframes dsburst{0%{transform:rotate(var(--a)) translateX(0);opacity:1}100%{transform:rotate(var(--a)) translateX(60px);opacity:0}}
 @keyframes padpick{50%{opacity:.95;filter:brightness(1.4)}}
@@ -3611,7 +3635,7 @@ img.rimg{image-rendering:auto!important}
     var vsHtml = noFight() || isLvPick() || isFork() ? '' : '<b class="vsmark" style="left:50%;top:' + (100 * (74 + OFF + FOOT) / H) + '%"><img class="vsv" src="img/p/ui_vs_v.png" alt=""><img class="vss" src="img/p/ui_vs_s.png" alt="V S"></b>'; /* 배치 화면(전투 판)만, 전투가 시작되면 tilesHtml째 빠져요 */
     var tilesHtml = bt ? '' : vsHtml + '<i class="hexg" style="background-image:url(' + hexURL(PK().field + (isLvPick() ? 'lv1' + lvKind() : isFork() ? 'fork' : isAltar() ? 'alt' : 'ev')) + ')"></i>' + (scrollPend || noFight() ? '' : st.team.filter(function(u){ return u.boss && FP[u.slot]; }).map(function(u){ var q = FP[u.slot]; return '<i class="pad dais" style="left:' + (100 * q[0] / W) + '%;top:' + (100 * (q[1] + OFF + FOOT) / H) + '%;background-image:url(' + DAISURL + ')" data-tipt="보스 단상" data-tiptx="' + daisDesc() + '"></i>'; }).join(''));
     function cellStyle(k){ var q = k.split(','); return 'left:' + (100 * q[0] / W) + '%;top:' + (100 * (+q[1] + OFF + FOOT) / H) + '%'; }
-    var PD = S.pads || {}, padsHtml = bt ? '' : Object.keys(PD).filter(function(k){ return k.indexOf(',') > 0; }).map(function(k){ return '<i class="pad' + (padNew === k ? ' nw' : '') + '" style="' + cellStyle(k) + ';background-image:url(' + padURL(PD[k]) + ')"' + padTipAttr(PD[k]) + '></i>'; }).join('') +
+    var PD = S.pads || {}, onK = {}; S.team.forEach(function(uid){ var p = uid && S.pos && S.pos[uid]; if (p) onK[p.x + ',' + p.y] = 1; }); var padsHtml = bt ? '' : Object.keys(PD).filter(function(k){ return k.indexOf(',') > 0; }).map(function(k){ return '<i class="pad rug' + (padNew === k ? ' nw' : '') + (onK[k] ? ' on' : '') + '" style="' + cellStyle(k) + '"' + padTipAttr(PD[k]) + '><em style="background-image:url(' + padURL(PD[k]) + ')"></em><s></s><s></s></i>' + (padNew === k ? '<i class="rugw" style="' + cellStyle(k) + '"><u></u></i>' : ''); }).join('') +
       (S.padPend && !bt ? hexCells().A.map(function(c){ var k = ckey(c); return '<button class="padtgt" type="button" data-padcell="' + k + '" style="' + cellStyle(k) + ';background-image:url(' + padURL(S.padPend) + ')"></button>'; }).join('') : '');
     padNew = '';
     $('field').innerHTML = '' + tilesHtml + padsHtml + [0, 1, 2, 3, 4].map(function(i){ return at('A', i, slotHtml(i), S.team[i]); }).join('') +
@@ -5494,7 +5518,7 @@ img.rimg{image-rendering:auto!important}
   /* 칸은 판에 들어올 때 하나 정해 저장. 받기 전까지 그 칸에 "이상한 일" 예고 */
   function daisHtml(){ var ev = S.event; if (!ev.tag){ ev.tag = E.rollDais(D, Math.random); save(); } if (!ev.dsCell){ ev.dsCell = daisRollCell(); save(); } if (ev.dsDone) return daisFx ? daisBurst(ev.dsCell) : '';
     var m = ''; for (var i = 0; i < 6; i++) m += '<s style="left:' + (18 + i * 13) + '%;animation-delay:' + (-i * .45).toFixed(2) + 's"></s>';
-    return '<i class="dsomen" style="' + daisAt(ev.dsCell) + '"><em></em><p></p><u></u>' + m + '<b>?</b></i>'; }
+    return '<i class="dsomen" style="' + daisAt(ev.dsCell) + '"><u></u><p></p>' + m + '<i></i><b></b></i>'; }
   function daisBurst(k){ var s = ''; for (var i = 0; i < 10; i++) s += '<s style="--a:' + (i * 36) + 'deg;animation-delay:' + (i % 3) * .08 + 's"></s>'; return '<i class="dsfx" style="' + daisAt(k) + '"><b></b>' + s + '</i>'; }
   function daisInfo(tag, cell){ var u = null; S.team.forEach(function(uid){ var p = uid && S.pos && S.pos[uid]; if (p && p.x + ',' + p.y === cell) u = U(uid); });
     var head = '<b><em style="color:' + daisCol() + '">' + padName(tag) + '</em> ' + (u ? hero(u.id).name : '빈 칸') + '</b><small>' + padDesc(tag) + '</small>';
@@ -5766,9 +5790,10 @@ img.rimg{image-rendering:auto!important}
   // ───── 위험 종: 누를 때마다 0→1→2→3→0. 길게 누르거나 우클릭하면 0 ─────
   var BELLIMG = {}; [1, 2, 3].forEach(function(n){ var im = new Image(); im.onload = function(){ BELLIMG[n] = true; renderBell(); }; im.src = 'img/p/ui_foe' + n + '.png'; });
   /* 이벤트 판 분위기: 배경 그림은 그대로, 색·빛·앞 효과만 덮음. 편성·전투 둘 다 (2026-11-26 사용자) */
-  var AMB = { altar: [18, 0, 100, 45, 100], campfire: [10, 0, 100, 40, 100], mimic: [0], fairy: [16, 0, 100, 0, 40], groll: [15, 2, 98, 82, 100], merchant: [10, 3, 97, 20, 95] }; /* [알갱이 수, 가로 최소·최대 %, 세로 최소·최대 %] */
+  var AMB = { altar: [18, 0, 100, 45, 100], campfire: [10, 0, 100, 40, 100], mimic: [0], dais: [14, 4, 96, 3, 34], fairy: [16, 0, 100, 0, 40], groll: [15, 2, 98, 82, 100], merchant: [10, 3, 97, 20, 95] }; /* [알갱이 수, 가로 최소·최대 %, 세로 최소·최대 %] */
   function ambSync(){ var el = $('amb'), ev = bt ? curEv : S.event, k = ev && (bt || (S.stage < E.stageCount(D) && !isLvPick())) && AMB[ev.kind] ? ev.kind : ''; if (!el || (el.dataset.k || '') === k) return; el.dataset.k = k; var a = AMB[k], o = '';
     for (var i = 0; a && i < a[0]; i++){ var du = (4 + Math.random() * 4).toFixed(2); o += '<s' + (k === 'groll' ? ' class="g' + (i % 2 ? 2 : 0) + '" data-c="' + (i % 2 ? '♣' : '7') + '"' : k === 'merchant' ? ' class="d" data-c="%"' : '') + ' style="left:' + (a[1] + Math.random() * (a[2] - a[1])).toFixed(1) + '%;top:' + (a[3] + Math.random() * (a[4] - a[3])).toFixed(1) + '%;animation-duration:' + du + 's;animation-delay:' + (-Math.random() * du).toFixed(2) + 's"></s>'; }
+    if (k === 'dais'){ o += '<b></b>'; [[24, 26, 0, 30], [37, 34, -17, 22], [46, 30, -26, 40]].forEach(function(w){ o += '<i style="top:' + w[0] + '%;animation-duration:' + w[1] + 's;animation-delay:' + w[2] + 's;width:' + w[3] + 'px"></i>'; }); } /* 털뭉치 3개: 판(아래 절반) 위 하늘에서만 */
     el.innerHTML = o; }
   setInterval(ambSync, 300);
   /* 미믹 판: 아래 왼쪽·오른쪽 수풀에서 금화·$가 톡톡 튀어 오름. 미믹과는 상관없는 화면 효과 (2026-11-26 사용자) */
