@@ -203,7 +203,7 @@ b.pasx{display:inline-flex;align-items:center;justify-content:center;width:100%;
 #field .padtgt{z-index:900;cursor:pointer;opacity:.55;background-color:transparent;animation:padpick .8s steps(2) infinite}
 #field .padtgt:hover{opacity:1}
 /* 이벤트 대사 말풍선(픽셀). u = 자리 잡기용 안 보이는 전체 글(타이핑 중 크기가 안 흔들리게) */
-#spk{position:absolute;z-index:6;transform:translate(-50%,-100%);margin-top:-10px;font:400 14px/1.3 var(--display);font-style:normal;white-space:nowrap;pointer-events:none;filter:drop-shadow(3px 3px 0 rgba(23,20,29,.45))}
+#spk{position:absolute;z-index:40;transform:translate(-50%,-100%);margin-top:-10px;font:400 14px/1.3 var(--display);font-style:normal;white-space:nowrap;pointer-events:none;filter:drop-shadow(3px 3px 0 rgba(23,20,29,.45))}
 #spk .bx{display:block;padding:3px;background:#17141d;font-style:normal;clip-path:polygon(0 6px,3px 6px,3px 3px,6px 3px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 3px,calc(100% - 3px) 3px,calc(100% - 3px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 3px) calc(100% - 6px),calc(100% - 3px) calc(100% - 3px),calc(100% - 6px) calc(100% - 3px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 3px),3px calc(100% - 3px),3px calc(100% - 6px),0 calc(100% - 6px))}
 #spk .in{display:block;position:relative;padding:5px 13px 8px;background:#fff8e6;color:#3a2410;font-style:normal;box-shadow:inset 0 3px 0 #fff,inset 0 -4px 0 #d9c49a,inset -3px 0 0 #e8d7ac;clip-path:polygon(0 6px,3px 6px,3px 3px,6px 3px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 3px,calc(100% - 3px) 3px,calc(100% - 3px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 3px) calc(100% - 6px),calc(100% - 3px) calc(100% - 3px),calc(100% - 6px) calc(100% - 3px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 3px),3px calc(100% - 3px),3px calc(100% - 6px),0 calc(100% - 6px))}
 #spk .in > span{position:absolute;left:13px;top:5px} #spk .in > u{visibility:hidden;text-decoration:none}
@@ -5835,7 +5835,7 @@ img.rimg{image-rendering:auto!important}
   function isCamp(){ return !bt && !!S.event && S.event.kind === 'campfire' && !!S.event.ids && S.stage < E.stageCount(D); }
   var CFIMG = {}; ['ev_campfire', 'ui_talk', 'ev_fairy'].forEach(function(k){ var im = new Image(); im.onload = function(){ CFIMG[k] = true; if (S) renderForm(); }; im.src = 'img/p/' + k + '.png'; });
   function campImg(k, emo, cls){ return CFIMG[k] ? '<img class="' + cls + '" src="img/p/' + k + '.png" alt="">' : '<span class="' + cls + ' emo">' + emo + '</span>'; }
-  var CF_POS = [[468, 144, 1], [582, 184, 0], [468, 224, 1], [544, 144, 0], [544, 224, 0], [430, 184, 1]]; /* 2026-11-23 앉는 순서: 둘레 한 바퀴(1 왼위·2 오른위·3 오른·4 오른아래·5 왼아래·6 왼) 중 1·3·5 먼저, 그다음 2·4·6 */ // 모닥불 칸(506,184) 둘레 6칸 = 적 2·5·0·6·1·4번 (x, 발밑 y, 오른쪽 보기)
+  var CF_POS = [[448, 184, 1], [535, 150, 0], [535, 218, 0], [477, 150, 1], [564, 184, 0], [477, 218, 1]]; /* 둘레를 모닥불 쪽으로 당김(가로 76%, 세로 85%) */ /* 2026-11-26 사용자: 처음 3명은 적 칸 4·2·8번, 그 뒤 1·6·7번. 말풍선은 2번 칸(두 번째) */ /* 2026-11-23 앉는 순서: 둘레 한 바퀴(1 왼위·2 오른위·3 오른·4 오른아래·5 왼아래·6 왼) 중 1·3·5 먼저, 그다음 2·4·6 */ // 모닥불 칸(506,184) 둘레 6칸 = 적 2·5·0·6·1·4번 (x, 발밑 y, 오른쪽 보기)
   function campHtml(){ var ids = S.event.ids || [], fx = 506, fy = 184; // 모닥불은 적 중반열 가운데 칸(3번)
     var fire = '<div class="unit cfire" style="left:' + (100 * zx(fx) / W) + '%;top:' + (100 * (zy(fy) + OFF + FOOT) / H) + '%;z-index:' + fy + '">' + (CFIMG.ev_campfire ? '<span class="cfspr"></span>' : '<span class="cfimg emo">🔥</span>') + '</div>';
     return fire + ids.map(function(id, i){ if ((S.event.got || []).indexOf(id) >= 0) return ''; var p = CF_POS[i] || CF_POS[0];
