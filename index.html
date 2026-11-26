@@ -5720,8 +5720,8 @@ img.rimg{image-rendering:auto!important}
   function trPick(uid){ var u = U(uid); if (!u || trDone || trAnim) return; trSeen = uid; trRender(); } /* 터치는 정보만 (2026-11-26 사용자: "터치하나로 두가지가되니까") */
   /* 등록 = 빈 단상(메인 먼저, 다음 재료). 내리는 길도 같은 버튼 하나 */
   function trCanReg(u){ return !!u && u.uid !== altA && u.uid !== altM && (altA == null || altM == null) && trCan(u); }
-  /* 보고 있는 영웅이 단상에 있으면 [해제] (2026-11-26 사용자: 자동 교체 없이 해제 후 다시 등록). 메인을 해제하면 재료도 같이 내려감(재료는 메인에 따라 정해짐) */
-  function trReg(){ var u = trSeen != null && U(trSeen); if (!u || trDone || trAnim) return; if (u.uid === altA){ altA = null; altM = null; } else if (u.uid === altM) altM = null; else if (!trCanReg(u)) return; else if (altA == null) altA = u.uid; else altM = u.uid; trRender(); }
+  /* 보고 있는 영웅이 단상에 있으면 [해제] (2026-11-26 사용자: 자동 교체 없이 해제 후 다시 등록). 메인을 해제해도 재료는 남음(재료는 메인에 따라 정해지지 않음, 2026-11-26 사용자) */
+  function trReg(){ var u = trSeen != null && U(trSeen); if (!u || trDone || trAnim) return; if (u.uid === altA) altA = null; else if (u.uid === altM) altM = null; else if (!trCanReg(u)) return; else if (altA == null) altA = u.uid; else altM = u.uid; trRender(); }
   /* 팝업이 열려 있는 동안 백팩 칸 터치 = 초월 고르기 (다른 동작은 막음) */
   ['pointerdown', 'pointerup', 'click'].forEach(function(ev){ window.addEventListener(ev, function(e){ if (!trOn) return; var c = e.target.closest && e.target.closest('#roster .chip[data-uid]'); if (!c) return; e.stopPropagation(); e.preventDefault(); if (ev === 'click') trPick(+c.dataset.uid); }, true); });
   function trBag(){ document.querySelectorAll('#roster .chip[data-uid]').forEach(function(c){ var id = +c.dataset.uid, u = trOn && !trDone && U(id), on = u && (id === altA ? '메인' : id === altM ? '재료' : ''); c.classList.toggle('trpk', !!on); c.classList.toggle('trpkm', on === '재료'); c.classList.toggle('trno', !!u && !on && !trCan(u)); c.classList.toggle('trsel', !!u && id === trSeen); var b = c.querySelector(':scope > .trlab'); if (on){ if (!b){ b = document.createElement('b'); b.className = 'trlab'; c.appendChild(b); } b.textContent = on; } else if (b) b.remove(); }); }
