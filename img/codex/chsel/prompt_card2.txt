@@ -1,0 +1,15 @@
+Look at:
+- img/codex/chsel/card1_raw.png : our approved chapter 1 card illustration. Make chapter 2 in EXACTLY the same drawing style, pixel size, level of detail and layout idea.
+- img/p/bg_swamp.png : the chapter 2 swamp battle background (teal sky and water, green mangrove foliage, brown trunks, olive-brown mud).
+
+Generate ONE new image with your image generation tool and save it as img/codex/chsel/card2_raw.png.
+
+A CHAPTER SELECT illustration for "chapter 2 - crocodile swamp": portrait picture (width:height = 204:230), chunky pixel art on a 204 x 230 canvas, same colors as the swamp background.
+- a winding muddy path / wooden plank walkway starting wide at the bottom and leading into the misty distance
+- one big twisted mangrove tree with exposed roots as the landmark, off to one side
+- swamp water with lily pads, reeds and cattails, layered mangrove foliage and a teal sky with a few clouds behind
+- a half-hidden crocodile (eyes and snout above the water) as a small hint
+- big swamp leaves and mossy rocks in the foreground corners
+- keep the top-left corner calm open sky
+No characters, no text, no frame, no UI. Clear square pixels, flat cel shading, dark outlines, no gradients or blur.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
