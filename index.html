@@ -1408,6 +1408,8 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .hst.tr b{color:#c9a6ff}
 .hinfo .hst.tr b{color:#ffd34d}
 .hi-top .hst b{color:#ffd34d!important} /* 상세 창 별은 늘 노랑: 이름 글자색(.hi-top b 주황)이 별에도 먹던 것 (2026-11-26 사용자) */
+/* 레벨 = 이름 줄 오른쪽 끝 고정, 길면 이름 쪽을 말줄임 (2026-11-26 사용자) */
+.hinfo .hi-top > div{flex:1;min-width:0} .hinfo .hi-top > div > b{display:flex;align-items:baseline;white-space:nowrap;min-width:0} .hinfo .hi-top > div > b > .alias{min-width:0;overflow:hidden;text-overflow:ellipsis} .hinfo .hi-top > div > b > .hlv{margin-left:auto;padding-left:6px;flex:none}
 .chip > .hst{bottom:auto}
 .rgrade{display:none!important} /* 등급 글자 대신 테두리 색으로 */
 .cdxg{display:block;font:600 9px var(--body);font-style:normal}
@@ -2904,7 +2906,7 @@ img.rimg{image-rendering:auto!important}
 /* 돈고블린 전구 */
 #roul .rstage > .rbulbs{display:none}
 #roul .rbox.groll .rstage > .rbulbs{display:block;position:absolute;inset:12px;z-index:6;pointer-events:none}
-#roul .rbulbs s{position:absolute;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%; /* 작은 원 전구, 테두리 안쪽 (2026-11-26 사용자: "철장 같아") */text-decoration:none;background:#ffe27a;box-shadow:0 0 0 1px #17141d,0 0 4px 1px rgba(255,210,80,.6)}
+#roul .rbulbs s{position:absolute;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%; /* 모양만 둥근 전구, 배치·개수는 예전 그대로, 테두리 안쪽 (2026-11-26 사용자) */text-decoration:none;background:#ffe27a;box-shadow:0 0 0 1px #17141d,0 0 4px 1px rgba(255,210,80,.6)}
 #roul .rbox.groll.spin .rbulbs s{animation:bulbrun .48s steps(1) infinite;animation-delay:var(--d)}
 #roul .rbox.groll.reveal:not(.still):not(.spin) .rbulbs s{animation:bulbflash .6s steps(1),bulbon 1.4s steps(1) .6s infinite}
 #roul .rbox.groll:not(.spin) .rbulbs s{animation:bulbon 1.4s steps(1) infinite}
@@ -3807,7 +3809,7 @@ img.rimg{image-rendering:auto!important}
   function fairyDeco(stage){ if (!stage || stage.querySelector(':scope > .fvine')) return;
     stage.insertAdjacentHTML('beforeend', '<i class="fvine dvine"></i><i class="fvine dvine r"></i>'); }
   /* 돈고블린 룰렛: 큰 칸 둘레 픽셀 전구 (2026-11-26 사용자 OK, 레버 없음). 대기 = 번갈아 천천히, 도는 중 = 한 방향으로 빠르게, 멈추면 한 번 번쩍 */
-  function bulbDeco(stage){ if (!stage || stage.querySelector(':scope > .rbulbs')) return; var nx = 12, ny = 6, pts = [], k; for (k = 0; k < nx; k++) pts.push([k / nx, 0]); for (k = 0; k < ny; k++) pts.push([1, k / ny]); for (k = 0; k < nx; k++) pts.push([1 - k / nx, 1]); for (k = 0; k < ny; k++) pts.push([0, 1 - k / ny]);
+  function bulbDeco(stage){ if (!stage || stage.querySelector(':scope > .rbulbs')) return; var nx = 17, ny = 9, pts = [], k; for (k = 0; k < nx; k++) pts.push([k / nx, 0]); for (k = 0; k < ny; k++) pts.push([1, k / ny]); for (k = 0; k < nx; k++) pts.push([1 - k / nx, 1]); for (k = 0; k < ny; k++) pts.push([0, 1 - k / ny]);
     stage.insertAdjacentHTML('beforeend', '<i class="rbulbs">' + pts.map(function(p, i){ return '<s class="' + (i % 2 ? 'o' : 'e') + '" style="left:' + (p[0] * 100).toFixed(2) + '%;top:' + (p[1] * 100).toFixed(2) + '%;--d:' + ((i % 4) * .12 - .48).toFixed(2) + 's"></s>'; }).join('') + '</i>'); }
   function starFx(stage, tier, col){ if (!stage) return; var el = stage.querySelector(':scope > .rstars'); if (!el){ el = document.createElement('i'); el.className = 'rstars'; stage.appendChild(el); }
     el.style.setProperty('--sc', col || '#fff'); var near = !!stage.closest('.rbox.camp'), md = near ? 'c' : 'a'; if (el.firstChild && el.dataset.m === md) return; el.dataset.m = md; var n = 6, o = ''; /* 모닥불: 영웅 몸 가까이, 절반 (2026-11-26 사용자) */ /* 개수·빈도는 등급과 상관없이 같고 색만 다름. 결과 그림 왼쪽·위·오른쪽 반원, 단상 위로는 안 내려감 (2026-11-26 사용자) */
