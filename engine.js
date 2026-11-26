@@ -285,10 +285,11 @@
         if (x.burn.left <= 0 || !x.alive) x.burn = null; }
       if (x.fstT > 0) { x.fstT -= B.dt; if (x.fstT <= 0) x.fst = 0; }
       if (x.chill > 0) x.chill = Math.max(0, x.chill - B.dt); }
+    var relicNow = null; // 2026-11-26: 지금 발동 중인 유물 id(유물 DPS 창이 유물별 피해·회복을 세게 기록에 붙여요)
     function skillHurt(dst, raw, src) {
       if (!dst.alive || dst.stone > 0) return;
       var dmg = raw * (1 - dst.def / (dst.def + B.defK)), ab = Math.min(dst.shield, dmg); dst.shield -= ab; dmg -= ab; dst.hp -= dmg; dst.stats.taken += dmg + ab;
-      if (rec) log.push({ t: t, kind: 'skillHit', to: dst.uid, amt: Math.round(dmg + ab) });
+      if (rec) log.push({ t: t, kind: 'skillHit', to: dst.uid, amt: Math.round(dmg + ab), relic: relicNow || undefined });
       if (dst.hp <= 0) die(dst, src || null);
     }
     // 시너지 태그: { race | job | el: 값 또는 [값...] }. el: '*'은 가장 많은 같은 속성
@@ -304,10 +305,10 @@
       if (d.tag) { var ok = tagMatch(d.tag, T), nT = T.filter(ok).length;
         if (d.only) { T = T.filter(ok); if (!T.length) return; } // 조건 맞는 아군이 없으면 발동 안 해요
         if (d.per) m *= 1 + d.per * nT; }
-      sk.fired++; if (rec) log.push({ t: t, kind: 'skill', id: d.id, side: sk.side });
+      sk.fired++; if (rec) log.push({ t: t, kind: 'skill', id: d.id, side: sk.side }); relicNow = d.id;
       switch (d.kind) {
         case 'atkBuff': T.forEach(function (x) { x.buffT = d.dur; x.buffAmt = d.amount * m; }); break;
-        case 'healPct': T.forEach(function (x) { var real = Math.min(x.maxHp * d.amount * m, x.maxHp - x.hp); x.hp += real; if (rec && real > 0) log.push({ t: t, kind: 'heal', to: x.uid, amt: Math.round(real) }); }); break;
+        case 'healPct': T.forEach(function (x) { var real = Math.min(x.maxHp * d.amount * m, x.maxHp - x.hp); x.hp += real; if (rec && real > 0) log.push({ relic: d.id, t: t, kind: 'heal', to: x.uid, amt: Math.round(real) }); }); break;
         case 'shieldPct': T.forEach(function (x) { addShield(x, x.maxHp * d.amount * m); }); break;
         case 'nuke': { var avg = T.reduce(function (s2, x) { return s2 + atkOf(x); }, 0) / T.length; F.forEach(function (x) { skillHurt(x, avg * d.amount * m); }); break; }
         case 'slowAll': F.forEach(function (x) { x.slow = d.dur; x.slowAmt = Math.min(0.8, d.amount * m); }); break;
@@ -318,6 +319,7 @@
           x.x += dir * d.amount * m; x.stun = Math.max(x.stun || 0, d.dur || 0); if (rec) log.push({ t: t, kind: 'knock', uid: x.uid, dx: dir * d.amount * m }); }); break;
         case 'volley': T.forEach(function (x) { var L2 = alive(sk.side === 'E' ? A : E); if (L2.length) skillHurt(L2[Math.floor(rand() * L2.length)], atkOf(x) * d.amount * m); }); break;
       }
+      relicNow = null;
     }
     function afterUlt(u, healed) { var T = alive(team(u.side));
       if (has(u, 'ultRefund')) u.energy = Math.min(B.energyMax, u.pv);
