@@ -3274,11 +3274,6 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
     return '<div class="gain" style="--el:' + ELC[h.el] + '"><span class="big">' + heroFr(id, mr ? mr.unit.star : 0) + '</span><div><div class="muted">' + (mr ? '등급업' : '영입') + '</div><b>' + h.name + '</b><div class="muted">' + msg + '</div></div></div>' +
       '';
   }
-  $('roster').addEventListener('click', function(e){
-    if (selTap){ selTap = false; return; }
-    var c = e.target.closest('.chip[data-uid]'); if (!c || chipDrag.moved) return;
-    equipHero(+c.dataset.uid);
-  });
   function equipHero(uid){
     uid = +uid; if (S.team.indexOf(uid) >= 0) return; var u = U(uid); if (!u) return;
     var free = freeSlot(u.id);
@@ -3347,34 +3342,20 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
     else return false;
     save(); renderForm(); return true;
   }
-  // 백팩 칸 끌기 (고른 칸만): 전장 영웅이나 다른 칸 위에 놓으면 합성, 안 되면 자리 바꾸기, 빈 전장이면 올리기
-  var drag = null, chipDrag = { moved: false };
-  $('roster').addEventListener('pointerdown', function(e){
-    var c = e.target.closest('.chip[data-uid]'); if (!c || !c.classList.contains('picked')) return;
-    e.preventDefault(); chipDrag.moved = false;
-    var g2 = c.cloneNode(true); g2.className = 'chip dragGhost'; g2.style.cssText = c.style.cssText;
-    drag = { uid: +c.dataset.uid, el: g2, x0: e.clientX, y0: e.clientY, moved: false, src: c };
-  });
-  function moveGhost(e){ if (!drag) return;
-    if (!drag.moved && Math.abs(e.clientX - drag.x0) + Math.abs(e.clientY - drag.y0) > 8){ drag.moved = true; chipDrag.moved = true; document.body.appendChild(drag.el); markTargets(drag.uid, true); }
-    if (drag.moved){ drag.el.style.left = (e.clientX - 26) + 'px'; drag.el.style.top = (e.clientY - 26) + 'px'; drag.el.style.pointerEvents = 'none'; trPrevAt(drag.uid, e.clientX, e.clientY); } }
+  /* 영웅 배치는 터치만(2026-11-26 사용자: 드래그가 범위 때문에 오작동). 고르고 -> 빈 칸 터치=이동, 다른 영웅 터치=합성되면 합성·아니면 자리 바꿈, 백팩 터치=내리기 */
   function markTargets(uid, on){ var me = U(uid); document.querySelectorAll('#roster .chip[data-uid], #field .slot.on').forEach(function(el){
-    var o = U(el.dataset.uid), ok = on && !!o && !!me && o.uid !== me.uid; el.classList.toggle('mergeTarget', ok && E.canMerge(D, o, me)); el.classList.toggle('trTarget', false); });
-    if (!on) trPrevAt(null); }
-  window.addEventListener('pointermove', function(e){ if (drag) moveGhost(e); });
-  window.addEventListener('pointerup', function(e){
-    if (!drag) return;
-    var d = drag; drag = null; if (d.el.parentNode) d.el.remove(); markTargets(d.uid, false);
-    setTimeout(function(){ chipDrag.moved = false; }, 30);
-    if (!d.moved) return;
-    var under = document.elementFromPoint(e.clientX, e.clientY), t = under && under.closest('#roster .chip[data-uid], #field .slot.on');
-    if (t && +t.dataset.uid !== d.uid){ var tu = +t.dataset.uid;
-      if (tryMerge(tu, d.uid)) return;
-      var w = whyNoMerge(U(tu), U(d.uid)); if (w) toast(w);
-      if (t.closest('#field')) swapUnits(tu, d.uid); return; }
-    if (under && under.closest('#field')) equipHero(d.uid);
-  });
-  window.addEventListener('pointercancel', function(){ if (drag){ if (drag.el.parentNode) drag.el.remove(); markTargets(drag.uid, false); drag = null; } });
+    var o = U(el.dataset.uid), ok = on && !!o && !!me && o.uid !== me.uid; el.classList.toggle('mergeTarget', ok && E.canMerge(D, o, me)); }); }
+  function tapCell(e){ var f = $('field'); if (!f || !e.target.closest('#field')) return null; var r = f.getBoundingClientRect(), wx = (e.clientX - r.left) / r.width * W, wy = (e.clientY - r.top) / r.height * H - OFF - FOOT;
+    if (wx > W / 2) return null; var c = nearCell(hexCells().A, wx, wy); return c && (c[0] - wx) * (c[0] - wx) + (c[1] - wy) * (c[1] - wy) < 46 * 46 ? c : null; } /* 눌린 자리의 내 쪽 칸 (그림이 이웃 칸을 덮어도 칸 기준) */
+  function cellUid(c){ var P = S.pos || {}; for (var i = 0; i < S.team.length; i++){ var u = S.team[i]; if (u && P[u] && P[u].x === c[0] && P[u].y === c[1]) return u; } return null; }
+  function tapPlace(e){ var tg = e.target; if (!sel || !U(sel.uid) || tg.closest('.padtgt, .altA, .altM, .altslot, button:not(.chip):not(.slot), .foe')) return false;
+    var me = sel.uid, onF = S.team.indexOf(me) >= 0, c = tapCell(e), occ = c ? cellUid(c) : null, t = tg.closest('#roster .chip[data-uid], #field .slot.on'), other = occ || (!c && t ? +t.dataset.uid : null);
+    function done(){ clearSel(); e.preventDefault(); return true; }
+    if (other === me) return done();
+    if (other){ if (tryMerge(other, me)) return done(); if (onF || S.team.indexOf(other) >= 0){ swapUnits(other, me); return done(); } return false; }
+    if (c){ if (!onF){ equipHero(me); if (S.team.indexOf(me) < 0) return done(); } S.pos = S.pos || {}; S.pos[me] = { x: c[0], y: c[1] }; save(); renderForm(); return done(); }
+    if (tg.closest('.lbag, #bagDrawer, #bagBtn')){ var si = S.team.indexOf(me); if (si >= 0) unequip(si); return done(); }
+    return false; }
   // ───── 캐릭터 정보 판넬: 우리 영웅은 누르거나 끄는 동안, 적은 누르면 왼쪽에 ─────
   function pc(m){ return Math.round((m || 0) * 100); } // 배율 → %
   var ULTD = { // 궁극기 설명: 팀 스킬·패시브 설명과 같은 '~다.' 체
@@ -3460,8 +3441,8 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
       (h.passive && h.passive.kind !== 'none' && PS && u.pasLv ? skRow(skFrame(pasIcon(h.passive.kind), HG(u.id).col), PS.name, u.pasLv, pasDesc(u.id, u.pasLv)) : pasLine(u.id, false, 0)) + /* 켜졌으면 켜진 줄, 아니면 잠긴 줄(희귀·전설만) */
       '<div class="hi-hint">빈 곳을 누르면 닫혀요</div>';
   }
-  // 먼저 눌러 고르고(선택 + 정보), 고른 것만 끌 수 있어요
-  var sel = null, selTap = false; // sel: { uid }
+  // 눌러서 고르고(선택 + 정보), 다음 터치로 옮겨요
+  var sel = null; // sel: { uid }
   /* 팝업 층: 전장(#arena)에 붙은 하나의 층. 팝업은 popAdd로 넣으면 전장 가운데에 와요 (full: 배경 덮개가 있는 팝업) */
   function popAdd(el, full){ var L = $('popl'); if (!L){ L = document.createElement('div'); L.id = 'popl'; L.className = 'popl'; document.querySelector('.camp3 > .mid').appendChild(L); } /* 전장이 큰 팝업을 자르지 않게 가운데 열에 붙여요 */
     if (!el || (el.parentNode && el.parentNode.parentNode === L)) return el; var w = document.createElement('div'); w.className = 'popw'; L.appendChild(w); w.appendChild(el); el.classList.add(full ? 'pov' : 'pcard'); return el; }
@@ -3487,12 +3468,11 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
   function ownInfo(uid){ var u = U(uid); if (!u) return ''; return infoHtml(u.id, lvOf(u.id), u.star, gmul(u.star), false, false, u); }
   function applySel(side){
     document.querySelectorAll('.picked').forEach(function(x){ x.classList.remove('picked'); });
-    var el = selEl(); if (!el){ sel = null; hideInfo(); return; }
-    el.classList.add('picked');
+    var el = selEl(); markTargets(0, false); if (!el){ sel = null; hideInfo(); return; }
+    el.classList.add('picked'); markTargets(sel.uid, true);
     var onField = S.team.indexOf(sel.uid) >= 0, u = U(sel.uid), same = S.units.filter(function(x){ return x.uid !== u.uid && E.canMerge(D, u, x); }).length;
     var altOn = isAltar() && !isLvPick(), altOk = altOn && !altBusy && !altDone() && !hero(u.id).mob && sel.uid !== altA && sel.uid !== altM && (altA == null || !!trKind(U(altA), u));
-    var btn = '<button class="hi-x" data-hix="1" type="button" title="닫기">✕</button>' + '<div class="hi-btns">' + (onField ? '<button class="hi-b" data-hi="out">빼기</button>' : '<button class="hi-b go" data-hi="in">올리기</button>') +
-      (altOn ? '<button class="hi-b alt" data-hi="alt"' + (altOk ? '' : ' disabled') + '>초월</button>' : '') + sellBtn(u) + '</div>';
+    var btn = '<button class="hi-x" data-hix="1" type="button" title="닫기">✕</button>' + '<div class="hi-btns">' + (altOn ? '<button class="hi-b alt" data-hi="alt"' + (altOk ? '' : ' disabled') + '>초월</button>' : '') + sellBtn(u) + '</div>';
     showInfo(ownInfo(sel.uid) + padRow(onField ? padOf(sel.uid) : null) + btn, side || ($('hinfo').hidden ? 'right' : $('hinfo').className.replace('hinfo', '').trim() || 'right'));
   }
   // 엔진 separate()와 같은 규칙: 같은 편끼리 arena.spacing보다 가까우면 서로 밀고, x는 36~w-36, y는 yMin~yMax로 잘라요
@@ -3526,10 +3506,10 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
     if (relSellArm !== o.id){ relSellArm = o.id; return showRelInfo(); }
     var g0 = S.gold; S.gold += E.skillSellPrice(D, o, S.stage); E.sellSkill(D, S.skills, o.id); relSel = null; relSellArm = null; skKey = ''; save(); renderAll(); hideInfo(); goldCount(g0, S.gold); });
   document.addEventListener('pointerdown', function(e){
-    selTap = false;
     if (!$('tab-camp') || $('tab-camp').hidden || bt) return;
     if (e.target.closest('#hinfo')) return;
-    var t = e.target.closest('.slot.on, #roster .chip[data-uid], .foe[data-foe]');
+    if (!$('tab-camp').classList.contains('busy') && tapPlace(e)) return;
+    var c0 = tapCell(e), u0 = c0 ? cellUid(c0) : null, t = (u0 && document.querySelector('#field .slot.on[data-uid="' + u0 + '"]')) || e.target.closest('.slot.on, #roster .chip[data-uid], .foe[data-foe]');
     if (!t){ if (sel) clearSel(); else hideInfo(); return; }
     if (t.classList.contains('foe')){
       sel = null; applySel(); $('field').dataset.sf = t.dataset.foe; /* 적도 고르면 아군과 같은 선택 라인 */
@@ -3539,50 +3519,18 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
       showInfo(infoHtml(fu.id, fu.level, fu.star || 1, fu.mul, true) + (fu.boss ? daisRow() : ''), 'left'); return;
     }
     var uid = +t.dataset.uid; if (!uid) return;
-    if (sel && sel.uid === uid && t.classList.contains('picked')) return; // 이미 고른 것: 끌기·다시 누르기
-    selTap = true; e.preventDefault(); // 첫 터치는 고르고, 그대로 끌면 옮기기
+    e.preventDefault();
     sel = { uid: uid }; applySel(t.closest('#roster') ? 'right' : infoSide(e.clientX));
   }, true);
   $('hinfo').addEventListener('click', function(e){
     var b = e.target.closest('[data-hi]'); if (!b || !sel) return;
-    if (b.dataset.hi === 'out'){ var i = S.team.indexOf(sel.uid); if (i >= 0) unequip(i); }
-    else if (b.dataset.hi === 'sell') sellHero(sel.uid);
+    if (b.dataset.hi === 'sell') sellHero(sel.uid);
     else if (b.dataset.hi === 'alt'){ if (!b.disabled) altPut(altA == null ? 'A' : 'M', sel.uid); } /* 앞 칸이 비었으면 강화할 영웅, 차 있으면 재료 */
-    else equipHero(sel.uid);
   });
   function unequip(slot){
     if (bagCount() >= bagMax()) return toast('백팩이 꽉 차서 내릴 수 없어요');
     S.team[slot] = null; save(); renderForm();
   }
-  var mv = null, justMoved = false;
-  function placeLimits(id){ var AR = D.battle.arena;
-    return { x0: 36, x1: AR.w / 2 - 24, y0: AR.yMin, y1: AR.yMax }; }
-  $('field').addEventListener('pointerdown', function(e){
-    var b = e.target.closest('.slot.on'); if (!b || $('tab-camp').classList.contains('busy')) return;
-    var uid = S.team[+b.dataset.slot], u = U(uid), el = b.closest('.unit'); if (!u || !el) return;
-    var fr = $('field').getBoundingClientRect(), px0 = (e.clientX - fr.left) / fr.width * W, py0 = (e.clientY - fr.top) / fr.height * H - OFF;
-    var ux = parseFloat(el.style.left) / 100 * W, uy = parseFloat(el.style.top) / 100 * H - OFF - FOOT; // 지금 발밑 자리
-    e.preventDefault(); mv = { uid: uid, id: u.id, el: el, x0: e.clientX, y0: e.clientY, moved: false, dx: ux - px0, dy: uy - py0 }; markTargets(uid, true);
-  });
-  window.addEventListener('pointermove', function(e){
-    if (!mv) return;
-    if (Math.abs(e.clientX - mv.x0) + Math.abs(e.clientY - mv.y0) > 6) mv.moved = true;
-    if (!mv.moved) return;
-    var r = $('field').getBoundingClientRect(), L = placeLimits(mv.id);
-    var wx = Math.max(L.x0, Math.min(L.x1, (e.clientX - r.left) / r.width * W + (mv.dx || 0))), wy = Math.max(L.y0, Math.min(L.y1, (e.clientY - r.top) / r.height * H - OFF + (mv.dy || 0)));
-    mv.el.style.left = (100 * wx / W) + '%'; mv.el.style.top = (100 * (wy + OFF + FOOT) / H) + '%'; mv.el.style.zIndex = Math.round(wy); mv.wx = wx; mv.wy = wy;
-    mv.el.style.pointerEvents = 'none'; trPrevAt(mv.uid, e.clientX, e.clientY); mv.el.style.pointerEvents = '';
-  });
-  window.addEventListener('pointerup', function(e){
-    if (!mv) return; var m = mv; mv = null; markTargets(m.uid, false);
-    if (m.moved){ m.el.style.pointerEvents = 'none'; var under = document.elementFromPoint(e.clientX, e.clientY), t = under && under.closest('#roster .chip[data-uid], #field .slot.on'); m.el.style.pointerEvents = '';
-      if (t && +t.dataset.uid !== m.uid){ var tu = +t.dataset.uid; justMoved = true; setTimeout(function(){ justMoved = false; }, 50);
-        if (tryMerge(tu, m.uid)) return; var w = whyNoMerge(U(tu), U(m.uid)); if (w) toast(w); if (!swapUnits(tu, m.uid)) renderForm(); return; } }
-    if (m.moved && under && !t && under.closest('#bagDrawer, #bagBtn, #lbag')){ justMoved = true; setTimeout(function(){ justMoved = false; }, 50); var si = S.team.indexOf(m.uid); if (si >= 0){ unequip(si); renderForm(); } return; } // 꽉 차면 unequip이 알려 주고 제자리로
-    if (m.moved && m.wx != null){ S.pos = S.pos || {}; var bc = nearCell(hexCells().A, m.wx, m.wy), mine = S.pos[m.uid]; // 놓은 곳에서 가장 가까운 내 쪽 칸 (있던 영웅과 자리 바꿈)
-      if (bc){ Object.keys(S.pos).forEach(function(k){ if (+k !== m.uid && S.pos[k].x === bc[0] && S.pos[k].y === bc[1]){ if (mine) S.pos[k] = { x: mine.x, y: mine.y }; else delete S.pos[k]; } }); S.pos[m.uid] = { x: bc[0], y: bc[1] }; } save(); justMoved = true; setTimeout(function(){ justMoved = false; }, 50); renderForm(); }
-  });
-  $('field').addEventListener('click', function(){ selTap = false; }); // 빼기는 판넬의 '빼기' 버튼으로
   $('autoBtn').addEventListener('click', function(){
     var f = E.autoFormation(D, roster(), cap(), PK().field).slice(0, PK().field);
     if (S.units.length - f.length > bagMax()) return toast('백팩이 꽉 차서 자동 편성을 할 수 없어요');
