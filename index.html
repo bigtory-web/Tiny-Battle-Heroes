@@ -123,7 +123,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 #amb[data-k=altar] s{background:#e3d2ff;box-shadow:0 0 5px 1px #a77bff;animation:ambrise linear infinite}
 #amb[data-k=campfire]{background:linear-gradient(rgba(170,60,20,.18),rgba(170,60,20,0) 40%),radial-gradient(ellipse at 50% 62%,rgba(150,55,10,0) 52%,rgba(110,35,15,.28))}
 #amb[data-k=campfire] s{background:#ffb347;box-shadow:0 0 4px 1px #ff7a1a;animation:ambrise linear infinite}
-#amb[data-k=mimic] s{width:7px;height:7px;background:#ffd34d;box-shadow:inset -2px -2px #b8861c,0 0 0 1px #17141d;opacity:0;animation:ambpop 2.2s cubic-bezier(.3,.6,.5,1) forwards}
+#amb[data-k=mimic] s{width:7px;height:7px;background:#ffd34d;box-shadow:inset -2px -2px #b8861c,0 0 0 1px #17141d;opacity:0;animation:ambpop 2.8s cubic-bezier(.25,.55,.5,1) forwards}
 #amb[data-k=mimic] s.d{width:auto;height:auto;background:none;box-shadow:none}
 #amb s.d::before{content:attr(data-c);font:400 15px var(--display);color:#ffe27a;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d}
 /* 방랑상인: 주황 % 만, 가운데는 맑게 */
@@ -132,7 +132,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 #amb[data-k=merchant] s.d::before{font-size:17px;color:#ff8a3d;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d}
 #amb[data-k=mimic]{transition:opacity .9s}
 #amb[data-k=mimic].bt{opacity:0}
-@keyframes ambpop{0%{translate:0 0;opacity:1}40%{translate:calc(var(--dx) * .6) -120px;opacity:1}80%{opacity:1}100%{translate:var(--dx) -10px;opacity:0}}
+@keyframes ambpop{0%{translate:0 0;scale:1;opacity:1}30%{translate:calc(var(--dx) * .7) -110px;opacity:.95}65%{translate:calc(var(--dx) * 1.3) -95px;opacity:.5}100%{translate:calc(var(--dx) * 1.8) -55px;scale:1.5;opacity:0}} /* 퍼지면서 서서히 사라짐 (2026-11-26 사용자) */
 #amb[data-k=fairy]{background:linear-gradient(rgba(255,160,220,.14),rgba(255,200,230,.04) 60%,rgba(140,230,180,.12))}
 #amb[data-k=fairy] s{width:6px;height:4px;background:#ffb3de;box-shadow:2px 2px #ff8ac8;animation:ambfall linear infinite}
 #amb[data-k=groll]{background:radial-gradient(ellipse at 25% 0,rgba(255,220,90,.26),transparent 55%),radial-gradient(ellipse at 75% 0,rgba(255,220,90,.26),transparent 55%);animation:ambcasino 2.4s steps(2) infinite}
@@ -5486,7 +5486,7 @@ img.rimg{image-rendering:auto!important}
   function daisAt(k){ var q = k.split(','); return 'left:' + (100 * q[0] / W) + '%;top:' + (100 * (+q[1] + OFF + FOOT) / H) + '%'; }
   var daisBusy = false, daisFx = false;
   function daisKey(i){ return ckey(hexCells().A[i]); }
-  function daisRollCell(){ var P = {}; hexCells().A.forEach(function(c, i){ var v = (S.pads || {})[ckey(c)]; if (v) P[i] = v; }); return daisKey(E.rollDaisCell(D, Math.random, P)); }
+  function daisRollCell(){ var P = {}; hexCells().A.forEach(function(c, i){ var v = (S.pads || {})[ckey(c)]; if (v) P[i] = v; }); return daisKey(E.rollDaisCell(D, Math.random, P, (S.team || []).map(cellIdx).filter(function(i){ return i >= 0; }))); } /* 영웅·양탄자 없는 칸 먼저 */
   function daisOld(){ var cells = hexCells().A.map(ckey), ks = Object.keys(S.pads || {}).filter(function(k){ return cells.indexOf(k) >= 0 && S.pads[k]; }), /* 우리 칸에 실제로 깔린 것만 셈 */ mx = ((D.events || {}).dais || {}).max || 2; return ks.length >= mx && !S.event.dsDone ? ks[0] : null; } /* S.pads는 넣은 순서 = 첫 키가 가장 오래됨 */
   function daisKinds(){ return Object.keys(D.races || {}).filter(function(r){ return r !== 'monster'; }).map(function(r){ return 'r:' + r; }).concat(Object.keys(D.elements.names)); }
   /* 칸은 판에 들어올 때 하나 정해 저장. 받기 전까지 그 칸에 "이상한 일" 예고 */
@@ -5773,7 +5773,7 @@ img.rimg{image-rendering:auto!important}
   var ambNext = [0, 0];
   setInterval(function(){ var el = $('amb'); if (!el) return; var mm = el.dataset.k === 'mimic'; el.classList.toggle('bt', mm && !!bt); if (!mm || bt || document.hidden) return; var now = Date.now(); /* 전투 중엔 스르르 사라짐 */
     [7, 93].forEach(function(x, side){ if (now < ambNext[side]) return; ambNext[side] = now + 700 + Math.random() * 1100;
-      for (var i = 0; i < 3; i++){ var s = document.createElement('s'); if (i === 2){ s.className = 'd'; s.dataset.c = '$'; } s.style.left = (x + (Math.random() - .5) * 9).toFixed(1) + '%'; s.style.top = (91 + Math.random() * 6).toFixed(1) + '%'; s.style.setProperty('--dx', Math.round((side ? -1 : 1) * (30 + Math.random() * 80) + (i - 1) * 28) + 'px'); s.style.animationDelay = (i * .18) + 's'; el.appendChild(s); setTimeout(function(n){ return function(){ n.remove(); }; }(s), 2800); } }); }, 250);
+      for (var i = 0; i < 3; i++){ var s = document.createElement('s'); if (i === 2){ s.className = 'd'; s.dataset.c = '$'; } s.style.left = (x + (Math.random() - .5) * 9).toFixed(1) + '%'; s.style.top = (91 + Math.random() * 6).toFixed(1) + '%'; s.style.setProperty('--dx', Math.round((side ? -1 : 1) * (30 + Math.random() * 80) + (i - 1) * 28) + 'px'); s.style.animationDelay = (i * .18) + 's'; el.appendChild(s); setTimeout(function(n){ return function(){ n.remove(); }; }(s), 3400); } }); }, 250);
   function renderTalk(){ var t = $('talkBtn'); if (t) t.querySelector('.tic').innerHTML = campImg('ui_talk', '💬', 'timg'); var et = $('evTalk'); if (et) et.querySelector('.eai').innerHTML = campImg('ui_talk', '💬', 'timg'); }
   function grollBtn(gr){ var b = $('evBet'), lab = b.querySelector('b'), dots = b.querySelector('.oedots'), n = $('grLeft'); if (!n){ n = document.createElement('span'); n.id = 'grLeft'; n.className = 'grleft'; b.parentNode.insertBefore(n, b); }
     b.classList.toggle('groll', gr); var ti = b.querySelector('.timg'), want = gr ? 'img/p/ev_goblin.png' : 'img/p/hud_gold.png'; if (ti && ti.getAttribute('src') !== want) ti.src = want; n.hidden = true; if (dots) dots.hidden = gr;
