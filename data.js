@@ -548,6 +548,7 @@ var IDLE_DATA = {
   meta: {
     medal: { clear: 1, boss: 2, firstClear: 10 }, // 판이 끝날 때 받는 훈장: 판 클리어마다 clear, 보스 판(5·10) +boss, 장 첫 클리어 +firstClear (기획안 3번 초안)
     totalLv: { per: 5, unlock: {} },
+    flatAlso: ['mimicBlue'], // "영구 강화로" 모드에서 칸 key 말고도 Lv1에 고정할 레벨 표 줄(미믹 수에 딸린 파랑 미믹 수)
     lines: [
       { id: 'bag', name: '백팩', nodes: [
         { id: 'bag', name: '백팩 칸', key: 'bag', add: 1, cap: 7, cost: [6, 12] },

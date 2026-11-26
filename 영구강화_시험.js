@@ -21,3 +21,9 @@ assert.ok(Math.abs(b1.A[0].maxHp/b0.A[0].maxHp-1.24)<1e-9 && b1.E[0].maxHp===b0.
 // 봇
 let c0=0,c1=0; for(let s=1;s<=8;s++){ c0+=E.campaign(D,{seed:s}).cleared; c1+=E.campaign(D,{seed:s,meta:full}).cleared; const D2=E.chapterData(D,2); E.campaign(D2,{seed:s,meta:full}); }
 console.log("ok · 총 단계",E.metaExp(D,full),"토탈Lv",E.metaLevel(D,full),"훈장 합",D.meta.lines.reduce((a,L)=>a+L.nodes.reduce((b,N)=>b+N.cost.reduce((x,y)=>x+y,0),0),0),"· 봇 클리어 판 합(8판) 강화 전",c0,"후",c1);
+// "영구 강화로" 모드: 옮긴 줄은 Lv1 값 고정, 등장 확률·출전 인원은 그대로
+const MM=E.metaData(D,{mode:"meta"}); assert.ok(MM.player.bag.every(v=>v===D.player.bag[0])); assert.ok(MM.player.clearGold.every(v=>v===D.player.clearGold[0])); assert.ok(MM.player.mimicBlue.every(v=>v===D.player.mimicBlue[0]));
+assert.deepStrictEqual(MM.player.field,D.player.field); assert.deepStrictEqual(MM.player.heroGrade,D.player.heroGrade); assert.deepStrictEqual(MM.player.shopGrade,D.player.shopGrade);
+const MF=E.metaData(D,{mode:"meta",nodes:full.nodes}); assert.ok(MF.player.bag.every(v=>v===7)); assert.strictEqual(E.metaData(D,{mode:"level"}),D,"레벨 모드 + 강화 없음 = 원본");
+let cm=0; for(let s=1;s<=5;s++){ cm+=E.campaign(D,{seed:s,meta:{mode:"meta"}}).cleared; E.campaign(E.chapterData(D,2),{seed:s,meta:{mode:"meta",nodes:full.nodes}}); }
+console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",cm);

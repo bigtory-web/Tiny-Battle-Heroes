@@ -876,9 +876,11 @@
   // 봇 진행: 도전 → 이기면 적 중 1명 영입 → 지면 출전 영웅을 고르게 레벨업 → 돈이 없으면 방치 보상을 기다림
   // ───── 영구 강화(2026-11-27 뼈대): state = { medals, nodes: { 칸id: 찍은 단계 } }. 표는 data.meta ─────
   // metaData: 강화를 반영한 data를 새로 만들어 돌려줘요(원본은 그대로). 봇은 campaign(opts.meta), 화면은 D 대신 이걸 쓰면 돼요
-  function metaData(data, state) { var M = data.meta, S = state && state.nodes; if (!M || !S) return data;
+  // state.mode === 'meta'(도구 "영구 강화로"): 영구 강화로 옮긴 레벨 표 줄(칸의 key + flatAlso)은 레벨로 안 오르고 Lv1 값에 고정. 등장 확률·출전 인원은 그대로 레벨로 (2026-11-27 사용자: "레벨에 대한 효과는.. 없이")
+  function metaData(data, state) { var M = data.meta, S = (state && state.nodes) || (state && state.mode === 'meta' ? {} : null); if (!M || !S) return data;
     var cp = function (o) { if (!o) return o; var r = {}; for (var q in o) r[q] = o[q]; return r; }, d = cp(data), HB = {};
     d.player = cp(data.player); d.shop = cp(data.shop); d.campaign = cp(data.campaign); d.life = cp(data.life); d.recruit = cp(data.recruit); if (d.recruit) d.recruit.reroll = cp(data.recruit.reroll);
+    if (state.mode === 'meta') { var flat = (M.flatAlso || []).slice(); M.lines.forEach(function (L) { L.nodes.forEach(function (N) { if (N.key) flat.push(N.key); }); }); flat.forEach(function (k) { var r = d.player[k]; if (r) d.player[k] = r.map(function () { return r[0]; }); }); }
     M.lines.forEach(function (L) { L.nodes.forEach(function (N) { var n = Math.min(S[N.id] || 0, N.cost.length); if (!n) return;
       if (N.key && d.player[N.key]) d.player[N.key] = d.player[N.key].map(function (v) { var w = v + N.add * n; return N.cap != null ? Math.max(v, Math.min(w, N.cap)) : w; });
       else if (N.shift && d.player[N.shift]) { var row = d.player[N.shift]; d.player[N.shift] = row.map(function (v, i) { return row[Math.min(i + n, row.length - 1)]; }); } // 등급 확률 = 레벨 표를 n칸 앞당김
