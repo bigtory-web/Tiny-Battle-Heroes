@@ -2716,7 +2716,9 @@ img.rimg{image-rendering:auto!important}
 #trWin .rbtns{display:flex;justify-content:center}
 /* 돈고블린 = 카지노 딜러 아이들 8칸 (방랑상인과 같은 틀, 좌우 반전은 .oegob .cfslot이 함) */
 .oegob .cfslot{display:flex;align-items:flex-end;justify-content:center}
-.oegob .dlr{display:block;flex:none;height:100%;aspect-ratio:1;background:url(img/p/ev_dealer_anim.png) 0 0/800% 100% no-repeat;image-rendering:pixelated;animation:trader 2s steps(8,jump-none) infinite}
+.altseer .cfslot{display:flex;align-items:flex-end;justify-content:center} #field .altseer .cfslot{transform:scaleX(-1)}
+.altseer .dlr,.oegob .dlr{display:block;flex:none;height:100%;aspect-ratio:1;background:url(img/p/ev_dealer_anim.png) 0 0/800% 100% no-repeat;image-rendering:pixelated;animation:trader 2s steps(8,jump-none) infinite}
+.altseer .dlr{background-image:url(img/p/ev_seeress_anim.png)}
 /* 요정 팝업 */
 #roul .rstage > .fdust,#roul .rstage > .fvine{display:none}
 #roul .rbox.fairy .rstage > .fdust{display:block;position:absolute;inset:7px;overflow:hidden;pointer-events:none;z-index:1}
@@ -5400,7 +5402,7 @@ img.rimg{image-rendering:auto!important}
   function altCellImg(k){ return ALTCELL[k] || (ALTCELL[k] = k === 'A' ? hexDaisURL({ rim: '#ffd34d', top: '#5a4720', top2: '#7a6228', side: '#3a2e14', hi: '#fff3b0' }) : hexDaisURL({ rim: '#fff3b0', top: '#3b3546', top2: '#4a4358', side: '#2a2533', hi: '#ffffff' })); }
   function altCell(pos, k){ return '<i class="altcell" style="left:' + (100 * pos[0] / W) + '%;top:' + (100 * (pos[1] + OFF + FOOT) / H) + '%;background-image:url(' + altCellImg(k) + ')"></i>'; }
   function altUnit(cls, u, pos, attr){ return '<div class="unit cfh ' + cls + '"' + (attr || '') + ' style="left:' + (100 * pos[0] / W) + '%;top:' + (100 * (pos[1] + OFF + FOOT) / H) + '%;z-index:' + pos[1] + '"><div class="cfslot flip" style="--hg:' + HG(u.id).col + '">' + av(u.id) + starsIn(u.star, u.id) + '</div></div>'; }
-  function altarPickHtml(){ if (TRPOP){ var P3 = hexCells().E, p1 = P3[2], p2 = P3[5]; return '<img class="altbld" src="img/p/altar_building.png" alt="" style="left:' + (100 * (p1[0] + p2[0]) / 2 / W) + '%;top:' + (100 * (P3[0][1] + OFF + FOOT - 27) / H) + '%;width:' + (100 * 86 * 1.74 / W) + '%">'; } var ALT_POS = altPos(), a = U(altA), m = altM != null && U(altM), q = function(s){ return String(s || '').replace(/"/g, '&quot;'); };
+  function altarPickHtml(){ if (TRPOP){ return '<div class="unit cfh altseer" style="left:' + (100 * 506 / W) + '%;top:' + (100 * (184 + OFF + FOOT) / H) + '%;z-index:184"><div class="cfslot"><i class="dlr" role="img" aria-label="무녀"></i></div></div>'; } /* 건물 대신 눈가린 천칭 무녀, 적 쪽 5번 칸 (2026-11-26 사용자) */ var ALT_POS = altPos(), a = U(altA), m = altM != null && U(altM), q = function(s){ return String(s || '').replace(/"/g, '&quot;'); };
     var E3 = hexCells().E, b1 = E3[2], b2 = E3[5], bx = (b1[0] + b2[0]) / 2, by = E3[0][1] + OFF + FOOT - 27, bw = Math.abs(b2[0] - b1[0]) + 76;
     var o = '<img class="altbld" src="img/p/altar_building.png" alt="" style="left:' + (100 * bx / W) + '%;top:' + (100 * by / H) + '%;width:' + (100 * 86 * 1.74 / W) + '%">' + altCell(ALT_POS.A, 'A') + altCell(ALT_POS.M, 'M') + (a ? altUnit('altA', a, ALT_POS.A, ' data-tipt="' + q(hero(a.id).name) + '" data-tiptx="' + q(ultName(hero(a.id))) + '"') : '') +
       '<i class="altflow" style="left:' + (100 * ALT_POS.R[0] / W) + '%;top:' + (100 * (ALT_POS.R[1] + OFF + FOOT) / H) + '%"><b></b><b></b></i>' +
