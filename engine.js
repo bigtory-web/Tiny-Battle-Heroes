@@ -119,6 +119,7 @@
       var F0 = alive(foes(u)); if (!F0.length) return null; var F = F0.filter(function (x) { return !(x.stealth > 0); }); if (!F.length) F = F0; // 숨은 적은 못 노려요
       var tauntU = F.filter(function (x) { return x.taunt > 0; }); if (tauntU.length) return tauntU[0];
       var gob = nearGoblin(u, F); if (gob) return gob; // 돈고블린이 사거리 근처에 있으면 먼저 노려요
+      var JT = B.jobTarget && B.jobTarget[u.h.job]; if (JT === 'far') return F.reduce(function (m, x) { return dist(u, x) > dist(u, m) ? x : m; }); if (JT === 'lowHp') return F.reduce(function (m, x) { return x.hp + (x.shield || 0) < m.hp + (m.shield || 0) ? x : m; }); // 2026-11-26 직업별 대상: 궁수 가장 먼 적, 암살자 체력 가장 낮은 적
       if (TG === 'near') { var CW = B.crowd || {}, cpen = u.range === 'melee' ? (CW.pen || 0) : 0, mates = cpen ? alive(team(u.side)).filter(function (y) { return y !== u && y.tgt; }) : []; /* 2026-11-26: 근접은 아군이 이미 붙어 때리는 적을 덜 골라요(사용자: "다른캐릭터가 또 그대상을때릴때 사이를비집으면 … 계속 밀고 들어오려고만해") */
         var sc = function (x) { return dist(u, x) + (cpen ? cpen * mates.filter(function (y) { return y.tgt === x && dist(y, x) <= y.reach + 8; }).length : 0); };
         return F.reduce(function (m, x) { return sc(x) < sc(m) ? x : m; }); } // 실제로 가장 가까운 적 (앞에 선 유닛이 먼저 맞아요)
