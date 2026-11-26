@@ -1323,6 +1323,8 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .hst{position:absolute;left:0;right:0;top:max(3px,calc(var(--ht,0%) - 10px));z-index:3;display:flex;justify-content:center;gap:1px;pointer-events:none;font-style:normal}
 .hst b{display:block;font:400 8px/7px var(--display);color:#ffd34d;text-shadow:1px 0 0 #17141d,-1px 0 0 #17141d,0 1px 0 #17141d,0 -1px 0 #17141d}
 .hst b::before{content:"★"}
+.hst.tr b{color:#c9a6ff}
+.hinfo .hst.tr b{color:#ffd34d}
 .chip > .hst{bottom:auto}
 .rgrade{display:none!important} /* 등급 글자 대신 테두리 색으로 */
 .cdxg{display:block;font:600 9px var(--body);font-style:normal}
@@ -2939,9 +2941,6 @@ img.rimg{image-rendering:auto!important}
 #trWin .trstage.done::after{content:'';position:absolute;inset:0;background:#fff;pointer-events:none;z-index:6;animation:finfl .7s ease-out forwards}
 #trWin .rbox:has(.trstage.charge){background:#2a1648!important}
 @keyframes trquake{50%{translate:3px -2px}}
-#trWin .trword{position:absolute;left:0;right:0;top:12px;z-index:7;text-align:center;font:400 46px/1 var(--display);letter-spacing:.12em;color:#fff;text-shadow:-3px 0 #4a1f9a,3px 0 #4a1f9a,0 -3px #4a1f9a,0 3px #4a1f9a,0 6px #17141d,0 0 18px #c9a6ff;pointer-events:none;animation:trword .35s steps(4) both}
-@keyframes trword{0%{transform:scale(2.2);opacity:0}100%{transform:scale(1);opacity:1}}
-#trWin .trstage.charge .trtag{visibility:hidden} /* 큰 글자와 딱지가 겹치지 않게 */
 /* 네 모서리 덩굴 장식 = 요정 팝업 모양을 보라로 (2026-11-26 사용자) */
 #trWin .trstage > .trvine{position:absolute;left:7px;top:7px;width:40px;height:40px;pointer-events:none;z-index:3;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' shape-rendering='crispEdges'%3E%3Cpath fill='%235a3a9a' d='M0 0h14v1H9v1H2v7H1v5H0z'/%3E%3Cpath fill='%23a77bff' d='M7 2h3v1h1v1H8V3H7zM13 1h2v1h2v1h-3V2h-1zM2 8h1v1h1v2H3v-1H2zM1 13h1v1h2v2H2v-1H1z'/%3E%3Cpath fill='%23c9a6ff' d='M3 2h3v1h1v3H6v1H3V6H2V3h1z'/%3E%3Cpath fill='%23fff6ff' d='M4 4h1v1H4z'/%3E%3Cpath fill='%23e9ddff' d='M11 2h2v1h-2zM2 11h1v2H2z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
 #trWin .trstage > .trvine.b{top:auto;bottom:7px;transform:scaleY(-1)}
@@ -3266,8 +3265,9 @@ img.rimg{image-rendering:auto!important}
   function lvOf(id){ return E.heroLevel ? E.heroLevel(D, plv()) : (S.levels[id] || D.startLevel || 1); } // 내 영웅 레벨은 모두 플레이어 레벨에서
   function gmul(gr){ var m = E.gradeMul(D, gr || 1); return { hp: m, atk: m }; }
   function GR(n){ var G = (D.heroGrades || {})[n] || {}; return { n: n, name: G.name || '', col: G.color || D.gradeColor[n] || '#fff' }; }
-  function starsIn(n, id){ n = Math.max(0, Math.min(3, n || 0)); if (!n) return ''; var s = ''; for (var i = 0; i < n; i++) s += '<b></b>'; return '<i class="hst"' + (id && IMGS[id] ? ' style="--ht:' + (imgTopFrac(IMGS[id]) * 100).toFixed(1) + '%"' : '') + '>' + s + '</i>'; }
-  function heroFr(id, star){ return '<span class="hic hicf" style="--hg:' + HG(id).col + '">' + av(id) + starsIn(star, id) + '</span>'; }
+  function isTr(u){ return !!(u && u.tr && Object.keys(u.tr).length); } /* 초월한 영웅 = 별 보라 (2026-11-26 사용자) */
+  function starsIn(n, id, tr){ n = Math.max(0, Math.min(3, n || 0)); if (!n) return ''; var s = ''; for (var i = 0; i < n; i++) s += '<b></b>'; return '<i class="hst' + (tr ? ' tr' : '') + '"' + (id && IMGS[id] ? ' style="--ht:' + (imgTopFrac(IMGS[id]) * 100).toFixed(1) + '%"' : '') + '>' + s + '</i>'; }
+  function heroFr(id, star, tr){ return '<span class="hic hicf" style="--hg:' + HG(id).col + '">' + av(id) + starsIn(star, id, tr) + '</span>'; }
   function cap(){ return E.costCap(D, Math.max(S.best || 0, S.stage)); }
   function usedCost(){ return 0; }
   function roster(){ return S.units.map(function(u){ return { uid: u.uid, id: u.id, level: lvOf(u.id), star: u.star }; }); }
@@ -3508,7 +3508,7 @@ img.rimg{image-rendering:auto!important}
     if (!c){ c = document.createElement('canvas'); c.className = 'fbar'; fd.appendChild(c); }
     var k = Math.min(2, window.devicePixelRatio || 1); c.width = W * k; c.height = H * k; var cx = c.getContext('2d'); cx.setTransform(k, 0, 0, k, 0, 0); cx.clearRect(0, 0, W, H); cx.imageSmoothingEnabled = false;
     list.forEach(function(b){ drawBars(cx, b.x, b.y + OFF, { hpk: 1, ally: b.ally, energy: 0, star: 0, S: unitPx(false), tf: imgTopFrac(IMGS[b.id]) }); });
-    list.forEach(function(b){ if (!b.star) return; var S0 = unitPx(false), hy = b.y + OFF + 26 + S0 * .04 - S0 + imgTopFrac(IMGS[b.id]) * S0; drawGradeStar(cx, b.x, hy - 7, b.star); }); /* 별은 막대를 다 그린 뒤 맨 위에: 위 칸 영웅의 HP 막대가 아래 칸 영웅의 별을 덮던 문제(적 녹스·꽃 소녀) */
+    list.forEach(function(b){ if (!b.star) return; var S0 = unitPx(false), hy = b.y + OFF + 26 + S0 * .04 - S0 + imgTopFrac(IMGS[b.id]) * S0; drawGradeStar(cx, b.x, hy - 7, b.star, b.tr); }); /* 별은 막대를 다 그린 뒤 맨 위에: 위 칸 영웅의 HP 막대가 아래 칸 영웅의 별을 덮던 문제(적 녹스·꽃 소녀) */
     var cr = c.getBoundingClientRect(); if (!cr.width) return;
     fd.querySelectorAll('.unit .fst').forEach(function(s){ var fe = s.offsetParent, un = fe && fe.offsetParent; if (!un || !un.offsetWidth) return;
       var ur = un.getBoundingClientRect(), q = ur.width / un.offsetWidth, sx = W / cr.width, sy = H / cr.height;
@@ -3524,7 +3524,7 @@ img.rimg{image-rendering:auto!important}
     var fbars = [], FP = foePos(st.team);
     function at(side, i, inner, key, estar){ var hid = side === 'A' ? (key && U(key) ? U(key).id : null) : key, p = side === 'E' && FP[i] ? FP[i] : POS[side][i], py = p[1], px = p[0];
       var cp = side === 'A' && key && S.pos && S.pos[key]; if (cp){ px = cp.x; py = cp.y; }
-      if (inner && hid && hero(hid).mob !== 'chest') fbars.push({ x: px, y: py, ally: side === 'A', mob: !!hero(hid).mob, id: hid, star: side === 'A' ? (U(key) ? U(key).star : 0) : (hero(hid).mob ? 0 : estar || 1) });
+      if (inner && hid && hero(hid).mob !== 'chest') fbars.push({ x: px, y: py, ally: side === 'A', mob: !!hero(hid).mob, id: hid, tr: side === 'A' && isTr(U(key)), star: side === 'A' ? (U(key) ? U(key).star : 0) : (hero(hid).mob ? 0 : estar || 1) });
       return '<div class="unit"' + (side === 'A' && key ? ' data-uid="' + key + '"' : '') + ' style="left:' + (100 * px / W) + '%;top:' + (100 * (py + OFF + FOOT) / H) + '%;z-index:' + Math.round(py) + '">' + inner + '</div>'; }
     function foeHtml(u){ if (!u) return ''; var h = hero(u.id); if (h.mob === 'chest'){ return foeHtml0(u, h, chestImgKey(chestGrade(), 1)); } /* 전투 때 그림(등급)으로 미리 그려요: 예전 replace는 외곽선 그림 주소라 안 맞았음 */ return foeHtml0(u, h); }
     function foeHtml0(u, h, key){ return '<div class="foe' + (u.boss ? ' boss' : '') + (u.merc ? ' merc' : '') + (h.mob ? ' mob' : '') + (MOBSZ[h.mob] ? ' mobsz' + (MOBSZ[h.mob] > 1 ? '2' : '') : '') + (h.mob === 'chest' ? ' chestbig' + chestFlashCls() : '') + '" data-foe="' + u.slot + '" style="--el:' + ELC[h.el] + footCss(h.id) + '" title="' + h.name + '">' + avO(h.id, key) + '' + bnBubble(u.bonus) + (h.mob === 'mimic' ? '<i class="mhop' + (h.king ? ' king' : u.slot % 2 ? ' g2' : '') + '" style="animation-delay:-' + (u.slot * .37).toFixed(2) + 's"></i>' : mobBub(u)) + (h.mob === 'chest' ? chestBub() : '') + '</div>'; } // 레벨 표시는 뺐어요
@@ -3550,7 +3550,7 @@ img.rimg{image-rendering:auto!important}
     var list = bagUnits().slice().sort(function(a, b){ return (E.heroGrade(D, b.id) - E.heroGrade(D, a.id)) || ((b.star || 1) - (a.star || 1)) || (powerU(b) - powerU(a)); });
     var BM = bagMax();
     $('roster').innerHTML = list.map(function(u, li){ var h = hero(u.id), g = HG(u.id);
-      return '<button class="chip' + (li >= BM ? ' over' : '') + '" data-uid="' + u.uid + '" data-id="' + u.id + '" title="' + h.name + '" style="--el:' + ELC[h.el] + ';--gcol:' + g.col + '">' + av(u.id) + starsIn(u.star, u.id) + '</button>';
+      return '<button class="chip' + (li >= BM ? ' over' : '') + '" data-uid="' + u.uid + '" data-id="' + u.id + '" title="' + h.name + '" style="--el:' + ELC[h.el] + ';--gcol:' + g.col + '">' + av(u.id) + starsIn(u.star, u.id, isTr(u)) + '</button>';
     }).join('') + (function(){ var e = ''; for (var i = list.length; i < bagMax(); i++) e += '<i class="chip bagempty"></i>'; return e; })() + lockedBag(Math.max(list.length, BM));
     var used = usedCost(), c = cap();
     var over = false; /* 출전 코스트 제도는 없어요. 출전 제한은 전장 칸 수(PK().field)뿐 */ $('fightBtn').disabled = done || teamSpec().length === 0 || !!S.pending || !!S.offer || !!S.padPend || over; $('fightBtn').textContent = '전투 시작'; /* 늘 원래 글자, 못 누르면 회색만 (예전: 캠페인 완료·발판 깔기·전리품을 먼저 정해 주세요·백팩에서 버릴 것을 골라 주세요) */
@@ -3565,7 +3565,7 @@ img.rimg{image-rendering:auto!important}
     function tile(attr, img, name, sub, cls, el){ return '<button class="pt' + (cls || '') + '" ' + attr + ' style="--el:' + el + '"><span class="ph">' + img + '</span><b>' + name + '</b><i>' + sub + '</i></button>'; }
     return '<div class="pq">1칸을 비워 주세요</div>' +
       '<div class="pgrid">' + tile('data-keep="0"', heroFr(id), h.name, '받지 않기', ' skip', ELC[h.el]) +
-      bag.map(function(u){ var bh = hero(u.id); return tile('data-drop="' + u.uid + '"', heroFr(u.id, u.star), bh.name, '버리기', '', ELC[bh.el]); }).join('') + '</div>';
+      bag.map(function(u){ var bh = hero(u.id); return tile('data-drop="' + u.uid + '"', heroFr(u.id, u.star, isTr(u)), bh.name, '버리기', '', ELC[bh.el]); }).join('') + '</div>';
   }
   // ───── 상태 줄: 골드 · 코스트 · 출전 · 백팩 · 적 · 스킬 ─────
   // 상태 줄 픽셀 아이콘 (16px 그림을 2배 32px로). 없으면 이모지
@@ -4222,11 +4222,11 @@ img.rimg{image-rendering:auto!important}
     if (k >= 1 && !march.fired){ march.fired = true; var cb = march.cb; setTimeout(function(){ march = null; cb && cb(); }, 0); } }
   function unitByUid(uid){ var all = bt.A.concat(bt.E); for (var i = 0; i < all.length; i++) if (all[i].uid === uid) return all[i]; return null; }
 
-  var curEv = null, curBell = 0, curGrades = {}, curFoeMul = {}, curPlv = 1, goldStart = 0; // curGrades: 칸별 성급
+  var curTr = {}, curEv = null, curBell = 0, curGrades = {}, curFoeMul = {}, curPlv = 1, goldStart = 0; // curGrades: 칸별 성급
   function startBattle(){ if (S.evOffer && S.evOffer.kind === 'merchant'){ S.evOffer = null; setShop(false); }
     if (!teamSpec().length || S.stage >= E.stageCount(D)) return;
     setShop(false); // 전투가 시작되면 상점 팝업은 닫아요
-    goldStart = S.gold; skipNow = false; march = null; winAfter = null; curStage = S.stage; curEv = S.event || null; curBell = S.bell || 0; curGrades = {}; curPlv = plv(); teamSpec().forEach(function(sp){ curGrades[sp.slot] = sp.star; });
+    goldStart = S.gold; skipNow = false; march = null; winAfter = null; curStage = S.stage; curEv = S.event || null; curBell = S.bell || 0; curGrades = {}; curTr = {}; curPlv = plv(); teamSpec().forEach(function(sp){ curGrades[sp.slot] = sp.star; curTr[sp.slot] = isTr(U(sp.tuid)); });
     setTimeout(function(){ renderEvent(); renderBell(); }, 0); // 전투 중엔 배너·종 숨기기(상인은 그대로)
     var st = E.stageTeam(D, curStage, curEv, curBell, curPlv); curFoeMul = {}; st.team.forEach(function(x){ curFoeMul[x.slot] = x.mul || {}; });
     tpw = { A: {}, E: {}, mA: E.relicPowerMul ? E.relicPowerMul(D, S.skills) : 1, mE: E.relicPowerMul ? E.relicPowerMul(D, st.skills) : 1, last: { A: -1, E: -1 } };
@@ -4480,7 +4480,7 @@ img.rimg{image-rendering:auto!important}
     // 스테이지 줄은 HUD 오른쪽에 있어요
     if (flash > 0){ flash -= el; ctx.fillStyle = 'rgba(255,255,255,' + Math.max(0, flash) + ')'; ctx.fillRect(0, 0, W, H); }
     updSkillBars(); // 스킬 막대는 전장 위 DOM(왼쪽 위 내 스킬, 오른쪽 위 적 스킬)
-    var allU = bt.A.concat(bt.E).sort(function(a, b){ return posOf(a)[1] - posOf(b)[1]; }); allU.filter(function(u){ return !u.alive; }).forEach(function(u){ drawUnit(u, el); }); STARQ = []; allU.filter(function(u){ return u.alive; }).forEach(function(u){ drawUnit(u, el); }); drawFg(); STARQ.forEach(function(q){ drawGradeStar(ctx, q[0], q[1], q[2]); }); STARQ = null; /* 무덤은 항상 살아 있는 캐릭터보다 뒤에, 그 안에서 아래쪽 유닛이 앞에 (2026-11-25 사용자: RIP은 캐릭터보다 뒤에 무조건) */
+    var allU = bt.A.concat(bt.E).sort(function(a, b){ return posOf(a)[1] - posOf(b)[1]; }); allU.filter(function(u){ return !u.alive; }).forEach(function(u){ drawUnit(u, el); }); STARQ = []; allU.filter(function(u){ return u.alive; }).forEach(function(u){ drawUnit(u, el); }); drawFg(); STARQ.forEach(function(q){ drawGradeStar(ctx, q[0], q[1], q[2], q[3]); }); STARQ = null; /* 무덤은 항상 살아 있는 캐릭터보다 뒤에, 그 안에서 아래쪽 유닛이 앞에 (2026-11-25 사용자: RIP은 캐릭터보다 뒤에 무조건) */
     if (HAS_FX) FX.draw(ctx, 'front');
     drawUltPops(el); drawArrows(el); drawUx(el);
     shots = shots.filter(function(s){ if (s.wait > 0){ s.wait -= el; return true; } s.t += el * 5; if (s.t >= 1){ if (s.land) s.land(); return false; }
@@ -4602,8 +4602,8 @@ img.rimg{image-rendering:auto!important}
   var knocks = {}; // uid → { dx, t } : 돌풍에 밀린 유닛을 0.15초 동안 휙 미끄러지게 그려요
   // 체력·에너지 막대: 전투와 편성 화면이 같이 써요
   // 5×5 픽셀 별 (성급 표시, 은은한 금색)
-  function drawGradeStar(c, cx, cy, n){ var R = 5.4, r = 2.4, gap = 11, x0 = cx - (n - 1) * gap / 2; c.save(); c.lineJoin = 'round';
-    for (var k = 0; k < n; k++){ var x = x0 + k * gap; c.beginPath(); for (var i = 0; i < 10; i++){ var a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r : R; c.lineTo(x + Math.cos(a) * rr, cy + 0.5 + Math.sin(a) * rr); } c.closePath(); c.lineWidth = 2; c.strokeStyle = '#17141d'; c.stroke(); c.fillStyle = '#ffd34d'; c.fill(); }
+  function drawGradeStar(c, cx, cy, n, tr){ var R = 5.4, r = 2.4, gap = 11, x0 = cx - (n - 1) * gap / 2; c.save(); c.lineJoin = 'round';
+    for (var k = 0; k < n; k++){ var x = x0 + k * gap; c.beginPath(); for (var i = 0; i < 10; i++){ var a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r : R; c.lineTo(x + Math.cos(a) * rr, cy + 0.5 + Math.sin(a) * rr); } c.closePath(); c.lineWidth = 2; c.strokeStyle = '#17141d'; c.stroke(); c.fillStyle = tr ? '#b98cff' : '#ffd34d'; c.fill(); }
     c.restore(); } /* 성급 = 머리 위 작은 별을 성급 개수만큼 (숫자 없음) (2026-11-25 사용자: "별개수만큼 표시, 숫자는 X") */
   var STARQ = null; /* 전투: 별은 유닛·막대를 다 그린 뒤 맨 마지막에 (다른 유닛 그림·막대가 별을 덮지 않게) */
   function drawBars(ctx, x, y, o){
@@ -4619,7 +4619,7 @@ img.rimg{image-rendering:auto!important}
     if (o.trig){ var tn = o.trig.kind === "start" ? 1 : Math.max(1, o.trig.n || 1), sw = Math.floor((bw - (tn - 1) * 2) / tn), ek = Math.min(1, (o.energy || 0) / 100) * tn, full = (o.energy || 0) >= 99.9; // 발동 타입: n칸 눈금, 칸 안은 연속으로 차요 (start형은 쓰면 회색)
       for (var ti = 0; ti < tn; ti++){ var tx = bx + ti * (sw + 2), fw = Math.round(sw * Math.max(0, Math.min(1, ek - ti))); ctx.fillStyle = o.tdone ? "#6b6478" : "#4a4358"; ctx.fillRect(tx, by + 6, sw, 2); if (!o.tdone && fw > 0){ ctx.fillStyle = full ? "#ffe08a" : "#f2b53a"; ctx.fillRect(tx, by + 6, fw, 2); } } }
     else { ctx.fillStyle = o.energy >= 99.9 ? "#ffe08a" : "#f2b53a"; ctx.fillRect(bx, by + 6, Math.round(bw * Math.min(1, (o.energy || 0) / 100) / 2) * 2, 2); }
-    if (o.star){ if (o.S){ var hy = y + 26 + o.S * .04 - o.S + (o.tf || 0) * o.S; if (STARQ) STARQ.push([x, hy - 7, o.star]); else drawGradeStar(ctx, x, hy - 7, o.star); } else drawGradeStar(ctx, bx - 9, by + 4, o.star); } /* 성급 별 하나+숫자를 머리 바로 위(그림 위쪽 빈 줄 기준)에 (2026-11-25 사용자: HP 말고 캐릭터 위로) */
+    if (o.star){ if (o.S){ var hy = y + 26 + o.S * .04 - o.S + (o.tf || 0) * o.S; if (STARQ) STARQ.push([x, hy - 7, o.star, o.tr]); else drawGradeStar(ctx, x, hy - 7, o.star, o.tr); } else drawGradeStar(ctx, bx - 9, by + 4, o.star, o.tr); } /* 성급 별 하나+숫자를 머리 바로 위(그림 위쪽 빈 줄 기준)에 (2026-11-25 사용자: HP 말고 캐릭터 위로) */
     return { bw: bw, bx: bx, by: by, rows: rows, fh: fh };
   }
   // 피격 연출: 맞은 유닛은 dur초 동안 모션을 고정하고 살짝 흔들며 흰 실루엣으로 번쩍여요 (flash 0~1 = 세기)
@@ -4724,7 +4724,7 @@ img.rimg{image-rendering:auto!important}
     if (battleTgt(u)){ var ti = SKIMG[skTgt.d.id], ty = Math.round(foot - S - 30); ctx.save(); ctx.imageSmoothingEnabled = false; ctx.globalAlpha = 1; ctx.fillStyle = '#17141d'; ctx.fillRect(Math.round(x - 14), ty - 2, 28, 28); ctx.fillStyle = skG(skTgt.d.id).col; ctx.fillRect(Math.round(x - 13), ty - 1, 26, 26); ctx.fillStyle = '#17141d'; ctx.fillRect(Math.round(x - 12), ty, 24, 24); if (ti) ctx.drawImage(ti, Math.round(x - 12), ty, 24, 24); ctx.restore(); }
     // 전리품 말풍선은 배치 화면(DOM)에서만, 전투 중엔 숨겨요
     // 체력·에너지 막대: 얇은 도트 스타일. 2px 단위, 어두운 테두리, 위쪽 밝은 줄, 4칸 눈금
-    var bb = u.h.mob === 'chest' ? { bw: 0, bx: x, by: foot, rows: 0, fh: 0 } : drawBars(ctx, x, y, { hpk: Math.max(0, u.hp / u.maxHp), ally: u.side === "A", shield: u.shield > 1 ? u.shield / u.maxHp : 0, energy: u.energy, trig: u.trig, tdone: u.trigDone, star: u.side === 'A' ? curGrades[u.slot] : (u.h.mob ? 0 : u.star), S: unitPx(u.boss), tf: imgTopFrac(IMGS[u.id]) }), bw = bb.bw, bx = bb.bx, by = bb.by, rows = bb.rows, fh = bb.fh;
+    var bb = u.h.mob === 'chest' ? { bw: 0, bx: x, by: foot, rows: 0, fh: 0 } : drawBars(ctx, x, y, { hpk: Math.max(0, u.hp / u.maxHp), ally: u.side === "A", shield: u.shield > 1 ? u.shield / u.maxHp : 0, energy: u.energy, trig: u.trig, tdone: u.trigDone, tr: u.side === 'A' && curTr[u.slot], star: u.side === 'A' ? curGrades[u.slot] : (u.h.mob ? 0 : u.star), S: unitPx(u.boss), tf: imgTopFrac(IMGS[u.id]) }), bw = bb.bw, bx = bb.bx, by = bb.by, rows = bb.rows, fh = bb.fh;
     if (u.alive && u.castT > 0 && u.h.ult && u.h.ult.cast){ var ck = Math.max(0, Math.min(1, 1 - u.castT / u.h.ult.cast)); ctx.fillStyle = '#17141d'; ctx.fillRect(bx - 2, by + 10, bw + 4, 6); ctx.fillStyle = '#3b3546'; ctx.fillRect(bx, by + 11, bw, 3); ctx.fillStyle = ELC[u.el] || '#a77bff'; ctx.fillRect(bx, by + 11, Math.round(bw * ck), 3); ctx.fillStyle = '#fff6d6'; ctx.fillRect(bx, by + 11, Math.round(bw * ck), 1); } // 캐스팅 진행 /* 아래 버프 칩이 막대 위치를 써요 */
     // 전투 중 이름은 표시하지 않아요
     // 버프·디버프: 막대 바로 밑에 작은 칸을 한 줄로. 칸 아래 가는 줄은 남은 시간(보호막은 남은 양)
@@ -5481,7 +5481,7 @@ img.rimg{image-rendering:auto!important}
   function altDone(){ var n = (D.transcend || {}).perAltar; return !!(n && S.event && (S.event.trCount || 0) >= n); } /* 이 제단에서 할 만큼 했으면 true */
   function altCellImg(k){ return ALTCELL[k] || (ALTCELL[k] = k === 'A' ? hexDaisURL({ rim: '#ffd34d', top: '#5a4720', top2: '#7a6228', side: '#3a2e14', hi: '#fff3b0' }) : hexDaisURL({ rim: '#fff3b0', top: '#3b3546', top2: '#4a4358', side: '#2a2533', hi: '#ffffff' })); }
   function altCell(pos, k){ return '<i class="altcell" style="left:' + (100 * pos[0] / W) + '%;top:' + (100 * (pos[1] + OFF + FOOT) / H) + '%;background-image:url(' + altCellImg(k) + ')"></i>'; }
-  function altUnit(cls, u, pos, attr){ return '<div class="unit cfh ' + cls + '"' + (attr || '') + ' style="left:' + (100 * pos[0] / W) + '%;top:' + (100 * (pos[1] + OFF + FOOT) / H) + '%;z-index:' + pos[1] + '"><div class="cfslot flip" style="--hg:' + HG(u.id).col + '">' + av(u.id) + starsIn(u.star, u.id) + '</div></div>'; }
+  function altUnit(cls, u, pos, attr){ return '<div class="unit cfh ' + cls + '"' + (attr || '') + ' style="left:' + (100 * pos[0] / W) + '%;top:' + (100 * (pos[1] + OFF + FOOT) / H) + '%;z-index:' + pos[1] + '"><div class="cfslot flip" style="--hg:' + HG(u.id).col + '">' + av(u.id) + starsIn(u.star, u.id, isTr(u)) + '</div></div>'; }
   function altarPickHtml(){ if (TRPOP){ return '<div class="unit cfh altseer" style="left:' + (100 * 506 / W) + '%;top:' + (100 * (184 + OFF + FOOT) / H) + '%;z-index:184"><div class="cfslot"><i class="dlr" role="img" aria-label="무녀"></i></div></div>'; } /* 건물 대신 눈가린 천칭 무녀, 적 쪽 5번 칸 (2026-11-26 사용자) */ var ALT_POS = altPos(), a = U(altA), m = altM != null && U(altM), q = function(s){ return String(s || '').replace(/"/g, '&quot;'); };
     var E3 = hexCells().E, b1 = E3[2], b2 = E3[5], bx = (b1[0] + b2[0]) / 2, by = E3[0][1] + OFF + FOOT - 27, bw = Math.abs(b2[0] - b1[0]) + 76;
     var o = '<img class="altbld" src="img/p/altar_building.png" alt="" style="left:' + (100 * bx / W) + '%;top:' + (100 * by / H) + '%;width:' + (100 * 86 * 1.74 / W) + '%">' + altCell(ALT_POS.A, 'A') + altCell(ALT_POS.M, 'M') + (a ? altUnit('altA', a, ALT_POS.A, ' data-tipt="' + q(hero(a.id).name) + '" data-tiptx="' + q(ultName(hero(a.id))) + '"') : '') +
@@ -5544,7 +5544,7 @@ img.rimg{image-rendering:auto!important}
       trRender(); });
     trRender(); }
   function trSlot(k, uid){ var u = uid != null && U(uid), nm = k === 'A' ? '메인' : '재료';
-    return '<button class="trslot s' + k + (!u && !trDone && (k === 'A' ? altA == null : altA != null && altM == null) ? ' next' : '') + (u ? ' full' : '') + '" type="button" data-tr="' + k + '"' + (u && !trDone ? '' : ' disabled') + '><i class="trglow"></i><b class="trtag">' + nm + '</b>' + (u ? '<span class="trfig">' + av(u.id) + starsIn(u.star, u.id) + '</span><span class="trnm">' + hero(u.id).name + '</span>' : '<span class="trplus">+</span>') + '</button>'; }
+    return '<button class="trslot s' + k + (!u && !trDone && (k === 'A' ? altA == null : altA != null && altM == null) ? ' next' : '') + (u ? ' full' : '') + '" type="button" data-tr="' + k + '"' + (u && !trDone ? '' : ' disabled') + '><i class="trglow"></i><b class="trtag">' + nm + '</b>' + (u ? '<span class="trfig">' + av(u.id) + starsIn(u.star, u.id, isTr(u)) + '</span><span class="trnm">' + hero(u.id).name + '</span>' : '<span class="trplus">+</span>') + '</button>'; }
   function trDust(st){ var o = ''; for (var i = 0; i < 14; i++){ var du = (5 + Math.random() * 4).toFixed(2); o += '<s style="left:' + (4 + Math.random() * 92).toFixed(1) + '%;top:' + (35 + Math.random() * 60).toFixed(1) + '%;background:' + ['#c9a6ff', '#a77bff', '#e9ddff'][i % 3] + ';animation-duration:' + du + 's;animation-delay:' + (-Math.random() * du).toFixed(2) + 's"></s>'; }
     st.insertAdjacentHTML('beforeend', '<i class="trdust">' + o + '</i><i class="trvine"></i><i class="trvine b"></i><i class="trvine r"></i><i class="trvine r b"></i>'); }
   /* 초월 뒤: 팝업을 닫지 않고 메인만 남겨 얻은 스킬을 보여 줌. 확인과 X 둘 다 닫기 */
@@ -5561,11 +5561,11 @@ img.rimg{image-rendering:auto!important}
     trInfo(w.querySelector('.trinfo'));
     var ids = S.team.filter(function(x){ return x && U(x); }); /* 백팩 영웅은 백팩 칸에서 */ trBag();
     w.querySelector('.trlist').innerHTML = ids.map(function(id){ var u = U(id), on = id === altA ? 'A' : id === altM ? 'M' : '', ok = on || trCan(u);
-      return '<button class="trc' + (on ? ' on k' + on : '') + (id === trSeen ? ' seen' : '') + '" type="button" data-tr="pick" data-uid="' + id + '" style="--hg:' + HG(u.id).col + '"' + (ok ? '' : ' aria-disabled="true"') + '>' + heroFr(u.id, u.star) + (on ? '<b>' + (on === 'A' ? '메인' : '재료') + '</b>' : '') + '</button>'; }).join('');
+      return '<button class="trc' + (on ? ' on k' + on : '') + (id === trSeen ? ' seen' : '') + '" type="button" data-tr="pick" data-uid="' + id + '" style="--hg:' + HG(u.id).col + '"' + (ok ? '' : ' aria-disabled="true"') + '>' + heroFr(u.id, u.star, isTr(u)) + (on ? '<b>' + (on === 'A' ? '메인' : '재료') + '</b>' : '') + '</button>'; }).join('');
     w.querySelector('[data-tr="go"]').disabled = !kind || altDone(); }
   function trDo(){ var a = altA, m = altM, w = $('trWin'); if (!w || a == null || m == null || altDone() || !trKind(U(a), U(m))) return; var mid = U(m).id; trAnim = true;
     w.querySelector('[data-tr="go"]').disabled = true; var st = w.querySelector('.trstage'), fg = st.querySelector('.sA .trfig'); if (fg){ var sl = fg.parentNode; st.style.setProperty('--cx', (sl.offsetLeft + fg.offsetLeft + fg.offsetWidth / 2) + 'px'); st.style.setProperty('--cy', (sl.offsetTop + fg.offsetTop + fg.offsetHeight * .62) + 'px'); } /* 회전 중심 = 메인 영웅 */
-    st.insertAdjacentHTML('beforeend', '<b class="trword">초월</b>'); st.classList.add('suck', 'charge'); /* 재료가 메인 쪽으로 빨려 들어감 + 배경이 보라로 바뀌고 흔들림 */
+    st.classList.add('suck', 'charge'); /* 재료가 메인 쪽으로 빨려 들어감 + 배경이 보라로 바뀌고 흔들림 */
     setTimeout(function(){ if (!trOn) return; trAnim = false; var ok = tryTranscend(a, m); if (!ok) return trClose(); if (S.event){ S.event.trCount = (S.event.trCount || 0) + 1; save(); } altA = null; altM = null; trDone = { uid: a, mid: mid }; w.querySelector('.trstage').classList.remove('suck', 'charge'); renderForm(); trRender(); }, 1500); }
   function altarHtml(){ if (altA != null && !U(altA)) altA = null; return altarPickHtml(); return altGuide() + '<div class="unit altar' + (altDone() ? ' used' : '') + '" style="left:' + (100 * 506 / W) + '%;top:' + (100 * (184 + OFF + FOOT) / H) + '%;z-index:200"><i class="altspr"></i></div>'; }
   function finishAltar(){ if (!isAltar()) return; trClose(); altA = null; altM = null; S.event = nextEvent(false); S.bell = 0; S.bellGold = 0; save(); evGo(); }
