@@ -742,7 +742,7 @@
     return { level: lv, cur: lv - 1 < P.need.length ? left : 0, need: lv - 1 < P.need.length ? P.need[lv - 1] : 0, max: lv - 1 >= P.need.length }; }
   // 레벨 효과: { field 전장 칸, skillSlots 스킬 칸, shopGrade 등급 가중치 }
   function perk(data, lv) { var P = data.player, i = Math.max(0, Math.min((lv || 1) - 1, P.field.length - 1));
-    return { field: P.field[i], skillSlots: P.skillSlots[i], shopGrade: P.shopGrade[Math.min(i, P.shopGrade.length - 1)], shopSlots: P.shopSlots ? P.shopSlots[Math.min(i, P.shopSlots.length - 1)] : 0, campfire: P.campfire ? P.campfire[Math.min(i, P.campfire.length - 1)] : 0, clearGold: P.clearGold ? P.clearGold[Math.min(i, P.clearGold.length - 1)] : 0, lootWeight: P.lootWeight ? P.lootWeight[Math.min(i, P.lootWeight.length - 1)] : null, bag: P.bag ? Math.min(10, P.bag[Math.min(i, P.bag.length - 1)]) : data.recruit.bag }; }
+    return { field: P.field[i], skillSlots: P.skillSlots[i], shopGrade: P.shopGrade[Math.min(i, P.shopGrade.length - 1)], shopSlots: P.shopSlots ? P.shopSlots[Math.min(i, P.shopSlots.length - 1)] : 0, campfire: P.campfire ? P.campfire[Math.min(i, P.campfire.length - 1)] : 0, clearGold: P.clearGold ? P.clearGold[Math.min(i, P.clearGold.length - 1)] : 0, lootWeight: P.lootWeight ? P.lootWeight[Math.min(i, P.lootWeight.length - 1)] : null, bag: P.bag ? Math.min(10, P.bag[Math.min(i, P.bag.length - 1)]) : data.recruit.bag, potion: P.potion ? P.potion[Math.min(i, P.potion.length - 1)] : 2 }; }
   // 살 수 있나: 새 스킬은 빈 칸이 있어야, 가진 스킬은 최고 레벨 전이어야
   function canTake(data, owned, id, slots) { var o = owned.filter(function (s) { return s.id === id; })[0]; return o ? o.level < skillMaxLevel(data, id) : owned.length < (slots || data.skills.slots); }
   function takeSkill(data, owned, id) { var o = owned.filter(function (s) { return s.id === id; })[0]; if (o) o.level++; else owned.push({ id: id, level: 1 }); }
@@ -901,7 +901,7 @@
       units.length = 0; levels = {}; startHero();
       skills.length = 0; pads = {}; gold = 0; mana = 0; xp = 0; plv = 1; stage = 0; best = 0; tries = 0; streak = 0; bellPaidN = 0; life = LF.max; stood = false; lastHp = 0; shop = rollShop(data, rnd, 1, skills); shopH = rollShopHeroes(data, rnd, 1, 0); }
     var lastHp = 0, bells = { rung: 0, lost: 0 }, fails = [], bellPaidN = 0; // bellPaidN: 이 판에서 골드를 이미 받은 종 횟수 // fails[n] = 스테이지 n에서 진 횟수
-    var potions = []; // 2026-11-26 봇: 들고 있는 물약 id(최대 events.swampShop.hold). 다음 일반 전투에 모두 마셔요
+    var potions = []; // 2026-11-26 봇: 들고 있는 물약 id(최대 player.potion, 레벨별). 다음 일반 전투에 모두 마셔요
     var events = { goblin: { seen: 0, caught: 0, missed: 0 }, merchant: { seen: 0, bought: 0 }, merc: { seen: 0, hired: 0 }, campfire: { seen: 0 }, chest: { seen: 0, tiers: 0, gold: 0 } };
     startHero(); // 첫 영웅 (모닥불이면 3명 중 룰렛으로 1명)
     // 이벤트 스테이지(모닥불·방랑상인·보물상자)는 스테이지 수를 쓰지 않아요: 시작 모닥불 뒤 첫 전투가 1-1이고, 판 중 이벤트는 n과 n+1 사이(n.5)예요
@@ -933,7 +933,7 @@
       if (ev && ev.kind === 'merchant' && merchantNoBattle(data)) bellN = 0;
       bellN = Math.min(bellN, bellMax(data, stage, ev)); bells.rung += bellN; var bellPaid = ev && ev.kind === 'chest' ? 0 : (bellN > bellPaidN ? bellGold(data, stage, bellPaidN, bellN, plv) : 0); gold += bellPaid; bellPaidN = Math.max(bellPaidN, bellN); // 같은 판에서 이미 받은 종 골드는 다시 안 줘요(2026-11-24)
       if (ev) { events[ev.kind] = events[ev.kind] || { seen: 0 }; events[ev.kind].seen++; }
-      if (ev && ev.kind === 'swampShop') { var HOLD = (data.events.swampShop || {}).hold || 2; (ev.ids || []).forEach(function (pid) { var P = potionById(data, pid); if (P && potions.length < HOLD && gold >= P.price * 2) { gold -= P.price; spent += P.price; potions.push(pid); events.swampShop.bought = (events.swampShop.bought || 0) + 1; } }); continue; } // 봇: 늪지 상인은 골드가 값의 2배 이상이면 칸이 찰 때까지 사요
+      if (ev && ev.kind === 'swampShop') { var HOLD = data.player ? perk(data, plv).potion : 2; (ev.ids || []).forEach(function (pid) { var P = potionById(data, pid); if (P && potions.length < HOLD && gold >= P.price * 2) { gold -= P.price; spent += P.price; potions.push(pid); events.swampShop.bought = (events.swampShop.bought || 0) + 1; } }); continue; } // 봇: 늪지 상인은 골드가 값의 2배 이상이면 칸이 찰 때까지 사요
       if (ev && ev.kind === 'merchant' && merchantNoBattle(data)) { // 방랑상인 판: 싸우지 않고 특별 상점만 열고 넘어가요
         rollMerchant(data, stage, rnd, plv, skills).forEach(function (it) {
           var have = it.cur === 'mana' ? mana : gold; if (have < it.price) return;

@@ -5672,7 +5672,7 @@ img.rimg{image-rendering:auto!important}
   function openSwampShop(){ if (!isSwampShop() || S.offer || S.pending) return;
     if (!S.evOffer || !S.evOffer.swamp) S.evOffer = { kind: 'merchant', swamp: true, stock: (S.event.ids || []).map(function(id){ var P = E.potionById(D, id); return { type: 'p', id: id, price: (P || {}).price || 0 }; }), bought: [], noBattle: true };
     save(); if (shopOpen()) setShop(false); merchShow = true; shopSel = null; setShop(true); renderShop(); }
-  function potHold(){ return ((D.events || {}).swampShop || {}).hold || 2; }
+  function potHold(){ return E.perk ? E.perk(D, plv()).potion : 2; } /* 2026-11-26: 물약 칸은 레벨별(player.potion) */
   function potDesc(P){ return P.desc.replace('{a}', P.amount < 1 ? Math.round(P.amount * 100) : P.amount); }
   function potBar(){ var A = $('arena'), el = $('potBar'); if ((D.campaign.chapterNo || 1) < 2 || A.classList.contains('ending')){ if (el) el.remove(); return; }
     if (!el){ el = document.createElement('div'); el.id = 'potBar'; A.appendChild(el); el.addEventListener('click', function(e){ var b = e.target.closest('[data-potsl]'); if (b) potInfo(+b.dataset.potsl); }); }
