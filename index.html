@@ -329,7 +329,7 @@ img.lic.padic{object-fit:contain}
 .bagdrawer .roster{display:flex!important;flex-direction:row!important;gap:4px}
 .bagdrawer .chip{width:40px!important;height:40px!important}
 .tip.bellpop{pointer-events:auto!important;width:210px;text-align:center} .tip.bellpop::before{content:'';position:absolute;left:0;right:0;top:-10px;height:10px}
-.tip.bellpop .tipn{display:block;text-align:center}
+.tip.bellpop .tipn{display:flex!important;justify-content:space-between;align-items:baseline;gap:8px;text-align:left} /* 왼쪽 단계, 오른쪽 효과 이름: 시험 (2026-11-26 사용자) */ .tip.bellpop .bfname{color:#ffd34d}
 .bfrow{display:flex;justify-content:center;gap:6px;margin-top:6px}
 .bfc{width:56px;padding:4px 0 3px;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;background:#17141d;box-shadow:inset 0 0 0 2px #5d5470;color:#f3e6c4;cursor:help;filter:grayscale(1);opacity:.45}
 .bfc.on{filter:none;opacity:1} .bfc.sel{box-shadow:inset 0 0 0 2px #ffd34d;opacity:1} /* 노란 테두리 = 지금 설명이 보이는 카드 */
@@ -5138,7 +5138,7 @@ img.rimg{image-rendering:auto!important}
     return T.tside !== T.side || tgtHero(u.h); }
   document.addEventListener('pointerover', function(e){ if (e.pointerType !== 'mouse') return; var el = e.target.closest('[data-tipsk],[data-tiptx]'); if (el) showTip(el); });
   document.addEventListener('pointerout', function(e){ if (e.pointerType !== 'mouse') return; var el = e.target.closest('[data-tipsk],[data-tiptx]'), to = e.relatedTarget, pop = to && to.closest && to.closest('#tip.bellpop'); if (el && !el.contains(to) && !(el.id === 'bellBtn' && pop)) hideTip(); else if (!el && e.target.closest('#tip.bellpop') && !pop && !(to && to.closest && to.closest('#bellBtn'))) hideTip(); });
-  function bellDesc(e){ var c = e.target.closest && e.target.closest('#tip .bfc'); if (!c) return; var d = ((D.bell || {}).fx || {})[c.dataset.bfx] || {}; $('tip').querySelector('.bfdesc').textContent = (d.name ? d.name + ' · ' : '') + (d.desc || '') + (c.dataset.bfg ? ' (+' + c.dataset.bfg + 'G)' : ''); $('tip').querySelectorAll('.bfc').forEach(function(x){ x.classList.toggle('sel', x === c); }); }
+  function bellDesc(e){ var c = e.target.closest && e.target.closest('#tip .bfc'); if (!c) return; var d = ((D.bell || {}).fx || {})[c.dataset.bfx] || {}; var bn = $('tip').querySelector('.bfname'); if (bn) bn.textContent = d.name || ''; $('tip').querySelector('.bfdesc').textContent = (d.desc || '') + (c.dataset.bfg ? ' (+' + c.dataset.bfg + 'G)' : ''); $('tip').querySelectorAll('.bfc').forEach(function(x){ x.classList.toggle('sel', x === c); }); }
   document.addEventListener('pointerover', bellDesc);
   document.addEventListener('pointerdown', function(e){ if (e.target.closest('#tip.bellpop')) return bellDesc(e); var el = e.target.closest('[data-tipsk],[data-tiptx]'); if (el){ if (tipEl === el && e.pointerType !== 'mouse') hideTip(); else showTip(el); } else if (tipEl) hideTip(); });
   // 화면 전환: 픽셀 막대가 내려와 덮었다가(0.25초) 다시 걷혀요(0.25초)
@@ -5984,8 +5984,8 @@ img.rimg{image-rendering:auto!important}
     var BF = B.fx || {}, fxBox = $('bellFx'), stB = (n && !b.hidden) ? E.stageTeam(D, bStg, bEv, n, bt ? curPlv : plv()) : null, got = (stB && stB.bellFx) || [];
     var cand = !bt && n < mx && B.tiers && B.tiers[n] ? B.tiers[n] : null; /* 전투 중엔 다음 단계 안내 없음 */
     var fxL = function(id){ var d = BF[id] || { name: id, icon: '', desc: '' }; return d.icon + ' <b class="fxn">' + d.name + '</b> · ' + d.desc; };
-    if (B.tiers && !chestEv && mx){ b.dataset.tipt = '분노 ' + n + '단계'; var sel = Math.max(0, n - 1), selId = (sel < n && got[sel]) || B.tiers[sel][0], selG = cand && sel === n && bg1 > 0 ? ' (+' + bg1.toLocaleString() + 'G)' : ''; b.dataset.tipg = n + 1; /* 테두리 = 등급색: 기본 일반 · 1 고급 · 2 희귀 · 3 전설 (2026-11-26 사용자) */
-      b.dataset.tiptx = '<div class="bfrow">' + B.tiers.map(function(t, i){ var id = (i < n && got[i]) || t[0], d = BF[id] || { name: id, icon: '' }; return '<button type="button" class="bfc' + (i < n ? ' on' : '') + (i === sel ? ' sel' : '') + '" data-bfx="' + id + '"' + (cand && i === n && bg1 > 0 ? ' data-bfg="' + bg1.toLocaleString() + '"' : '') + '><i>' + bfIcon(t[0], d) + '</i></button>'; }).join('') + '</div><div class="bfdesc">' + (BF[selId] ? BF[selId].name + ' · ' + BF[selId].desc : '') + selG + '</div>'; }
+    if (B.tiers && !chestEv && mx){ b.dataset.tipt = '<span>분노 ' + n + '단계</span>'; var sel = Math.max(0, n - 1), selId = (sel < n && got[sel]) || B.tiers[sel][0], selG = cand && sel === n && bg1 > 0 ? ' (+' + bg1.toLocaleString() + 'G)' : ''; b.dataset.tipg = n + 1; /* 테두리 = 등급색: 기본 일반 · 1 고급 · 2 희귀 · 3 전설 (2026-11-26 사용자) */
+      b.dataset.tiptx = '<div class="bfrow">' + B.tiers.map(function(t, i){ var id = (i < n && got[i]) || t[0], d = BF[id] || { name: id, icon: '' }; return '<button type="button" class="bfc' + (i < n ? ' on' : '') + (i === sel ? ' sel' : '') + '" data-bfx="' + id + '"' + (cand && i === n && bg1 > 0 ? ' data-bfg="' + bg1.toLocaleString() + '"' : '') + '><i>' + bfIcon(t[0], d) + '</i></button>'; }).join('') + '</div><div class="bfdesc">' + (BF[selId] ? BF[selId].desc : '') + selG + '</div>'; b.dataset.tipt += '<span class="bfname">' + (BF[selId] ? BF[selId].name : '') + '</span>'; }
     else { delete b.dataset.tipt; delete b.dataset.tiptx; }
     if (tipEl === b){ if (b.dataset.tiptx) showTip(b); else hideTip(); } // 열려 있는 종 툴팁도 새 값으로
     if (nx && B.tiers){ nx.hidden = true; } else if (nx){ nx.hidden = !mx || n >= mx; nx.innerHTML = chestEv ? '다음 단계: <b>상자 강화</b> (체력 +' + Math.round((D.events.chest.bell || {}).hp * 100) + '% · 보상 +' + Math.round((D.events.chest.bell || {}).reward * 100) + '%)' : '다음 단계: 적 영웅 ' + (B.enemy || 1) + '명 추가 · <b>+' + bg1.toLocaleString() + 'G</b>' + ''; }
