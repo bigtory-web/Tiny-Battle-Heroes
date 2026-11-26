@@ -2743,7 +2743,7 @@ img.rimg{image-rendering:auto!important}
 .foe.merc::after{width:32px!important;height:20px!important;top:-19px!important;background:url(img/p/ui_shake.png) center/32px 20px no-repeat!important;animation:mercbob .7s steps(2) infinite}
 @keyframes mercbob{50%{translate:0 -3px}}
 /* 큰 아이콘(상점·방랑상점·용병 칸·백팩·상세 머리·DPS 줄) = 얼굴만, 모두 같은 값 */
-.hic.hicf > .av.pic,.bagcol .chip .av.pic,.hinfo .hi-av.hic .av.pic,.evic.big .av.pic,.dps .dav .av.pic{background-size:205%!important;background-position:50% 48%!important}
+.hic.hicf > .av.pic,.bagcol .chip .av.pic,.hinfo .hi-av.hic .av.pic,.evic.big .av.pic,.dps .dav .av.pic{background-size:var(--fs,170%) auto!important;background-position:var(--fx,50%) var(--fy,40%)!important}
 /* 상점: 상품 쪽 폭을 줄여 구매 버튼을 짧게, 설명 칸 넓게 */
 #tab-shop .shopInfo{width:310px!important}
 /* 방랑상점 할인 딱지 크게 */
@@ -2984,7 +2984,17 @@ img.rimg{image-rendering:auto!important}
   var EVIMG = {}; ['merchant', 'mark_merc', 'ev_goblin', 'ev_merchant', 'ev_merc', 'ev_campfire_i', 'ev_chest', 'ui_shake'].forEach(function(k){ var im = new Image(); im.onload = function(){ EVIMG[k] = im; imgReady(); }; im.src = 'img/p/' + k + '.png'; });
   function gc(id){ return D.gradeColor[E.heroGrade(D, id)] || '#fff'; }
   var FACE = {bear:[0.571,0.643,63,0.88],wolf:[0.587,0.619,63],rain:[0.539,0.594,64],drum:[0.508,0.635,63],harpy:[0.556,0.619,63],imp:[0.54,0.651,63],boar:[0.542,0.617,60],squire:[0.516,0.605,62,1.12],sprout:[0.559,0.61,59],pup:[0.484,0.581,62],mudgolem:[0.403,0.61,77,0.75],slinger:[0.542,0.619,59,1.12],candle:[0.507,0.597,67],batling:[0.548,0.629,62],frog:[0.556,0.611,63],piper:[0.532,0.581,62],mossguard:[0.571,0.611,63],knight:[0.539,0.641,64],blades:[0.492,0.627,63],hawk:[0.508,0.585,65],song:[0.554,0.602,83,0.88],bat:[0.576,0.652,66],dancer:[0.548,0.629,62],spark:[0.5,0.629,62],ranger:[0.5,0.591,66],shield:[0.5,0.583,60],fox:[0.554,0.631,65],nun:[0.5,0.613,62],warlock:[0.564,0.618,55,1.12],turtle:[0.524,0.635,63],horn:[0.524,0.603,63],owl:[0.555,0.633,64],icefairy:[0.542,0.633,60],frost:[0.547,0.627,75],flame:[0.541,0.615,61],storm:[0.508,0.61,59],pegasus:[0.517,0.603,58],thorn:[0.492,0.608,60],shaman:[0.508,0.587,63],monk:[0.542,0.585,59],vine:[0.532,0.613,62],gargoyle:[0.532,0.611,63],assassin:[0.529,0.577,52,1.2],druid:[0.533,0.617,60],succubus:[0.542,0.625,60],cannon:[0.509,0.605,57],coral:[0.535,0.606,71],moonarcher:[0.525,0.619,59,1.1],minotaur:[0.426,0.59,61],shadow:[0.581,0.621,62],wyvern:[0.555,0.591,55],gate:[0.508,0.608,60],lion:[0.548,0.619,63,0.9],valkyrie:[0.579,0.627,63],tiger:[0.556,0.619,63],thunderbird:[0.533,0.598,61],necro:[0.508,0.59,61],dragon:[0.56,0.634,67,0.88],archmage:[0.525,0.598,61],worldtree:[0.538,0.538,65],demonlord:[0.569,0.638,65],phoenix:[0.531,0.631,65,0.88],seraph:[0.493,0.613,71,0.9],kraken:[0.533,0.618,76],windlord:[0.486,0.6,70,0.9]}; /* 얼굴 가운데 [x/폭, y/폭, 틀 폭] — img/tools/faces.ps1로 뽑음 */
-  function faceCss(){ return ''; } /* 큰 아이콘 자르기는 CSS 공통값 하나(영웅별 값·자동 계산 없음, 2026-11-26 사용자: 그림을 맞추는 쪽) */
+  /* 큰 아이콘 = 얼굴만 (2026-11-26 사용자: "캐릭터 얼굴만 나와야 하는데 이거 통일이 안됨"). 영웅별 값 없이 하나의 규칙: 그림 가운데 줄기에서 머리 꼭대기를 찾아 FZ배로 자름.
+     가운데(폭의 36%) 안에 불투명 점이 4개 이상인 첫 줄 = 머리 꼭대기(들고 있는 창·지팡이 끝은 건너뜀) */
+  var FZ = 2.05, FACEAT = {};
+  function faceAt(id){ if (FACEAT[id]) return FACEAT[id]; var im = IMGS[id]; if (!im || !im.width) return null; var w = im.width, h = im.height, c = document.createElement('canvas'); c.width = w; c.height = h; var x = c.getContext('2d'); x.drawImage(im, 0, 0);
+    var d; try { d = x.getImageData(0, 0, w, h).data; } catch (e) { return null; } var on = function(px, py){ return d[(py * w + px) * 4 + 3] > 40; };
+    var x0 = w, x1 = 0, y, px; for (y = Math.floor(h * .6); y < h; y++) for (px = 0; px < w; px++) if (on(px, y)){ if (px < x0) x0 = px; if (px > x1) x1 = px; } var cx = x1 > x0 ? (x0 + x1) / 2 : w / 2; /* 몸 가운데 = 아랫몸 기준 */
+    var top = -1; for (y = 0; y < h && top < 0; y++){ var n = 0; for (px = Math.round(cx - w * .18); px <= cx + w * .18; px++) if (px >= 0 && px < w && on(px, y)) n++; if (n >= 4) top = y; } if (top < 0) top = 0;
+    var sx = 0, k = 0; for (y = top; y < Math.min(h, top + h * .28); y++) for (px = Math.round(cx - w * .24); px <= cx + w * .24; px++) if (px >= 0 && px < w && on(px, y)){ sx += px + .5; k++; }
+    var hx = k ? sx / k / w : .5, tf = top / h;
+    return FACEAT[id] = { x: ((.5 - hx * FZ) / (1 - FZ) * 100).toFixed(1), y: ((.03 - tf * FZ) / (1 - FZ) * 100).toFixed(1) }; }
+  function faceCss(id){ var f = faceAt(id); return f ? ';--fs:' + FZ * 100 + '%;--fx:' + f.x + '%;--fy:' + f.y + '%' : ''; }
   function av(id, gr){ return IMGS[id] ? '<span class="av pic' + (PIX[id] ? ' pix' : '') + '" style="background-image:url(' + IMGSRC[id] + ');--gc:' + gc(id, gr) + faceCss(id) + '"></span>' : '<span class="av">' + AV[id] + '</span>'; }
   function avO(id, key){ var o = avO0(id, key); return OUTLN ? o.replace('<span ', '<span data-nk="' + OUTLN + '" ') : o; }
   function avO0(id, key){ key = key || id; var s = av(id), im = IMGS[key]; if (!im) return s; var w = im.width, h = im.height; /* 외곽선 그림은 위아래좌우 1px씩 커서 칸도 그만큼 키워 원래 그림 자리를 맞춰요 */
