@@ -2468,6 +2468,7 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
 @keyframes cellhl{50%{opacity:.65}}
 /* 구름 그림자: 겹침 모드(multiply)를 뺌. 검정+투명도는 곱하기와 결과가 같고, 겹침 모드는 전장을 따로 합성해 그림이 번질 수 있음 */
 #field > .cloudsh{mix-blend-mode:normal!important}
+#field > .cloudsh.low{z-index:0}
 /* 전투 시작 버튼 줄을 8px 아래로: 맨 아랫줄 칸 밑 띠의 가운데에 (2026-11-26 사용자: 약간 위임). 이벤트 판 버튼(말 걸기 등)·떠나기도 같이 */
 #arena .abar{bottom:10px!important}
 #arena.evstage .evacts,#arena.evstage #altGoBtn{bottom:11px!important}
@@ -3389,9 +3390,11 @@ img.rimg{image-rendering:auto!important}
   function cloudDens(x, y){ cloudTex(); var u = Math.floor((((x + cloudOff()) % CLW) + CLW) % CLW / 10), v = Math.max(0, Math.min(39, Math.floor(y / 10))); return CLD[(v * 144 + Math.min(143, u)) * 4 + 3] / 255; }
   function drawCloud(c){ var s = cloudStr(); if (!(s > .005)) return; var T = cloudTex(), o = cloudOff(), ga = c.globalAlpha; c.globalAlpha = ga * s; c.drawImage(T, -o, 0); c.drawImage(T, CLW - o, 0); c.globalAlpha = ga; }
   /* 편성 화면: 전장 위(막대 캔버스 아래)에 같은 그림을 덮고 같은 시계로 흘림 */
-  setInterval(function(){ var f = $('field'); if (!f || $('tab-camp').hidden) return; var el = f.querySelector(':scope > .cloudsh'), s = bt ? 0 : cloudStr(); if (!(s > .005)){ if (el) el.remove(); return; }
-    if (!el){ el = document.createElement('i'); el.className = 'cloudsh'; if (!$('cloudcss')){ try { var st = document.createElement('style'); st.id = 'cloudcss'; st.textContent = '#field > .cloudsh{background-image:url(' + cloudTex().toDataURL() + ')}'; document.head.appendChild(st); } catch (e) { return; } } f.appendChild(el); }
-    el.style.opacity = s; el.style.backgroundPositionX = (-cloudOff() * f.clientWidth / 720).toFixed(2) + 'px'; }, 66);
+  setInterval(function(){ var f = $('field'); if (!f || $('tab-camp').hidden) return; var el = f.querySelector(':scope > .cloudsh:not(.low)'), lo = f.querySelector(':scope > .cloudsh.low'), s = bt ? 0 : cloudStr(); if (!(s > .005)){ if (el) el.remove(); if (lo) lo.remove(); return; }
+    if (!$('cloudcss')){ try { var st = document.createElement('style'); st.id = 'cloudcss'; st.textContent = '#field > .cloudsh{background-image:url(' + cloudTex().toDataURL() + ')}'; document.head.appendChild(st); } catch (e) { return; } }
+    if (!el){ el = document.createElement('i'); el.className = 'cloudsh'; f.appendChild(el); }
+    if (!lo){ lo = document.createElement('i'); lo.className = 'cloudsh low'; f.insertBefore(lo, f.querySelector(':scope > .unit')); } /* 땅 몫은 캐릭터 아래 층, 캐릭터 위에는 35%만 */
+    var px = (-cloudOff() * f.clientWidth / 720).toFixed(2) + 'px'; lo.style.opacity = s * .65; el.style.opacity = s * .35; lo.style.backgroundPositionX = el.style.backgroundPositionX = px; }, 66);
   /* 게임 폰트: Galmuri(기본) / 기존, 도구 탭에서 비교 (2026-11-26 사용자) */
   function fontId(){ return (S && S.ui && S.ui.font) === 'old' ? 'old' : 'galmuri'; }
   function CF(){ return fontId() === 'old' ? '"Black Han Sans", sans-serif' : '"GalmuriB", sans-serif'; }
@@ -4668,7 +4671,7 @@ img.rimg{image-rendering:auto!important}
       ctx.globalAlpha = u.h.mob === 'mimic' ? 0 : ga0 * .65; [[o, 0], [-o, 0], [0, o], [0, -o]].forEach(function(d){ ctx.drawImage(sil, sx + d[0], sy + d[1], S, S); }); ctx.globalAlpha = ga0;
       var KG = !!u.h.king, HS = KG ? MKHOP : (u.slot % 2 ? MGHOP : MHOP), FW = KG ? 52 : 44; if (u.h.mob === 'mimic' && HS.complete && HS.naturalWidth){ var dW = S * FW / 37, smo = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; var op = u._openT != null ? (performance.now() - u._openT) / 500 : 2, OI = MOPEN[KG ? 'mimic_king' : u.slot % 2 ? 'mimic_g2' : 'mimic'], useO = op < 1 && OI.complete && OI.naturalWidth; ctx.drawImage(useO ? OI : HS, (useO ? (op < .2 ? 1 : op < .35 ? 2 : op < .8 ? 3 : 1) : mimicFrame(u.uid)) * FW, 0, FW, FW, -dW / 2, sy + S - dW, dW, dW); ctx.imageSmoothingEnabled = smo; } else
       ctx.drawImage(imU, sx, sy, S, S);
-      var clA = cloudStr(); if (clA > .005){ clA *= cloudDens(x, foot - S * .4); if (clA > .005){ ctx.globalAlpha = ga0 * clA; ctx.drawImage(sl('#000000'), sx, sy, S, S); ctx.globalAlpha = ga0; } } /* 캐릭터도 구름 그림자 밑이면 어두워짐 */
+      var clA = cloudStr(); if (clA > .005){ clA *= .45 * cloudDens(x, foot - S * .4); /* 캐릭터는 땅보다 약하게 (2026-11-26 사용자) */ if (clA > .005){ ctx.globalAlpha = ga0 * clA; ctx.drawImage(sl('#000000'), sx, sy, S, S); ctx.globalAlpha = ga0; } } /* 캐릭터도 구름 그림자 밑이면 어두워짐 */
       if (u._cfl > 0){ ctx.globalAlpha = ga0 * Math.min(1, u._cfl / .25); ctx.drawImage(sl('#ffffff'), sx, sy, S, S); ctx.globalAlpha = ga0; } /* 상자 그림이 바뀌는 순간 반짝 */
       if (u.chill > 0){ ctx.globalAlpha = ga0 * .45; ctx.drawImage(sl('#6fc3ff'), sx, sy, S, S); ctx.globalAlpha = ga0; } // 얼음 둔화: 파란 틴트
       if (u.stone > 0){ ctx.globalAlpha = ga0 * .8; ctx.drawImage(sl('#8d8a92'), sx, sy, S, S); ctx.globalAlpha = ga0; } // 돌: 회색
