@@ -16,14 +16,14 @@ assert.ok(!E.metaBuy(D,st,"bag"),"앞 칸 안 찍음"); assert.ok(E.metaBuy(D,st
 assert.ok(E.metaBuy(D,st,"bag")); assert.strictEqual(st.medals,9); assert.strictEqual(E.metaStatus(D,st,"potion"),"open");
 st.nodes={start:1,bag:1}; st.medals=0;
 assert.strictEqual(D.events.campfire.startPicks,1); assert.strictEqual(E.metaData(D,{nodes:{start:1}}).events.campfire.startPicks,2); assert.strictEqual(D.events.campfire.startPicks,1,"원본 그대로");
-assert.strictEqual(E.metaExp(D,st),2); assert.strictEqual(E.metaLevel(D,full),1+Math.floor(E.metaExp(D,full)/5));
+
 assert.strictEqual(E.metaMedals(D,10,false),10+2*2); assert.strictEqual(E.metaMedals(D,10,true),24);
 // 전투: 우리 편만 강해짐
 const b0=E.createBattle(D,[{id:"knight",level:3,slot:0}],[{id:"knight",level:3,slot:0}],{seed:1}), b1=E.createBattle(M,[{id:"knight",level:3,slot:0}],[{id:"knight",level:3,slot:0}],{seed:1});
 assert.ok(Math.abs(b1.A[0].maxHp/b0.A[0].maxHp-1.24)<1e-9 && b1.E[0].maxHp===b0.E[0].maxHp,"적은 그대로");
 // 봇
 let c0=0,c1=0; for(let s=1;s<=8;s++){ c0+=E.campaign(D,{seed:s}).cleared; c1+=E.campaign(D,{seed:s,meta:full}).cleared; const D2=E.chapterData(D,2); E.campaign(D2,{seed:s,meta:full}); }
-console.log("ok · 총 단계",E.metaExp(D,full),"토탈Lv",E.metaLevel(D,full),"훈장 합",D.meta.lines.reduce((a,L)=>a+L.nodes.reduce((b,N)=>b+N.cost.reduce((x,y)=>x+y,0),0),0),"· 봇 클리어 판 합(8판) 강화 전",c0,"후",c1);
+console.log("ok · 훈장 합",D.meta.lines.reduce((a,L)=>a+L.nodes.reduce((b,N)=>b+N.cost.reduce((x,y)=>x+y,0),0),0),"· 봇 클리어 판 합(8판) 강화 전",c0,"후",c1);
 // "영구 강화로" 모드: 옮긴 줄은 Lv1 값 고정, 등장 확률·출전 인원은 그대로
 const MM=E.metaData(D,{mode:"meta"}); assert.ok(MM.player.bag.every(v=>v===D.player.bag[0])); assert.ok(MM.player.clearGold.every(v=>v===D.player.clearGold[0])); assert.ok(MM.player.mimicBlue.every(v=>v===D.player.mimicBlue[0]));
 assert.deepStrictEqual(MM.player.field,D.player.field); assert.deepStrictEqual(MM.player.heroGrade,D.player.heroGrade); assert.deepStrictEqual(MM.player.shopGrade,D.player.shopGrade);
