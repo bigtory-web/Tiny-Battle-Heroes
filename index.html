@@ -2524,6 +2524,9 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 .baglock b{width:12px;height:9px;margin-top:5px;background:#7c7488;position:relative}
 .baglock b::before{content:'';position:absolute;left:2px;bottom:100%;width:4px;height:3px;border:2px solid #7c7488;border-bottom:0}
 .baglock em{font:400 11px/12px var(--display);font-style:normal;color:#9d94ab}
+/* 백팩 7칸: 첫 칸은 덮개 띠 아래(24px)에서, 간격 8px 고정 */
+.camp3 > .lbag .ubagbox{padding:24px 6px 15px!important}
+.camp3 > .lbag .ubagbox #roster{row-gap:8px!important}
 </style>
 </head>
 <body>
@@ -5054,7 +5057,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   renderFilters(); renderAll(); renderMods();
   /* 백팩 윗부분: 3px 계단으로 깎은 모서리 + 계단을 따라가는 가죽 띠·바느질 (2026-11-26 사용자: "픽셀느낌처럼 깍아야지") */
   setTimeout(function(){ var b = document.querySelector('.camp3 > .lbag .ubagbox'); if (!b || !b.offsetWidth || b.querySelector(':scope > .bagtop')) return;
-    var w = b.offsetWidth, h = 24, INS = [15, 9, 6, 3, 3], c = document.createElement('canvas'), x = c.getContext('2d'); c.width = w; c.height = h; c.className = 'bagtop';
+    var w = b.offsetWidth, h = 19 /* 띠만 그림: 아래까지 칠하면 첫 칸 머리가 가려짐 */, INS = [15, 9, 6, 3, 3], c = document.createElement('canvas'), x = c.getContext('2d'); c.width = w; c.height = h; c.className = 'bagtop';
     function ins(y){ return INS[Math.floor(y / 3)] || 0; }
     function inside(px, py){ return py >= 0 && px >= ins(py) && px < w - ins(py); }
     function near(px, py, d){ for (var i = -d; i <= d; i++) for (var j = -d; j <= d; j++) if (!inside(px + i, py + j)) return true; return false; }
