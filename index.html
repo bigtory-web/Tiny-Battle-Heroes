@@ -5551,7 +5551,7 @@ img.rimg{image-rendering:auto!important}
   function upTip(id){ var o = $('upWin'), box = o && o.querySelector('.upbox'), t = box && box.querySelector('.uptip'); if (!t) return; var el = id && o.querySelector('[data-upn="' + id + '"]'), it = el && upNode(id); if (!it){ t.hidden = true; return; }
     var N = it.N, up = upLoad(), n = Math.min(up.nodes[id] || 0, N.cost.length), max = n >= N.cost.length;
     /* 이름 옆 = 다음에 찍을 단계, 오른쪽 끝 = 필요한 훈장 (2026-11-27 사용자) */
-    t.innerHTML = '<b>' + N.name.replace(' +1', '') + (max || N.cost.length < 2 ? '' : ' <small>Lv' + (n + 1) + '</small>') + (max ? '' : '<i' + (up.medals < N.cost[n] ? ' class="no"' : '') + '><s class="medic"></s>' + N.cost[n] + '</i>') + '</b><span>' + upDesc(N, it.L, n) + '</span>'; t.hidden = false;
+    t.innerHTML = '<b>' + N.name.replace(' +1', '') + (N.cost.length < 2 ? '' : ' <small>LV ' + n + '/' + N.cost.length + '</small>') + (max ? '' : '<i' + (up.medals < N.cost[n] ? ' class="no"' : '') + '><s class="medic"></s>' + N.cost[n] + '</i>') + '</b><span>' + upDesc(N, it.L, n) + '</span>'; t.hidden = false;
     var b = box.getBoundingClientRect(), r = el.getBoundingClientRect(), k = b.width / (box.offsetWidth || 1) || 1, x = (r.right - b.left) / k + 8, y = (r.top - b.top) / k; if (x + t.offsetWidth > box.offsetWidth - 4) x = (r.left - b.left) / k - t.offsetWidth - 8; t.style.left = x + 'px'; t.style.top = Math.max(4, Math.min(y, box.offsetHeight - t.offsetHeight - 4)) + 'px'; }
   /* 실제로 쓴 훈장(리셋 때 돌려줌). 예전 저장은 찍은 칸 값으로 셈. [모두 찍기]는 안 씀 */
   function upSpent(up){ if (up.spent != null) return up.spent; var t = 0; D.meta.lines.forEach(function(L){ L.nodes.forEach(function(N){ for (var i = 0; i < Math.min(up.nodes[N.id] || 0, N.cost.length); i++) t += N.cost[i]; }); }); return t; }
