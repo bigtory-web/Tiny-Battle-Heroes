@@ -3023,13 +3023,11 @@ img.rimg{image-rendering:auto!important}
 #upWin .upbox{background:linear-gradient(#3a2f4e 0 33%,#2c2340 33% 66%,#201930 66%);box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #8a7652}
 #upWin .upweb{min-width:0;cursor:grab;user-select:none;background:#120e20;box-shadow:inset 0 0 0 2px #17141d}
 #upWin .upmap{background-size:100% 100%;image-rendering:pixelated}
-#upWin .upmap::before{content:'';position:absolute;left:318px;top:132px;width:66px;height:66px;box-shadow:0 0 0 3px rgba(255,196,90,.75),0 0 0 9px rgba(255,196,90,.28);animation:upfire 2.4s steps(4) infinite alternate;pointer-events:none}
-@keyframes upfire{from{scale:.96;opacity:.45}to{scale:1.08;opacity:1}}
-#upWin .upmap path{stroke:#b9a4ee;stroke-width:6} #upWin .upmap path.can{stroke:#fff0c0} #upWin .upmap path.on{stroke:#ffc21f}
+#upWin .upmap path{stroke:#8a7fb0;stroke-width:3} #upWin .upmap path.ol{stroke:#17141d;stroke-width:6} #upWin .upmap path.can{stroke:#d8d0ee} #upWin .upmap path.on{stroke:#d9b45a;filter:none}
 #upWin .upn{background:linear-gradient(color-mix(in srgb,var(--uc) 62%,#fff) 0 6px,var(--uc) 6px 70%,color-mix(in srgb,var(--uc) 62%,#000) 70%);box-shadow:0 0 0 2px #8a8296,0 0 0 4px #17141d,0 6px 0 4px rgba(0,0,0,.35)}
 #upWin .upn.zero{background:linear-gradient(color-mix(in srgb,var(--uc) 78%,#fff) 0 6px,color-mix(in srgb,var(--uc) 75%,#17141d) 6px 70%,color-mix(in srgb,var(--uc) 45%,#17141d) 70%)}
-#upWin .upn.can{box-shadow:0 0 0 2px #ffd34d,0 0 0 4px #17141d,0 0 0 6px rgba(255,200,70,.55),0 0 0 9px rgba(255,200,70,.2)}
-#upWin .upn.max{box-shadow:0 0 0 2px #7fe874,0 0 0 4px #17141d,0 0 0 6px rgba(110,230,100,.5),0 0 0 9px rgba(110,230,100,.18)}
+#upWin .upn.can{box-shadow:0 0 0 2px #ffd34d,0 0 0 4px #17141d,0 6px 0 4px rgba(0,0,0,.35)}
+#upWin .upn.max{box-shadow:0 0 0 2px #6fae6a,0 0 0 4px #17141d,0 6px 0 4px rgba(0,0,0,.35)}
 #upWin .upn.can:hover,#upWin .upn.max:hover{filter:brightness(1.18)}
 #upWin .uptip{background:#221b36;box-shadow:inset 0 0 0 2px #b99a5a,0 0 0 2px #17141d,0 6px 0 2px rgba(0,0,0,.4)}
 #upWin .uphead b{color:#ffe9a8;text-shadow:0 2px 0 #17141d}
@@ -5581,10 +5579,10 @@ img.rimg{image-rendering:auto!important}
     var vis = Object.keys(all).filter(function(id){ return E.metaStatus(D, up, id) !== 'locked'; }), extra = 0, at = function(id){ var p = UPPOS[id] || (all[id].p = all[id].p || [-3 + (extra++ % 8), 6]); return [(p[0] + X0) * CW + CW / 2, (p[1] + Y0) * CH2 + CH2 / 2]; };
     var lines = '', nodes = '';
     vis.forEach(function(id){ var it = all[id], N = it.N, b = at(id), n = Math.min(up.nodes[id] || 0, N.cost.length), max = n >= N.cost.length, can = !max && up.medals >= N.cost[n];
-      (N.req || []).forEach(function(q){ if (all[q] && vis.indexOf(q) >= 0){ var a = at(q); lines += '<path d="M' + a[0] + ' ' + a[1] + (a[0] === b[0] || a[1] === b[1] ? 'L' + b[0] + ' ' + b[1] : 'V' + (b[1] - CH2 / 2) + 'H' + b[0] + 'V' + b[1]) + '"' + (n ? ' class="on"' : can ? ' class="can"' : '') + '/>'; /* 가로·세로만 */ } });
+      (N.req || []).forEach(function(q){ if (all[q] && vis.indexOf(q) >= 0){ var a = at(q); lines += '<path d="M' + a[0] + ' ' + a[1] + (a[0] === b[0] || a[1] === b[1] ? 'L' + b[0] + ' ' + b[1] : 'V' + (b[1] - CH2 / 2) + 'H' + b[0] + 'V' + b[1]) + '"' + (n ? ' class="on"' : can ? ' class="can"' : '') + '/>'; /* 가로·세로만 */  } });
       nodes += '<button type="button" class="upn' + (max ? ' max' : can ? ' can' : '') + (n ? '' : ' zero') + '" data-upn="' + id + '" style="--uc:' + UPCOL[it.L.id] + ';left:' + b[0] + 'px;top:' + b[1] + 'px">' + (UPICO[id] ? '<img class="upico" data-raw="1" src="img/p/up_' + id + '.png" alt="' + N.name + '">' : '<span>' + (it.L.job ? N.name : N.name.replace(' +1', '')) + '</span>') + (N.cost.length > 1 && n ?'<em>' + n + '</em>' : '') + '</button>'; });
     var W = 10 * CW, H = 8 * CH2;
-    var cx = (X0 + .5) * CW, cy = (Y0 + .5) * CH2; var web = '<div class="upmap" style="width:' + W + 'px;height:' + H + 'px;background-image:url(' + upBg(W, H, cx, cy) + ')"><svg width="' + W + '" height="' + H + '">' + lines + '</svg>' + nodes + '</div>';
+    var cx = (X0 + .5) * CW, cy = (Y0 + .5) * CH2; var web = '<div class="upmap" style="width:' + W + 'px;height:' + H + 'px;background-image:url(' + upBg(W, H, cx, cy) + ')"><svg width="' + W + '" height="' + H + '">' + lines.replace(/<path d="([^"]*)"[^>]*>/g, '<path d="$1" class="ol"/>') + lines + '</svg>' + nodes + '</div>';
     var per = (M.totalLv || {}).per || 5, ex = E.metaExp(D, up), lv = E.metaLevel(D, up), un = ((M.totalLv || {}).unlock || {})[lv + 1];
     o.innerHTML = '<div class="upbox"><div class="uphead"><div class="uplv" title="' + (un ? '다음 혜택: ' + [].concat(un).join(', ') : '레벨 경험치') + '"><b>레벨 ' + lv + '</b><i><s style="width:' + (ex % per) / per * 100 + '%"></s></i><span>' + (ex % per) + '/' + per + '</span></div><b>영구 강화</b><span><i class="medic"></i>' + up.medals + '</span><button type="button" class="upcheat" data-upcheat="1">훈장 +50 (시험)</button><button type="button" class="upcheat" data-upall="1">모두 찍기</button><button type="button" class="upcheat" data-upreset="1">리셋</button><button type="button" class="spX popx" data-upx="1" title="닫기">✕</button></div><div class="upweb">' + web + '</div><div class="uptip" hidden></div></div>';
     var s2 = o.querySelector('.upweb'); if (keep){ s2.scrollLeft = keep[0]; s2.scrollTop = keep[1]; } else { s2.scrollLeft = (X0 + .5) * CW - s2.clientWidth / 2; s2.scrollTop = (Y0 + .5) * CH2 - s2.clientHeight / 2; } } /* 처음 열면 가운데 칸이 가운데 */
