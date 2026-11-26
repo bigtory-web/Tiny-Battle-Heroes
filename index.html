@@ -3863,6 +3863,8 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     clearTimeout(g.timer); g.timer = setTimeout(function(){ if (!bt) return; var top = g.pops[0]; pops.push({ fx: 'sum', s: '=' + g.sum, x: g.x, x0: g.x, y: Math.min(top.y, g.y) - 20, c: '#ffffff', c2: '#ffd34d', max: .8, life: .8, size: 17 }); }, 420); }
   function dmgPop(x, y, o){ var n = pops.filter(function(q){ return q.fx && q.max - q.life < .35 && Math.abs(q.x0 - x) < 26 && Math.abs(q.y - y) < 18; }).length; /* 겹치면 좌우로 번갈아 흩음 */
     o.x0 = x; o.x = x + (n ? (n % 2 ? 1 : -1) * 24 * Math.ceil(n / 2) : 0) + (Math.random() - .5) * 8; o.y = y - (n % 3) * 9; o.dir = o.x < x ? -1 : o.x > x ? 1 : Math.random() < .5 ? -1 : 1; o.life = o.max; pops.push(o); }
+  /* 방패: 회복과 같은 차라랑, 색만 방패색. 같은 대상에게 자주 생기면(바위곰 패시브) 떠 있는 숫자에 더함 */
+  function shieldPop(u, amt){ var o = pops.filter(function(q){ return q.sh === u.uid && q.max - q.life < .7; })[0]; if (o){ o.v += amt; o.s = '+' + o.v; o.life = Math.min(o.max, o.life + .25); return; } var p = posOf(u); dmgPop(p[0], p[1] - 42, { fx: 'heal', sh: u.uid, v: amt, s: '+' + amt, c: '#eaf8ff', c2: '#4fa8ff', line: '#0d2a55', max: 1.1, size: 13 }); }
   function drawDmg(p){ var f = p.fx, a = p.max - p.life, u = a / p.max, slam = f === 'hit' || f === 'crit' || f === 'skill' || f === 'combo' || f === 'sum', hold = f === 'crit' ? .42 : .24, k = Math.max(0, Math.min(1, (a - hold) / (p.max - hold))), sc = 1, x = p.x, y = p.y, al = Math.min(1, p.life / p.max * 3);
     if (slam){ if (a < .1) sc = 1 + (f === 'crit' ? .9 : .6) * (1 - a / .1); else if (a < .22 && f !== 'combo') x += Math.sin(a * 110) * 3 * (1 - (a - .1) / .12); }
     if (f === 'skill'){ var m = Math.min(1, a / .45); x += p.dir * 20 * (1 - (1 - m) * (1 - m)); y -= Math.sin(m * Math.PI) * 14; }
@@ -3875,7 +3877,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     var ty = y - p.size * .35;
     ctx.save(); ctx.globalAlpha = (f === 'dot' ? .75 : 1) * al; ctx.translate(x, ty); if (p.rot) ctx.rotate(p.rot); ctx.scale(sc, sc); if (f === 'combo') ctx.transform(1, 0, -.22, 1, 0, 0);
     ctx.font = '400 ' + p.size + 'px ' + CF(); if ('letterSpacing' in ctx) ctx.letterSpacing = '1px'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round';
-    var lw = f === 'dot' ? 3 : f === 'hit' || f === 'burn' || f === 'heal' ? 4 : 6, line = f === 'crit' ? '#5a1500' : f === 'combo' ? '#3a0a34' : f === 'burn' ? '#4a0d00' : f === 'heal' ? '#0f3a1c' : f === 'frost' ? '#123a6a' : '#17141d';
+    var lw = f === 'dot' ? 3 : f === 'hit' || f === 'burn' || f === 'heal' ? 4 : 6, line = f === 'crit' ? '#5a1500' : f === 'combo' ? '#3a0a34' : f === 'burn' ? '#4a0d00' : f === 'heal' ? p.line || '#0f3a1c' : f === 'frost' ? '#123a6a' : '#17141d';
     var fill = p.c; if (p.c2){ fill = ctx.createLinearGradient(0, -p.size / 2, 0, p.size / 2); fill.addColorStop(.35, p.c); fill.addColorStop(1, p.c2); }
     var word = function(){ ctx.lineWidth = lw; ctx.strokeStyle = line; ctx.strokeText(p.s, 0, 0); ctx.fillStyle = fill; ctx.fillText(p.s, 0, 0); };
     if (f === 'frost' && a > .4){ var br = (a - .4) / (p.max - .4), w = ctx.measureText(p.s).width + 8; [-1, 1].forEach(function(d){ ctx.save(); ctx.translate(d * br * 9, br * br * 16); ctx.rotate(d * br * .35); ctx.beginPath(); ctx.moveTo(0, -p.size); ctx.lineTo(d * w, -p.size); ctx.lineTo(d * w, p.size); ctx.lineTo(-d * 3, p.size); ctx.lineTo(d * 3, 0); ctx.closePath(); ctx.clip(); word(); ctx.restore(); }); } /* 반으로 깨져 떨어짐 */
@@ -3884,7 +3886,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     if (f === 'heal' || f === 'burn' || f === 'frost'){ var half = p.s.length * p.size * .32 + 5; ctx.save(); for (var q = 0; q < 6; q++){ var ph = (a * (f === 'burn' ? 2.2 : 1.6) + q * .37) % 1, side = q % 2 ? 1 : -1, px = Math.round(x + side * (half - (q % 3) * 5) + (f === 'burn' ? Math.sin(a * 14 + q) * 3 : 0)), py = Math.round(ty + 8 - (q % 3) * 7 - (f === 'frost' ? -ph * 6 : ph * 16));
         ctx.globalAlpha = al * Math.sin(ph * Math.PI);
         if (f === 'burn'){ ctx.fillStyle = q % 3 ? '#ff7a1a' : '#ffd04a'; ctx.fillRect(px - 1, py - 1, 3, 3); }
-        else { ctx.fillStyle = f === 'frost' ? '#bfeaff' : q % 3 ? '#fff6b0' : '#b8ffc4'; var r = ph > .25 && ph < .75 ? 4 : 2; ctx.fillRect(px - 1, py - r, 2, r * 2); ctx.fillRect(px - r, py - 1, r * 2, 2); } } ctx.restore(); } } /* 반짝임·불씨 */
+        else { ctx.fillStyle = f === 'frost' ? '#bfeaff' : p.sh != null ? (q % 3 ? '#ffffff' : '#9fd4ff') : q % 3 ? '#fff6b0' : '#b8ffc4'; var r = ph > .25 && ph < .75 ? 4 : 2; ctx.fillRect(px - 1, py - r, 2, r * 2); ctx.fillRect(px - r, py - 1, r * 2, 2); } } ctx.restore(); } } /* 반짝임·불씨 */
   function onEvent(ev){
     if (ev.kind === 'die') killXp(ev.uid);
     if (ev.kind === 'knock'){ var ku = unitByUid(ev.uid); if (ku){ knocks[ku.uid] = { dx: ev.dx, t: .15 }; var kp = posOf(ku), sx0 = kp[0] - ev.dx, sg = ev.dx > 0 ? 1 : -1;
@@ -3908,6 +3910,8 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
       else shots.push({ from: posOf(a), to: posOf(b), t: 0, c: ELC[a.el], kind: a.h.shot, big: a.id === 'cannon', wait: ANIM_IDS.indexOf(a.id) >= 0 ? (a.h.shot === 'arrow' ? .2 : .1) : 0, land: land }); /* 시트 영웅은 공격 프레임에 맞춰 출발(화살 7칸, 나머지 6칸), 맞는 연출은 도착할 때 */
     } else if (ev.kind === 'heal'){
       var hu = unitByUid(ev.to), hp = posOf(hu); if (ev.amt > 0) dmgPop(hp[0], hp[1] - 34, { fx: 'heal', s: '+' + ev.amt, c: '#e9ffd8', c2: '#4fd86a', max: 1.1, size: 15 });
+    } else if (ev.kind === 'shield'){
+      var su = unitByUid(ev.to), amt = Math.round(ev.amt); if (su && amt > 0) shieldPop(su, amt);
     } else if (ev.kind === 'ult'){
       var u = unitByUid(ev.uid); ultPops.push({ u: u, t: 0, max: .85 }); atkT[u.uid] = ANIM_IDS.indexOf(u.id) >= 0 ? ANIM_ATK : .25;
       var uk = u.h.ult && u.h.ult.kind; if (uk === 'teamShield') fxTeam('shield', u.side, { scale: 1.2 }); else if (uk === 'healAll') fxTeam('heal', u.side, { scale: .9 }); else if (uk === 'chain') fxAt('chain', u, { scale: 1.2, flip: u.side === 'E' }); else if (uk === 'aoe' && u.h.ult.slow) fxTeam('frost', u.side === 'A' ? 'E' : 'A', { scale: 1 });
