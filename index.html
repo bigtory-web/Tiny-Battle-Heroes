@@ -2488,6 +2488,14 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 .camp3 > .lbag .ubagbox{border-radius:0!important}
 .camp3 > .lbag .ubagbox::before{display:none}
 .lbag .ubagbox > .bagtop{position:absolute;left:0;top:0;z-index:2;pointer-events:none;image-rendering:pixelated}
+.stile.sold{filter:grayscale(1)}
+.hinfo .mpbolt{width:8px;height:12px;margin-right:3px;vertical-align:-1px;overflow:visible}
+.hinfo .skf > img.daisi{width:30px;height:auto;image-rendering:pixelated}
+.hinfo > .hi-body{flex:1 1 0;min-height:0;display:flex;flex-direction:column;gap:inherit;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;scrollbar-width:thin;scrollbar-color:#5d5470 transparent}
+.hinfo > .hi-body > *{flex:none}
+/* 룰렛: 캐릭터 발밑 돌 받침 (3단 픽셀) */
+#roul:not(.chestpop) .rbox .rstage .rpic:not(.loot){position:relative;z-index:2}
+#roul:not(.chestpop) .rbox .rstage:has(.rpic:not(.loot))::before{content:'';position:absolute;left:50%;bottom:34px;width:132px;height:24px;margin-left:-66px;z-index:1;pointer-events:none;background:linear-gradient(#b9b1c4 0 6px,#8c8399 6px 12px,#5d5470 12px 18px,#3b3546 18px);clip-path:polygon(12px 0,calc(100% - 12px) 0,calc(100% - 12px) 3px,calc(100% - 6px) 3px,calc(100% - 6px) 6px,100% 6px,100% 18px,calc(100% - 6px) 18px,calc(100% - 6px) 21px,calc(100% - 12px) 21px,calc(100% - 12px) 100%,12px 100%,12px 21px,6px 21px,6px 18px,0 18px,0 6px,6px 6px,6px 3px,12px 3px)}
 </style>
 </head>
 <body>
@@ -2956,7 +2964,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     c.fillStyle = '#17141d'; hp(ox, oy, 1.03); c.fill(); c.fillStyle = pal.rim; hp(ox, oy, 1); c.fill(); c.fillStyle = pal.top; hp(ox, oy, .9); c.fill(); c.fillStyle = pal.top2; hp(ox, oy, .66); c.fill();
     c.strokeStyle = pal.hi; c.lineWidth = 1; c.beginPath(); c.moveTo(ox - 33, oy - 12); c.lineTo(ox, oy - 25); c.lineTo(ox + 33, oy - 12); c.stroke();
     return cv6.toDataURL(); }
-  function daisDesc(){ var C = D.campaign; if (C.bossLvPlus) return '이 위의 보스는 레벨이 ' + C.bossLvPlus + ' 높다.'; var a = Math.round(((C.bossHp || 1) - 1) * 100), b = Math.round(((C.bossAtk || 1) - 1) * 100); return '이 위의 보스는 체력이 ' + a + '%, 공격력이 ' + b + '% 높다.'; }
+  function daisDesc(){ var C = D.campaign; if (C.bossLvPlus) return '이 위의 대상은 레벨이 높다.'; var a = Math.round(((C.bossHp || 1) - 1) * 100), b = Math.round(((C.bossAtk || 1) - 1) * 100); return '이 위의 보스는 체력이 ' + a + '%, 공격력이 ' + b + '% 높다.'; }
   var PADURL = {}, TILEURL = '';
   var HEXC = null;
   var HXW = 38; // 육각 칸 반너비 (칸 간격 76)
@@ -2986,7 +2994,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   var DAISURL = '';
   function terrRow(img, col, name, desc){ return '<div class="hi-ult hi-skrow hi-terr"><span class="skf" style="--gc:' + col + '"><img class="terri" src="' + img + '" alt=""></span><div class="hi-skt"><b>' + name + '</b><div class="hi-skd">' + desc + '</div></div></div>'; }
   function padRow(el){ return el ? terrRow(padURL(el), ELC[el], padName(el), '이 칸에 선 영웅은 ' + D.elements.names[el] + ' 진영이 더해진다.') : ''; }
-  function daisRow(){ return terrRow(DAISURL, '#e9c46a', '보스 단상', daisDesc()); }
+  function daisRow(){ var n = D.campaign.bossLvPlus; return skRow(skFrame('<img class="daisi" src="' + DAISURL + '" alt="">', '#e9c46a'), '보스 단상', 1, daisDesc(), n ? 'Lv +' + n : '', 'mp'); }
   function padName(el){ return D.elements.names[el] + ' 발판'; }
   function padTipAttr(el){ return ' data-tipt="' + padName(el) + '" data-tiptx="이 칸에 선 영웅은 ' + D.elements.names[el] + ' 진영이 더해진다."'; }
   (function(){ var cv2 = document.createElement('canvas'); cv2.width = 124; cv2.height = 30; var c = cv2.getContext('2d'); drawDais(c, 62, 11, 116);
@@ -3246,7 +3254,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   function renderAgain(){ var b = $('rAgain'), p = againPrice(), left = leftPool().length, R = rerollLeft();
     b.innerHTML = '리셋 ' + Math.floor(p).toLocaleString() + 'G'; /* 후보가 없으면 회색만 (예전: 마지막 후보예요) */
     b.disabled = !left || S.gold < p || R.n <= 0;
-    var rl = $('rLeft'); rl.hidden = b.hidden || !isFinite(R.mx); rl.textContent = '리셋 기회 ' + R.n + '/' + R.mx; rl.classList.toggle('z', R.n <= 0); }
+    var rl = $('rLeft'); rl.hidden = b.hidden || !isFinite(R.mx); rl.textContent = '리셋 ' + R.n + '/' + R.mx; rl.classList.toggle('z', R.n <= 0); }
   // 고르기 전: 영입·보내기 / 고른 뒤: 결과 한 줄 + 다시 돌리기·나가기 / 백팩이 꽉 차면: 카드 안 고르기 창
   function setRoulPhase(){
     $('roul').querySelectorAll('.rstrip span').forEach(function(sp){ sp.classList.toggle('res', sp.dataset.id === S.offer); }); // 결과 칸 표시
@@ -3450,13 +3458,14 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   // 영웅 효과 2개: 스킬1 = 궁극기, 스킬2 = 패시브. 레벨은 등급으로 정해져요 (E.effectLevels)
   function pasDesc(id, lv){ var h = hero(id), P = h.passive, PS = P && (D.passives || {})[P.kind]; if (!PS) return ''; var v = E.passiveValue(D, id, lv);
     return (PS.desc || '').replace('{v}', Math.round(v * 100)).replace('{n}', Math.round(v)); }
-  function skRow(frame, name, lv, desc, num, numCls){ return '<div class="hi-ult hi-skrow">' + frame + '<div class="hi-skt"><div class="hi-skh"><b>' + name + '</b>' + (num ? '<i class="hi-num ' + (numCls || 'mp') + '">' + num + '</i>' : '') + '</div>' + (desc ? '<div class="hi-skd">' + desc + '</div>' : '') + '</div></div>'; }
+  var BOLT = '<svg class="mpbolt" viewBox="0 0 7 11" shape-rendering="crispEdges"><path fill="#ffd34d" stroke="#17141d" stroke-width="1" paint-order="stroke" d="M3 0h4L5 4h2L2 11l1-5H0z"/></svg>'; /* 마나(에너지) 번개 (2026-11-26 사용자) */
+  function skRow(frame, name, lv, desc, num, numCls){ return '<div class="hi-ult hi-skrow">' + frame + '<div class="hi-skt"><div class="hi-skh"><b>' + name + '</b>' + (num ? '<i class="hi-num ' + (numCls || 'mp') + '">' + (!numCls && /^\d+$/.test(num) ? BOLT : '') + num + '</i>' : '') + '</div>' + (desc ? '<div class="hi-skd">' + desc + '</div>' : '') + '</div></div>'; }
   function ultNum(U){ if (!U) return ''; var t = U.trig; if (t) return t.kind === 'start' ? '전투 시작' : t.kind === 'struck' ? '맞기 ' + t.n + '번' : t.kind === 'hits' ? '평타 ' + t.n + '번' : ''; return String((D.battle || {}).energyMax || 100); } /* 궁극기에 필요한 에너지 (발동형은 조건) */
   function skFrame(inner, col, cover, flash){ return '<span class="skf' + (flash ? ' flash' : '') + '" style="--gc:' + col + '">' + inner + (cover != null ? '<i class="ulcd" style="--k:' + Math.max(0, Math.min(1, cover)).toFixed(3) + '"></i>' : '') + '</span>'; }
   function pasIcon(kind){ return kind ? '<span class="pasc"><img class="pasf" src="img/p/pas_frame.png" alt=""><img class="pasi" src="img/p/pas_' + kind + '.png" alt="" onerror="this.outerHTML=&quot;<b class=pasx>✦</b>&quot;"></span>' : ''; }
   function pasLine(id, short, star){ var h = hero(id), P = h.passive, PO = (D.gradeEffects || {}).passiveOn; /* star: 그 영웅의 성급 (모르면 잠긴 줄) */
     if (PO){ var PS0 = P && P.kind !== 'none' && (D.passives || {})[P.kind]; if (!PS0 || E.heroGrade(D, id) < PO.grade) return ''; var on = (star || 0) >= PO.star;
-      var row = skRow(skFrame(pasIcon(P.kind), HG(id).col), PS0.name + (on ? '' : ' <small class="pslock">★' + PO.star + '에서 열림</small>'), 1, short ? '' : pasDesc(id, 1)); return on ? row : row.replace('hi-skrow', 'hi-skrow pslocked'); }
+      var row = skRow(skFrame(pasIcon(P.kind), HG(id).col), PS0.name + (on ? '' : ' <small class="pslock">★' + PO.star + '</small>'), 1, short ? '' : pasDesc(id, 1)); return on ? row : row.replace('hi-skrow', 'hi-skrow pslocked'); }
     var EL = E.effectLevels(D, id); if (!P || !EL.pas) return ''; /* 패시브 레벨 0 = 전투에서 안 씀 → 안 보여요 */
     var PS = (D.passives || {})[P.kind] || { name: P.kind };
     if (!EL.pas) return ''; // 일반 등급은 스킬2가 없어요: 없는 효과는 보여 주지 않아요
@@ -3493,7 +3502,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     var h = hero(id), hT = h, pe0 = unit && padOf(unit.uid); if (pe0 && pe0 !== h.el) hT = Object.assign({}, h, { el2: pe0 });
     var gr = 1 + D.growth.perLevel * (lv - 1), mh = (mul && mul.hp) || 1, ma = (mul && mul.atk) || 1, U = h.ult, P = h.passive;
 
-    return '<div class="hi-top"><span class="hi-av hic" style="--hg:' + HG(id).col + '">' + av(id) + (st && !foe && !noStar ? starsIn(st, id) : '') + '</span><div><b>' + nmH(h) + ' <em class="hlv">Lv ' + lv + '</em></b>' +
+    return '<div class="hi-top"><span class="hi-av hic" style="--hg:' + HG(id).col + '">' + av(id) + (st && !noStar ? starsIn(st, id) : '') + '</span><div><b>' + nmH(h) + ' <em class="hlv">Lv ' + lv + '</em></b>' +
       '<div class="hi-tags">' + tagHtml(hT) + '</div></div></div>' +
       '<div class="hi-st4"><span>체력<b>' + Math.round(h.hp * gr * mh).toLocaleString() + '</b></span><span>공격<b>' + Math.round(h.atk * gr * ma) + '</b></span><span>방어<b>' + h.def + '</b></span><span>공속<b>' + (+(1 / h.interval).toFixed(2)) + '</b></span><span>치명타<b>' + Math.round(100 * (E.critChance ? E.critChance(D, h) : 0)) + '%</b></span><span>사거리<b>' + (RNG_NM[h.range] || '-') + '</b></span></div>' +
       (unit && E.unitSkills ? trRows(unit) : skRow(skFrame(ultIconEl(h), HG(id).col), ultName(h), EL.ult, ultDescFull(h, U, 1 + (GE.ultPer || 0) * (EL.ult - 1)), ultNum(U))) +
@@ -3509,7 +3518,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     if (h.mob) return mobInfoHtml(u.id, { lv: u.level, hp: h.hp * bg * (bm.hp || 1), atk: h.atk * bg * (bm.atk || 1), def: h.def * bg, interval: h.interval, dead: !u.alive, drops: (curEv && curEv.kind === 'mobs' && curEv.drops) ? [].concat(curEv.drops[u.slot] || []) : [] });
     if (false) return '<div class="hi-top"><span class="hi-av">' + av(u.id) + '</span><div><b>돈고블린</b><div class="hi-tag">싸우지 않아요 · ' + D.events.goblin.flee + '초 뒤 도망</div></div></div><div class="hi-ult"><div>잡고 이기면 클리어 골드 ×' + D.events.goblin.goldMul + '</div></div>';
     var PS = h.passive && (D.passives || {})[h.passive.kind];
-    return '<div class="hi-top"><span class="hi-av hic" style="--hg:' + HG(u.id).col + '">' + av(u.id) + starsIn(st, u.id) + '</span><div><b>' + nmH(h) + ' <em class="hlv">Lv ' + (u.level || '') + '</em></b>' +
+    return '<div class="hi-top"><span class="hi-av hic" style="--hg:' + HG(u.id).col + '">' + av(u.id) + starsIn(foe ? u.star || 1 : st, u.id) + '</span><div><b>' + nmH(h) + ' <em class="hlv">Lv ' + (u.level || '') + '</em></b>' +
       (u.boss || !u.alive ? '<div class="hi-tag">' + (u.boss ? '보스' : '') + (u.boss && !u.alive ? ' · ' : '') + (u.alive ? '' : '<span class="hi-dead">쓰러짐</span>') + '</div>' : '') + '<div class="hi-tags">' + tagHtml(u.el2 ? Object.assign({}, h, { el2: u.el2 }) : h) + '</div></div></div>' +
       '<div class="hi-st4"><span>체력<b>' + Math.round(h.hp * bg * (bm.hp || 1)).toLocaleString() + '</b></span><span>공격<b>' + Math.round(h.atk * bg * (bm.atk || 1)) + '</b></span><span>방어<b>' + h.def + '</b></span><span>공속<b>' + (+(1 / h.interval).toFixed(2)) + '</b></span><span>치명타<b>' + Math.round(100 * (E.critChance ? E.critChance(D, h) : 0)) + '%</b></span><span>사거리<b>' + (RNG_NM[h.range] || '-') + '</b></span></div>' +
       skRow(skFrame(ultIconEl(h), HG(u.id).col, 1 - (u.energy || 0) / (D.battle.energyMax || 100), ultFlash(u)), ultName(h), u.ultLv, ultDescFull(h, U, 1 + (GE.ultPer || 0) * (u.ultLv - 1)), ultNum(U)) +
@@ -3523,7 +3532,11 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   function popAdd(el, full){ var L = $('popl'); if (!L){ L = document.createElement('div'); L.id = 'popl'; L.className = 'popl'; document.querySelector('.camp3 > .mid').appendChild(L); } /* 전장이 큰 팝업을 자르지 않게 가운데 열에 붙여요 */
     if (!el || (el.parentNode && el.parentNode.parentNode === L)) return el; var w = document.createElement('div'); w.className = 'popw'; L.appendChild(w); w.appendChild(el); el.classList.add(full ? 'pov' : 'pcard'); return el; }
   (function(){ ['roul', 'chestPop', 'res', 'mobLoot', 'bagOver', 'evWin'].forEach(function(id){ if ($(id)) popAdd($(id), true); }); if ($('pendBox')) popAdd($('pendBox'), false); })();
-  function showInfo(html, side){ var p = $('hinfo'); if (shopOpen()) setShop(false); /* 창은 한 번에 하나 */ p.innerHTML = (html.indexOf('data-hix') < 0 ? '<button class="hi-x" data-hix="1" type="button" title="닫기">✕</button>' : '') + html; /* 모든 상세 창에 닫기 ✕ */ p.className = 'hinfo ' + side; p.hidden = false; }
+  function hiFill(html, fresh){ var p = $('hinfo'), old = p.querySelector('.hi-body'), sc = !fresh && old ? old.scrollTop : 0;
+    html = html.replace(/<button class="hi-x"[^>]*>✕<\/button>/g, ''); var i = html.indexOf('<div class="hi-st4">'), j = html.indexOf('<div class="hi-btns">');
+    if (i >= 0) html = html.slice(0, i) + '<div class="hi-body">' + html.slice(i, j > i ? j : html.length) + '</div>' + (j > i ? html.slice(j) : '');
+    p.innerHTML = '<button class="hi-x" data-hix="1" type="button" title="닫기">✕</button>' + html; var b = p.querySelector('.hi-body'); if (b) b.scrollTop = sc; } /* 모든 상세 창에 닫기 ✕ */
+  function showInfo(html, side){ var p = $('hinfo'); if (shopOpen()) setShop(false); /* 창은 한 번에 하나 */ hiFill(html, true); p.className = 'hinfo ' + side; p.hidden = false; }
   function hideInfo(){ $('hinfo').hidden = true; }
   new MutationObserver(function(){ if ($('hinfo').hidden){ delete $('field').dataset.sf; document.querySelectorAll('#field > .cellhl').forEach(function(x){ x.remove(); }); } }).observe($('hinfo'), { attributes: true, attributeFilter: ['hidden'] }); /* 상세 창이 닫히면 적 선택 라인도 풀림 */
   (function(){ var sc = document.createElement('div'); sc.id = 'shopScrim'; sc.className = 'shopscrim'; $('tab-shop').parentNode.insertBefore(sc, $('tab-shop'));
@@ -3755,7 +3768,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   function loop(now){
     if (!bt) return;
     var el = Math.min(.1, (now - last) / 1000); last = now; if (finSlow) el *= .3; // 피니시 동안 느린 화면
-    if (inspect){ inspect.t = (inspect.t || 0) - el; if (inspect.t <= 0){ inspect.t = .15; var iu = unitByUid(inspect.uid); if (iu) $('hinfo').innerHTML = battleInfoHtml(iu); } } // 전투는 계속, 창 숫자는 0.15초마다 새로
+    if (inspect){ inspect.t = (inspect.t || 0) - el; if (inspect.t <= 0){ inspect.t = .15; var iu = unitByUid(inspect.uid); if (iu) hiFill(battleInfoHtml(iu)); } } // 전투는 계속, 창 숫자는 0.15초마다 새로
     if (!bt.result){ acc += el * speed; while (acc >= D.battle.dt && !bt.result){ bt.step(); acc -= D.battle.dt; } }
     while (logI < bt.log.length){ onEvent(bt.log[logI++]); }
     if (HAS_FX) FX.update(el * speed);
@@ -4634,7 +4647,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     var t = o.stock.map(function(it, i){ var done = o.bought.indexOf(i) >= 0, mana = it.cur === 'mana', payOk = (mana ? (S.mana || 0) : S.gold) >= it.price && (it.type !== 's' || E.canTake(D, S.skills, it.id, PK().skillSlots)), on = shopSel && shopSel.t === 'merch' && shopSel.i === i, cls, attr = '', ic;
       if (it.type === 's'){ var d = E.skillById(D, it.id), ml = myLv(it.id); cls = 'stile sk' + gCls(it.id, ml || undefined) + (ml && !skMaxed(it.id) ? ' up' : ''); attr = gAttr(it.id, ml || undefined); ic = skIcon(d) + '</span>' + synN(d) + '<span hidden>'; }
       else { cls = 'stile mhero'; attr = ' style="--gcol:' + HG(it.id).col + '"'; ic = heroFr(it.id); }
-      var pr = done ? '<span class="pr">구매 완료</span>' : '<span class="pr' + (mana ? ' mana' : '') + (payOk ? '' : ' no') + '">' + (mana ? manaIcon('mni') : (HUDOK.gold ? '<img src="img/p/hud_gold.png" alt="">' : '🪙')) + it.price.toLocaleString() + '</span>';
+      var pr = '<span class="pr' + (mana ? ' mana' : '') + (payOk ? '' : ' no') + '">' + (mana ? manaIcon('mni') : (HUDOK.gold ? '<img src="img/p/hud_gold.png" alt="">' : '🪙')) + it.price.toLocaleString() + '</span>';
       return '<button class="' + cls + (done ? ' sold' : '') + (on ? ' sel' : '') + '"' + attr + ' data-sel="merch:' + i + '" type="button"><span class="ic">' + ic + '</span>' + pr + '</button>'; }); /* 할인된 값만 (원래 값 표시 뺌) */
     while (t.length % cols) t.push('<span class="stile empty"></span>');
     var rows = ''; for (var r = 0; r < t.length; r += cols) rows += '<div class="srow2 g' + (cols > 3 ? ' c' + cols : '') + '"><span class="rowic"></span>' + t.slice(r, r + cols).join('') + '</div>';
@@ -4662,7 +4675,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
         nm.innerHTML = d2.name + ' <small>' + '<i class="sgn" style="color:' + skG(it2.id, maxed2 ? own2.level : lv2).col + '">' + skG(it2.id, maxed2 ? own2.level : lv2).name + '</i> · ' + (maxed2 ? '최고 등급' : own2 ? '등급업 · ' + upText(it2.id) : '새 유물') + '</small>' + cdBox(d2); ds.innerHTML = skillDesc(d2, maxed2 ? own2.level : lv2, own2 && !maxed2 ? own2.level : 0) + synLine(d2) + synFaces(d2); }
       else { var h4 = hero(it2.id); nm.innerHTML = h4.name + ' <small>' + GR(E.heroGrade(D, it2.id)).name + '</small>'; ds.innerHTML = '<div class="hi-tags">' + tagHtml(h4) + '</div>' + (h4.ult ? '<b>' + ultName(h4) + '</b> ' + ultDescFull(h4, h4.ult, 1) : ''); }
       var lack2 = done2 ? '' : lackText(mana2 ? { mana: it2.price } : { gold: it2.price });
-      bt2.hidden = false; bt2.classList.toggle('mana', mana2 && !done2); bt2.innerHTML = done2 ? '구매 완료' : why2 || lack2 || '구매'; bt2.disabled = done2 || !ok2 || !!lack2; return; }
+      bt2.hidden = false; bt2.classList.toggle('mana', mana2 && !done2); bt2.innerHTML = done2 ? '구매' : why2 || lack2 || '구매'; bt2.disabled = done2 || !ok2 || !!lack2; return; }
     if (shopSel.t === 'hero'){ var hi = (S.shop.heroes || [])[shopSel.i]; if (!hi || (S.shop.hsold || []).indexOf(shopSel.i) >= 0){ shopSel = null; return renderShopInfo(); }
       var h3 = hero(hi.id), lackH = lackText({ gold: hi.price }); bt2.classList.remove('sell', 'arm', 'mana');
       nm.innerHTML = h3.name + ' <small>' + GR(E.heroGrade(D, hi.id)).name + '</small>'; ds.innerHTML = '<div class="hi-tags">' + tagHtml(h3) + '</div>' + (h3.ult ? '<b>' + ultName(h3) + '</b> ' + ultDescFull(h3, h3.ult, 1) : '');
