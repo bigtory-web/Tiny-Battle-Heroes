@@ -25,7 +25,8 @@ const k = n => n >= 1e6 ? (n / 1e6).toFixed(1) + 'M' : Math.round(n / 1e3) + 'k'
 const backups = fs.readdirSync(root).filter(x => /\.v\d+[a-z]?\.\w+$/.test(x) && inDay(path.join(root, x)));
 const imgs = [];
 (function walk(d) { for (const x of fs.readdirSync(d)) { const p = path.join(d, x); fs.statSync(p).isDirectory() ? walk(p) : /\.png$/.test(x) && inDay(p) && imgs.push(x); } })(path.join(root, 'img'));
-const iv = backups.map(x => (x.match(/^index\.v(\d+)\.html$/) || [])[1]).filter(Boolean).map(Number);
+// UI는 index 백업을 더 만들지 않아서(v396에서 멈춤) 그날 index.html을 바꾼 git 커밋 수로 센다
+const iv = require('child_process').execSync(`git log --since=${day}T00:00:00+09:00 --until=${day}T23:59:59+09:00 --format=%h -- index.html`, { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean);
 const items = ['기획', 'UI', '이미지'].map(s => { const p = path.join(__dirname, day, s + '.md'); if (!fs.existsSync(p)) return [s, 0, 0]; const t = fs.readFileSync(p, 'utf8'); return [s, (t.match(/^## /gm) || []).length, (t.match(/^## .*⭐/gm) || []).length]; });
 
 const md = `# ${day} 숫자
@@ -33,7 +34,7 @@ const md = `# ${day} 숫자
 ## 만든 것
 | 항목 | 수 |
 |---|---|
-| 화면 고친 횟수 (index 백업) | ${iv.length}번 |
+| 화면 고친 횟수 (index.html 커밋) | ${iv.length}번 |
 | 백업 파일 | ${backups.length}개 |
 | 새로 저장된 그림 | ${imgs.length}장 |
 ${items.map(([s, n, st]) => `| 기록 항목 (${s}) | ${n}개 (⭐ ${st}) |`).join('\n')}
