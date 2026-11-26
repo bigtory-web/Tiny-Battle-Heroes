@@ -123,12 +123,15 @@ button{font:inherit;color:inherit;cursor:pointer}
 #amb[data-k=altar] s{background:#e3d2ff;box-shadow:0 0 5px 1px #a77bff;animation:ambrise linear infinite}
 #amb[data-k=campfire]{background:linear-gradient(rgba(170,60,20,.18),rgba(170,60,20,0) 40%),radial-gradient(ellipse at 50% 62%,rgba(150,55,10,0) 52%,rgba(110,35,15,.28))}
 #amb[data-k=campfire] s{background:#ffb347;box-shadow:0 0 4px 1px #ff7a1a;animation:ambrise linear infinite}
-#amb[data-k=mimic]{background:radial-gradient(ellipse at 55% 60%,rgba(12,8,24,.18),rgba(12,8,24,.42))}
-#amb[data-k=mimic] s{width:8px;height:6px;background:#ffd34d;box-shadow:inset 0 -2px #b8861c,0 0 0 1px #17141d;animation:ambglint steps(1) infinite}
+#amb[data-k=mimic] s{width:7px;height:7px;background:#ffd34d;box-shadow:inset -2px -2px #b8861c,0 0 0 1px #17141d;opacity:0;animation:ambpop .9s linear forwards}
+@keyframes ambpop{0%{translate:0 0;opacity:1}40%{translate:calc(var(--dx) * .55) -34px;opacity:1}80%{opacity:1}100%{translate:var(--dx) 6px;opacity:0}}
 #amb[data-k=fairy]{background:linear-gradient(rgba(255,160,220,.14),rgba(255,200,230,.04) 60%,rgba(140,230,180,.12))}
 #amb[data-k=fairy] s{width:6px;height:4px;background:#ffb3de;box-shadow:2px 2px #ff8ac8;animation:ambfall linear infinite}
 #amb[data-k=groll]{background:radial-gradient(ellipse at 25% 0,rgba(255,220,90,.26),transparent 55%),radial-gradient(ellipse at 75% 0,rgba(255,220,90,.26),transparent 55%);animation:ambcasino 2.4s steps(2) infinite}
-#amb[data-k=groll] s{background:#fff3b0;box-shadow:0 -3px #ffd34d,0 3px #ffd34d,-3px 0 #ffd34d,3px 0 #ffd34d;animation:ambglint steps(1) infinite,ambrise 7s linear infinite}
+#amb[data-k=groll] s{width:6px;height:6px;background:#ffd34d;box-shadow:inset -2px -2px #b8861c,0 0 0 1px #17141d;animation:ambup linear infinite}
+#amb[data-k=groll] s.d{background:none;box-shadow:none;width:auto;height:auto}
+#amb[data-k=groll] s.d::before{content:'$';font:400 15px var(--display);color:#ffe27a;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d}
+@keyframes ambup{0%{translate:0 0;opacity:0}20%,70%{opacity:.85}100%{translate:4px -110px;opacity:0}}
 @keyframes ambrise{0%{translate:0 0;opacity:0}20%,70%{opacity:.8}100%{translate:6px -60px;opacity:0}}
 @keyframes ambfall{0%{translate:0 0;rotate:0deg;opacity:0}12%,80%{opacity:.9}100%{translate:-50px 260px;rotate:360deg;opacity:0}}
 @keyframes ambglint{50%{filter:brightness(1.7)}}
@@ -5594,11 +5597,18 @@ img.rimg{image-rendering:auto!important}
   // ───── 위험 종: 누를 때마다 0→1→2→3→0. 길게 누르거나 우클릭하면 0 ─────
   var BELLIMG = {}; [1, 2, 3].forEach(function(n){ var im = new Image(); im.onload = function(){ BELLIMG[n] = true; renderBell(); }; im.src = 'img/p/ui_foe' + n + '.png'; });
   /* 이벤트 판 분위기: 배경 그림은 그대로, 색·빛·앞 효과만 덮음. 편성·전투 둘 다 (2026-11-26 사용자) */
-  var AMB = { altar: [18, 0, 100, 45, 100], campfire: [10, 0, 100, 40, 100], mimic: [9, 4, 96, 68, 90], fairy: [16, 0, 100, 0, 40], groll: [16, 0, 100, 15, 90] }; /* [알갱이 수, 가로 최소·최대 %, 세로 최소·최대 %] */
+  var AMB = { altar: [18, 0, 100, 45, 100], campfire: [10, 0, 100, 40, 100], mimic: [0], fairy: [16, 0, 100, 0, 40], groll: [18, 2, 98, 82, 100] }; /* [알갱이 수, 가로 최소·최대 %, 세로 최소·최대 %] */
   function ambSync(){ var el = $('amb'), ev = bt ? curEv : S.event, k = ev && (bt || (S.stage < E.stageCount(D) && !isLvPick())) && AMB[ev.kind] ? ev.kind : ''; if (!el || (el.dataset.k || '') === k) return; el.dataset.k = k; var a = AMB[k], o = '';
-    for (var i = 0; a && i < a[0]; i++){ var du = (4 + Math.random() * 4).toFixed(2); o += '<s style="left:' + (a[1] + Math.random() * (a[2] - a[1])).toFixed(1) + '%;top:' + (a[3] + Math.random() * (a[4] - a[3])).toFixed(1) + '%;animation-duration:' + du + 's;animation-delay:' + (-Math.random() * du).toFixed(2) + 's"></s>'; }
+    for (var i = 0; a && i < a[0]; i++){ var du = (4 + Math.random() * 4).toFixed(2); o += '<s' + (k === 'groll' && i % 2 ? ' class="d"' : '') + ' style="left:' + (a[1] + Math.random() * (a[2] - a[1])).toFixed(1) + '%;top:' + (a[3] + Math.random() * (a[4] - a[3])).toFixed(1) + '%;animation-duration:' + du + 's;animation-delay:' + (-Math.random() * du).toFixed(2) + 's"></s>'; }
     el.innerHTML = o; }
   setInterval(ambSync, 300);
+  /* 미믹 판: 미믹 몸에서 금화가 톡 튀었다 떨어짐. 미믹마다 3~5초, 엇갈리게. 쓰러지거나 도망친 미믹은 없음 */
+  var ambNext = {};
+  setInterval(function(){ var el = $('amb'); if (!el || el.dataset.k !== 'mimic' || document.hidden) return; var now = Date.now(), R = el.getBoundingClientRect(), list = [];
+    if (bt) bt.E.forEach(function(u){ if (u.h.mob === 'mimic' && u.alive && !u.escaped){ var p = posOf(u); list.push([u.slot, 100 * p[0] / W, 100 * (p[1] - 20) / H]); } });
+    else document.querySelectorAll('#field .foe.mob').forEach(function(f){ if (!f.querySelector('.mhop')) return; var r = f.getBoundingClientRect(); list.push([+f.dataset.foe, 100 * (r.left + r.width / 2 - R.left) / R.width, 100 * (r.top + r.height * .55 - R.top) / R.height]); });
+    list.forEach(function(m){ if (ambNext[m[0]] == null){ ambNext[m[0]] = now + 500 + Math.random() * 3000; return; } if (now < ambNext[m[0]]) return; ambNext[m[0]] = now + 3000 + Math.random() * 2000;
+      for (var i = 0; i < 3; i++){ var s = document.createElement('s'); s.style.left = m[1] + '%'; s.style.top = m[2] + '%'; s.style.setProperty('--dx', Math.round((i - 1) * 16 + Math.random() * 8 - 4) + 'px'); s.style.animationDelay = (i * .07) + 's'; el.appendChild(s); setTimeout(function(x){ return function(){ x.remove(); }; }(s), 1200); } }); }, 250);
   function renderTalk(){ var t = $('talkBtn'); if (t) t.querySelector('.tic').innerHTML = campImg('ui_talk', '💬', 'timg'); var et = $('evTalk'); if (et) et.querySelector('.eai').innerHTML = campImg('ui_talk', '💬', 'timg'); }
   function grollBtn(gr){ var b = $('evBet'), lab = b.querySelector('b'), dots = b.querySelector('.oedots'), n = $('grLeft'); if (!n){ n = document.createElement('span'); n.id = 'grLeft'; n.className = 'grleft'; b.parentNode.insertBefore(n, b); }
     b.classList.toggle('groll', gr); var ti = b.querySelector('.timg'), want = gr ? 'img/p/ev_goblin.png' : 'img/p/hud_gold.png'; if (ti && ti.getAttribute('src') !== want) ti.src = want; n.hidden = true; if (dots) dots.hidden = gr;
