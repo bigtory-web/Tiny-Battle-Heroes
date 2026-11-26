@@ -1,0 +1,15 @@
+Look at these images:
+- img/codex/seeress/seeress2_x8.png = our current pixel art blindfolded seeress (8x enlarged). THIS IS THE CHARACTER TO EDIT.
+- img/codex/seeress/mark_x16.png = our game's TRANSCENDENCE MARK (16x enlarged): a gold eight-pointed star with a square purple gem.
+- img/codex/goblin/dealer_x16.png = shows the head angle we use: seen slightly from above, the eye line on the viewer's LEFT sits 1 art pixel lower than on the right.
+
+Keep the character, balance scale, robe, outline, proportions, pose and pixel size, and change ONLY these:
+1. Replace the crescent ornament: she now WEARS the transcendence mark as her headpiece, the same gold eight-pointed star with the purple gem, simplified to about 11 x 11 art pixels, sitting on the front top of her head on a thin gold band. Readable star points, smaller than the head. Remove the small crescent mark on the blindfold too (blindfold: plain navy with thin gold edges).
+2. NO MOUTH at all: the skin below the blindfold is plain, no mouth line, no lips.
+3. Head angle: she looks slightly DOWN, seen from above. The viewer's LEFT side of the face and blindfold sits exactly 1 art pixel lower than the right side (the blindfold edges step down by 1 pixel toward the left), never higher on the left.
+4. Hair color: PURPLE (soft muted violet, 3 tones with darker shadow strands), same hair shape and length. Make the blindfold clearly darker (deep midnight navy) so it stays separate from the purple hair.
+
+Generate ONE new image with your image generation tool and save it as img/codex/seeress/seeress3_src.png
+Crisp square pixels on the same grid as the input, no anti-aliasing, no finer detail, 1 art pixel outline with no gaps. Image 1024x1024, centered.
+[Format] Plain solid #FF00FF magenta background, no text, no shadow.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
