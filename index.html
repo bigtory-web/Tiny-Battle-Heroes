@@ -3798,8 +3798,8 @@ img.rimg{image-rendering:auto!important}
     el.style.setProperty('--sc', col || '#fff'); var near = !!stage.closest('.rbox.camp'), md = near ? 'c' : 'a'; if (el.firstChild && el.dataset.m === md) return; el.dataset.m = md; var n = 6, o = ''; /* 모닥불: 영웅 몸 가까이, 절반 (2026-11-26 사용자) */ /* 개수·빈도는 등급과 상관없이 같고 색만 다름. 결과 그림 왼쪽·위·오른쪽 반원, 단상 위로는 안 내려감 (2026-11-26 사용자) */
     for (var i = 0; i < n; i++){ var a = (i + Math.random() * .7) / n * Math.PI, f = Math.random(), x = 50 + Math.cos(a) * (near ? 19 + f * 9 : 32 + f * 16), y = 94 - Math.sin(a) * (near ? 44 + f * 14 : 80 + f * 10), sz = Math.random() < .45 ? 3 : 2, du = (1.6 + Math.random() * 1.4).toFixed(2), dl = (-Math.random() * 3).toFixed(2); o += '<s class="s' + sz + '" style="left:' + x.toFixed(1) + '%;top:' + y.toFixed(1) + '%;animation-delay:-' + (i * .4).toFixed(1) + 's"></s>'; }
     el.innerHTML = o; }
-  /* 룰렛 결과 = 아이콘 뒤 폭죽(2026-11-26 사용자: "아이콘 뒤에 폭죽 아래에서 위로 올라가며 터지듯"). 멈추면 3발 엇갈려, 그 뒤 2.4초에 한 발. 색은 모든 팝업 같은 축하 색 한 벌(흰색·연노랑, 어두운 1px 테두리) */
-  var FWC = ['#ffffff', '#fff0a8'];
+  /* 룰렛 결과 = 아이콘 뒤 폭죽(2026-11-26 사용자: "아이콘 뒤에 폭죽 아래에서 위로 올라가며 터지듯"). 멈추면 3발 엇갈려, 그 뒤 2.4초에 한 발. 색은 모든 팝업 같은 축하 색 한 벌(흰색·밝은 노랑, 어두운 1px 테두리) */
+  var FWC = ['#ffffff', '#ffd21f'];
   function fwShot(host){ var W = host.clientWidth, H = host.clientHeight; if (!W || !host.animate || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
     var x = W * (.28 + Math.random() * .44), y = H * (.16 + Math.random() * .22), put = function(cls, l, t, col){ var e = document.createElement('i'); e.className = cls; e.style.cssText = 'left:' + l + 'px;top:' + t + 'px;color:' + col; host.appendChild(e); return e; };
     var r = put('fwr', x, y, '#ffffff'), turn = Math.random() * 2 | 0; r.animate([{ transform: 'translateY(' + (H - y - 20) + 'px)', opacity: .3 }, { transform: 'none', opacity: 1 }], { duration: 520, easing: 'cubic-bezier(.2,.6,.4,1)' }).onfinish = function(){ r.remove();
