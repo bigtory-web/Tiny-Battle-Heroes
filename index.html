@@ -3331,8 +3331,9 @@ img.rimg{image-rendering:auto!important}
   /* 배경을 BGUP px 위로 올림(2026-11-26 사용자: 9칸이 뒷배경 바위와 겹쳐 보임). 아래 빈 띠는 맨 아래 땅을 뒤집어 이어 붙임. 전투 캔버스와 편성 화면이 같은 합성 그림을 씀 */
   var BGUP = 58; /* 30 -> 48 -> 66 -> 58 (2026-11-26): 칸을 12 내려서 덜 올림(하늘을 조금 되살림) */
   function bgRaise(src, done){ var im = new Image(); im.onload = function(){ var c = document.createElement('canvas'); c.width = im.width; c.height = im.height; var x = c.getContext('2d'); x.drawImage(im, 0, -BGUP); x.translate(0, im.height); x.scale(1, -1); x.drawImage(im, 0, im.height - BGUP, im.width, BGUP, 0, 0, im.width, BGUP); c.complete = true; c.naturalWidth = c.width; c.naturalHeight = c.height; done(c); }; im.src = src; }
-  bgRaise('img/p/bg_field.png', function(c){ BG = c; try { var st = document.createElement('style'); st.textContent = '.field{background:url(' + c.toDataURL() + ') 50% 50% / 100% 100.5% no-repeat,#b8a0a6}'; document.head.appendChild(st); } catch (e) {} });
-  bgRaise('img/p/bg_field_dusk.png', function(c){ BGD = c; });
+  var BGDEF = D.campaign.chapterDef || {}; /* 장별 배경(data.js chapterDefs), 장을 바꾸면 새로 읽혀요 */
+  bgRaise(BGDEF.bg || 'img/p/bg_field.png', function(c){ BG = c; try { var st = document.createElement('style'); st.textContent = '.field{background:url(' + c.toDataURL() + ') 50% 50% / 100% 100.5% no-repeat,#b8a0a6}'; document.head.appendChild(st); } catch (e) {} });
+  bgRaise(BGDEF.bgDusk || 'img/p/bg_field_dusk.png', function(c){ BGD = c; });
   // 특수 몹·이벤트 그림 (없으면 이모지)
   (D.mobs || []).forEach(function(h){ var im = new Image(); im.onload = function(){ IMGS[h.id] = im; IMGSRC[h.id] = im.src; PIX[h.id] = true; imgReady(); }; im.src = 'img/p/' + (h.id === 'mimicKing' ? 'mimic_king' : h.id) + '.png'; }); /* 미믹킹 = 보라 (2026-11-26 사용자 확정) */
   var EVIMG = {}; ['merchant', 'mark_merc', 'ev_goblin', 'ev_merchant', 'ev_merc', 'ev_campfire_i', 'ev_chest', 'ev_dais', 'ev_fairy_i'].forEach(function(k){ var im = new Image(); im.onload = function(){ EVIMG[k] = im; imgReady(); }; im.src = 'img/p/' + k + '.png'; });
