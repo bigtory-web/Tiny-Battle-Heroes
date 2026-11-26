@@ -72,7 +72,7 @@
     function PP(u) { return u.winT > 0 && u.win ? u.win : (u.pas || {}); } // 지금 켜진 효과의 값들
     function reviveU(src, d, pct) { d.alive = true; d.hp = d.maxHp * pct; d.shield = 0; d.burn = null; d.stun = 0; if (rec) log.push({ t: t, kind: 'heal', from: src.uid, to: d.uid, amt: Math.round(d.hp) }); }
     var shSrc = null; // 지금 행동 중인 영웅: 그 사이에 생긴 보호막을 이 영웅이 준 것으로 세요 (DPS 창)
-    function addShield(x, amt) { if (!x.alive || amt <= 0) return; if (x.lineCare) amt *= 1 + x.lineCare; if (x.side === 'A' && opts.curse) amt *= 1 - opts.curse; x.shield += amt; if (shSrc && shSrc.stats) shSrc.stats.shield += amt; holders(x.side, 'shieldRally').forEach(function (l) { if ((l.rallyN || 0) < (PP(l).max || 10)) { l.rallyN = (l.rallyN || 0) + 1; l.stkAtk = (l.stkAtk || 0) + l.pv; } }); }
+    function addShield(x, amt) { if (!x.alive || amt <= 0) return; if (x.lineCare) amt *= 1 + x.lineCare; if (x.side === 'A' && opts.curse) amt *= 1 - opts.curse; x.shield += amt; if (rec) log.push({ t: t, kind: 'shield', from: shSrc ? shSrc.uid : undefined, to: x.uid, amt: Math.round(amt) }); /* 2026-11-26: 방패 숫자 연출용 */ if (shSrc && shSrc.stats) shSrc.stats.shield += amt; holders(x.side, 'shieldRally').forEach(function (l) { if ((l.rallyN || 0) < (PP(l).max || 10)) { l.rallyN = (l.rallyN || 0) + 1; l.stkAtk = (l.stkAtk || 0) + l.pv; } }); }
     function gainEnergy(x, n) { if (x.alive) x.energy = Math.min(B.energyMax, x.energy + n); }
     function lifestealHeal(u, amt) { if (amt <= 0) return; heal(u, u, amt); holders(u.side, 'lifestealEnergy').forEach(function (d) { gainEnergy(d, d.pv); }); }
     // 쓰러짐 처리(모든 피해가 여기로): 버팀·환생·부활을 먼저 보고, 진짜 쓰러지면 처치·아군 쓰러짐 특성
