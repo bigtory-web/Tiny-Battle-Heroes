@@ -2848,6 +2848,8 @@ img.rimg{image-rendering:auto!important}
 /* 파랑 일반 미믹: 44칸 (도트 1칸 = 갈색과 같게) */
 .foe > .mhop.g2{background-image:url(img/p/mimic_g2_hop.png)}
 #mimicPop .mmc.g2 b{left:-7px;right:-7px;top:-14px;background:url(img/p/mimic_g2.png) 50% 100%/88px 88px no-repeat}
+/* 할인된 가격: 주황 + 살짝 기울임 (2026-11-26 사용자) */
+#tab-shop b.deal,#shopBuy .bp b.deal{display:inline-block;transform:skewX(-9deg);color:#ff8a3d!important;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d,1px 1px #17141d!important;font-weight:400}
 </style>
 </head>
 <body>
@@ -5123,7 +5125,7 @@ img.rimg{image-rendering:auto!important}
     var t = o.stock.map(function(it, i){ var done = o.bought.indexOf(i) >= 0, mana = it.cur === 'mana', payOk = (mana ? (S.mana || 0) : S.gold) >= it.price && (it.type !== 's' || E.canTake(D, S.skills, it.id, PK().skillSlots)), on = shopSel && shopSel.t === 'merch' && shopSel.i === i, cls, attr = '', ic;
       if (it.type === 's'){ var d = E.skillById(D, it.id), ml = myLv(it.id); cls = 'stile sk' + gCls(it.id, ml || undefined) + (ml && !skMaxed(it.id) ? ' up' : ''); attr = gAttr(it.id, ml || undefined); ic = skIcon(d) + '</span>' + synN(d) + '<span hidden>'; }
       else { cls = 'stile mhero'; attr = ' style="--gcol:' + HG(it.id).col + '"'; ic = heroFr(it.id) + (upOK('h:' + it.id) && !done ? '<i class="upmk"></i>' : ''); }
-      var pr = '<span class="pr' + (mana ? ' mana' : '') + (payOk ? '' : ' no') + '">' + (mana ? manaIcon('mni') : (HUDOK.gold ? '<img src="img/p/hud_gold.png" alt="">' : '🪙')) + it.price.toLocaleString() + '</span>';
+      var pr = '<span class="pr' + (mana ? ' mana' : '') + (payOk ? '' : ' no') + '">' + (mana ? manaIcon('mni') : (HUDOK.gold ? '<img src="img/p/hud_gold.png" alt="">' : '🪙')) + (it.base > it.price ? '<b class="deal">' + it.price.toLocaleString() + '</b>' : it.price.toLocaleString()) + '</span>';
       return '<button class="' + cls + (done ? ' sold' : '') + (on ? ' sel' : '') + '"' + attr + ' data-sel="merch:' + i + '" type="button">' + '<span class="ic">' + ic + '</span>' + pr + '</button>'; }); /* 할인율은 구매 버튼 왼쪽 위 딱지 (2026-11-26 사용자) */
     var MS = (D.player && D.player.merchantSlots) || [], open = MS[Math.min(MS.length, plv()) - 1] || 0, max = MS.length ? Math.max.apply(null, MS) : 6; /* 3칸 x 2줄, 왼쪽부터. 레벨로 안 열린 칸은 일반 상점과 같은 잠금 표시 (2026-11-26 사용자) */
     while (t.length < max){ var ci = t.length, L = 0; if (ci >= open) for (var q = 0; q < MS.length && !L; q++) if (MS[q] > ci) L = q + 1; t.push(L ? '<span class="stile lockd"><em>LV' + L + '</em></span>' : '<span class="stile empty keep"></span>'); }
@@ -5149,7 +5151,7 @@ img.rimg{image-rendering:auto!important}
       if (shopSel.t === 'merch'){ var wm = merchOffer(), im = wm && wm.stock[shopSel.i]; if (im){ cur = im.price; isM = im.cur === 'mana'; if (im.base > im.price) was = im.base; } }
       else if (shopSel.t === 'hero'){ var hh = (S.shop.heroes || [])[shopSel.i]; if (hh) cur = hh.price; }
       else { var sid = S.shop.stock[shopSel.i]; if (sid){ var pc = (S.shop.sold.indexOf(shopSel.i) >= 0 && (S.shop.soldCost || {})[shopSel.i]) || buyPrice(sid); isM = pc.mana > 0; cur = isM ? pc.mana : pc.gold; } }
-      bt.innerHTML = '<span class="bl">구매</span>' + (cur == null ? '' : '<span class="bp">' + (was ? '<s>' + was.toLocaleString() + '</s>' : '') + (isM ? manaIcon('mni') : gi) + '<b>' + cur.toLocaleString() + '</b></span>') + (shopSel.t === 'merch' && im && im.off ? '<i class="boff">' + im.off + '%</i>' : ''); } }
+      bt.innerHTML = '<span class="bl">구매</span>' + (cur == null ? '' : '<span class="bp">' + (was ? '<s>' + was.toLocaleString() + '</s>' : '') + (isM ? manaIcon('mni') : gi) + '<b' + (was ? ' class="deal"' : '') + '>' + cur.toLocaleString() + '</b></span>') + (shopSel.t === 'merch' && im && im.off ? '<i class="boff">' + im.off + '%</i>' : ''); } }
   function _rsiCore(){
     var nm = $('shopName'), ds = $('shopDesc'), bt2 = $('shopBuy'), mine = S.skills;
     $('shopInfo').hidden = false; // 상점 창 안 고정 칸
