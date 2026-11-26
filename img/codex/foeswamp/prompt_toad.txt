@@ -1,0 +1,9 @@
+Look at img/codex/foeswamp/ref_foe.png : our existing 24x24 pixel-art enemy rage-button icons (monster faces). Make ONE new icon in exactly the same style: same pixel size, dark brown 1px outline, 3-tone shading, front view, symmetrical, filling the grid the same way.
+
+The icon: FIERCE POISON TOAD face, seen from the front: wide squat head, big puffed-out throat cheeks on both sides, heavy angry brows, glaring red-orange eyes, a grim down-turned mouth, a few warts, and 2 or 3 round poison bubbles floating beside it. Dull dark purple-brown skin with a sickly yellow-green throat and bubbles. It must look hostile and clearly different from a cute green frog.
+
+The whole drawing must be at most 22 art pixels wide and 22 art pixels tall, drawn with large crisp square pixels (each art pixel 42 real pixels in a 1024x1024 image).
+
+Generate ONE new image with your image generation tool and save it as img/codex/foeswamp/toad_src.png
+No anti-aliasing, no gradients, no shadow, flat solid #FF00FF magenta background, no text.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

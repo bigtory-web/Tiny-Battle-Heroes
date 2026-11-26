@@ -1,0 +1,9 @@
+Look at img/codex/foeswamp/ref_foe.png : our existing 24x24 pixel-art enemy rage-button icons (monster faces). Make ONE new icon in exactly the same style: same pixel size, dark brown 1px outline, 3-tone shading, front view, symmetrical, filling the grid the same way.
+
+The icon: CROCODILE LURKING IN SWAMP WATER, seen from the front: only the TOP of the head is above the water: two big raised eye bumps with narrow angry yellow eyes, and a low rounded snout tip with two nostrils; a flat water line cuts across the head with 2 or 3 clear ripple lines and highlights below it. The water and the eyes must read first. NO horns, NO spikes, NO scale pattern, NO teeth rows, nothing dragon-like. Muted olive-green skin, murky teal water.
+
+The whole drawing must be at most 22 art pixels wide and 22 art pixels tall, drawn with large crisp square pixels (each art pixel 42 real pixels in a 1024x1024 image).
+
+Generate ONE new image with your image generation tool and save it as img/codex/foeswamp/croc_src.png
+No anti-aliasing, no gradients, no shadow, flat solid #FF00FF magenta background, no text.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
