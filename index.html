@@ -2518,6 +2518,12 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 .camp3 > .lbag .ubagbox{padding:20px 6px 15px!important}
 .camp3 > .lbag .ubagbox #bagDrawer,.camp3 > .lbag .ubagbox .bagin{height:100%;min-height:0;max-height:none!important;margin:0!important}
 .camp3 > .lbag .ubagbox #roster{height:100%;max-height:none!important;box-sizing:border-box;padding-top:0!important;padding-bottom:0!important;margin:0!important;align-content:space-evenly!important;row-gap:1px!important;overflow-y:auto!important;scrollbar-width:none} /* 8칸(최대)까지 안에 들어가고, 넘친 영웅이 있으면 안에서 스크롤 */
+/* 백팩: 8칸 고정 격자, 맨 위부터 같은 간격(칸 위치가 레벨과 상관없이 같음) */
+.camp3 > .lbag .ubagbox #roster{align-content:start!important;row-gap:1px!important}
+.lbag #roster .chip.baglock{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:#2a2430!important;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 3px #3b3546!important;cursor:default;font-style:normal}
+.baglock b{width:12px;height:9px;margin-top:5px;background:#7c7488;position:relative}
+.baglock b::before{content:'';position:absolute;left:2px;bottom:100%;width:4px;height:3px;border:2px solid #7c7488;border-bottom:0}
+.baglock em{font:400 11px/12px var(--display);font-style:normal;color:#9d94ab}
 </style>
 </head>
 <body>
@@ -2784,6 +2790,8 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   // 플레이어 레벨과 그 효과(전장 칸·스킬 칸·상점 등급 확률)
   function PL(){ return D.player ? E.playerLevel(D, S.xp) : { level: 1, cur: 0, need: 1, max: true }; }
   function plv(){ return PL().level; }
+  /* 아직 안 열린 칸: 늘 최대 칸까지 회색 잠금 칸 + 열리는 레벨 (2026-11-26 사용자) */
+  function lockedBag(from){ if (!D.player || !E.perk) return ''; var max = E.perk(D, 99).bag || 0, e = ''; for (var i = from; i < max; i++){ var L = 1; while (L < 99 && E.perk(D, L).bag < i + 1) L++; e += '<i class="chip baglock" title="Lv' + L + '에 열려요"><b></b><em>Lv' + L + '</em></i>'; } return e; }
   function bagMax(){ return PK().bag || R.bag; } // 백팩 칸 수: 플레이어 레벨에 따라 (2026-11-23)
   function PK(){ return D.player ? E.perk(D, plv()) : { field: R.fieldSlots, skillSlots: D.skills.slots, shopGrade: null }; }
   if (!S.shop) restock(); else if (!S.shop.heroes){ S.shop.heroes = newHeroes(); S.shop.hsold = []; } // 옛 저장: 영웅 줄 한 번 채우기
@@ -3092,7 +3100,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     var BM = bagMax();
     $('roster').innerHTML = list.map(function(u, li){ var h = hero(u.id), g = HG(u.id);
       return '<button class="chip' + (li >= BM ? ' over' : '') + '" data-uid="' + u.uid + '" data-id="' + u.id + '" title="' + h.name + '" style="--el:' + ELC[h.el] + ';--gcol:' + g.col + '">' + av(u.id) + starsIn(u.star, u.id) + '</button>';
-    }).join('') + (function(){ var e = ''; for (var i = list.length; i < bagMax(); i++) e += '<i class="chip bagempty"></i>'; return e; })();
+    }).join('') + (function(){ var e = ''; for (var i = list.length; i < bagMax(); i++) e += '<i class="chip bagempty"></i>'; return e; })() + lockedBag(Math.max(list.length, BM));
     var used = usedCost(), c = cap();
     var over = false; /* 출전 코스트 제도는 없어요. 출전 제한은 전장 칸 수(PK().field)뿐 */ $('fightBtn').disabled = done || teamSpec().length === 0 || !!S.pending || !!S.offer || !!S.padPend || over; $('fightBtn').textContent = '전투 시작'; /* 늘 원래 글자, 못 누르면 회색만 (예전: 캠페인 완료·발판 깔기·전리품을 먼저 정해 주세요·백팩에서 버릴 것을 골라 주세요) */
     if (noFight()){ $('fightBtn').disabled = !!S.offer || !!S.pending || (isOddEven() && oeBusy) || altBusy || (isCamp() && !S.units.length); $('fightBtn').innerHTML = '<img class="exi" src="img/p/ui_exit.png" alt="떠나기">'; $('fightBtn').title = '떠나기'; } if ($('fightBtn').disabled && !done && (!!S.offer || !!S.pending || !!S.padPend || (isOddEven() && oeBusy) || altBusy || !$('roul').hidden)) /* 진행 중이어도 글자 그대로 회색 (2026-11-24) */ $('fightBtn').classList.toggle('busyhide', $('fightBtn').disabled && $('fightBtn').textContent.trim() === '진행 중'); /* 진행 중이면 숨김 */ updEvActs(); /* 영웅이 하나도 없는 첫 모닥불은 먼저 말 걸기 */ /* 이벤트 판: 전투 시작은 꺼 두고 말 걸기·떠나기는 오른쪽 위 버튼으로 */
@@ -3460,6 +3468,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
     if (other === me) return done();
     if (other){ if (tryMerge(other, me)) return done(); if (onF || S.team.indexOf(other) >= 0){ swapUnits(other, me); return done(); } return false; }
     if (c){ if (!onF){ equipHero(me); if (S.team.indexOf(me) < 0) return done(); } S.pos = S.pos || {}; S.pos[me] = { x: c[0], y: c[1] }; save(); renderForm(); return done(); }
+    if (tg.closest('.baglock')) return false; /* 잠긴 칸은 놓는 곳이 아님 */
     if (tg.closest('.lbag, #bagDrawer, #bagBtn')){ var si = S.team.indexOf(me); if (si >= 0) unequip(si); return done(); }
     return false; }
   // ───── 캐릭터 정보 판넬: 우리 영웅은 누르거나 끄는 동안, 적은 누르면 왼쪽에 ─────
