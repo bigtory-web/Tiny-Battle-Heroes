@@ -4806,7 +4806,8 @@ img.rimg{image-rendering:auto!important}
   });
   $('rNo').addEventListener('click', function(){ decideOffer(false); exitOffer(); });
   $('rExit').addEventListener('click', exitOffer);
-  $('rX').addEventListener('click', function(){ if (grOpen && !S.offer){ grollClose(); return; } if (S.offerMode === 'mobs' && S.mobPend){ takeMobLoot(); return; } if (S.pending) return; if (!S.offerDecided) decideOffer(false); exitOffer(); });
+  $('rX').addEventListener('click', function(){ if (S.offerMode === 'groll' && S.event && (!S.offer || S.offerDecided)){ S.event.grEnd = true; save(); } /* 돈고블린: 닫으면 이 판의 룰렛은 끝 (2026-11-26 사용자) */
+    if (grOpen && !S.offer){ grollClose(); return; } if (S.offerMode === 'mobs' && S.mobPend){ takeMobLoot(); return; } if (S.pending) return; if (!S.offerDecided) decideOffer(false); exitOffer(); });
 
   // ───── 도구 탭 ─────
   function renderMods(){
@@ -5083,7 +5084,7 @@ img.rimg{image-rendering:auto!important}
   var grOpen = false;
   /* 열면 후보가 처음부터 띠에 다 보임(전투 룰렛과 같은 배치). 돌리기 전: 돌리기 버튼 하나 / 결과: 받기·포기 (2026-11-26 사용자) */
   function grollPool(){ return E.rollGroll(D, S.stage, null, plv(), S.skills || []) || []; } /* rnd null = 같은 판에서는 늘 같은 구성 (별도 표, 기획 v658) */
-  function grollIdle(){ if (!isGroll()) return; var pool = grollPool(); if (!pool.length) return; grOpen = true;
+  function grollIdle(){ if (!isGroll() || S.event.grEnd) return; var pool = grollPool(); if (!pool.length) return; grOpen = true;
     var r = $('roul'), box = r.querySelector('.rbox'), cost = E.grollCost(D, S.stage, plv()), mx = E.grollSpins(D, plv()), left = Math.max(0, mx - grollUsed());
     S.offerMode = 'groll'; S.offerDecided = false; S.offerGone = []; offerIds = S.offerIds = pool.slice(); startRoulette(pool, pool.indexOf(S.roulAt) >= 0 ? S.roulAt : pool[0], true);
     box.classList.add('groll'); box.classList.remove('spin', 'pendmode', 'camp'); box.querySelector('.rmeta').textContent = '';
@@ -5298,7 +5299,7 @@ img.rimg{image-rendering:auto!important}
   function renderTalk(){ var t = $('talkBtn'); if (t) t.querySelector('.tic').innerHTML = campImg('ui_talk', '💬', 'timg'); var et = $('evTalk'); if (et) et.querySelector('.eai').innerHTML = campImg('ui_talk', '💬', 'timg'); }
   function grollBtn(gr){ var b = $('evBet'), lab = b.querySelector('b'), dots = b.querySelector('.oedots'), n = $('grLeft'); if (!n){ n = document.createElement('span'); n.id = 'grLeft'; n.className = 'grleft'; b.parentNode.insertBefore(n, b); }
     b.classList.toggle('groll', gr); n.hidden = true; if (dots) dots.hidden = gr;
-    if (!gr){ lab.textContent = '돈 넣기'; return; } lab.textContent = '룰렛하기'; b.disabled = !!S.offer || !!S.pending; }
+    if (!gr){ lab.textContent = '돈 넣기'; return; } lab.textContent = '룰렛하기'; b.disabled = !!S.offer || !!S.pending || !!(S.event && S.event.grEnd); }
   function updEvActs(){ var box = $('evActs'); if (!box) return; var ok = !bt && !isLvPick() && !isFork(), tk = ok && (isCamp() || isFairy() || isMerch()), busy = !!S.offer || !!S.pending;
     $('evTalk').hidden = !tk; $('evTalk').disabled = busy; $('evTalk').classList.toggle('busyhide', busy); $('evBet').classList.toggle('busyhide', oeBusy); var oe = ok && isOddEven(), k = oeK(), mx = oeMax(), gr = ok && isGroll(); $('evBet').hidden = !oe && !gr; box.hidden = !tk && !oe && !gr; grollBtn(gr);
     if (oe){ $('evBet').disabled = oeBusy || k >= mx || S.gold < E.oddEvenBet(D, S.stage); $('evBet').querySelectorAll('.oedots i').forEach(function(d, i){ d.classList.toggle('on', i < k); d.hidden = i >= mx; }); } } /* 말 걸기: 위 가운데(종·초월 자리) */
