@@ -208,7 +208,7 @@
       switch (U.kind) {
         case 'taunt': u.taunt = U.dur; addShield(u, u.maxHp * U.shieldPct); break;
         case 'teamShield': T.forEach(function (x) { addShield(x, atkOf(u) * U.mul); }); if (U.rally) u.stkAtk = (u.stkAtk || 0) + U.rally * T.length; break;
-        case 'strike': { var tg = pickTarget(u); if (tg) { if (U.crit) u.forceCrit = true; hurt(u, tg, U.mul); if (U.follow && tg.alive) hurt(u, tg, U.follow); if (U.root && tg.alive) tg.root = U.root; } if (U.boost) { u.boostN = U.boostN || 3; u.boostV = U.boost; } break; }
+        case 'strike': { var tg = pickTarget(u); if (tg) { if (U.crit) u.forceCrit = true; hurt(u, tg, U.mul); for (var hi = 1; hi < (U.hits || 1) && tg.alive; hi++) hurt(u, tg, U.mul); /* 2026-11-26 hits: 같은 적을 여러 번(연타 연출) */ if (U.follow && tg.alive) hurt(u, tg, U.follow); if (U.root && tg.alive) tg.root = U.root; } if (U.boost) { u.boostN = U.boostN || 3; u.boostV = U.boost; } break; }
         case 'multi': { var mm = U.mul; if (U.scale === 'missing') mm *= 1 + (1 - u.hp / u.maxHp); if (U.scale === 'low' && u.hp / u.maxHp < 0.3) mm *= 2;
           for (var i = 0; i < U.hits; i++) { var tg2 = pickTarget(u); if (tg2) hurt(u, tg2, mm); } break; }
         case 'zigzag': F.slice().sort(function () { return rand() - 0.5; }).slice(0, U.hits).forEach(function (x) { hurt(u, x, U.mul); }); break;
