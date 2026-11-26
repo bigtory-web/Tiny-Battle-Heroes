@@ -36,7 +36,7 @@
       return { uid: ++uid, id: h.id, name: h.name, h: h, side: side, slot: spec.slot, star: spec.star || 1, line: AR.lines ? (AR.lines[spec.slot] || 0) : (spec.slot < 2 ? 0 : 1), front: (AR.lines ? (AR.lines[spec.slot] || 0) === 0 : spec.slot < 2) || h.mob === 'goblin' || h.mob === 'chest', level: lv,
         x: spec.x != null ? spec.x : (side === 'A' ? p0[0] : AR.w - p0[0]), y: spec.y != null ? spec.y : p0[1], face: side === 'A' ? 1 : -1, moving: false, tgt: null,
         reach: AR.reach[h.range], spd: AR.speed[h.range],
-        maxHp: hp, hp: hp, atk: h.atk * g * (m.atk || 1), def: h.def * g, interval: h.interval / (spec.spd || 1), range: h.range, el: spec.el || h.el, el2: spec.el2 && spec.el2 !== (spec.el || h.el) ? spec.el2 : null, // el2: 진영 발판으로 더해진 진영 // spec.el: 진영 발판 위면 그 진영
+        maxHp: hp, hp: hp, atk: h.atk * g * (m.atk || 1), def: h.def * g, interval: h.interval / (spec.spd || 1), range: h.range, race2: spec.race2 && spec.race2 !== h.race ? spec.race2 : null, /* 단상으로 더해진 종족 */ el: spec.el || h.el, el2: spec.el2 && spec.el2 !== (spec.el || h.el) ? spec.el2 : null, // el2: 진영 발판으로 더해진 진영 // spec.el: 진영 발판 위면 그 진영
         energy: h.ult && h.ult.trig ? (h.ult.trig.kind === 'start' ? B.energyMax : 0) : Math.min(B.energyMax, SE.value + (spec.energy || 0)), trig: h.ult && h.ult.trig || null, timer: rand() * B.startJitter, alive: true, shield: 0, taunt: 0, slow: 0, slowAmt: 0, haste: 0, hasteAmt: 0,
         grade: h.grade || 1, ultLv: 0, pasLv: 0, uk: 1, pas: null, pv: 0, crit: critChance(data, h),
         boss: !!spec.boss, merc: !!spec.merc, blue: !!spec.blue, endureOnce: !!spec.endure, stats: { dealt: 0, taken: 0, healed: 0, ults: 0, shield: 0 } };
@@ -238,7 +238,7 @@
         case 'healAll': T.forEach(function (x) { heal(u, x, atkOf(u) * U.mul); }); break;
         case 'haste': T.forEach(function (x) { x.haste = U.dur; x.hasteAmt = U.amount; }); break;
       }
-      if (U.teamEnergy) T.forEach(function (x) { if (x !== u && (!U.race || x.h.race === U.race)) gainEnergy(x, U.teamEnergy); });
+      if (U.teamEnergy) T.forEach(function (x) { if (x !== u && (!U.race || x.h.race === U.race || x.race2 === U.race)) gainEnergy(x, U.teamEnergy); });
       if (U.energyPerSlow) gainEnergy(u, U.energyPerSlow * F.filter(function (x) { return x.alive && x.slow > 0; }).length);
       if (U.forestHaste) T.forEach(function (x) { if (x.alive && x.el === 'forest') elemHit(x, null, 0, 'forest'); });
       if (U.burnAll) F.forEach(function (x) { if (x.alive) x.burn = { src: u, left: U.burnAll, tick: 1 }; });
@@ -295,7 +295,7 @@
     function tagMatch(tag, T) {
       if (!tag) return function () { return true; };
       var k = tag.race != null ? 'race' : tag.job != null ? 'job' : 'el', v = tag[k];
-      var val = function (x) { return k === 'el' ? x.el : x.h[k]; }, vals = function (x) { return k === 'el' && x.el2 ? [x.el, x.el2] : [val(x)]; }; // 진영은 발판으로 더해진 것까지 // 속성은 발판으로 바뀐 값
+      var val = function (x) { return k === 'el' ? x.el : x.h[k]; }, vals = function (x) { return k === 'el' && x.el2 ? [x.el, x.el2] : k === 'race' && x.race2 ? [x.h.race, x.race2] : [val(x)]; }; /* 단상 종족도 쳐요 */ // 진영은 발판으로 더해진 것까지 // 속성은 발판으로 바뀐 값
       if (v === '*') { var c = {}; T.forEach(function (x) { vals(x).forEach(function (q) { c[q] = (c[q] || 0) + 1; }); }); v = Object.keys(c).reduce(function (a, b) { return c[b] > (c[a] || 0) ? b : a; }, null); }
       var vs = [].concat(v); return function (x) { return vals(x).some(function (q) { return vs.indexOf(q) >= 0; }); };
     }
@@ -322,7 +322,7 @@
     function afterUlt(u, healed) { var T = alive(team(u.side));
       if (has(u, 'ultRefund')) u.energy = Math.min(B.energyMax, u.pv);
       if (has(u, 'ultStack')) u.ultStk = Math.min(PP(u).max || 5, (u.ultStk || 0) + 1);
-      if (has(u, 'ultBeastEnergy')) T.forEach(function (x) { if (x !== u && x.h.race === 'beast') gainEnergy(x, u.pv); });
+      if (has(u, 'ultBeastEnergy')) T.forEach(function (x) { if (x !== u && (x.h.race === 'beast' || x.race2 === 'beast')) gainEnergy(x, u.pv); });
       if (has(u, 'ultHasteShielded')) T.forEach(function (x) { if (x.shield > 0) { x.haste = PP(u).dur || 3; x.hasteAmt = Math.max(x.hasteAmt || 0, u.pv); } });
       if (has(u, 'healSteal') && healed > 0) { var F = alive(foes(u)); if (F.length) skillHurt(F.reduce(function (m, x) { return x.hp / x.maxHp < m.hp / m.maxHp ? x : m; }), healed * u.pv, u); }
       holders(u.side, 'allyUltEnergy').forEach(function (a) { if (a !== u) gainEnergy(a, a.pv); }); }
@@ -506,6 +506,7 @@
     if (kind === 'merc') { ev.id = pickHeroByGrade(data, rnd, plv); ev.price = mercPrice(data, ev.id, n); }
     if (kind === 'mobs') rollMobs(data, n, rnd, plv, ev);
     if (kind === 'mimic') rollMimic(data, n, rnd, plv, ev);
+    if (kind === 'dais') ev.tag = rollDais(data, rnd);
     if (kind === 'fairy') { ev.ids = []; var FY = V.fairy || {}; if ((FY.triggerAt || []).indexOf(n) >= 0) { var W = data.player ? perk(data, plv).shopGrade : null, tp = skillPool(data).filter(function (x) { return x.trigger && (!W || W[(x.grade || 1) - 1] > 0); }); // 2026-11-23: 플레이어 레벨 등급 확률로 (1레벨에 전설 안 나오게)
       while (ev.ids.length < (FY.count || 4) && tp.length) { var tw = tp.reduce(function (s, x) { return s + (W ? W[(x.grade || 1) - 1] : 1); }, 0), tr = rnd() * tw, ti = 0; while (ti < tp.length - 1 && (tr -= (W ? W[(tp[ti].grade || 1) - 1] : 1)) >= 0) ti++; ev.ids.push(tp.splice(ti, 1)[0].id); } return ev; } // 연계 유물만
        for (var fi = 0; fi < ((V.fairy || {}).count || 4); fi++) { var fs0 = rollShop(data, rnd, plv, ev.ids.map(function (x) { return { id: x, level: 1 }; }), opts && opts.team); if (fs0.length) ev.ids.push(fs0[Math.floor(rnd() * fs0.length)]); } } // 요정: 겹치지 않는 유물 후보
@@ -534,7 +535,11 @@
     return ev; }
   // 몹 무리 전리품 칸: 몹을 쓰러뜨렸으면(units: 전투 결과) 그 몹의 drops 칸 전부, 아니면 빈 배열. units가 없으면 전부
   // 진영 발판: pads = { 전장 칸 번호: 속성 }. 그 칸에 선 영웅은 전투 동안 그 진영이 더해져요(원래 진영 + 발판 진영 둘 다: 시너지·진영 조건 유물에 쳐요. 상성·속성 효과는 원래 진영)
-  function padTeam(team, pads) { return !pads ? team : team.map(function (x) { var el = pads[x.slot]; if (!el) return x; var y = {}; for (var q in x) y[q] = x[q]; y.el2 = el; return y; }); }
+  function padTeam(team, pads) { return !pads ? team : team.map(function (x) { var el = pads[x.slot]; if (!el) return x; var y = {}; for (var q in x) y[q] = x[q]; if (String(el).indexOf('r:') === 0) y.race2 = el.slice(2); else y.el2 = el; return y; }); } // 단상(2026-11-26): 'r:종족'이면 종족, 아니면 속성
+  // 단상 1개 뽑기: 'r:beast' 같은 종족이나 'fire' 같은 속성. not을 주면 그것과 다른 걸 뽑아요(다시 돌리기)
+  function rollDais(data, rnd, not) { var DS = (data.events && data.events.dais) || {}, K = DS.kinds || { race: 1, el: 1 }, rc = Object.keys(data.races || {}).filter(function (r) { return r !== 'monster'; }).map(function (r) { return 'r:' + r; }), el = Object.keys(data.elements.names);
+    for (var tries = 0; tries < 20; tries++) { var pool = rnd() * ((K.race || 0) + (K.el || 0)) < (K.race || 0) ? rc : el, v = pool[Math.floor(rnd() * pool.length)]; if (v !== not) return v; } return v; }
+  function daisRerolls(data, plv) { var P = data.player && data.player.daisReroll; return P ? P[Math.max(0, Math.min((plv || 1) - 1, P.length - 1))] : 0; }
   // 돈고블린 홀짝: 걸 골드(스테이지 n), 결과 판정. pick = 'odd' | 'even', roll = 1~6 같은 숫자
   // 돈고블린 룰렛(2026-11-26): 한 번 돌리는 값, 레벨별 횟수, 후보(골드 칸 = 낸 값 × goldWin)
   function grollCost(data, n, plv) { var G = data.events.groll || {}; return Math.max(1, Math.round(stageReward(data, n, 0, null, plv) * (G.cost || 1))); }
@@ -915,6 +920,7 @@
           var host = units.filter(function (x) { return team.some(function (t) { return t.uid === x.uid; }) && canTranscend(data, x, wk); }).sort(function (a, b) { return (canTranscend(data, b, wk) === 'up') - (canTranscend(data, a, wk) === 'up'); })[0];
           if (host) { transcend(data, units, host.uid, wk.uid); recruits.transcend = (recruits.transcend || 0) + 1; } });
         continue; }
+      if (ev && ev.kind === 'dais') { /* 봇: 다시 돌리지 않고, 단상 없는 전장 영웅 칸에 놓아요. max개면 가장 먼저 놓은 단상을 바꿔요 */ events.dais.got = (events.dais.got || 0) + 1; var DM = (data.events.dais || {}).max || 2, pk = Object.keys(pads); if (pk.length >= DM) delete pads[pk[0]]; var tsl = team.map(function (x) { return x.slot; }).filter(function (s) { return s != null && !pads[s]; }); if (tsl.length) pads[tsl[0]] = ev.tag; continue; }
       if (ev && ev.kind === 'groll') { events.groll = events.groll || { passed: 0 }; events.groll.passed++; continue; } // 봇: 돈고블린 룰렛은 안 돌리고 지나가요
       if (ev && ev.kind === 'oddeven') { events.oddeven.passed = (events.oddeven.passed || 0) + 1; continue; } // 봇: 내기는 안 하고 지나가요(기대값 0)
       if (ev && ev.kind === 'fairy') { if (ev.ids.length) { var fid = ev.ids[lootPick(data, ev.ids, plv, rnd)]; if (canTake(data, skills, fid, data.player ? perk(data, plv).skillSlots : 0)) takeSkill(data, skills, fid); } continue; } // 요정: 룰렛으로 유물 1개
@@ -1016,6 +1022,6 @@
   var api = { battle: battle, createBattle: createBattle, stageTeam: stageTeam, heroLevel: heroLevel, levelPickRoll: levelPickRoll, levelPickKind: levelPickKind, skillUp: skillUp, startExtras: startExtras, bellFx: bellFx, stageLevel: stageLevel, stageName: stageName, stageCount: stageCount, autoFormation: autoFormation,
     campaign: campaign, compare: compare, lossDamage: lossDamage, lossGold: lossGold, dmgFrac: dmgFrac, levelCost: levelCost, heroById: heroById, makeRng: makeRng,
     costCap: costCap, starMul: starMul, gradeMul: gradeMul, heroGrade: heroGrade, pickHeroByGrade: pickHeroByGrade, effectLevels: effectLevels, relicPowerMul: relicPowerMul, passiveValue: passiveValue, power: power, newUnit: newUnit, canMerge: canMerge, mergeUnits: mergeUnits, autoMerge: autoMerge, gainUnit: gainUnit,
-    skillById: skillById, heroSellPrice: heroSellPrice, relicTargets: relicTargets, heroBonus: heroBonus, isBoss: isBoss, critChance: critChance, lootPool: lootPool, lootPick: lootPick, chestGrade: chestGrade, chestTiers: chestTiers, mobLoot: mobLoot, grollCost: grollCost, grollSpins: grollSpins, rollGroll: rollGroll, oddEvenBet: oddEvenBet, oddEvenResult: oddEvenResult, padTeam: padTeam, lootParse: lootParse, lootRerollPrice: lootRerollPrice, rerollMax: rerollMax, rollEvent: rollEvent, rollCampfire: rollCampfire, campfireAtStart: campfireAtStart, stageReward: stageReward, bellMax: bellMax, bellGold: bellGold, rollMerchant: rollMerchant, isEventStage: isEventStage, unitSkills: unitSkills, canTranscend: canTranscend, transcend: transcend, unitBattleSpec: unitBattleSpec, unitPower: unitPower, skillPool: skillPool, merchantPrice: merchantPrice, merchantOff: merchantOff, merchantNoBattle: merchantNoBattle, chestReward: chestReward, rollScroll: rollScroll, mercPrice: mercPrice, skillPrice: skillPrice, skillManaPrice: skillManaPrice, skillBuyPrice: skillBuyPrice, skillGradeNow: skillGradeNow, skillMaxLevel: skillMaxLevel, refreshPrice: refreshPrice, rollShop: rollShop, rollShopHeroes: rollShopHeroes, canTake: canTake, takeSkill: takeSkill, playerLevel: playerLevel, perk: perk, skillSellPrice: skillSellPrice, sellSkill: sellSkill };
+    skillById: skillById, heroSellPrice: heroSellPrice, relicTargets: relicTargets, heroBonus: heroBonus, isBoss: isBoss, critChance: critChance, lootPool: lootPool, lootPick: lootPick, chestGrade: chestGrade, chestTiers: chestTiers, mobLoot: mobLoot, grollCost: grollCost, grollSpins: grollSpins, rollGroll: rollGroll, oddEvenBet: oddEvenBet, oddEvenResult: oddEvenResult, padTeam: padTeam, lootParse: lootParse, lootRerollPrice: lootRerollPrice, rerollMax: rerollMax, rollEvent: rollEvent, rollDais: rollDais, daisRerolls: daisRerolls, rollCampfire: rollCampfire, campfireAtStart: campfireAtStart, stageReward: stageReward, bellMax: bellMax, bellGold: bellGold, rollMerchant: rollMerchant, isEventStage: isEventStage, unitSkills: unitSkills, canTranscend: canTranscend, transcend: transcend, unitBattleSpec: unitBattleSpec, unitPower: unitPower, skillPool: skillPool, merchantPrice: merchantPrice, merchantOff: merchantOff, merchantNoBattle: merchantNoBattle, chestReward: chestReward, rollScroll: rollScroll, mercPrice: mercPrice, skillPrice: skillPrice, skillManaPrice: skillManaPrice, skillBuyPrice: skillBuyPrice, skillGradeNow: skillGradeNow, skillMaxLevel: skillMaxLevel, refreshPrice: refreshPrice, rollShop: rollShop, rollShopHeroes: rollShopHeroes, canTake: canTake, takeSkill: takeSkill, playerLevel: playerLevel, perk: perk, skillSellPrice: skillSellPrice, sellSkill: sellSkill };
   if (typeof module !== 'undefined') module.exports = api; else root.IdleEngine = api;
 })(this);
