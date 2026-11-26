@@ -2858,10 +2858,9 @@ img.rimg{image-rendering:auto!important}
 #trWin .rbtns{margin-top:8px;display:flex;justify-content:center;gap:10px}
 #trWin .trinfo{align-self:center!important;height:360px!important;margin:0!important}
 #trWin .rbtns button.go{height:39px;min-width:78px;padding:10px 22px;font:700 16px var(--display);box-sizing:border-box}
-/* 초월 팝업과 상세 창을 16px 겹쳐 한 덩어리로: 팝업이 위, 상세는 왼쪽 여백을 늘려 내용 안 가림 (2026-11-26 사용자: "1,2열 창 겹치게 해") */
+/* 초월 팝업과 상세 창은 틈·겹침 없이 맞붙임 (2026-11-26 사용자: "붙게 하라는 의미였어") */
 #trWin{gap:0!important}
-#trWin .rbox{position:relative!important;z-index:3}
-#trWin .trinfo{margin-left:-16px!important;padding-left:30px!important;width:276px!important;z-index:2}
+#trWin .trinfo{margin:0!important;align-self:center!important}
 /* 결과 창: 닫힌 상자(0)로 놓였다가 열릴 때 0→3 */
 #mimicPop .mmc b{left:-7px;right:-7px;top:-14px;background:url(img/p/mimic_open.png) 0 0/400% 100% no-repeat}
 #mimicPop .mmc.g2 b{background-image:url(img/p/mimic_g2_open.png)!important}
@@ -5449,7 +5448,8 @@ img.rimg{image-rendering:auto!important}
     var r = w.querySelector('.trres'); r.hidden = false; r.innerHTML = ultIcon(hm, 40) + '<b>[' + sk + '] 획득</b>';
     w.querySelector('.trlist').hidden = true; w.querySelector('.spX').hidden = true; trSeen = trDone.uid; trInfo(w.querySelector('.trinfo')); trBag();
     var b = w.querySelector('.rbtns button'); b.textContent = '확인'; b.dataset.tr = 'ok'; b.disabled = false; }
-  function trRender(){ var w = $('trWin'); if (!w) return; if (trDone) return trResult(w); var a = altA != null && U(altA), m = altM != null && U(altM), kind = a && m ? trKind(a, m) : null, st = w.querySelector('.trstage');
+  function trFit(){ var w = $('trWin'); if (!w) return; var b = w.querySelector('.rbox'), i = w.querySelector('.trinfo'); if (b && i) i.style.setProperty('height', b.offsetHeight + 'px', 'important'); } /* 두 창 높이 맞춤 */
+  function trRender(){ var w = $('trWin'); if (!w) return; setTimeout(trFit, 0); if (trDone) return trResult(w); var a = altA != null && U(altA), m = altM != null && U(altM), kind = a && m ? trKind(a, m) : null, st = w.querySelector('.trstage');
     st.innerHTML = trSlot('A', altA) + '<i class="trarrow' + (kind ? ' on' : '') + '"></i>' + trSlot('M', altM); /* 화살표는 재료 -> 메인 (왼쪽) */
     st.querySelectorAll('.trslot').forEach(function(s){ var x = U(s.dataset.tr === 'A' ? altA : altM); pedestal(s, x ? HG(x.id).col : '#6b6478'); });
     trInfo(w.querySelector('.trinfo'));
@@ -5505,12 +5505,12 @@ img.rimg{image-rendering:auto!important}
     m.hidden = true; } /* 예전 상인 그림(merchant.png)이 새 상인 위에 겹쳐 있던 자리: 안 띄움 */
   // ───── 위험 종: 누를 때마다 0→1→2→3→0. 길게 누르거나 우클릭하면 0 ─────
   var BELLIMG = {}; [1, 2, 3].forEach(function(n){ var im = new Image(); im.onload = function(){ BELLIMG[n] = true; renderBell(); }; im.src = 'img/p/ui_foe' + n + '.png'; });
-  function renderTalk(){ var t = $('talkBtn'); if (t) t.querySelector('.tic').innerHTML = campImg('ui_talk', '💬', 'timg'); var et = $('evTalk'); if (et) et.querySelector('.eai').innerHTML = campImg('ui_talk', '💬', 'timg'); }
+  function renderTalk(){ var t = $('talkBtn'); if (t) t.querySelector('.tic').innerHTML = campImg('ui_talk', '💬', 'timg'); var et = $('evTalk'); if (et) et.querySelector('.eai').innerHTML = isMerch() ? '<img class="timg" src="img/p/ev_merc.png" alt="">' : campImg('ui_talk', '💬', 'timg'); } /* 방랑상인 판만 두루마리 (2026-11-26 사용자) */
   function grollBtn(gr){ var b = $('evBet'), lab = b.querySelector('b'), dots = b.querySelector('.oedots'), n = $('grLeft'); if (!n){ n = document.createElement('span'); n.id = 'grLeft'; n.className = 'grleft'; b.parentNode.insertBefore(n, b); }
     b.classList.toggle('groll', gr); var ti = b.querySelector('.timg'), want = gr ? 'img/p/ev_goblin.png' : 'img/p/hud_gold.png'; if (ti && ti.getAttribute('src') !== want) ti.src = want; n.hidden = true; if (dots) dots.hidden = gr;
     if (!gr){ lab.textContent = '돈 넣기'; return; } lab.textContent = '룰렛 돌리기'; b.disabled = !!S.offer || !!S.pending || !!(S.event && S.event.grEnd); }
   function updEvActs(){ var box = $('evActs'); if (!box) return; var ok = !bt && !isLvPick() && !isFork(), tk = ok && (isCamp() || isFairy() || isMerch()), busy = !!S.offer || !!S.pending;
-    $('evTalk').hidden = !tk; $('evTalk').disabled = busy; $('evTalk').classList.toggle('busyhide', busy); $('evBet').classList.toggle('busyhide', oeBusy); var oe = ok && isOddEven(), k = oeK(), mx = oeMax(), gr = ok && isGroll(); $('evBet').hidden = !oe && !gr; box.hidden = !tk && !oe && !gr; grollBtn(gr);
+    $('evTalk').hidden = !tk; if (tk && $('evTalk').dataset.k !== String(isMerch())){ $('evTalk').dataset.k = String(isMerch()); renderTalk(); } $('evTalk').disabled = busy; $('evTalk').classList.toggle('busyhide', busy); $('evBet').classList.toggle('busyhide', oeBusy); var oe = ok && isOddEven(), k = oeK(), mx = oeMax(), gr = ok && isGroll(); $('evBet').hidden = !oe && !gr; box.hidden = !tk && !oe && !gr; grollBtn(gr);
     if (oe){ $('evBet').disabled = oeBusy || k >= mx || S.gold < E.oddEvenBet(D, S.stage); $('evBet').querySelectorAll('.oedots i').forEach(function(d, i){ d.classList.toggle('on', i < k); d.hidden = i >= mx; }); } } /* 말 걸기: 위 가운데(종·초월 자리) */
   function renderBell(){ renderTalk(); var b = $('bellBtn'); if (!b || !D.bell) { if (b) b.hidden = true; return; } if ((bt && curEv && curEv.kind === 'chest') || (!bt && S.event && S.event.kind === 'chest')){ b.hidden = true; return; } /* 보물상자 판: 용 버튼 없음 */
     var B = D.bell, mx = bellMax(), n = Math.min((bt ? curBell : S.bell) || 0, mx), bStg = bt ? curStage : S.stage, bEv = bt ? curEv : S.event, /* 전투 중엔 시작할 때 값 */ im = BELLIMG[Math.max(1, n)];
