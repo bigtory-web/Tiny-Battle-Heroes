@@ -2734,8 +2734,6 @@ img.rimg{image-rendering:auto!important}
 /* 이름 줄은 상점과 같은 주황 (2026-11-26 사용자: "호버팁도 이름은 주황") */
 .tip b.tipn,.hi-top b,.hi-skh b{color:#ff9a3a!important}
 /* 돈고블린 룰렛만 (2026-11-26 사용자 정정: "고블린 룰렛만 해야 하는데"): 바깥 모서리를 3px 계단 5단(15px)으로 (2026-11-26 사용자: "약간만 일단 깎고"). 안쪽 칸·버튼은 사각 */
-#roul .rbox.groll{background:none!important;box-shadow:none!important;border:0 solid transparent!important;border-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64' shape-rendering='crispEdges'%3E%3Cpath fill='%2317141d' fill-rule='evenodd' d='M0 15L3 15L3 12L6 12L6 9L9 9L9 6L12 6L12 3L15 3L15 0L49 0L49 3L52 3L52 6L55 6L55 9L58 9L58 12L61 12L61 15L64 15L64 49L61 49L61 52L58 52L58 55L55 55L55 58L52 58L52 61L49 61L49 64L15 64L15 61L12 61L12 58L9 58L9 55L6 55L6 52L3 52L3 49L0 49ZM3 18L6 18L6 15L9 15L9 12L12 12L12 9L15 9L15 6L18 6L18 3L46 3L46 6L49 6L49 9L52 9L52 12L55 12L55 15L58 15L58 18L61 18L61 46L58 46L58 49L55 49L55 52L52 52L52 55L49 55L49 58L46 58L46 61L18 61L18 58L15 58L15 55L12 55L12 52L9 52L9 49L6 49L6 46L3 46Z'/%3E%3Cpath fill='%235d5470' fill-rule='evenodd' d='M3 18L6 18L6 15L9 15L9 12L12 12L12 9L15 9L15 6L18 6L18 3L46 3L46 6L49 6L49 9L52 9L52 12L55 12L55 15L58 15L58 18L61 18L61 46L58 46L58 49L55 49L55 52L52 52L52 55L49 55L49 58L46 58L46 61L18 61L18 58L15 58L15 55L12 55L12 52L9 52L9 49L6 49L6 46L3 46ZM6 21L9 21L9 18L12 18L12 15L15 15L15 12L18 12L18 9L21 9L21 6L43 6L43 9L46 9L46 12L49 12L49 15L52 15L52 18L55 18L55 21L58 21L58 43L55 43L55 46L52 46L52 49L49 49L49 52L46 52L46 55L43 55L43 58L21 58L21 55L18 55L18 52L15 52L15 49L12 49L12 46L9 46L9 43L6 43Z'/%3E%3Cpath fill='%2317141d' fill-rule='evenodd' d='M6 21L9 21L9 18L12 18L12 15L15 15L15 12L18 12L18 9L21 9L21 6L43 6L43 9L46 9L46 12L49 12L49 15L52 15L52 18L55 18L55 21L58 21L58 43L55 43L55 46L52 46L52 49L49 49L49 52L46 52L46 55L43 55L43 58L21 58L21 55L18 55L18 52L15 52L15 49L12 49L12 46L9 46L9 43L6 43ZM8 23L11 23L11 20L14 20L14 17L17 17L17 14L20 14L20 11L23 11L23 8L41 8L41 11L44 11L44 14L47 14L47 17L50 17L50 20L53 20L53 23L56 23L56 41L53 41L53 44L50 44L50 47L47 47L47 50L44 50L44 53L41 53L41 56L23 56L23 53L20 53L20 50L17 50L17 47L14 47L14 44L11 44L11 41L8 41Z'/%3E%3Cpath fill='%232a2533' fill-opacity='.78' d='M8 23L11 23L11 20L14 20L14 17L17 17L17 14L20 14L20 11L23 11L23 8L41 8L41 11L44 11L44 14L47 14L47 17L50 17L50 20L53 20L53 23L56 23L56 41L53 41L53 44L50 44L50 47L47 47L47 50L44 50L44 53L41 53L41 56L23 56L23 53L20 53L20 50L17 50L17 47L14 47L14 44L11 44L11 41L8 41Z'/%3E%3C/svg%3E") 28 fill / 28px stretch!important}
-#roul .rbox.groll > #rX{margin:6px 0 0 6px}
 /* 방랑상점 할인율 = 구매 버튼 왼쪽 위 작은 빨간 딱지 */
 #shopBuy{position:relative;overflow:visible!important}
 #shopBuy .boff{position:absolute;left:-6px;top:-9px;z-index:3;padding:0 4px;font:400 12px/15px var(--display);font-style:normal;color:#fff;background:#d8443e;box-shadow:inset 0 0 0 1px #17141d,0 0 0 1px #17141d;text-shadow:none;pointer-events:none}
@@ -2751,11 +2749,9 @@ img.rimg{image-rendering:auto!important}
 /* 돈고블린 전구 */
 #roul .rstage > .rbulbs{display:none}
 #roul .rbox.groll .rstage > .rbulbs{display:block;position:absolute;inset:4px;z-index:6;pointer-events:none}
-#roul .rbulbs s{position:absolute;width:6px;height:6px;margin:-3px 0 0 -3px;text-decoration:none;background:#6b5420;box-shadow:0 0 0 1px #17141d;animation:bulbon 1.2s steps(1) infinite}
-#roul .rbulbs s.o{animation-delay:-.6s}
+#roul .rbulbs s{position:absolute;width:6px;height:6px;margin:-3px 0 0 -3px;text-decoration:none;background:#ffe27a;box-shadow:0 0 0 1px #17141d,0 0 4px 1px rgba(255,210,80,.6)}
 #roul .rbox.groll.spin .rbulbs s{animation:bulbrun .48s steps(1) infinite;animation-delay:var(--d)}
-#roul .rbox.groll.reveal:not(.still) .rbulbs s{animation:bulbflash .6s steps(1) 1,bulbon 1.2s steps(1) .6s infinite}
-#roul .rbox.groll.reveal:not(.still) .rbulbs s.o{animation:bulbflash .6s steps(1) 1,bulbon 1.2s steps(1) 1.2s infinite}
+#roul .rbox.groll.reveal:not(.still):not(.spin) .rbulbs s{animation:bulbflash .6s steps(1) 1}
 @keyframes bulbon{0%{background:#ffe27a;box-shadow:0 0 0 1px #17141d,0 0 5px 1px rgba(255,210,80,.8)}50%{background:#6b5420;box-shadow:0 0 0 1px #17141d}}
 @keyframes bulbrun{0%{background:#fff3b0;box-shadow:0 0 0 1px #17141d,0 0 6px 2px rgba(255,220,90,.9)}25%,100%{background:#6b5420;box-shadow:0 0 0 1px #17141d}}
 @keyframes bulbflash{0%,66%{background:#fffbe0;box-shadow:0 0 0 1px #17141d,0 0 8px 3px rgba(255,230,120,1)}33%{background:#6b5420;box-shadow:0 0 0 1px #17141d}}
@@ -2833,6 +2829,23 @@ img.rimg{image-rendering:auto!important}
 #mimicPop .mmc.king b{background:url(img/p/mimic_king.png) 50% 100%/104px 104px no-repeat}
 #mimicPop .mmc.king::after{display:none}
 #mimicPop .mmrow{height:116px}
+/* 돈고블린 레버: 팝업 오른쪽 바깥 (사각 버튼 규칙의 예외) */
+#roul .rbox:not(.groll) > #rSpin,#roul #rSpin[hidden]{display:none!important}
+#roul .rbox > #rSpin.glever{position:absolute;left:calc(100% + 8px);top:50%;margin-top:-86px;z-index:6;width:60px;padding:0;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;min-width:0;height:auto}
+#rSpin .lvbox{position:relative;display:block;width:44px;height:112px}
+#rSpin .lvbase{position:absolute;left:4px;bottom:0;width:36px;height:30px;background:#5d5470;box-shadow:inset 0 0 0 2px #17141d,inset 0 5px 0 -1px #8c8399}
+#rSpin .lvrod{position:absolute;left:18px;bottom:24px;width:8px;height:66px;background:#d9dde8;box-shadow:inset 0 0 0 2px #17141d;transform-origin:50% 100%}
+#rSpin .lvknob{position:absolute;left:8px;top:0;width:28px;height:28px;background:#d8443e;box-shadow:inset 4px 4px 0 #ff8a80,inset -4px -4px 0 #8a1f1c;clip-path:polygon(8px 0,20px 0,20px 4px,24px 4px,24px 8px,28px 8px,28px 20px,24px 20px,24px 24px,20px 24px,20px 28px,8px 28px,8px 24px,4px 24px,4px 20px,0 20px,0 8px,4px 8px,4px 4px,8px 4px)}
+#rSpin.pull .lvknob{animation:lvpullk .6s steps(6)}
+#rSpin.pull .lvrod{animation:lvpullr .6s steps(6)}
+@keyframes lvpullk{40%{transform:translateY(52px)}}
+@keyframes lvpullr{40%{transform:scaleY(.2)}}
+#rSpin b{font:400 14px var(--display);color:#ffd34d;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d;padding:2px 5px;background:rgba(23,20,29,.88)}
+#rSpin small{font:400 12px var(--display);color:#f3e6c4;padding:1px 5px;background:rgba(23,20,29,.88)}
+#rSpin.z small{color:#ff8a80}
+#rSpin:disabled{cursor:default}
+#rSpin:disabled .lvbox{filter:grayscale(1) brightness(.6)}
+#rSpin:disabled b{color:#b8b0c4}
 </style>
 </head>
 <body>
@@ -3649,7 +3662,7 @@ img.rimg{image-rendering:auto!important}
     if (S.offerMode === 'mobs'){ $('rAgain').hidden = true; $('roul').querySelectorAll('.rstrip span').forEach(function(sp){ sp.classList.add('res'); }); $('roul').querySelector('.rmeta').textContent = ''; }
     if (S.offerMode === 'fairy'){ if (!(D.recruit.reroll || {}).fairy) $('rAgain').hidden = true; $('rX').hidden = !decided || pend; } /* reroll.fairy면 요정 룰렛도 리셋 */
     if (S.offerMode === 'camp' || S.offerMode === 'lvpick'){ $('rAgain').hidden = true; $('rX').hidden = !decided || pend; }
-    if (S.offerMode === 'groll'){ $('rAgain').hidden = true; $('rNo').hidden = decided || pend; $('rNo').textContent = '포기'; $('rX').hidden = false; $('rX').disabled = !decided; /* 결과 정하기 전: 닫기 막음(회색) */ if ($('rSpin')) $('rSpin').hidden = true; $('rLeft').hidden = true; } /* 리셋 없음: 받기 / 포기 */
+    if (S.offerMode === 'groll'){ $('rAgain').hidden = true; $('rNo').hidden = decided || pend; $('rNo').textContent = '포기'; $('rX').hidden = false; $('rX').disabled = !decided; /* 결과 정하기 전: 닫기 막음(회색) */ if ($('rSpin')){ $('rSpin').hidden = false; leverState(); } $('rLeft').hidden = true; } /* 리셋 없음: 받기 / 포기 */
     $('rRes').hidden = true; $('rRes').innerHTML = S.offerLast || '';
     $('rPend').hidden = !pend; $('rPend').innerHTML = pend ? pendHtml() : ''; $('roul').querySelector('.rbox').classList.toggle('pendmode', pend);
     if (decided) $('roul').querySelector('.rmeta').textContent = '';
@@ -5244,15 +5257,15 @@ img.rimg{image-rendering:auto!important}
     S.offerMode = 'groll'; S.offerDecided = false; S.offerGone = []; offerIds = S.offerIds = pool.slice(); startRoulette(pool, pool.indexOf(S.roulAt) >= 0 ? S.roulAt : pool[0], true);
     box.classList.add('groll'); box.classList.remove('spin', 'pendmode', 'camp'); box.querySelector('.rmeta').textContent = '';
     $('rWait').hidden = true; $('rRes').hidden = true; $('rPend').hidden = true; box.querySelector('.rbtns').hidden = false; ['rYes', 'rNo', 'rAgain', 'rExit'].forEach(function(b){ $(b).hidden = true; });
-    var sp = $('rSpin'); if (!sp){ sp = document.createElement('button'); sp.id = 'rSpin'; sp.type = 'button'; sp.className = 'go'; box.querySelector('.rbtns').insertBefore(sp, $('rYes')); sp.addEventListener('click', function(){ if (!this.disabled) grollSpin(); }); }
-    sp.hidden = false; sp.textContent = '돌리기 ' + cost.toLocaleString() + 'G'; sp.disabled = !left || S.gold < cost;
-    var rl = $('rLeft'); rl.hidden = false; rl.textContent = left + '/' + mx; rl.classList.toggle('z', !left); $('rX').hidden = false; $('rX').disabled = false; }
+    var sp = $('rSpin'); if (!sp){ sp = document.createElement('button'); sp.id = 'rSpin'; sp.type = 'button'; sp.className = 'glever'; sp.title = '레버를 당겨 돌리기'; sp.innerHTML = '<i class="lvbox"><i class="lvrod"></i><i class="lvknob"></i><i class="lvbase"></i></i><b></b><small></small>'; box.appendChild(sp); sp.addEventListener('click', function(){ if (this.disabled) return; this.classList.remove('pull'); void this.offsetWidth; this.classList.add('pull'); grollSpin(); }); } /* 돌리기 = 레버 (2026-11-26 사용자) */
+    sp.hidden = false; leverState(); $('rLeft').hidden = true; $('rX').hidden = false; $('rX').disabled = false; }
+  function leverState(){ var sp = $('rSpin'); if (!sp) return; var cost = E.grollCost(D, S.stage, plv()), mx = E.grollSpins(D, plv()), left = Math.max(0, mx - grollUsed()); sp.querySelector('b').textContent = cost.toLocaleString() + 'G'; sp.querySelector('small').textContent = left + '/' + mx; sp.classList.toggle('z', !left); sp.disabled = !!S.offer || !left || S.gold < cost; } /* 다 쓰거나 골드 부족, 받기·포기 전엔 회색 */
   function grollClose(){ grOpen = false; S.offerMode = null; save(); $('roul').hidden = true; var b = $('roul').querySelector('.rbox'); delete b.dataset.grs; if ($('rSpin')) $('rSpin').hidden = true; renderAll(); }
   function grollHtml(){ var gx = 506, gy = 184; return '<div class="unit cfh oegob" style="left:' + (100 * gx / W) + '%;top:' + (100 * (gy + OFF + FOOT) / H) + '%;z-index:' + gy + '"><div class="cfslot"><i class="dlr" role="img" aria-label="돈고블린"></i></div></div>'; }
-  function grollSpin(){ if (!isGroll() || S.offer || S.pending) return; if ($('rSpin')) $('rSpin').hidden = true; var cost = E.grollCost(D, S.stage, plv()), n = grollUsed(); if (n >= E.grollSpins(D, plv()) || S.gold < cost) return;
+  function grollSpin(){ if (!isGroll() || S.offer || S.pending) return; var cost = E.grollCost(D, S.stage, plv()), n = grollUsed(); if (n >= E.grollSpins(D, plv()) || S.gold < cost) return;
     var c = grollPool(); if (!c || !c.length) return;
     
-    S.gold -= cost; S.grollN = { st: S.stage, n: n + 1 }; S.offer = c[E.lootPick(D, c, plv(), Math.random)]; offerIds = S.offerIds = c.slice(); S.offerPlv = null; S.offerMode = 'groll'; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; save(); oeCoins(document.querySelector('#hud .goldit'), document.querySelector('#field .oegob'), 4); renderAll(); startRoulette(offerIds, S.offer); }
+    S.gold -= cost; S.grollN = { st: S.stage, n: n + 1 }; S.offer = c[E.lootPick(D, c, plv(), Math.random)]; offerIds = S.offerIds = c.slice(); S.offerPlv = null; S.offerMode = 'groll'; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; save(); oeCoins(document.querySelector('#hud .goldit'), document.querySelector('#field .oegob'), 4); renderAll(); startRoulette(offerIds, S.offer); leverState(); }
   function finishGroll(){ grOpen = false; S.grollN = null; S.event = nextEvent(false); S.bell = 0; S.bellGold = 0; save(); evGo(); }
   function oddEvenHtml(){ var bet = E.oddEvenBet ? E.oddEvenBet(D, S.stage) * oeK() : 0, ok = oeK() > 0 && !oeBusy, gx = 506, gy = 184; /* 2026-11-24: 적 쪽 5번 칸(보물상자와 같은 자리) */
     return '<div class="unit cfh oegob" style="left:' + (100 * gx / W) + '%;top:' + (100 * (gy + OFF + FOOT) / H) + '%;z-index:' + gy + '"><div class="cfslot">' + av('goblin') + '</div></div>' +
