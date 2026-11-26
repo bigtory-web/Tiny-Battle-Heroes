@@ -5300,7 +5300,7 @@ img.rimg{image-rendering:auto!important}
     var sp = $('rSpin'); if (!sp){ sp = document.createElement('button'); sp.id = 'rSpin'; sp.type = 'button'; sp.className = 'go'; box.querySelector('.rbtns').insertBefore(sp, $('rYes')); sp.addEventListener('click', function(){ if (!this.disabled){ leverPull(); grollSpin(); } }); }
     leverDeco(box);
     sp.hidden = false; sp.textContent = '돌리기 ' + cost.toLocaleString() + 'G'; sp.disabled = !left || S.gold < cost;
-    var rl = $('rLeft'); rl.hidden = false; rl.textContent = left + '/' + mx; rl.classList.toggle('z', !left); $('rX').hidden = false; $('rX').disabled = false; }
+    var rl = $('rLeft'); rl.hidden = false; rl.textContent = '횟수 ' + (mx - left) + '/' + mx; rl.classList.toggle('z', !left); $('rX').hidden = false; $('rX').disabled = false; }
   /* 레버는 꾸밈 (누를 수 없음): 돌리기 버튼을 누르면 저절로 당겨짐 (2026-11-26 사용자: "그냥 디자인 말한 거였어") */
   function leverDeco(box){ if (box.querySelector(':scope > #grLever')) return; box.insertAdjacentHTML('beforeend', '<i id="grLever" aria-hidden="true"><i class="lvrod"></i><i class="lvknob"></i><i class="lvbase"></i></i>'); }
   function leverPull(){ var l = $('grLever'); if (!l) return; l.classList.remove('pull'); void l.offsetWidth; l.classList.add('pull'); }
