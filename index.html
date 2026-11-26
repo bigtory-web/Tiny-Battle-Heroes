@@ -2815,9 +2815,10 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
         top = cur.filter(function(h){ return inPool(h) && heroPass(h); }).sort(gSort), low = cur.filter(function(h){ return !inPool(h) && heroPass(h); }).sort(gSort),
         own = cur.filter(function(h){ return owns(h.id); }).length, all = cur.length,
         cell = function(h){ var o = owns(h.id); return '<button class="cdxc' + (o ? ' own' : ' unk') + (cdxSel === 'h:' + h.id ? ' sel' : '') + '" data-cdx="h:' + h.id + '" style="--el:' + ELC[h.el] + ';--gcol:' + HG(h.id).col + '"><span class="cdxp hic" style="--hg:' + HG(h.id).col + '">' + avO(h.id) + '</span><b>' + h.name + '</b>' + (h.alias ? '<i class="alias">' + h.alias + '</i>' : '') + (teamHasId(h.id) ? '<em>출전</em>' : '') + '</button>'; };
-      var cq = qCss(100, 66); $('hlist').style.setProperty('--cdq', cq.css + 'px'); OUTLN = cq.k; setTimeout(function(){ OUTLN = 0; }, 0);
+      var cq = qCss(100, 66); $('hlist').style.setProperty('--cdq', cq.css + 'px'); OUTLN = cq.k;
       html = '<div class="cdxcount">영웅 ' + own + ' / ' + all + '</div><div class="cdxgrid hg">' + top.map(cell).join('') + '</div>' +
         (low.length ? '<div class="cdxsec">안 쓰는 영웅 <small>지금 게임에는 나오지 않아요</small></div><div class="cdxgrid hg">' + low.map(cell).join('') + '</div>' : '');
+      OUTLN = 0; /* 바로 되돌려야 함: 늦게 되돌리면 뒤이어 그리는 전장 아군이 도감 배율로 만들어져 깨짐 (2026-11-26) */
     } else {
       var sl = D.skills.list.filter(skillPass), ownS = D.skills.list.filter(function(d){ return S.skills.some(function(x){ return x.id === d.id; }); }).length;
       html = '<div class="cdxcount">스킬 ' + ownS + ' / ' + D.skills.list.length + '</div><div class="cdxgrid">' + sl.map(function(d){ var o = S.skills.some(function(x){ return x.id === d.id; }), g = skG(d.id, myLv(d.id));
@@ -2950,7 +2951,7 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
     bc.style.marginTop = Math.round(top / k) + "px"; bc.style.height = ar.offsetHeight + "px";
     // 룰렛 팝업: 앱 전체가 아니라 게임 화면(전장) 가운데에 오도록 덮개를 전장 크기에 맞춰요
     var rl = $("roul"), app = document.querySelector(".app"); if (rl && app){ var a2 = ar.getBoundingClientRect(), p2 = app.getBoundingClientRect(); rl.style.inset = "auto"; rl.style.left = Math.round((a2.left - p2.left) / k) + "px"; rl.style.top = Math.round((a2.top - p2.top) / k) + "px"; rl.style.width = Math.round(a2.width / k) + "px"; rl.style.height = Math.round(a2.height / k) + "px"; rl.style.justifyContent = "center"; } }
-  function fitUnit(){ alignBtnCol(); if (!$('field')) return; var fw = $('field').clientWidth; QC.t = -1e9; if (fw) $('field').style.setProperty('--u', (fw * unitPx(false) / 720).toFixed(3) + 'px'); var qk = Math.round(unitPx(false) * 100); document.documentElement.dataset.smooth = Math.abs(qR() - Math.round(qR())) < .02 ? '' : '1'; if (QK_last !== null && qk !== QK_last){ QK_last = qk; try { renderAll(); } catch (e) {} } QK_last = qk; }
+  function fitUnit(){ alignBtnCol(); if (!$('field')) return; var fw = $('field').clientWidth; QC.t = -1e9; if (fw) $('field').style.setProperty('--u', (fw * unitPx(false) / 720).toFixed(3) + 'px'); var qk = Math.round(unitPx(false) * 100); if (Math.abs(qR() - Math.round(qR())) < .02) delete document.documentElement.dataset.smooth; else document.documentElement.dataset.smooth = '1'; /* 속성이 비어 있어도 있으면 부드럽게가 걸리므로 정수배면 지움 */ if (QK_last !== null && qk !== QK_last){ QK_last = qk; try { renderAll(); } catch (e) {} } QK_last = qk; }
   var QK_last = null;
   window.addEventListener('resize', fitUnit);
   // 편성 화면 막대: 전장(720×400 논리 좌표)과 같은 크기의 캔버스를 덮어 그려요. 체력은 가득, 에너지는 0
