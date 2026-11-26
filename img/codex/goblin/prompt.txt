@@ -1,0 +1,14 @@
+Look at these images:
+- img/gemini/ref/bear_x8.png  = our game hero, THE STYLE STANDARD (8x enlarged): chibi big head, face size and face placement, soft muted colors, shading, reddish-brown outline, slightly from above.
+- img/gemini/ref/ev_trader_x8.png = another event character of our game (8x enlarged), same style, same pixel density.
+- img/gemini/ref/goblin_x8.png = the current goblin of our game (8x enlarged): use it for the goblin SKIN COLOR (yellow-green).
+- img/codex/goblin/ref.webp = the DESIGN CONCEPT the user wants: a gentleman goblin casino dealer. Black top hat with a gold band, long pointed ears, black tuxedo with white shirt and white cuffs, red bow tie, one hand raised in front as if presenting, the other hand on the hip.
+
+Generate ONE new image with your image generation tool and save it as img/codex/goblin/@OUT@
+Draw this goblin dealer redrawn in OUR game's style (same unity as bear_x8 and ev_trader_x8): cute chibi with a big round head and chubby cheeks, small body, same face size as the hero, big expressive eyes, a small confident sly smile, long pointed ears (the near ear larger, the far ear smaller because of the 3/4 view), black top hat with gold band tilted slightly, black tuxedo with visible lapel and button highlights (not a flat black blob: use 3-4 dark tones with a lighter rim so the shape reads), white shirt, red bow tie, small shoes.
+- View: 3/4 view facing the RIGHT, camera looking down about 20 degrees (we see slightly the top of the hat and brim). This is mandatory.
+- Eyes: the eye on the viewer's LEFT sits exactly 1 art pixel LOWER than the right eye.
+- Pose: calm standing, feet on the ground.
+- Pixel grid: the character with hat is about 50 art pixels tall and about 40 wide. One art pixel = 18 image pixels, image 1152x1152, centered. Crisp square pixels, no anti-aliasing, no gradients, no finer detail than the grid. 1 art pixel outline in reddish-brown #4b150c, no gaps in the outline.
+[Format] Plain solid #FF00FF magenta background, no text, no shadow.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
