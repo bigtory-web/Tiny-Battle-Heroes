@@ -3011,7 +3011,7 @@ img.rimg{image-rendering:auto!important}
 /* 영구 강화 창 */ .medic{display:inline-block;width:14px;height:14px;vertical-align:-2px;margin-right:3px;background:#ffd34d;box-shadow:inset -3px -3px 0 #b8861c,inset 2px 2px 0 #fff3b0,0 0 0 2px #17141d} .rit .medic{width:26px;height:26px;margin:0}
 #upWin{position:absolute;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;background:rgba(10,8,14,.62)} #upWin[hidden]{display:none} #upWin .upbox{width:94%;height:94%;display:flex;flex-direction:column;gap:6px;padding:8px;background:#2a2533;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #5d5470}
 #upWin .uphead{position:relative;display:flex;align-items:center;gap:14px;min-height:36px;padding:2px 4px;font:400 16px var(--display);color:#f3e6c4} #upWin .uphead .popx{position:absolute!important;right:0!important;left:auto!important;top:0!important}
-#upWin .upcols{flex:1;min-height:0;overflow-y:auto;display:grid;grid-template-columns:repeat(10,1fr);gap:4px;align-items:end;background:#17141d;padding:6px 4px}
+#upWin .upcheat{height:28px;padding:0 10px;border:0;border-radius:0;cursor:pointer;font:400 12px var(--display);color:#fff;text-shadow:0 1px 0 #17141d;background:#3f6fc4;box-shadow:inset 0 0 0 2px #17141d} #upWin .upcols{flex:1;min-height:0;overflow-y:auto;display:grid;grid-template-columns:repeat(10,1fr);gap:4px;align-items:end;background:#17141d;padding:6px 4px}
 #upWin .upcol{display:flex;flex-direction:column;gap:4px;align-items:stretch;min-width:0}
 #upWin .upn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:46px;flex:none;padding:2px;border:0;border-radius:0;cursor:pointer;background:var(--uc);color:#fff;font:400 11px/1.1 var(--display);text-shadow:0 1px 0 #17141d;box-shadow:inset 0 0 0 2px #17141d;word-break:keep-all} #upWin .upn em{font-style:normal;color:#f3e6c4}
 #upWin .upn.lock{background:color-mix(in srgb,var(--uc) 32%,#17141d);color:#9d94ab} #upWin .upn.next{box-shadow:inset 0 0 0 2px #ffd34d} #upWin .upn.sel{box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #fff}
@@ -3031,7 +3031,7 @@ img.rimg{image-rendering:auto!important}
 #field .vsmark{display:none!important} /* VS 숨김 (2026-11-26 사용자: "가운데 VS 마크 빼자"). 되돌리려면 이 줄 삭제 */
 #field .vsmark{width:var(--vsw,64px)!important;height:var(--vsh,48px)!important} #field .vsmark img{width:var(--vsw,64px)!important;height:var(--vsh,48px)!important;image-rendering:pixelated!important;animation-name:vsbob3!important} @keyframes vsbob3{50%{transform:translateY(calc(-2 * var(--dp,.75px)))}} /* 흐림 고침: 정수배 도트 (2026-11-26) */
 /* 분노 단계 점 숨김: 시험 (2026-11-26 사용자: "점 세개 일단빼봐"). 되돌리려면 이 두 줄 삭제 */
-#bellBtn.bell .bdots{display:none!important} #arena #bellBtn.bell .cbox{height:44px!important} #bellBtn.bell.inbt .cbox{filter:grayscale(1) brightness(.8)}
+#bellBtn.bell .bdots{display:none!important} #arena #bellBtn.bell .cbox{width:40px!important;height:40px!important} #bellBtn.bell.inbt .cbox{filter:grayscale(1) brightness(.8)}
 /* 분노 버튼 = 적 HP 막대 왼쪽 끝 밑(가운데 갈림 바로 오른쪽): 시험 (2026-11-26 사용자: "여기로하면되잖아"). 위 가운데로 되돌리려면 이 줄 삭제. transform none = 눌림 때 튀지 않게 */
 #arena #bellBtn.bell{left:calc(50% + 4px)!important;transform:none!important}
 /* 용 버튼을 유물 칸 크기에 맞춤: 아이콘 36(원본 24의 정수배) (2026-11-26 사용자: "스킬만큼 작게") */ #bellBtn.bell .cbox{width:44px!important;height:56px!important;gap:1px!important} #bellBtn.bell .bic,#bellBtn.bell .bic img{width:36px!important;height:36px!important;line-height:36px!important;font-size:26px!important} #bellBtn.bell .bic img{image-rendering:pixelated!important} #bellBtn.bell .bdots i{width:9px!important;height:9px!important}  
@@ -3193,6 +3193,11 @@ img.rimg{image-rendering:auto!important}
       <div id="simBox" class="muted" style="margin-top:8px"></div>
     </section>
     <section class="card">
+      <h2>성장 방식 <small>[처음부터] 새 판부터 적용</small></h2>
+      <div class="row" id="modeRow"></div>
+      <div class="muted" id="modeInfo"></div>
+    </section>
+    <section class="card">
       <h2>플레이어 레벨 <small>적 편성·상점·영웅 등장 확률·전장 칸이 이 레벨을 따라요</small></h2>
       <div class="row"><button class="ghost" id="plDown">−</button><b id="plVal" style="font:400 20px var(--display);min-width:70px;text-align:center">Lv 1</b><button class="ghost" id="plUp">+</button></div>
       <div class="muted" id="plOdds" style="margin-top:6px"></div>
@@ -3269,8 +3274,9 @@ img.rimg{image-rendering:auto!important}
   var UPKEY = 'idle-testbed-upgrade';
   function upLoad(){ var m = null; try { m = JSON.parse(localStorage.getItem(UPKEY)); } catch (e) {} m = m || {}; m.medals = m.medals || 0; m.nodes = m.nodes || {}; m.cleared = m.cleared || {}; return m; }
   function upSave(m){ try { localStorage.setItem(UPKEY, JSON.stringify(m)); } catch (e) {} }
-  var RUNMETA = SAVED ? SAVED.meta || {} : upLoad().nodes;
-  function runData(ch){ return E.metaData(E.chapterData(IDLE_DATA, ch), { nodes: RUNMETA }); }
+  var RUNMETA = SAVED ? SAVED.meta || {} : upLoad().nodes, RUNMODE = (SAVED ? SAVED.metaMode : upLoad().mode) || 'level'; /* 'level' 레벨로 · 'meta' 영구 강화로 */
+  function runData(ch){ return E.metaData(E.chapterData(IDLE_DATA, ch), { nodes: RUNMETA, mode: RUNMODE }); }
+  function upRun(){ var u = upLoad(); RUNMETA = u.nodes; RUNMODE = u.mode || 'level'; } /* 새 판: 지금 저장된 강화·방식 */
   var D = runData(CH); /* 지금 판의 장(2026-11-26 2장). 장을 바꾸면 새 판 + 새로 읽기 */
   // 가로 무대 960x540을 창에 맞춰 확대·축소 (가운데 정렬)
   function fitBag(){ var a = document.querySelector('.arena'), c = document.querySelector('.bagcol'), b = c && c.querySelector('.bagin'); if (!a || !b) return;
@@ -3382,7 +3388,7 @@ img.rimg{image-rendering:auto!important}
   // ───── 상태 저장 ─────
   var R = D.recruit, KEY = 'idle-testbed-v2', S;
   function runStats0(){ return { bought: 0, by: {}, heroes: 0, battles: 0, wins: 0, kills: 0, events: {}, lastTeam: [], startAt: Date.now(), playMs: 0 }; } /* 이번 판 기록 (모험 완료 팝업) */
-  function fresh(){ var s = { chapter: CH, meta: RUNMETA, runStats: runStats0(), gold: D.campaign.startGold || 0, stage: 0, units: [], levels: {}, team: [null, null, null, null, null], idleAt: Date.now(), modules: {}, pending: null, life: D.life ? D.life.max : 10, streak: 0, mana: 0, xp: 0, bell: 0, bellGold: 0 }; // 새 판: 체력·마나스톤·경험치도 처음 값
+  function fresh(){ var s = { chapter: CH, meta: RUNMETA, metaMode: RUNMODE, runStats: runStats0(), gold: D.campaign.startGold || 0, stage: 0, units: [], levels: {}, team: [null, null, null, null, null], idleAt: Date.now(), modules: {}, pending: null, life: D.life ? D.life.max : 10, streak: 0, mana: 0, xp: 0, bell: 0, bellGold: 0 }; // 새 판: 체력·마나스톤·경험치도 처음 값
     if (E.campfireAtStart && E.campfireAtStart(D) && E.rollCampfire){ s.event = { kind: 'campfire', ids: E.rollCampfire(D, Math.random, 1), start: true }; return s; } // 시작 모닥불: 1명을 얻고 1-1로
     var u = E.newUnit(s.units, R.startHero, 1); s.levels[R.startHero] = D.startLevel; s.team[0] = u.uid; return s; }
   // 예전 저장(영웅 종류 기준) → 개체 기준: owned{id:{star}} → { id, grade: star }, spare → 1등급 개체, team의 id → 그 개체 uid
@@ -3567,6 +3573,9 @@ img.rimg{image-rendering:auto!important}
     row.innerHTML = [-30, -20, -10, 0, 10, 20, 30].map(function(p){ var r = r0 * (1 + p / 100), sz = 64 * r / cs, near = Math.abs(r - Math.round(r)) < .02, pc = Math.round((sz / B - 1) * 100), ni = Math.abs(r - Math.round(r)) <= .12 && Math.round(r) >= 1;
       return '<button class="ghost' + (cur === p ? ' on' : '') + '" data-up="' + p + '" type="button">' + (p === 0 ? '현재' : (p > 0 ? '+' : '−') + Math.abs(p) + '%') + '<i>' + Math.round(64 * r / dp) + 'px · 기본 ' + (pc > 0 ? '+' : '') + pc + '%</i><i class="' + (near ? 'ok' : 'bl') + '">' + (near ? '또렷 (' + Math.round(r) + '배)' : '살짝 흐림' + (ni ? ' · ' + Math.round(r) + '배 근처' : '')) + '</i></button>'; }).join('');
     $('ukInfo').textContent = '현재(자동) = 정수배 ' + r0 + '배. 퍼센트는 현재 크기 기준, px는 지금 창에서 캐릭터 가로 화면 px, 기본 = 기본 크기(110%) 대비. 창 크기가 바뀌면 값도 바뀌어요.'; }
+  function renderMode(){ var m = upLoad().mode || 'level'; $('modeRow').innerHTML = [['level', '레벨로'], ['meta', '영구 강화로']].map(function(x){ return '<button class="ghost' + (m === x[0] ? ' on' : '') + '" data-mode="' + x[0] + '" type="button">' + x[1] + '</button>'; }).join(''); $('modeInfo').textContent = (m === 'meta' ? '영구 강화로: 칸·리셋·횟수는 Lv1에 고정, 강화로만 늘어요.' : '레벨로: 레벨이 오르면 같이 늘어요(+강화).') + (m !== RUNMODE ? ' 지금 판은 ' + (RUNMODE === 'meta' ? '영구 강화로' : '레벨로') + ' 진행 중이에요. [처음부터]를 누르면 바뀌어요.' : ''); }
+  $('modeRow').addEventListener('click', function(e){ var b = e.target.closest('[data-mode]'); if (!b) return; var u = upLoad(); u.mode = b.dataset.mode; upSave(u); renderMode(); });
+  setTimeout(renderMode, 0);
   $('ukRow').addEventListener('click', function(e){ var b = e.target.closest('[data-up]'); if (!b) return; S.ui = S.ui || {}; var v = +b.dataset.up; delete S.ui.unitK; if (v) S.ui.unitPct = v; else delete S.ui.unitPct; save(); QC.t = -1e9; fitUnit(); renderAll(); renderUk(); });
   setInterval(function(){ if (!$('tab-tool').hidden) renderUk(); }, 600);
   /* 흘러가는 구름 그림자(2026-11-26 사용자). 그림은 코드로 한 번 만들어 씀: 검정 + 투명도(검정 투명도 덮기 = 곱하기와 같은 결과).
@@ -5292,7 +5301,7 @@ img.rimg{image-rendering:auto!important}
     o.addEventListener('click', function(){ if (!o.classList.contains('end')) an.playbackRate = 7; });
     fwFx(o, function(){ return true; }); var host = o.querySelector(':scope > .rfw'); [250, 600, 950, 1350].forEach(function(d){ setTimeout(function(){ if (host && host.isConnected) fwShot(host); }, d); }); }
   function newRun(ch){ var keep = { modules: S.modules || {}, ui: S.ui };
-    if (typeof ch === 'number') CH = ch; RUNMETA = upLoad().nodes; D = runData(CH); var n = fresh(); n.modules = keep.modules; if (keep.ui) n.ui = keep.ui; n.skills = []; n.mana = 0; n.xp = 0; n.life = D.life ? D.life.max : 10; n.streak = 0; n.bell = 0; n.bellGold = 0; n.bellPaid = 0;
+    if (typeof ch === 'number') CH = ch; upRun(); D = runData(CH); var n = fresh(); n.modules = keep.modules; if (keep.ui) n.ui = keep.ui; n.skills = []; n.mana = 0; n.xp = 0; n.life = D.life ? D.life.max : 10; n.streak = 0; n.bell = 0; n.bellGold = 0; n.bellPaid = 0;
     try { localStorage.setItem(KEY, JSON.stringify(n)); } catch (e) {} location.reload(); }
   function finishBattle(){
     if (!bt) return;
@@ -5518,7 +5527,8 @@ img.rimg{image-rendering:auto!important}
   var upSel = null;
   function upEffect(N){ if (N.hero) return (N.hero === 'crit' ? '치명타 확률 +' : ({ atk: '공격력 +', hp: '체력 +', def: '방어력 +' })[N.hero]) + Math.round(N.add * 100) + '%'; if (N.shift) return '높은 등급이 레벨 1만큼 먼저 나와요'; return N.name + ' +' + N.add + (N.key === 'merchantOff' ? '%' : ''); }
   function upOpen(){ if (shopOpen()) setShop(false); hideInfo(); hideTip(); upSel = null; var o = $('upWin'); if (!o){ o = document.createElement('div'); o.id = 'upWin'; popAdd(o, true); o.addEventListener('click', upClick); } o.hidden = false; upRender(); }
-  function upClick(e){ if (e.target === this || e.target.closest('[data-upx]')){ this.hidden = true; return; } var c = e.target.closest('[data-upn]'); if (c){ upSel = c.dataset.upn.split(':'); return upRender(); }
+  function upClick(e){ if (e.target === this || e.target.closest('[data-upx]')){ this.hidden = true; return; } if (e.target.closest('[data-upcheat]')){ var uc = upLoad(); uc.medals += 50; upSave(uc); return upRender(); } /* 시험용: 타이틀이 생기면 지움 */
+    var c = e.target.closest('[data-upn]'); if (c){ upSel = c.dataset.upn.split(':'); return upRender(); }
     if (e.target.closest('[data-upbuy]') && upSel){ var up = upLoad(); if (E.metaBuy(D, up, upSel[0])){ upSave(up); var nx = E.metaNext(D, up, upSel[0]); if (nx) upSel = [upSel[0], nx.node.id]; upRender(); } } }
   function upRender(){ var o = $('upWin'), M = D.meta, up = upLoad(), sc = o.querySelector('.upcols'), top0 = sc ? sc.scrollTop : null;
     var cols = M.lines.map(function(L){ var nx = E.metaNext(D, up, L.id); return '<div class="upcol" style="--uc:' + UPCOL[L.id] + '">' + L.nodes.map(function(N){ var n = Math.min(up.nodes[N.id] || 0, N.cost.length), cls = nx && nx.node.id === N.id ? ' next' : n ? '' : ' lock'; return '<button type="button" class="upn' + cls + (upSel && upSel[1] === N.id ? ' sel' : '') + '" data-upn="' + L.id + ':' + N.id + '"><span>' + (L.job ? N.name.replace(L.name + ' ', '').replace('팀 ', '') : N.name) + '</span><em>' + n + '/' + N.cost.length + '</em></button>'; }).reverse().join('') + '<b class="upbase">' + L.name + '</b></div>'; }).join('');
@@ -5526,10 +5536,10 @@ img.rimg{image-rendering:auto!important}
     if (upSel){ var L = M.lines.filter(function(x){ return x.id === upSel[0]; })[0], N = L.nodes.filter(function(x){ return x.id === upSel[1]; })[0], n = Math.min(up.nodes[N.id] || 0, N.cost.length), nx = E.metaNext(D, up, L.id), here = nx && nx.node.id === N.id, max = n >= N.cost.length, cost = max ? null : N.cost[n];
       info = '<span class="uptx"><b>' + N.name + ' ' + n + '/' + N.cost.length + '</b>' + upEffect(N) + (max ? ' · 다 찍었어요' : here ? '' : ' · 아래 칸을 먼저 다 찍어야 해요') + '</span><button type="button" class="upbuy" data-upbuy="1"' + (here && up.medals >= cost ? '' : ' disabled') + '>강화' + (cost == null ? '' : ' <i class="medic"></i>' + cost) + '</button>'; }
     var per = (M.totalLv || {}).per || 5, ex = E.metaExp(D, up), lv = E.metaLevel(D, up), un = ((M.totalLv || {}).unlock || {})[lv + 1];
-    o.innerHTML = '<div class="upbox"><div class="uphead"><b>영구 강화</b><span><i class="medic"></i>' + up.medals + '</span><button type="button" class="spX popx" data-upx="1" title="닫기">✕</button></div><div class="upcols">' + cols + '</div><div class="upinfo">' + info + '</div><div class="uplv"><b>토탈 Lv' + lv + '</b><i><s style="width:' + (ex % per) / per * 100 + '%"></s></i><span>' + (ex % per) + '/' + per + (un ? ' · 다음 혜택: ' + [].concat(un).join(', ') : '') + '</span></div></div>';
+    o.innerHTML = '<div class="upbox"><div class="uphead"><b>영구 강화</b><span><i class="medic"></i>' + up.medals + '</span><button type="button" class="upcheat" data-upcheat="1">훈장 +50 (시험)</button><button type="button" class="spX popx" data-upx="1" title="닫기">✕</button></div><div class="upcols">' + cols + '</div><div class="upinfo">' + info + '</div><div class="uplv"><b>토탈 Lv' + lv + '</b><i><s style="width:' + (ex % per) / per * 100 + '%"></s></i><span>' + (ex % per) + '/' + per + (un ? ' · 다음 혜택: ' + [].concat(un).join(', ') : '') + '</span></div></div>';
     var s2 = o.querySelector('.upcols'); s2.scrollTop = top0 == null ? s2.scrollHeight : top0; }
   $('upBtn').addEventListener('click', function(){ var o = $('upWin'); if (o && !o.hidden){ o.hidden = true; return; } upOpen(); });
-  $('resetBtn').addEventListener('click', function(){ var m = S.modules, ui0 = S.ui; RUNMETA = upLoad().nodes; D = runData(CH); S = fresh(); S.modules = m; if (ui0) S.ui = ui0; S.skills = []; restock(); save(); location.reload(); }); /* 새로 읽어야 새 판에 강화가 적용돼요 */
+  $('resetBtn').addEventListener('click', function(){ var m = S.modules, ui0 = S.ui; upRun(); D = runData(CH); S = fresh(); S.modules = m; if (ui0) S.ui = ui0; S.skills = []; restock(); save(); location.reload(); }); /* 새로 읽어야 새 판에 강화가 적용돼요 */
   $('simBtn').addEventListener('click', function(){
     $('simBox').textContent = '계산 중…';
     setTimeout(function(){
@@ -5729,7 +5739,7 @@ img.rimg{image-rendering:auto!important}
     if (!el){ el = document.createElement('div'); el.id = 'potBar'; A.appendChild(el); el.addEventListener('click', function(e){ var b = e.target.closest('[data-potsl]'); if (b){ potSellArm = null; potInfo(+b.dataset.potsl); } }); }
     var L = S.potions || [], o = ''; for (var i = 0; i < potHold(); i++){ var P = L[i] && E.potionById(D, L[i]); o += P ? '<button type="button" style="--pg:' + potCol() + '" data-potsl="' + i + '" data-tipt="' + P.name + '" data-tiptx="' + potDesc(P) + '">' + potImg(P.id) + '</button>' : '<i></i>'; }
     for (var j = potHold(), mx = E.perk ? E.perk(D, 99).potion : j; j < mx; j++){ var L2 = 1; while (L2 < 99 && E.perk(D, L2).potion < j + 1) L2++; o += '<i class="baglock" title="Lv' + L2 + '에 열려요"><em>LV' + L2 + '</em></i>'; } /* 안 열린 칸 = 백팩과 같은 잠금 */
-    el.innerHTML = o; var sk = $('skA'), r = sk.getBoundingClientRect(), a = A.getBoundingClientRect(), k = a.width / (A.offsetWidth || 1) || 1; el.style.left = 'calc(50% - 4px)'; el.style.transform = 'translateX(-100%)'; var bb = document.querySelector('#bellBtn .cbox'), br = bb && bb.getBoundingClientRect(); el.style.top = (br && br.height ? (br.top + br.height / 2 - a.top) / k - 20 : (r.top - a.top) / k) + 'px'; if (br && br.height) el.style.left = ((a.width - (br.left - a.left)) / k) + 'px'; /* 보이는 네모끼리 대칭 */ /* 분노 버튼(left 50%+4)의 거울 자리, 높이 가운데 맞춤. 버튼이 없는 판은 유물 칸 높이 (2026-11-27 사용자: "HP 끝 위치에서 동일한 대칭위치") */
+    el.innerHTML = o; var sk = $('skA'), r = sk.getBoundingClientRect(), a = A.getBoundingClientRect(), k = a.width / (A.offsetWidth || 1) || 1; el.style.left = 'calc(50% - 4px)'; el.style.transform = 'translateX(-100%)'; var bb = document.querySelector('#bellBtn .cbox'), br = bb && bb.getBoundingClientRect(); el.style.top = ((r.top - a.top) / k) + 'px'; if (br && br.height) el.style.left = ((a.width - (br.left - a.left)) / k) + 'px'; /* 보이는 네모끼리 대칭 */ /* 분노 버튼(left 50%+4)의 거울 자리, 윗선은 유물 칸과 같게 (2026-11-27 사용자: "HP 끝 위치에서 동일한 대칭위치") */
     document.querySelectorAll('#field .potmk').forEach(function(x){ x.remove(); }); if (!bt) (S.drunk || []).forEach(function(d){ var P = E.potionById(D, d.id); if (!P) return; S.team.forEach(function(uid){ if (!uid || (P.target === 'rand' && uid !== d.uid)) return; var u = document.querySelector('#field .unit[data-uid="' + uid + '"]'); if (!u) return; var m = u.querySelector(':scope > .potmk'); if (!m){ m = document.createElement('i'); m.className = 'potmk'; u.appendChild(m); } m.insertAdjacentHTML('beforeend', potImg(P.id)); }); }); }
   /* 물약 그림 24x24 (p_steel -> pot_steel). 36단위 = 장치 점 정수배 */
   function potSrc(id){ return 'img/p/pot_' + String(id).replace(/^p_/, '') + '.png'; }
