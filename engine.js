@@ -494,8 +494,10 @@
   function isBoss(data, n) { var C = data.campaign, i = n % C.perChapter + 1; return (C.bossAt || [C.perChapter]).indexOf(i) >= 0; }
   function stageName(data, n) { return (Math.floor(n / data.campaign.perChapter) + (data.campaign.chapterNo || 1)) + '-' + (n % data.campaign.perChapter + 1); } // chapterNo: E.chapterData로 만든 장이면 그 장 번호부터
   // 2026-11-26 장(챕터): 그 장의 data를 만들어요. 판 번호는 0~9 그대로 쓰고(장마다 처음부터), 적 레벨 +lvPlus, 늪 칸, 분노 단계, 이벤트 그룹만 바꿔요. 1장이면 data 그대로
-  function chapterData(data, c) { var C = data.campaign, def = (C.chapterDefs || [])[(c || 1) - 1]; if (!def || (c || 1) <= 1) return data;
+  function chapterData(data, c) { var C = data.campaign, def = (C.chapterDefs || [])[(c || 1) - 1]; if (!def || ((c || 1) <= 1 && !def.featured)) return data;
     var d = {}; for (var k in data) d[k] = data[k]; var cp = function (o) { var r = {}; for (var q in o) r[q] = o[q]; return r; };
+    if (def.featured && data.recruit && data.recruit.pool && data.recruit.pool.length) { d.recruit = cp(data.recruit); d.recruit.pool = data.recruit.pool.concat(def.featured.filter(function (id) { return data.recruit.pool.indexOf(id) < 0; })); } // 2026-11-27 특별 출현 영웅은 그 챕터의 영웅 풀에 더해져요
+    if ((c || 1) <= 1) { d.campaign = cp(C); d.campaign.chapterDef = def; return d; } // 1장: 특별 출현만
     d.campaign = cp(C); d.campaign.chapters = 1; d.campaign.chapterNo = c; d.campaign.chapterDef = def; d.campaign.swamp = def.swamp || null;
     if (def.lvPlus) d.campaign.enemyLv = C.enemyLv.slice(0, C.perChapter).map(function (x) { return x + def.lvPlus; });
     if (def.bellTiers && data.bell) { d.bell = cp(data.bell); d.bell.tiers = def.bellTiers; }
@@ -507,6 +509,7 @@
     if (def.swamp) out.feats.push({ name: '늪지대', icon: 'img/p/swamp_cell.png', desc: '적 쪽 칸 ' + (def.swamp.cells || 0) + '곳이 늪지대다. 해당 영웅은 ' + (def.swamp.every || 1) + '초마다 공격력 ' + Math.round((def.swamp.amount != null ? def.swamp.amount : def.swamp.perSec || 0) * 100) + '%씩 오른다.' });
     if (def.lvPlus) out.feats.push({ name: '적 레벨', desc: '적 레벨이 ' + def.lvPlus + ' 높다.' });
     (def.bellTiers || (data.bell && data.bell.tiers) || []).forEach(function (T, i) { T.forEach(function (k) { var F = BF[k] || {}; out.bell.push({ tier: i + 1, name: F.name || k, desc: F.desc || '', icon: F.icon || '', tierIcon: (def.foeIcon || 'img/p/ui_foe') + (i + 1) + '.png' }); }); });
+    out.featured = (def.featured || []).map(function (id) { var h = heroById(data, id) || {}; return { id: id, name: h.name || id, alias: h.alias || '', grade: h.grade || 1 }; }); // 특별 출현 영웅(등급별 1명)
     var G = def.groups || {}; for (var g in G) { var W = G[g], tot = 0, k2; for (k2 in W) tot += W[k2]; for (k2 in W) if (k2 !== g) out.events.push({ icon: k2 === 'swampShop' ? 'img/p/ui_swampshop.png' : '', name: (INF[k2] || {}).name || k2, desc: (INF[k2] || {}).desc || '', note: ((INF[g] || {}).name || g) + ' 자리에 ' + Math.round(W[k2] / tot * 100) + '% 확률로 나온다.' }); }
     return out; }
   // 2026-11-27 제약(난이도): 그 구간의 data를 만들어요. 적 레벨 +lvPlus, 적 영웅 등급 앞당김, 적 유물 표, 훈장 배율. 쉬움(또는 없음)이면 data 그대로
@@ -816,7 +819,7 @@
     var tot = W.reduce(function (a, b) { return a + b; }, 0), r = rnd() * tot, g = 1; for (var k = 0; k < W.length; k++) { r -= W[k]; if (r < 0) { g = k + 1; break; } }
     var PL0 = data.recruit.pool, all = data.heroes.filter(function (h) { return h.art !== false && (!PL0 || !PL0.length || PL0.indexOf(h.id) >= 0); });
     for (var dd = 0; dd < 5; dd++) for (var sgn = -1; sgn <= 1; sgn += 2) { var gg = g + dd * sgn;
-      var c = all.filter(function (h) { return (h.grade || 1) === gg && exclude.indexOf(h.id) < 0; }); if (c.length) return c[Math.floor(rnd() * c.length)].id; }
+      var c = all.filter(function (h) { return (h.grade || 1) === gg && exclude.indexOf(h.id) < 0; }); if (c.length) { var FT = (data.campaign.chapterDef || {}).featured, FM = (data.campaign.chapterDef || {}).featuredMul || 1; if (FT && FM > 1) { var tw = 0, ws = c.map(function (h) { var w = FT.indexOf(h.id) >= 0 ? FM : 1; tw += w; return w; }), x = rnd() * tw; for (var ci = 0; ci < c.length; ci++) { x -= ws[ci]; if (x < 0) return c[ci].id; } } return c[Math.floor(rnd() * c.length)].id; } } /* 2026-11-27 챕터 특별 출현: featured 영웅은 같은 등급 안에서 featuredMul배 잘 나와요 */
     return all[Math.floor(rnd() * all.length)].id; }
   // 화면용 전투력(정수): 능력치 힘 × 스킬 배율(기본 스킬 승급 + 초월 스킬 레벨당 ultPer). u = { id, star, tr }
   function unitPower(data, u, lv) { var GE = data.gradeEffects || {}, per = GE.ultPer || 0.3, sk = unitSkills(data, u), base = effectLevels(data, u.id).ult || 1;

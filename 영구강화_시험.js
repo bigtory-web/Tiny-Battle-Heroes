@@ -39,3 +39,8 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
 // 장 정보(장 고르기 화면)
 { const I1=E.chapterInfo(D,1), I2=E.chapterInfo(D,2); assert.strictEqual(I1.bell.length,3); assert.strictEqual(I1.feats.length,0);
   assert.ok(I2.feats[0].desc.includes("5초마다 공격력 1%")); assert.strictEqual(I2.bell[2].name,"늪지대"); assert.ok(I2.events[0].note.includes("70%")); console.log("ok · 장 정보"); }
+// 챕터 특별 출현: 등급별 1명, 그 챕터 영웅 풀에 더해지고 같은 등급 안에서 더 잘 나옴
+{ const I=E.chapterInfo(D,2), C2=E.chapterData(D,2); assert.deepStrictEqual(I.featured.map(f=>f.grade),[1,2,3,4]);
+  assert.ok(I.featured.every(f=>C2.recruit.pool.includes(f.id)),"풀에 더해짐"); assert.ok(!D.recruit.pool.includes("mudgolem"),"원본 풀 그대로");
+  let f=0; for(let lv=1;lv<=10;lv++) for(let st=0;st<10;st++) E.stageTeam(C2,st,null,0,lv).team.forEach(u=>{ if(I.featured.some(x=>x.id===u.id)) f++; }); assert.ok(f>0,"특별 출현 영웅이 적으로 나옴");
+  console.log("ok · 특별 출현", I.featured.map(f=>f.name).join(",")); }
