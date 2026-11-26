@@ -2427,6 +2427,12 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
 .lbag .roster{gap:8px!important;padding:4px!important}
 .lbag .bagin{padding:0!important}
 .lbag .chip.bagempty{box-shadow:inset 0 0 0 1px #6e4626,0 0 0 1px #17141d!important;background-color:#33200f!important}
+/* 구름 그림자(편성 화면): 캐릭터 위, 막대·별 캔버스와 VS 아래. #field는 isolation이라 전장 안에서만 곱해짐 */
+#field > .cloudsh{position:absolute;inset:0;z-index:340;pointer-events:none;background-repeat:repeat-x;background-size:200% 100%;mix-blend-mode:multiply}
+#field canvas.fbar{z-index:345!important}
+#field .vsmark{z-index:346!important}
+#cloudRow .ghost{min-width:48px}
+#cloudRow .ghost.on{box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #ffd34d!important}
 </style>
 </head>
 <body>
@@ -2497,6 +2503,10 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
       <h2>플레이어 레벨 <small>적 편성·상점·영웅 등장 확률·전장 칸이 이 레벨을 따라요</small></h2>
       <div class="row"><button class="ghost" id="plDown">−</button><b id="plVal" style="font:400 20px var(--display);min-width:70px;text-align:center">Lv 1</b><button class="ghost" id="plUp">+</button></div>
       <div class="muted" id="plOdds" style="margin-top:6px"></div>
+    </section>
+    <section class="card">
+      <h2>구름 그림자 <small>전장 위로 천천히 흘러감</small></h2>
+      <div class="row" id="cloudRow"></div>
     </section>
     <section class="card">
       <h2>캐릭터 크기 <small>지금(자동) 크기 기준 ±%</small></h2>
@@ -2824,6 +2834,25 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
     $('ukInfo').textContent = '현재(자동) = 정수배 ' + r0 + '배. 퍼센트는 현재 크기 기준, px는 지금 창에서 캐릭터 가로 화면 px, 기본 = 기본 크기(110%) 대비. 창 크기가 바뀌면 값도 바뀌어요.'; }
   $('ukRow').addEventListener('click', function(e){ var b = e.target.closest('[data-up]'); if (!b) return; S.ui = S.ui || {}; var v = +b.dataset.up; delete S.ui.unitK; if (v) S.ui.unitPct = v; else delete S.ui.unitPct; save(); QC.t = -1e9; fitUnit(); renderAll(); renderUk(); });
   setInterval(function(){ if (!$('tab-tool').hidden) renderUk(); }, 600);
+  /* 흘러가는 구름 그림자(2026-11-26 사용자). 그림은 코드로 한 번 만들어 씀: 검정 + 투명도(검정 투명도 덮기 = 곱하기와 같은 결과).
+     순서: 바닥 -> 캐릭터 -> 구름 그림자 -> 막대·별·글자·이펙트·UI. 편성과 전투가 같은 시계(Date.now)를 써서 튀지 않음. 낮 그대로, 해 질 녘에 옅어지고 밤에는 꺼짐 */
+  var CLW = 1440, CLH = 400, CLT = null, CLD = null, CLSTR = { off: 0, weak: .2, mid: .3, strong: .42 };
+  function cloudTex(){ if (CLT) return CLT; var c = document.createElement('canvas'); c.width = CLW; c.height = CLH; var x = c.getContext('2d'), seed = 7, rnd = function(){ seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    for (var i = 0; i < 11; i++){ var cx = (i + rnd() * .7) * CLW / 11, cy = 40 + rnd() * 340; /* 얼룩 하나 = 작은 둥근 번짐 여러 개 (칸 2~4개 크기) */
+      for (var j = 0; j < 7; j++){ var px = cx + (rnd() - .5) * 150, py = cy + (rnd() - .5) * 60, r = 38 + rnd() * 52;
+        [-CLW, 0, CLW].forEach(function(w){ var g = x.createRadialGradient(px + w, py, 0, px + w, py, r); g.addColorStop(0, 'rgba(0,0,0,.55)'); g.addColorStop(.6, 'rgba(0,0,0,.3)'); g.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(px + w - r, py - r, r * 2, r * 2); }); } }
+    var s = document.createElement('canvas'); s.width = 144; s.height = 40; var sx = s.getContext('2d'); sx.drawImage(c, 0, 0, 144, 40); CLD = sx.getImageData(0, 0, 144, 40).data; return CLT = c; }
+  function cloudOff(){ return (Date.now() / 1000 * 720 / 50) % CLW; } /* 화면을 가로지르는 데 약 50초 */
+  function cloudStr(){ var lv = (S && S.ui && S.ui.cloud) || 'weak', s = CLSTR[lv] == null ? .2 : CLSTR[lv], EN = D.battle.enrage; if (s && bt && EN && EN.dusk != null) s *= Math.max(0, Math.min(1, 1 - ((bt.time || 0) - EN.dusk) / Math.max(1, EN.at - EN.dusk))); return s; }
+  function cloudDens(x, y){ cloudTex(); var u = Math.floor((((x + cloudOff()) % CLW) + CLW) % CLW / 10), v = Math.max(0, Math.min(39, Math.floor(y / 10))); return CLD[(v * 144 + Math.min(143, u)) * 4 + 3] / 255; }
+  function drawCloud(c){ var s = cloudStr(); if (!(s > .005)) return; var T = cloudTex(), o = cloudOff(), ga = c.globalAlpha; c.globalAlpha = ga * s; c.drawImage(T, -o, 0); c.drawImage(T, CLW - o, 0); c.globalAlpha = ga; }
+  /* 편성 화면: 전장 위(막대 캔버스 아래)에 같은 그림을 덮고 같은 시계로 흘림 */
+  setInterval(function(){ var f = $('field'); if (!f || $('tab-camp').hidden) return; var el = f.querySelector(':scope > .cloudsh'), s = bt ? 0 : cloudStr(); if (!(s > .005)){ if (el) el.remove(); return; }
+    if (!el){ el = document.createElement('i'); el.className = 'cloudsh'; if (!$('cloudcss')){ try { var st = document.createElement('style'); st.id = 'cloudcss'; st.textContent = '#field > .cloudsh{background-image:url(' + cloudTex().toDataURL() + ')}'; document.head.appendChild(st); } catch (e) { return; } } f.appendChild(el); }
+    el.style.opacity = s; el.style.backgroundPositionX = (-cloudOff() * f.clientWidth / 720).toFixed(2) + 'px'; }, 66);
+  function renderCloudBtns(){ var row = $('cloudRow'); if (!row) return; var cur = (S.ui && S.ui.cloud) || 'weak'; row.innerHTML = [['off', '끔'], ['weak', '약'], ['mid', '중'], ['strong', '강']].map(function(a){ return '<button class="ghost' + (cur === a[0] ? ' on' : '') + '" data-cloud="' + a[0] + '" type="button">' + a[1] + '</button>'; }).join(''); }
+  $('cloudRow').addEventListener('click', function(e){ var b = e.target.closest('[data-cloud]'); if (!b) return; S.ui = S.ui || {}; S.ui.cloud = b.dataset.cloud; save(); renderCloudBtns(); });
+  setTimeout(renderCloudBtns, 0);
   function cdxShopOn(){ return !(S.ui && S.ui.cdxShop === false); }
   /* 테스트용: 도감 -> 상점으로. 상점 영웅 칸 맨 앞을 그 영웅으로(원래 상점 가격), 구매는 평소처럼 (2026-11-25 기획 요청) */
   $('cdxInfo').addEventListener('click', function(e){ var b = e.target.closest('[data-cdxshop]'); if (!b || b.disabled || bt || !cdxShopOn()) return; var id = b.dataset.cdxshop, G = E.heroGrade(D, id);
@@ -3828,6 +3857,7 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
       var bgY = OFF + 321 - BG.naturalHeight * bgK; /* 아래 맞춤: 107줄이면 OFF부터, 134줄이면 맨 위(0)까지 덮어요 */ if (bgY > 0){ ctx.fillStyle = "#b8a0a6"; ctx.fillRect(0, 0, W, bgY + 1); } var bsx = march ? Math.round(march.sx) : 0; ctx.drawImage(BG, -bsx, bgY, BG.naturalWidth * bgK, BG.naturalHeight * bgK); if (bsx) ctx.drawImage(BG, W - bsx, bgY, BG.naturalWidth * bgK, BG.naturalHeight * bgK);
       var ENd = D.battle.enrage, dk0 = ENd && ENd.dusk != null && bt && !bt.result ? Math.max(0, Math.min(1, ((bt.time || 0) - ENd.dusk) / Math.max(1, ENd.at - ENd.dusk))) : 0; if (dk0 > 0 && BGD.complete && BGD.naturalWidth){ ctx.globalAlpha = dk0; ctx.drawImage(BGD, -bsx, bgY, BGD.naturalWidth * bgK, BGD.naturalHeight * bgK); if (bsx) ctx.drawImage(BGD, W - bsx, bgY, BGD.naturalWidth * bgK, BGD.naturalHeight * bgK); ctx.globalAlpha = 1; } /* 낮 → 노을 크로스페이드 (30~40초). 밤은 이 위에 밤 색을 덮음 */ }
     var EN2 = D.battle.enrage, night = !!(EN2 && bt && !bt.result && (bt.time || 0) > EN2.at); nightA += ((night ? 1 : 0) - nightA) * Math.min(1, el * 1.5); if (nightA > .01){ ctx.fillStyle = "rgba(10,14,44," + (.55 * nightA).toFixed(3) + ")"; ctx.fillRect(0, 0, W, H); } /* 광폭화: 배경만 어두운 밤 (캐릭터는 이 뒤에 그려서 그대로) */ if (night && bt && !bt._nightMsg){ bt._nightMsg = 1; nightNotice(); }
+    drawCloud(ctx); /* 구름 그림자: 바닥 위, 캐릭터 아래(캐릭터는 drawUnit에서 같은 밀도로) */
     // 스테이지 줄은 HUD 오른쪽에 있어요
     if (flash > 0){ flash -= el; ctx.fillStyle = 'rgba(255,255,255,' + Math.max(0, flash) + ')'; ctx.fillRect(0, 0, W, H); }
     updSkillBars(); // 스킬 막대는 전장 위 DOM(왼쪽 위 내 스킬, 오른쪽 위 적 스킬)
@@ -4023,6 +4053,7 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
       if (inspect && inspect.uid === u.uid){ var ps = sl(Math.floor(performance.now() / 350) % 2 ? '#fff3b0' : '#ffd34d'), o2 = EX ? 2 / csB : 2; [[o2, 0], [-o2, 0], [0, o2], [0, -o2]].forEach(function(d){ ctx.drawImage(ps, sx + d[0], sy + d[1], S, S); }); } /* 전투 중에도 고른 캐릭터(아군·적)에 금색 선택 라인, 0.7초 깜빡임 (편성 화면 .picked와 같은 모양) */
       ctx.globalAlpha = ga0 * .65; [[o, 0], [-o, 0], [0, o], [0, -o]].forEach(function(d){ ctx.drawImage(sil, sx + d[0], sy + d[1], S, S); }); ctx.globalAlpha = ga0;
       ctx.drawImage(imU, sx, sy, S, S);
+      var clA = cloudStr(); if (clA > .005){ clA *= cloudDens(x, foot - S * .4); if (clA > .005){ ctx.globalAlpha = ga0 * clA; ctx.drawImage(sl('#000000'), sx, sy, S, S); ctx.globalAlpha = ga0; } } /* 캐릭터도 구름 그림자 밑이면 어두워짐 */
       if (u._cfl > 0){ ctx.globalAlpha = ga0 * Math.min(1, u._cfl / .25); ctx.drawImage(sl('#ffffff'), sx, sy, S, S); ctx.globalAlpha = ga0; } /* 상자 그림이 바뀌는 순간 반짝 */
       if (u.chill > 0){ ctx.globalAlpha = ga0 * .45; ctx.drawImage(sl('#6fc3ff'), sx, sy, S, S); ctx.globalAlpha = ga0; } // 얼음 둔화: 파란 틴트
       if (u.stone > 0){ ctx.globalAlpha = ga0 * .8; ctx.drawImage(sl('#8d8a92'), sx, sy, S, S); ctx.globalAlpha = ga0; } // 돌: 회색
