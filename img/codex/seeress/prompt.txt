@@ -1,0 +1,13 @@
+Look at the image img/pixellab/knight_v2_x8.png. It is the BODY TEMPLATE and style standard of our game: same doll in a different outfit. Keep its proportions (about 1.8 heads tall, head about 55 percent of body height), face size and placement, camera slightly from above, 3/4 view, thick dark brown outline, muted colors, same pixel size.
+
+Generate ONE new image with your image generation tool and save it as img/codex/seeress/seeress_src.png
+Character: a mysterious BLINDFOLDED SHRINE SEERESS who holds a BALANCE SCALE (an original character, not from any existing game or anime).
+- Eyes completely covered by a blindfold: a deep midnight-navy cloth band with a thin gold edge and one small gold crescent mark in the middle, its two ribbon ends trailing at the side. No eyes visible. Small calm closed mouth.
+- Hair: very long pale mint-silver hair, straight, with blunt bangs above the blindfold and one low tie near the ends.
+- Headpiece: a small thin gold halo-like crescent ornament on top of the head (smaller than the head).
+- Outfit: layered ivory-white priestess robe with wide sleeves, midnight-navy long skirt with gold trim, a navy sash. No necklace.
+- Item: she holds a GOLD BALANCE SCALE by its top handle in one hand, close to her body but clearly separated in silhouette: a vertical post, a horizontal beam, and two round pans hanging by thin chains, large enough to read at a glance. The pans are level. The other hand rests near her chest.
+- Calm standing pose, feet on the ground, quiet and mystical.
+- Pixel art on the same grid as the template: crisp square pixels, no anti-aliasing, no gradients, no finer detail than the template, 1 art pixel outline with no gaps. Image 1024x1024, character centered with the same size as the template.
+[Format] Plain solid #FF00FF magenta background, no text, no shadow, no building.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

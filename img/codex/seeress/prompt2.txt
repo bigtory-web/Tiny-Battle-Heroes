@@ -1,0 +1,10 @@
+Look at these images:
+- img/codex/seeress/seeress_x8.png = our current pixel art blindfolded seeress (8x enlarged). THIS IS THE CHARACTER TO EDIT.
+- img/pixellab/knight_v2_x8.png = our style and size standard.
+
+Keep the character exactly the same (hair, crescent ornament, blindfold, mouth, robe, colors, outline, proportions, pose direction, pixel size) and change ONLY the balance scale: it is too small and muddled. Make it about 1.6 times bigger and instantly readable: the raised hand grips a ring at the top, below it a clear horizontal gold beam, two thin chains on each end forming a visible triangle with empty space inside, and two wide shallow round pans, level. The whole scale hangs out to the side of the body so that most of it is silhouetted against the background, not over the skirt. It must not cover the face.
+
+Generate ONE new image with your image generation tool and save it as img/codex/seeress/seeress2_src.png
+Crisp square pixels on the same grid as the input, no anti-aliasing, no finer detail, 1 art pixel outline with no gaps. Image 1024x1024, centered.
+[Format] Plain solid #FF00FF magenta background, no text, no shadow.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

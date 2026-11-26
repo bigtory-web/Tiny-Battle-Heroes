@@ -1,0 +1,11 @@
+Look at these images of our pixel game, only for STYLE (outline color, muted colors, shading):
+- img/pixellab/knight_v2_x8.png
+- img/gemini/ref/ev_trader_x8.png
+
+Generate ONE new image with your image generation tool and save it as img/codex/lever/lever_src.png
+Draw a single decorative SLOT MACHINE LEVER (pull handle), pixel art, that is mounted on the right outer side of a casino roulette window of a goblin casino dealer.
+- Front/side view, standing upright, NOT moving: a mounting bracket at the bottom (a sturdy dark brass-and-plum metal box with a gold rim and two rivets, its left side flat so it can be attached to the window edge), a polished silver metal rod going straight up, and a big glossy red ball knob on top with a bright highlight. A small gold collar where the rod meets the knob and where it meets the base.
+- Colors: warm gold, dark plum-brown, silver, deep red. 3 tones per material.
+- Pixel grid: the whole lever is exactly about 56 art pixels tall and 22 art pixels wide. One art pixel = 18 image pixels, image 1152x1152, centered. Crisp square pixels, no anti-aliasing, no gradients, no finer detail than the grid. 1 art pixel outline in very dark brown #17141d, no gaps.
+[Format] Plain solid #FF00FF magenta background, no text, no shadow, no character, nothing else.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
