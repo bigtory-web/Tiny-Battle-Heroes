@@ -1,0 +1,11 @@
+Look at img/p/bg_swamp.png : the swamp battle field background of our pixel art game. The lower third (the mud ground below the shoreline) is one flat color and looks boring.
+
+Edit that image with your image generation tool and save the result as img/codex/swampground/ground_B.png.
+
+Change ONLY the mud ground below the shoreline. Everything above (sky, trees, bushes, water, the shoreline bank) stays as it is.
+The new ground: LUMPY wet mud: irregular patches of dark wet mud and lighter dry mud, shallow glossy puddle dents with a thin highlight, cracks, small clods and pebbles, tiny bubbles.
+- Keep the same olive-brown mud color family as now, 3 to 4 tones, flat cel shading, chunky pixel art with clear square pixels of the same size as the rest of the picture. No gradients, no noise grain.
+- Contrast must stay soft enough that characters and hexagon cells drawn on top remain easy to read, but the unevenness must be clearly visible at a glance.
+- Keep the small teal puddles and grass patches near the left and right edges (you may reshape them so they sit in the mud naturally).
+- No rocks or objects bigger than a pebble in the middle, no characters, no text, no UI. Same aspect ratio and composition.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
