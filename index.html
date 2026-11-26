@@ -2583,6 +2583,7 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
 html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-serif}
 #fontRow .ghost.on{box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #ffd34d!important}
 .upword{position:fixed;z-index:9999;transform:translate(-50%,-100%);pointer-events:none;font-family:var(--display);font-weight:400;line-height:1;color:#ffd34d;white-space:nowrap;text-shadow:2px 0 #17141d,-2px 0 #17141d,0 2px #17141d,0 -2px #17141d,2px 2px #17141d,-2px -2px #17141d,2px -2px #17141d,-2px 2px #17141d;animation:upword .9s ease-out both}
+#skE .skc.relnew{animation:relnew .6s cubic-bezier(.3,1.7,.5,1) both;z-index:5} @keyframes relnew{0%{transform:scale(0);filter:brightness(3)}55%{transform:scale(1.4);filter:brightness(1.8) drop-shadow(0 0 8px #ffb02e)}100%{transform:scale(1);filter:none}}
 @keyframes upword{0%{opacity:0;transform:translate(-50%,-40%) scale(.4)}18%{opacity:1;transform:translate(-50%,-125%) scale(1.35)}32%{transform:translate(-50%,-100%) scale(1)}70%{opacity:1;transform:translate(-50%,-110%)}100%{opacity:0;transform:translate(-50%,-165%)}}
 /* 패배 팝업 */
 #resPop .dfc{position:relative;width:348px;height:432px;flex:none}
@@ -5878,26 +5879,27 @@ img.rimg{image-rendering:auto!important}
   function foeSlots(){ return S.stage < E.stageCount(D) ? E.stageTeam(D, S.stage, S.event, S.bell || 0, bt ? curPlv : plv()).team.map(function(u){ return { slot: u.slot, key: u.id + (u.merc ? '*' : '') + (u.boss ? '!' : '') }; }) : []; }
   function newFoeSlots(old, now){ var pool = old.map(function(o){ return o.key; }); return now.filter(function(o){ var i = pool.indexOf(o.key); if (i >= 0){ pool.splice(i, 1); return false; } return true; }).map(function(o){ return o.slot; }); }
   function setBell(n){ if (bt || !D.bell) return; var mx = bellMax(); n = Math.max(0, Math.min(n, mx)); var before = Math.min(S.bell || 0, mx), old = foeSlots(), g0 = S.gold;
-    var paidTo = Math.max(before, S.bellPaid || 0); /* 2026-11-24: 같은 판에서 지고 다시 울리면 이미 받은 횟수만큼은 골드 없음 */
+    var relK = [].map.call($('skE').children, function(x){ return x.dataset.k; }); var paidTo = Math.max(before, S.bellPaid || 0); /* 2026-11-24: 같은 판에서 지고 다시 울리면 이미 받은 횟수만큼은 골드 없음 */
     var gain = n > paidTo && E.bellGold && !(S.event && S.event.kind === 'chest') ? E.bellGold(D, S.stage, paidTo, n, plv()) : 0; if (gain){ S.gold += gain; S.bellGold = (S.bellGold || 0) + gain; S.bellPaid = n; }
     S.bell = n; save(); renderAll();
     if (gain){ var bb = $('bellBtn'); if (HAS_FX) FX.playOn(bb, 'coin', { size: 200, scale: 1, cy: 30, z: 60 }); goldCount(g0, S.gold); }
     if (n > before){
+      updSkillBars(); [].forEach.call($('skE').children, function(x){ if (relK.indexOf(x.dataset.k) >= 0) return; popWord(x, '펑!', '#ffb02e'); x.classList.add('relnew'); /* 글자 먼저: 연출 시작은 크기 0 */ if (HAS_FX) FX.playOn(x, 'poof', { size: 120, scale: 1, cy: 0 }); setTimeout(function(){ x.classList.remove('relnew'); }, 800); });
       var stN = E.stageTeam(D, S.stage, S.event, S.bell || 0, plv()), topG = 0, topId = null;
       newFoeSlots(old, foeSlots()).forEach(function(sl){ var fe = document.querySelector('#field .foe[data-foe="' + sl + '"]'); if (!fe) return;
         var fu = stN.team.filter(function(x){ return x.slot === sl; })[0], gr = fu ? E.heroGrade(D, fu.id) : 1; if (fu && gr > topG){ topG = gr; topId = fu.id; }
-        var un = fe.closest('.unit') || fe.parentNode; spawnDrama(un, fe, gr, fu ? HG(fu.id).col : '#fff'); if (HAS_FX) FX.playOn(un, 'poof', { size: 200, scale: 1.3, cy: 30 }); else un.insertAdjacentHTML('beforeend', '<i class="puff"><b></b><b></b><b></b><b></b><b></b></i>');
+        var un = fe.closest('.unit') || fe.parentNode; spawnDrama(un, fe, gr, fu ? HG(fu.id).col : '#fff'); popWord(fe, '팡!', '#ffffff'); if (HAS_FX) FX.playOn(un, 'poof', { size: 200, scale: 1.3, cy: 30 }); else un.insertAdjacentHTML('beforeend', '<i class="puff"><b></b><b></b><b></b><b></b><b></b></i>');
         setTimeout(function(){ fe.classList.remove('spawn'); var p = un.querySelector('.puff'); if (p) p.remove(); }, 600); });
       var stP = E.stageTeam(D, S.stage, S.event, before, plv());
       stN.team.forEach(function(x){ var p = stP.team.filter(function(y){ return y.slot === x.slot; })[0]; if (!p || (x.star || 1) <= (p.star || 1)) return;
         var fe = document.querySelector('#field .foe[data-foe="' + x.slot + '"]'); if (fe) starPang(fe.closest('.unit') || fe.parentNode, fe); });
-      arenaDread(topG, topId);
       var b = $('bellBtn'); b.classList.add('ring'); setTimeout(function(){ b.classList.remove('ring'); }, 500); } }
+  /* 분노 연출: 누를 때 그 단계 하나만 (2026-11-26 사용자): 1 새 적 "팡!", 2 새 유물 "펑!", 3 적 한 명 "UP!"(우리 레벨업과 같은 글자·빛) */
+  function popWord(el, txt, col){ var r = el.getBoundingClientRect(); if (!r.width) return; var f = $('field'), k = f.getBoundingClientRect().width / (f.offsetWidth || 1) || 1, b = document.createElement('b'); b.className = 'upword'; b.textContent = txt; if (col) b.style.color = col; b.style.left = (r.left + r.width / 2) + 'px'; b.style.top = (r.top + r.height * .2) + 'px'; b.style.fontSize = Math.round(22 * k) + 'px'; document.body.appendChild(b); setTimeout(function(){ b.remove(); }, 900); }
   function starPang(un, fe){ var z0 = un.style.zIndex; un.style.zIndex = 9000;
-    un.insertAdjacentHTML('beforeend', '<i class="spang"><u></u><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></i>');
-    if (HAS_FX) setTimeout(function(){ FX.playOn(un, 'levelup', { size: 200, scale: 1.3, cy: 30 }); }, 380); // 팡이 먼저 보이고 나서 강해지는 빛
+    popWord(fe, 'UP!'); if (HAS_FX) FX.playOn(un, 'levelup', { size: 200, scale: 1.3, cy: 30 });
     fe.classList.add('starup'); var sb = fe.querySelectorAll('.fst b'); if (sb.length) sb[sb.length - 1].classList.add('nw');
-    setTimeout(function(){ fe.classList.remove('starup'); un.querySelectorAll('.spang').forEach(function(x){ x.remove(); }); un.style.zIndex = z0; }, 1300); }
+    setTimeout(function(){ fe.classList.remove('starup'); un.style.zIndex = z0; }, 1300); }
   // 종으로 나온 적 하나: 일반·고급은 가볍게 펑, 희귀부터 위에서 쿵 떨어지며 등급 색 링, 전설은 더 무겁게
   function spawnDrama(un, fe, gr, col){ var heavy = gr >= 3;
     fe.classList.add(heavy ? (gr >= 4 ? 'drop4' : 'drop') : 'spawn');
