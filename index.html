@@ -2742,12 +2742,23 @@ img.rimg{image-rendering:auto!important}
 /* 전장 용병 머리 위 합류 마크 = 악수, 성급 별 위에서 둥실 (2026-11-26 사용자) */
 .foe.merc::after{width:32px!important;height:20px!important;top:-19px!important;background:url(img/p/ui_shake.png) center/32px 20px no-repeat!important;animation:mercbob .7s steps(2) infinite}
 @keyframes mercbob{50%{translate:0 -3px}}
-/* 큰 아이콘(상점·방랑상점·용병 칸·백팩·상세 머리·DPS 줄) = 얼굴만 */
-.hic.hicf > .av.pic,.bagcol .chip .av.pic,.hinfo .hi-av.hic .av.pic,.evic.big .av.pic,.dps .dav .av.pic{background-size:var(--fs,170%) auto!important;background-position:var(--fx,50%) var(--fy,40%)!important}
+/* 큰 아이콘(상점·방랑상점·용병 칸·백팩·상세 머리·DPS 줄) = 얼굴만, 모두 같은 값 */
+.hic.hicf > .av.pic,.bagcol .chip .av.pic,.hinfo .hi-av.hic .av.pic,.evic.big .av.pic,.dps .dav .av.pic{background-size:205%!important;background-position:50% 48%!important}
 /* 상점: 상품 쪽 폭을 줄여 구매 버튼을 짧게, 설명 칸 넓게 */
 #tab-shop .shopInfo{width:310px!important}
 /* 방랑상점 할인 딱지 크게 */
 #shopBuy .boff{font-size:18px!important;line-height:22px!important;left:-8px;top:-13px;padding:0 6px}
+/* 돈고블린 전구 */
+#roul .rstage > .rbulbs{display:none}
+#roul .rbox.groll .rstage > .rbulbs{display:block;position:absolute;inset:4px;z-index:6;pointer-events:none}
+#roul .rbulbs s{position:absolute;width:6px;height:6px;margin:-3px 0 0 -3px;text-decoration:none;background:#6b5420;box-shadow:0 0 0 1px #17141d;animation:bulbon 1.2s steps(1) infinite}
+#roul .rbulbs s.o{animation-delay:-.6s}
+#roul .rbox.groll.spin .rbulbs s{animation:bulbrun .48s steps(1) infinite;animation-delay:var(--d)}
+#roul .rbox.groll.reveal:not(.still) .rbulbs s{animation:bulbflash .6s steps(1) 1,bulbon 1.2s steps(1) .6s infinite}
+#roul .rbox.groll.reveal:not(.still) .rbulbs s.o{animation:bulbflash .6s steps(1) 1,bulbon 1.2s steps(1) 1.2s infinite}
+@keyframes bulbon{0%{background:#ffe27a;box-shadow:0 0 0 1px #17141d,0 0 5px 1px rgba(255,210,80,.8)}50%{background:#6b5420;box-shadow:0 0 0 1px #17141d}}
+@keyframes bulbrun{0%{background:#fff3b0;box-shadow:0 0 0 1px #17141d,0 0 6px 2px rgba(255,220,90,.9)}25%,100%{background:#6b5420;box-shadow:0 0 0 1px #17141d}}
+@keyframes bulbflash{0%,66%{background:#fffbe0;box-shadow:0 0 0 1px #17141d,0 0 8px 3px rgba(255,230,120,1)}33%{background:#6b5420;box-shadow:0 0 0 1px #17141d}}
 </style>
 </head>
 <body>
@@ -2973,17 +2984,7 @@ img.rimg{image-rendering:auto!important}
   var EVIMG = {}; ['merchant', 'mark_merc', 'ev_goblin', 'ev_merchant', 'ev_merc', 'ev_campfire_i', 'ev_chest', 'ui_shake'].forEach(function(k){ var im = new Image(); im.onload = function(){ EVIMG[k] = im; imgReady(); }; im.src = 'img/p/' + k + '.png'; });
   function gc(id){ return D.gradeColor[E.heroGrade(D, id)] || '#fff'; }
   var FACE = {bear:[0.571,0.643,63,0.88],wolf:[0.587,0.619,63],rain:[0.539,0.594,64],drum:[0.508,0.635,63],harpy:[0.556,0.619,63],imp:[0.54,0.651,63],boar:[0.542,0.617,60],squire:[0.516,0.605,62,1.12],sprout:[0.559,0.61,59],pup:[0.484,0.581,62],mudgolem:[0.403,0.61,77,0.75],slinger:[0.542,0.619,59,1.12],candle:[0.507,0.597,67],batling:[0.548,0.629,62],frog:[0.556,0.611,63],piper:[0.532,0.581,62],mossguard:[0.571,0.611,63],knight:[0.539,0.641,64],blades:[0.492,0.627,63],hawk:[0.508,0.585,65],song:[0.554,0.602,83,0.88],bat:[0.576,0.652,66],dancer:[0.548,0.629,62],spark:[0.5,0.629,62],ranger:[0.5,0.591,66],shield:[0.5,0.583,60],fox:[0.554,0.631,65],nun:[0.5,0.613,62],warlock:[0.564,0.618,55,1.12],turtle:[0.524,0.635,63],horn:[0.524,0.603,63],owl:[0.555,0.633,64],icefairy:[0.542,0.633,60],frost:[0.547,0.627,75],flame:[0.541,0.615,61],storm:[0.508,0.61,59],pegasus:[0.517,0.603,58],thorn:[0.492,0.608,60],shaman:[0.508,0.587,63],monk:[0.542,0.585,59],vine:[0.532,0.613,62],gargoyle:[0.532,0.611,63],assassin:[0.529,0.577,52,1.2],druid:[0.533,0.617,60],succubus:[0.542,0.625,60],cannon:[0.509,0.605,57],coral:[0.535,0.606,71],moonarcher:[0.525,0.619,59,1.1],minotaur:[0.426,0.59,61],shadow:[0.581,0.621,62],wyvern:[0.555,0.591,55],gate:[0.508,0.608,60],lion:[0.548,0.619,63,0.9],valkyrie:[0.579,0.627,63],tiger:[0.556,0.619,63],thunderbird:[0.533,0.598,61],necro:[0.508,0.59,61],dragon:[0.56,0.634,67,0.88],archmage:[0.525,0.598,61],worldtree:[0.538,0.538,65],demonlord:[0.569,0.638,65],phoenix:[0.531,0.631,65,0.88],seraph:[0.493,0.613,71,0.9],kraken:[0.533,0.618,76],windlord:[0.486,0.6,70,0.9]}; /* 얼굴 가운데 [x/폭, y/폭, 틀 폭] — img/tools/faces.ps1로 뽑음 */
-  /* 큰 아이콘 = 얼굴만 (2026-11-26 사용자: "캐릭터 얼굴만 나와야 하는데 이거 통일이 안됨"). 영웅별 값 없이 하나의 규칙: 그림 가운데 줄기에서 머리 꼭대기를 찾아 FZ배로 자름.
-     가운데(폭의 36%) 안에 불투명 점이 4개 이상인 첫 줄 = 머리 꼭대기(들고 있는 창·지팡이 끝은 건너뜀) */
-  var FZ = 2.05, FACEAT = {};
-  function faceAt(id){ if (FACEAT[id]) return FACEAT[id]; var im = IMGS[id]; if (!im || !im.width) return null; var w = im.width, h = im.height, c = document.createElement('canvas'); c.width = w; c.height = h; var x = c.getContext('2d'); x.drawImage(im, 0, 0);
-    var d; try { d = x.getImageData(0, 0, w, h).data; } catch (e) { return null; } var on = function(px, py){ return d[(py * w + px) * 4 + 3] > 40; };
-    var x0 = w, x1 = 0, y, px; for (y = Math.floor(h * .6); y < h; y++) for (px = 0; px < w; px++) if (on(px, y)){ if (px < x0) x0 = px; if (px > x1) x1 = px; } var cx = x1 > x0 ? (x0 + x1) / 2 : w / 2; /* 몸 가운데 = 아랫몸 기준 */
-    var top = -1; for (y = 0; y < h && top < 0; y++){ var n = 0; for (px = Math.round(cx - w * .18); px <= cx + w * .18; px++) if (px >= 0 && px < w && on(px, y)) n++; if (n >= 4) top = y; } if (top < 0) top = 0;
-    var sx = 0, k = 0; for (y = top; y < Math.min(h, top + h * .28); y++) for (px = Math.round(cx - w * .24); px <= cx + w * .24; px++) if (px >= 0 && px < w && on(px, y)){ sx += px + .5; k++; }
-    var hx = k ? sx / k / w : .5, tf = top / h;
-    return FACEAT[id] = { x: ((.5 - hx * FZ) / (1 - FZ) * 100).toFixed(1), y: ((.03 - tf * FZ) / (1 - FZ) * 100).toFixed(1) }; }
-  function faceCss(id){ var f = faceAt(id); return f ? ';--fs:' + FZ * 100 + '%;--fx:' + f.x + '%;--fy:' + f.y + '%' : ''; }
+  function faceCss(){ return ''; } /* 큰 아이콘 자르기는 CSS 공통값 하나(영웅별 값·자동 계산 없음, 2026-11-26 사용자: 그림을 맞추는 쪽) */
   function av(id, gr){ return IMGS[id] ? '<span class="av pic' + (PIX[id] ? ' pix' : '') + '" style="background-image:url(' + IMGSRC[id] + ');--gc:' + gc(id, gr) + faceCss(id) + '"></span>' : '<span class="av">' + AV[id] + '</span>'; }
   function avO(id, key){ var o = avO0(id, key); return OUTLN ? o.replace('<span ', '<span data-nk="' + OUTLN + '" ') : o; }
   function avO0(id, key){ key = key || id; var s = av(id), im = IMGS[key]; if (!im) return s; var w = im.width, h = im.height; /* 외곽선 그림은 위아래좌우 1px씩 커서 칸도 그만큼 키워 원래 그림 자리를 맞춰요 */
@@ -3469,6 +3470,9 @@ img.rimg{image-rendering:auto!important}
   function fairyDeco(stage){ if (!stage || stage.querySelector(':scope > .fdust')) return; var o = '', C = ['#ffb3de', '#a8e4ff', '#fff3b0'];
     for (var i = 0; i < 16; i++){ var du = (5 + Math.random() * 4).toFixed(2); o += '<s style="left:' + (4 + Math.random() * 92).toFixed(1) + '%;top:' + (35 + Math.random() * 62).toFixed(1) + '%;background:' + C[i % 3] + ';animation-duration:' + du + 's;animation-delay:' + (-Math.random() * du).toFixed(2) + 's"></s>'; }
     stage.insertAdjacentHTML('beforeend', '<i class="fdust">' + o + '</i><i class="fvine"></i><i class="fvine b"></i><i class="fvine r"></i><i class="fvine r b"></i>'); }
+  /* 돈고블린 룰렛: 큰 칸 둘레 픽셀 전구 (2026-11-26 사용자 OK, 레버 없음). 대기 = 번갈아 천천히, 도는 중 = 한 방향으로 빠르게, 멈추면 한 번 번쩍 */
+  function bulbDeco(stage){ if (!stage || stage.querySelector(':scope > .rbulbs')) return; var nx = 17, ny = 9, pts = [], k; for (k = 0; k < nx; k++) pts.push([k / nx, 0]); for (k = 0; k < ny; k++) pts.push([1, k / ny]); for (k = 0; k < nx; k++) pts.push([1 - k / nx, 1]); for (k = 0; k < ny; k++) pts.push([0, 1 - k / ny]);
+    stage.insertAdjacentHTML('beforeend', '<i class="rbulbs">' + pts.map(function(p, i){ return '<s class="' + (i % 2 ? 'o' : 'e') + '" style="left:' + (p[0] * 100).toFixed(2) + '%;top:' + (p[1] * 100).toFixed(2) + '%;--d:' + ((i % 4) * .12 - .48).toFixed(2) + 's"></s>'; }).join('') + '</i>'); }
   function starFx(stage, tier, col){ if (!stage) return; var el = stage.querySelector(':scope > .rstars'); if (!el){ el = document.createElement('i'); el.className = 'rstars'; stage.appendChild(el); }
     el.style.setProperty('--sc', col || '#fff'); if (el.firstChild) return; var n = 23, o = ''; /* 개수·빈도는 등급과 상관없이 같고 색만 다름. 결과 그림 왼쪽·위·오른쪽 반원, 단상 위로는 안 내려감 (2026-11-26 사용자) */
     for (var i = 0; i < n; i++){ var a = (i + Math.random() * .7) / n * Math.PI, f = Math.random(), x = 50 + Math.cos(a) * (32 + f * 16), y = 94 - Math.sin(a) * (80 + f * 10), sz = Math.random() < .45 ? 3 : 2, du = (1.6 + Math.random() * 1.4).toFixed(2), dl = (-Math.random() * 3).toFixed(2); o += '<s class="s' + sz + '" style="left:' + x.toFixed(1) + '%;top:' + y.toFixed(1) + '%;animation-duration:' + du + 's;animation-delay:' + dl + 's"></s>'; }
@@ -3482,7 +3486,7 @@ img.rimg{image-rendering:auto!important}
     stage.classList.add('onped'); stage.style.setProperty('--P', P.toFixed(4) + 'px'); el.firstChild.style.backgroundImage = 'url(' + pedRune(col || '#d9dde8') + ')'; }
   function showOffer(key){
     var p = LP(key), box = $('roul'), pic = box.querySelector('.rpic');
-    box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); box.querySelector('.rbox').classList.toggle('camp', S.offerMode === 'camp'); box.querySelector('.rbox').classList.toggle('fairy', S.offerMode === 'fairy'); if (S.offerMode === 'fairy') fairyDeco(box.querySelector('.rstage')); box.querySelector('.rbox').classList.toggle('groll', S.offerMode === 'groll'); rayFx(key); if (!box.classList.contains('chestpop')) pedestal(box.querySelector('.rstage'), GR(lootTier(key)).col); $('rUp').hidden = !upOK(key);
+    box.querySelector('.rbox').style.setProperty('--el', lootColor(key)); box.querySelector('.rbox').classList.toggle('camp', S.offerMode === 'camp'); box.querySelector('.rbox').classList.toggle('fairy', S.offerMode === 'fairy'); if (S.offerMode === 'fairy') fairyDeco(box.querySelector('.rstage')); if (S.offerMode === 'groll') bulbDeco(box.querySelector('.rstage')); box.querySelector('.rbox').classList.toggle('groll', S.offerMode === 'groll'); rayFx(key); if (!box.classList.contains('chestpop')) pedestal(box.querySelector('.rstage'), GR(lootTier(key)).col); $('rUp').hidden = !upOK(key);
     pic.style.imageRendering = p.type === 'h' && IMGS[p.id] ? 'pixelated' : '';
     var rk = qN(), rq = { k: rk, css: 66 * qR() / (sApp() * (window.devicePixelRatio || 1)) };
     var lm = Math.max(2, Math.round(qR() * 64 * .8 / 24)); document.documentElement.style.setProperty('--rlq', (24 * lm / (sApp() * (window.devicePixelRatio || 1))).toFixed(2) + 'px'); /* 유물·골드 그림도 영웅과 같은 크기(영웅이 칸에서 차지하는 높이 약 80%), 24px 원본의 정수배 장치 px */ document.documentElement.style.setProperty('--rpq', (p.type === 'h' && IMGS[p.id] ? rq.css : 114) + 'px'); rpAnim.nk = p.type === 'h' ? rq.k : 0; OUTLN = rpAnim.nk;
