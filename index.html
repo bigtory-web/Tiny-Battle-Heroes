@@ -3603,7 +3603,7 @@ img.rimg{image-rendering:auto!important}
   function drawFieldBars(list){
     var fd = $('field'); if (!fd) return; var c = fd.querySelector('canvas.fbar');
     if (!c){ c = document.createElement('canvas'); c.className = 'fbar'; fd.appendChild(c); }
-    var k = Math.min(2, window.devicePixelRatio || 1); c.width = W * k; c.height = H * k; var cx = c.getContext('2d'); cx.setTransform(k, 0, 0, k, 0, 0); cx.clearRect(0, 0, W, H); cx.imageSmoothingEnabled = false;
+    var cw = Math.round((c.clientWidth || fd.clientWidth) * sApp() * (window.devicePixelRatio || 1)) || W, k = cw / W; c.width = cw; c.height = Math.round(H * k); var cx = c.getContext('2d'); cx.setTransform(k, 0, 0, k, 0, 0); cx.clearRect(0, 0, W, H); cx.imageSmoothingEnabled = false;
     list.forEach(function(b){ drawBars(cx, b.x, b.y + OFF, { hpk: 1, ally: b.ally, energy: 0, star: 0, S: unitPx(false), tf: imgTopFrac(IMGS[b.id]) }); });
     list.forEach(function(b){ if (!b.star) return; var S0 = unitPx(false), hy = b.y + OFF + 26 + S0 * .04 - S0 + imgTopFrac(IMGS[b.id]) * S0; drawGradeStar(cx, b.x, hy - 7, b.star, b.tr); }); /* 별은 막대를 다 그린 뒤 맨 위에: 위 칸 영웅의 HP 막대가 아래 칸 영웅의 별을 덮던 문제(적 녹스·꽃 소녀) */
     var cr = c.getBoundingClientRect(); if (!cr.width) return;
@@ -4745,10 +4745,11 @@ img.rimg{image-rendering:auto!important}
   var SKFX = { healAll: 'heal', healPct: 'heal', shieldPct: 'shield', teamShield: 'shield', atkBuff: 'levelup', hasteAll: 'levelup', energyAll: 'levelup' };
   var knocks = {}; // uid → { dx, t } : 돌풍에 밀린 유닛을 0.15초 동안 휙 미끄러지게 그려요
   // 체력·에너지 막대: 전투와 편성 화면이 같이 써요
-  // 5×5 픽셀 별 (성급 표시, 은은한 금색)
-  function drawGradeStar(c, cx, cy, n, tr){ var R = 5.4, r = 2.4, gap = 11, x0 = cx - (n - 1) * gap / 2; c.save(); c.lineJoin = 'round';
-    for (var k = 0; k < n; k++){ var x = x0 + k * gap; c.beginPath(); for (var i = 0; i < 10; i++){ var a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r : R; c.lineTo(x + Math.cos(a) * rr, cy + 0.5 + Math.sin(a) * rr); } c.closePath(); c.lineWidth = 2; c.strokeStyle = '#17141d'; c.stroke(); c.fillStyle = tr ? '#b98cff' : '#ffd34d'; c.fill(); }
-    c.restore(); } /* 성급 = 머리 위 작은 별을 성급 개수만큼 (숫자 없음) (2026-11-25 사용자: "별개수만큼 표시, 숫자는 X") */
+  // 성급 별: 9×9 점 그림(7×7 별 + 어두운 1점 테두리). 원본 1점 = 화면 정수 점, 정수 좌표에 최근접으로 찍음 (2026-11-26 사용자: "별아이콘이 선명도가 떨어져")
+  var STARSPR = {}; function starSpr(col){ if (STARSPR[col]) return STARSPR[col]; var R = ['...X...', '...X...', 'XXXXXXX', '.XXXXX.', '..XXX..', '.XX.XX.', '.X...X.'], s = document.createElement('canvas'), x = s.getContext('2d'); s.width = s.height = 9;
+    var put = function(cl, dx, dy){ x.fillStyle = cl; R.forEach(function(row, j){ for (var i = 0; i < 7; i++) if (row[i] === 'X') x.fillRect(i + dx, j + dy, 1, 1); }); }; [[0, 1], [2, 1], [1, 0], [1, 2]].forEach(function(o){ put('#17141d', o[0], o[1]); }); put(col, 1, 1); return STARSPR[col] = s; }
+  function drawGradeStar(c, cx, cy, n, tr){ var t = c.getTransform(), N = Math.max(1, Math.round(13 * sApp() * (window.devicePixelRatio || 1) / 9)), w = 9 * N, step = 8 * N, x0 = Math.round(t.a * cx + t.e - (step * (n - 1) + w) / 2), y0 = Math.round(t.d * cy + t.f - w / 2), s = starSpr(tr ? '#b98cff' : '#ffd34d');
+    c.save(); c.setTransform(1, 0, 0, 1, 0, 0); c.imageSmoothingEnabled = false; for (var k = 0; k < n; k++) c.drawImage(s, x0 + k * step, y0, w, w); c.restore(); } /* 성급 = 머리 위 작은 별을 성급 개수만큼 (숫자 없음) (2026-11-25 사용자: "별개수만큼 표시, 숫자는 X") */
   var STARQ = null; /* 전투: 별은 유닛·막대를 다 그린 뒤 맨 마지막에 (다른 유닛 그림·막대가 별을 덮지 않게) */
   function drawBars(ctx, x, y, o){
     var bw = 44, bx = Math.round(x - bw / 2), by = Math.round(y + 30), rows = 2, fh = 2 + 4 + 2 + (rows - 1) * 4;
