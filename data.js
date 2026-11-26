@@ -273,7 +273,7 @@ var IDLE_DATA = {
       { id: 'p_swift',  name: '날쌘 물약',   icon: '💨', kind: 'lineHaste',  target: 'rand', amount: 0.4,  price: 50, desc: '이번 전투 동안 무작위 아군 1명의 공격 속도가 {a}% 빨라진다.' },
       { id: 'p_shadow', name: '그림자 물약', icon: '🌑', kind: 'lineHide',   target: 'rand', amount: 5,    price: 40, desc: '이번 전투에서 무작위 아군 1명은 처음 {a}초 동안 적의 목표가 되지 않는다.' },
       { id: 'p_wolf',   name: '늑대 물약',   icon: '🐺', kind: 'lineAtk',    target: 'rand', amount: 0.4,  price: 50, desc: '이번 전투 동안 무작위 아군 1명의 공격력이 {a}% 오른다.' },
-      { id: 'p_swamp',  name: '늪 물약',     icon: '🫧', kind: 'swamp',      target: 'rand', amount: 0.05, price: 60, desc: '이번 전투 동안 무작위 아군 1명의 공격력이 살아 있는 1초마다 {a}%씩 오른다.' }
+      { id: 'p_swamp',  name: '늪 물약',     icon: '🫧', kind: 'swamp',      target: 'rand', amount: 0.01, every: 5, price: 60, /* 2026-11-27: 늪 칸과 같게 5초마다 +1% (예전 1초마다 +5%) */ desc: '이번 전투 동안 무작위 아군 1명의 공격력이 살아 있는 5초마다 {a}%씩 오른다.' }
     ]
   },
 

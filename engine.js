@@ -274,7 +274,7 @@
     // ───── 물약(2026-11-26): opts.potions = [{ id, slot? }] 우리 편에 전투 시작 때 한 번. target 'rand'는 slot(마실 때 정한 영웅), 없으면 무작위 1명. 열 유물과 같은 효과 ─────
     var potionLog = []; (opts.potions || []).forEach(function (pt) { var P = potionById(data, pt.id); if (!P) return; var T = alive(A).filter(function (x) { return !x.h.mob; }); if (!T.length) return;
       if (P.target === 'rand') { var one = T.filter(function (x) { return x.slot === pt.slot; })[0] || T[Math.floor(rand() * T.length)]; T = [one]; }
-      T.forEach(function (x) { var v = P.amount, k = P.kind; if (k === 'swamp') x.swampV = (x.swampV || 0) + v; else if (k === 'lineGuard') x.lineDR = (x.lineDR || 0) + v; else if (k === 'lineThorns') x.lineTh = (x.lineTh || 0) + v; else if (k === 'lineEnergy') x.energy = Math.min(B.energyMax, x.energy + v);
+      T.forEach(function (x) { var v = P.amount, k = P.kind; if (k === 'swamp') { x.swampV = (x.swampV || 0) + v; if (P.every) x.swampE = P.every; } else if (k === 'lineGuard') x.lineDR = (x.lineDR || 0) + v; else if (k === 'lineThorns') x.lineTh = (x.lineTh || 0) + v; else if (k === 'lineEnergy') x.energy = Math.min(B.energyMax, x.energy + v);
         else if (k === 'lineCare') x.lineCare = (x.lineCare || 0) + v; else if (k === 'lineHaste') x.interval /= 1 + v; else if (k === 'lineHide') x.stealth = Math.max(x.stealth || 0, v); else if (k === 'lineAtk') x.atk *= 1 + v; });
       potionLog.push({ id: P.id, uids: T.map(function (x) { return x.uid; }), slots: T.map(function (x) { return x.slot; }) }); });
     // ───── 연계 스킬(def.trigger): 쿨타임 없이, 조건(tag)에 맞는 아군에게 그 일이 생길 때마다 공격력이 쌓여요(최대 max번, 그 전투 동안) ─────
