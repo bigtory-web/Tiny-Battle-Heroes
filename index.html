@@ -2565,7 +2565,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 .camp3 > .lbag .ubagbox::before{display:none}
 .lbag .ubagbox > .bagtop{position:absolute;left:0;top:0;z-index:2;pointer-events:none;image-rendering:pixelated}
 .stile.sold{filter:grayscale(1)}
-.hinfo .mpbolt{width:8px;height:12px;margin-right:3px;vertical-align:-1px;overflow:visible}
+.hinfo .mpbolt,.dps .mpbolt{width:8px;height:12px;margin-right:3px;vertical-align:-1px;overflow:visible}
 .hinfo .skf > img.daisi,.skf > img.daisi{width:24px!important;height:24px!important;object-fit:contain;image-rendering:pixelated}
 .hinfo > .hi-body{flex:1 1 0;min-height:0;display:flex;flex-direction:column;gap:inherit;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;scrollbar-width:thin;scrollbar-color:#5d5470 transparent}
 .hinfo > .hi-body > *{flex:none}
@@ -4267,7 +4267,7 @@ img.rimg{image-rendering:auto!important}
     function row(ic, dealt, sub, dead){ return '<div class="dr' + (dead ? ' dead' : '') + '"><span class="dav">' + ic + '</span><div class="dm"><div class="dn"><b>' + Math.round(dealt).toLocaleString() + '</b></div><i class="dbar"><s style="width:' + Math.round(100 * dealt / mx) + '%"></s></i>' + (sub ? '<small>' + sub + '</small>' : '') + '</div></div>'; }
     box.querySelector('.dpsb').innerHTML = list.map(function(u){ var s = u.stats, sub = [], key = side + u.uid, w = Math.round(100 * s.dealt / mx), w0 = DPSW[key] == null ? w : DPSW[key]; DPSW[key] = w;
       if (s.taken > 0) sub.push('' + dtIc('r') + '' + dpsFmt(s.taken)); if (s.healed > 0) sub.push('' + dtIc('g') + '' + dpsFmt(s.healed)); if (s.shield > 0) sub.push('' + dtIc('b') + '' + dpsFmt(s.shield));
-      return '<div class="dr' + (u.alive ? '' : ' dead') + '"><span class="dav">' + heroFr(u.id, 0) + '</span><div class="dm"><div class="dn"><b>' + dpsFmt(s.dealt) + '</b><em class="dult">궁 ' + (s.ults || 0) + '</em></div><i class="dbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i>' + (sub.length ? '<small class="d2">' + sub.join(' ') + '</small>' : '') + '</div></div>'; }).join(''); }); }
+      return '<div class="dr' + (u.alive ? '' : ' dead') + '"><span class="dav">' + heroFr(u.id, 0) + '</span><div class="dm"><div class="dn"><b>' + dpsFmt(s.dealt) + '</b><em class="dult" aria-label="궁 ' + (s.ults || 0) + '">' + BOLT + (s.ults || 0) + '</em></div><i class="dbar"><s style="width:' + w + '%;--w0:' + w0 + '%"></s></i>' + (sub.length ? '<small class="d2">' + sub.join(' ') + '</small>' : '') + '</div></div>'; }).join(''); }); }
   $('dpsBtn').addEventListener('click', function(){ S.ui = S.ui || {}; S.ui.dpsOff = !S.ui.dpsOff; save(); dpsBtnSync(); renderDps(); }); /* DPS 창 켜고 끄는 길은 이 버튼 하나 (상점 아래) */
   function dpsBtnSync(){ $('dpsBtn').classList.toggle('on', !(S.ui && S.ui.dpsOff)); } dpsBtnSync();
   function stepMarch(el){ if (!march) return; march.t += el; var k = Math.min(1, march.t / march.dur), e = k * k * (3 - 2 * k);
