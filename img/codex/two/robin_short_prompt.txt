@@ -1,0 +1,12 @@
+Look at two images:
+- img/codex/two/robin_b.png : the approved new design of the hero Robin (elf archer girl) on magenta. Keep this design.
+- img/gemini/ref/bear_x8.png : the hero Roxy, shown 8x enlarged. THIS IS THE STYLE AND PROPORTION STANDARD.
+Generate ONE new image with your image generation tool and save it as OUTFILE
+
+Redraw Robin from the first image with ONE main change: SHORT HAIR. Remove the big ponytail / large hair mass on top and behind completely. Give her a neat short golden-blonde cut (a short bob ending around the chin / nape), tidy and clean, with side locks framing the face.
+Keep: long pointed elf ears clearly sticking out of the short hair, the leaf circlet, the leaf-green outfit with leaf cape, brown details, the elven bow decorated with leaves, the quiver, the colors, the pose and camera angle.
+Tidy up: both eyes fully visible (bangs must not cover the eyes), same face style and eye shape as Roxy, no mouth. Same total volume as Roxy: not taller or wider than Roxy (about 44 art pixels tall, 46 wide), same very big head and tiny body ratio.
+Same pixel size as the references (one art pixel = one clear square block, crisp, no finer detail), 1 art pixel thick dark reddish-brown outline like Roxy, flat cel shading with about 3 tones.
+
+[Format] One character only, standing, full body with feet visible at the bottom, centered, plain solid #FF00FF magenta background, no ground, no shadow, no text, no anti-aliasing. Nothing cropped.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

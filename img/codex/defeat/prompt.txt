@@ -1,0 +1,14 @@
+Look at img/p/bg_field.png to see the pixel art style of our game (flat cel-shaded pixel art with dark outlines). Generate ONE new image with your image generation tool and save it as img/codex/defeat/parts.png.
+
+It is a set of THREE separate UI pieces for a DEFEAT popup, drawn as original pixel art in that style, all seen straight from the front, perfectly left-right symmetric, each separated from the others by clear empty magenta space (they must not touch or overlap), stacked vertically in this order:
+
+1) TOP ORNAMENT (smallest): one dull silver-gray five-pointed star with a few cracks and a chipped tip, with two small bunches of dry withered leaves (brown, ochre, faded orange) spreading left and right behind it. About 40 percent of the image width.
+
+2) STONE SIGNBOARD (middle): a wide horizontal slab of weathered gray stone, with notched pointed left and right ends, a raised stone rim, a few cracks and chips near the corners only, and small iron rivets. The CENTER is a large flat, darker, calm area with NO cracks and NO pattern, because a big title will be written there later. About 85 percent of the image width, height about one third of its width. Two small iron rings hang from its bottom edge.
+
+3) RED CLOTH BANNER (largest, at the bottom): a hanging banner of deep dark red cloth with two small iron rings or loops at its top corners, soft vertical folds only near the left and right edges, a thin faded gold trim, slightly frayed torn edge and a wide notched point at the bottom. The MIDDLE is a large flat, evenly dark red area with no pattern (stage text, three reward boxes and a button will be placed there later). About 70 percent of the image width, and taller than it is wide (height about 1.1 times its width).
+
+Pixel art rules: crisp square pixels, all three pieces use the same pixel size (one art pixel = about 6 image pixels), 1 art pixel dark outline (#17141d), about 3 to 4 flat tones per material, muted somber colors, no gradients, no blur, no anti-aliasing. NO text, no letters, no numbers, no buttons, no icons.
+
+[Format] Portrait or square image. Plain solid #FF00FF magenta background everywhere around the three pieces. No shadow on the background.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
