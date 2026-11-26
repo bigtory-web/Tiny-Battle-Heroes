@@ -522,7 +522,7 @@
   // 2026-11-26 물약(늪지 상인): 겹치지 않게 count개 id
   function potionSellPrice(data, id) { var P = potionById(data, id); return P ? Math.round(P.price * ((data.potions || {}).sellRate || 0.5)) : 0; } // 2026-11-27: 물약 판매 값 = 산 값의 절반
   function potionById(data, id) { return ((data.potions || {}).list || []).filter(function (p) { return p.id === id; })[0] || null; }
-  function rollPotions(data, rnd) { var L = ((data.potions || {}).list || []).map(function (p) { return p.id; }), n = Math.min(L.length, ((data.events || {}).swampShop || {}).count || 4), out = [];
+  function rollPotions(data, rnd, plv) { var SS = data.player && data.player.swampSlots, L = ((data.potions || {}).list || []).map(function (p) { return p.id; }), n = Math.min(L.length, SS ? SS[Math.max(0, Math.min((plv || 1) - 1, SS.length - 1))] : ((data.events || {}).swampShop || {}).count || 4), /* 2026-11-27: 파는 수는 레벨별(player.swampSlots) */ out = [];
     while (out.length < n) out.push(L.splice(Math.floor(rnd() * L.length), 1)[0]); return out; }
   function rollEvent(data, n, rnd, plv, opts) {
     var V = data.events; if (!V) return null;
@@ -535,7 +535,7 @@
     if (fixedK) kind = fixedK;
     var GR = V.groups && V.groups[kind]; if (GR && !fixedK) { var gk = Object.keys(GR), gt = gk.reduce(function (a, k) { return a + GR[k]; }, 0), gr = rnd() * gt; for (var gi = 0; gi < gk.length; gi++) { gr -= GR[gk[gi]]; if (gr < 0) { kind = gk[gi]; break; } } } // 2026-11-26: 같은 그룹(예: 방랑상인·늪지 상인)은 장별 확률로 하나
     var ev = { kind: kind };
-    if (kind === 'swampShop') ev.ids = rollPotions(data, rnd);
+    if (kind === 'swampShop') ev.ids = rollPotions(data, rnd, plv);
     if (kind === 'merc') { ev.id = pickHeroByGrade(data, rnd, plv); ev.price = mercPrice(data, ev.id, n); }
     if (kind === 'mobs') rollMobs(data, n, rnd, plv, ev);
     if (kind === 'mimic') rollMimic(data, n, rnd, plv, ev);
