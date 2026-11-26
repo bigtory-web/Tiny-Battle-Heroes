@@ -1,0 +1,12 @@
+Look at the image img/codex/pad/rug_src.png: our FIRE carpet floor pad (flat pointed-top hexagon, woven gold border with zigzag stitches, corner knots, a thin ring and a big flame symbol). It is one of a set; you are making another member of the set.
+
+Keep EXACTLY the same hexagon shape, size, position, woven gold-ochre border with zigzag stitches, corner knots, thin ring and pixel grid. Change only:
+- NO tassels or pegs sticking out of the left and right sides: clean edges.
+- Field (inside) color: dark teal like #1d4f47
+- Ring and symbol colors: mint green #7fd07a and cream
+- Replace the flame with this symbol, same size and position, big, simple, instantly readable with only 2 or 3 tones: a drawn BOW with an ARROW pointing up (elves)
+
+Generate ONE new image with your image generation tool and save it as img/codex/pad/elf_src.png
+Crisp square pixels, no anti-aliasing, no gradients.
+[Format] Plain solid #FF00FF magenta background outside the hexagon, no text, no shadow, nothing else.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
