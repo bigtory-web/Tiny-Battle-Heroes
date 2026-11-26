@@ -226,16 +226,16 @@ b.pasx{display:inline-flex;align-items:center;justify-content:center;width:100%;
 #dsWin .dsnm{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);padding:2px 10px 3px;background:#17141d;font:400 17px var(--display);white-space:nowrap;z-index:3}
 #dsWin .dsstage > em{position:absolute;left:0;right:0;top:24px;text-align:center;font:400 56px var(--display);font-style:normal;color:#ffd34d;z-index:2}
 #dsWin .dscorner{position:absolute;right:8px;bottom:8px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:rgba(23,20,29,.85);box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 5px var(--pc);cursor:help;z-index:5}
-#dsWin .dscorner img{width:34px;height:22px;image-rendering:pixelated}
+#dsWin .dscorner img{width:32px;height:32px;image-rendering:pixelated}
 #dsWin .dskinds{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;margin-top:6px}
 #dsWin .dskinds i{display:flex;align-items:center;justify-content:center;height:38px;background:#1d1a24;box-shadow:inset 0 0 0 2px var(--pc)}
-#dsWin .dskinds img{width:34px;height:22px;image-rendering:pixelated}
+#dsWin .dskinds img{width:32px;height:32px;image-rendering:pixelated}
 #dsWin .dskinds i.lit,#dsWin .dskinds i.win{background:#4a4358;box-shadow:0 0 0 2px #ffe27a}
 #dsWin .rbtns{display:flex!important;justify-content:center;align-items:center;position:relative}
 #dsWin .rbtns button{width:116px!important;white-space:nowrap;padding-left:6px!important;padding-right:6px!important}
 #dsWin .dsleft{position:absolute;right:0;font:400 11px var(--display);color:#ffd34d}
 #dsWin .dskinds{position:relative} #dsWin .dsswap{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;gap:8px;padding:4px 8px;background:#2a1720;box-shadow:inset 0 0 0 2px #d8443e;font:400 13px var(--display);color:#f3e6c4}
-#dsWin .dsswap img{width:47px;height:31px;image-rendering:pixelated} #dsWin .dsswap b{font-weight:400;margin-right:3px}
+#dsWin .dsswap img{width:32px;height:32px;image-rendering:pixelated} #dsWin .dsswap b{font-weight:400;margin-right:3px}
 /* 반짝임 원칙(2026-11-26 사용자: "겹침이 너무 많아. 너무 움직이니까 정신없어"): 층 하나, 제자리 반짝, + 별 한 모양 2~4px, 테마색 한 가지, 느리게 엇갈림 */
 #dsWin .dsstage{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 356 196' preserveAspectRatio='none'%3E%3Cg fill='%237a56c4'%3E%3Crect x='0' y='172' width='356' height='24'/%3E%3Ccircle cx='8' cy='172' r='18'/%3E%3Ccircle cx='40' cy='172' r='12'/%3E%3Ccircle cx='70' cy='172' r='20'/%3E%3Ccircle cx='290' cy='172' r='22'/%3E%3Ccircle cx='322' cy='172' r='13'/%3E%3Ccircle cx='350' cy='172' r='19'/%3E%3Ccircle cx='110' cy='172' r='8'/%3E%3Ccircle cx='250' cy='172' r='9'/%3E%3C/g%3E%3Cg fill='%234f3592'%3E%3Crect x='0' y='184' width='356' height='12'/%3E%3Ccircle cx='20' cy='184' r='16'/%3E%3Ccircle cx='58' cy='184' r='13'/%3E%3Ccircle cx='96' cy='184' r='11'/%3E%3Ccircle cx='134' cy='184' r='8'/%3E%3Ccircle cx='178' cy='184' r='10'/%3E%3Ccircle cx='222' cy='184' r='8'/%3E%3Ccircle cx='262' cy='184' r='13'/%3E%3Ccircle cx='300' cy='184' r='15'/%3E%3Ccircle cx='340' cy='184' r='14'/%3E%3C/g%3E%3C/svg%3E") 0 0/100% 100% no-repeat,radial-gradient(38% 34% at 20% 56%,rgba(190,110,255,.55),transparent 70%),radial-gradient(34% 30% at 80% 24%,rgba(255,150,230,.32),transparent 70%),linear-gradient(#0b0930,#2a1a66 45%,#5a34a0 80%,#7444b4)!important}
 /* 오로라 두 줄: 아주 천천히 일렁임 (2026-11-26 사용자: "배경 너무 약하다") */
@@ -3421,7 +3421,7 @@ img.rimg{image-rendering:auto!important}
       html = '<table class="lvtab"><thead><tr><th>레벨</th><th>영웅 Lv</th><th>전장 칸</th><th>유물 칸</th><th>다음 경험치</th><th>영웅 등급</th><th>상점 등급</th></tr></thead><tbody>';
       for (var L = 1; L <= plMax(); L++) html += '<tr' + (L === me ? ' class="me"' : '') + '><td>' + L + '</td><td>' + E.heroLevel(D, L) + '</td><td>' + ((PLD.field || [])[L - 1] || '-') + '</td><td>' + ((PLD.skillSlots || [])[L - 1] || '-') + '</td><td>' + ((PLD.need || [])[L - 1] || 'MAX') + '</td><td class="od">' + odds((PLD.heroGrade || [])[L - 1]) + '</td><td class="od">' + odds((PLD.shopGrade || [])[L - 1]) + '</td></tr>';
       html += '</tbody></table>';
-    } else if (cdxTab === 'mob'){ var GI = HUDOK.gold ? '<img class="mni" src="img/p/hud_gold.png" alt="">' : '🪙', DI = { g: '<span class="mdk" title="골드">' + GI + '</span>', s: '<span class="mdk" title="유물">📜</span>', p: '<span class="mdk" title="진영 발판"><img class="padic2" src="' + padURL('forest') + '" alt=""></span>' }, WHERE = { goblin: 'goblin', chest: 'chest' };
+    } else if (cdxTab === 'mob'){ var GI = HUDOK.gold ? '<img class="mni" src="img/p/hud_gold.png" alt="">' : '🪙', DI = { g: '<span class="mdk" title="골드">' + GI + '</span>', s: '<span class="mdk" title="유물">📜</span>', p: '<span class="mdk" title="진영 발판"><img class="padic2" src="' + padIc('forest') + '" alt=""></span>' }, WHERE = { goblin: 'goblin', chest: 'chest' };
       html = '<div class="evlist">' + (D.mobs || []).map(function(m){ var dk = (m.drops || []).filter(function(x, i, a){ return a.indexOf(x) === i; }), ev = WHERE[m.id] || (m.drops ? 'mobs' : null);
         var dh = (ev ? '<span class="mdk mev" title="' + ((((D.events || {}).info || {})[ev] || {}).name || '') + '">' + evIcon(ev) + '</span>' : '') + dk.map(function(k){ return DI[k] || ''; }).join('');
         return '<div class="hinfo cdxh mobcd">' + mobInfoHtml(m.id, { lv: 1, hp: m.hp, atk: m.atk, def: m.def, interval: m.interval, dropHtml: dh }) + '</div>'; }).join('') + '</div>';
@@ -3547,10 +3547,11 @@ img.rimg{image-rendering:auto!important}
     else if (String(nOpen).indexOf('ev') > 0) hexCells().E.forEach(function(p, i){ hex(p[0], p[1] + OFF + FOOT, LF[LN[i]] ? LF[LN[i]].replace(/[\d.]+\)$/, function(a){ return (parseFloat(a) * .6).toFixed(3) + ')'; }) : 'rgba(255,240,205,.06)', 'rgba(255,236,190,.35)'); });
     return (HEXURL[nOpen] = cv5.toDataURL()); }
   function mixC(a, b, k){ var p = function(s, i){ return parseInt(s.slice(1 + i * 2, 3 + i * 2), 16); }; var o = '#'; for (var i = 0; i < 3; i++){ var v = Math.round(p(a, i) * (1 - k) + p(b, i) * k); o += (v < 16 ? '0' : '') + v.toString(16); } return o; }
+  function padIc(el){ return 'img/p/ic_pad_' + (padRace(el) || el) + '.png'; } /* 정면 아이콘 48x48: 아이콘으로 보이는 자리. 큰 칸·전장 깔개는 padURL (2026-11-26 사용자) */
   function padURL(el){ return 'img/p/pad_' + (padRace(el) || el) + '.png'; } /* 단상 그림 94×62 (2026-11-26 확정) */
   var DAISURL = '';
   function terrRow(img, col, name, desc){ return skRow(skFrame('<img class="daisi" src="' + img + '" alt="">', col), name, 1, desc); } /* 단상 줄 = 스킬 줄과 같은 규격 (2026-11-26 사용자) */
-  function padRow(el){ return el ? terrRow(padURL(el), daisCol(), padName(el), padDesc(el)) : ''; }
+  function padRow(el){ return el ? terrRow(padIc(el), daisCol(), padName(el), padDesc(el)) : ''; }
   function daisRow(){ var n = D.campaign.bossLvPlus; return skRow(skFrame('<img class="daisi" src="' + DAISURL + '" alt="">', '#e9c46a'), '보스 단상', 1, daisDesc(), n ? 'Lv +' + n : '', 'mp'); }
   var RACEC = { human: '#e0a060', elf: '#7fd07a', beast: '#d9784a', demon: '#c05aa8' }; /* 종족 단상 색 (그림 오기 전 임시) */
   function padRace(v){ return String(v).indexOf('r:') === 0 ? String(v).slice(2) : null; }
@@ -5520,11 +5521,11 @@ img.rimg{image-rendering:auto!important}
   /* 팝업: 가운데 당첨 단상, 아래 9종 띠 룰렛. 칸은 고정이라 종류만 돌림 */
   var daisArm = false;
   function daisDisarm(){ daisArm = false; document.querySelectorAll('#field .dsgone, #dsWin .dsswap').forEach(function(x){ x.remove(); }); }
-  function daisWarn(old){ daisArm = true; var v = S.pads[old]; $('dsWin').querySelector('.dskinds').insertAdjacentHTML('beforeend', '<div class="dsswap" role="alert"><img src="' + padURL(v) + '" alt=""><span><b style="color:' + daisCol() + '">' + padName(v) + '</b>가 사라지고 바뀌어요.<br>한 번 더 누르면 바뀌어요</span></div>'); $('field').insertAdjacentHTML('beforeend', '<i class="dsgone" style="' + daisAt(old) + '"></i>'); }
+  function daisWarn(old){ daisArm = true; var v = S.pads[old]; $('dsWin').querySelector('.dskinds').insertAdjacentHTML('beforeend', '<div class="dsswap" role="alert"><img src="' + padIc(v) + '" alt=""><span><b style="color:' + daisCol() + '">' + padName(v) + '</b>가 사라지고 바뀌어요.<br>한 번 더 누르면 바뀌어요</span></div>'); $('field').insertAdjacentHTML('beforeend', '<i class="dsgone" style="' + daisAt(old) + '"></i>'); }
   function daisClose(){ daisDisarm(); var w = $('dsWin'); if (w) (w.parentNode.classList.contains('popw') ? w.parentNode : w).remove(); daisBusy = false; }
   function daisOpen(){ if (!isDais() || S.event.dsDone || S.offer || S.pending) return; if (shopOpen()) setShop(false); clearSel(); hideInfo(); hideTip(); daisClose();
     var w = document.createElement('div'); w.id = 'dsWin'; w.className = 'evwin';
-    w.innerHTML = '<div class="rbox"><button class="spX" type="button" data-ds="x" title="닫기">✕</button><div class="rt">양탄자</div><div class="dsstage"></div><div class="dskinds">' + daisKinds().map(function(v){ return '<i data-v="' + v + '" style="--pc:' + daisCol() + '" title="' + padName(v) + '"><img src="' + padURL(v) + '" alt="' + padWord(v) + '"></i>'; }).join('') + '</div><div class="rbtns"></div></div>';
+    w.innerHTML = '<div class="rbox"><button class="spX" type="button" data-ds="x" title="닫기">✕</button><div class="rt">양탄자</div><div class="dsstage"></div><div class="dskinds">' + daisKinds().map(function(v){ return '<i data-v="' + v + '" style="--pc:' + daisCol() + '" title="' + padName(v) + '"><img src="' + padIc(v) + '" alt="' + padWord(v) + '"></i>'; }).join('') + '</div><div class="rbtns"></div></div>';
     w.querySelector('.dsstage').style.setProperty('--gc', daisCol()); document.body.appendChild(w); popAdd(w, true); daisRun();
     w.addEventListener('click', function(e){ e.stopPropagation(); var b = e.target.closest('[data-ds]'); if (!b || b.disabled) return; var k = b.dataset.ds;
       if (k === 'rr') return daisSpin();
@@ -5535,7 +5536,7 @@ img.rimg{image-rendering:auto!important}
   function daisShow(v, win){ var w = $('dsWin'); if (!w) return; w.querySelectorAll('.dskinds i').forEach(function(c){ var on = c.dataset.v === v; c.classList.toggle('lit', on && !win); c.classList.toggle('win', on && !!win); });
     w.querySelector('.dsstage').classList.toggle('win', !!win);
     var tip = v ? '이 칸에 선 영웅은 ' + padWord(v) + (padRace(v) ? ' 종족이' : ' 속성이') + ' 더해져요. ' + padWord(v) + ' 조건 유물·' + padWord(v) + ' 시너지에 들어가요' : '';
-    w.querySelector('.dsstage').innerHTML = (v ? '<img class="dsrug' + (win ? ' win' : '') + '" src="' + padURL(v) + '" alt="">' : '<em>?</em>') + '<i class="dsped rped"><i class="rrune" style="background-image:url(' + pedRune(daisCol()) + ')"></i></i>' + (v ? '<b class="dsnm" style="color:' + daisCol() + '">' + padName(v) + '</b><span class="dscorner" style="--pc:' + daisCol() + '" data-tipt="' + padName(v) + '" data-tiptx="' + tip + '"><img src="' + padURL(v) + '" alt="' + padName(v) + '"></span>' : '') + daisTw(); }
+    w.querySelector('.dsstage').innerHTML = (v ? '<img class="dsrug' + (win ? ' win' : '') + '" src="' + padURL(v) + '" alt="">' : '<em>?</em>') + '<i class="dsped rped"><i class="rrune" style="background-image:url(' + pedRune(daisCol()) + ')"></i></i>' + (v ? '<b class="dsnm" style="color:' + daisCol() + '">' + padName(v) + '</b><span class="dscorner" style="--pc:' + daisCol() + '" data-tipt="' + padName(v) + '" data-tiptx="' + tip + '"><img src="' + padIc(v) + '" alt="' + padName(v) + '"></span>' : '') + daisTw(); }
   function daisPrice(){ return E.lootRerollPrice(D, S.event.dsRr || 0, S.stage - 1); } /* 룰렛 리셋과 같은 값 */
   function daisPaint(){ var w = $('dsWin'); if (!w) return; var ev = S.event, mx = E.daisRerolls(D, plv()), left = Math.max(0, mx - (ev.dsRr || 0)), has = !daisBusy, price = Math.floor(daisPrice());
     if (!daisBusy) daisShow(has ? ev.tag : null, has);
