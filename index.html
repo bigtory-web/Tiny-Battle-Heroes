@@ -2433,6 +2433,8 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
 #field .vsmark{z-index:346!important}
 #cloudRow .ghost{min-width:48px}
 #cloudRow .ghost.on{box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #ffd34d!important}
+/* 편성 화면 앞쪽 아래 장식: 캐릭터 위, 구름 그림자(340)·막대·별 아래, 누르기는 통과 */
+#field::after{content:'';position:absolute;left:0;right:0;bottom:0;height:20%;z-index:335;pointer-events:none;background:url(img/p/fg_field.png) 0 100% / 100% 100% no-repeat;image-rendering:pixelated}
 </style>
 </head>
 <body>
@@ -2642,6 +2644,7 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
     im.onerror = function(){ if (first){ first = false; im.src = 'img/s/' + h.id + '.png'; } };
     im.src = 'img/p/' + h.id + '.png'; });
   var BG = new Image(), BGD = new Image(); /* 낮·노을 배경 */
+  var FG = new Image(), FGD = new Image(), FGN = new Image(); FG.src = 'img/p/fg_field.png'; FGD.src = 'img/p/fg_field_dusk.png'; FGN.src = 'img/p/fg_field_night.png'; /* 앞쪽 아래 장식(720×80): 캐릭터보다 앞. 2026-11-26 */
   /* 배경을 BGUP px 위로 올림(2026-11-26 사용자: 9칸이 뒷배경 바위와 겹쳐 보임). 아래 빈 띠는 맨 아래 땅을 뒤집어 이어 붙임. 전투 캔버스와 편성 화면이 같은 합성 그림을 씀 */
   var BGUP = 30;
   function bgRaise(src, done){ var im = new Image(); im.onload = function(){ var c = document.createElement('canvas'); c.width = im.width; c.height = im.height; var x = c.getContext('2d'); x.drawImage(im, 0, -BGUP); x.translate(0, im.height); x.scale(1, -1); x.drawImage(im, 0, im.height - BGUP, im.width, BGUP, 0, 0, im.width, BGUP); c.complete = true; c.naturalWidth = c.width; c.naturalHeight = c.height; done(c); }; im.src = src; }
@@ -3848,6 +3851,9 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
   var csB = 1;
   function syncCv(){ if (!cv.clientWidth) return; var nw = Math.round(cv.clientWidth * sApp() * (window.devicePixelRatio || 1)); if (nw && nw !== cv.width){ cv.width = nw; cv.height = Math.round(nw * H / W); } csB = cv.width / W; }
   var cvSyncT = -1e9;
+  function drawFg(){ if (!(FG.complete && FG.naturalWidth)) return; var bsx = march ? Math.round(march.sx) : 0, y = H + 1 - 80, EN = D.battle.enrage, dk = EN && EN.dusk != null && bt && !bt.result ? Math.max(0, Math.min(1, ((bt.time || 0) - EN.dusk) / Math.max(1, EN.at - EN.dusk))) : 0;
+    function put(im, a){ if (!(a > .01) || !im.naturalWidth) return; ctx.globalAlpha = a; ctx.imageSmoothingEnabled = false; ctx.drawImage(im, -bsx, y); if (bsx) ctx.drawImage(im, W - bsx, y); }
+    var ga = ctx.globalAlpha; put(FG, 1); put(FGD, dk); put(FGN, nightA); ctx.globalAlpha = ga; } /* 배경과 같은 기준(너비 100%, 아래 맞춤). 노을은 노을 배경과 같은 투명도, 밤은 nightA만큼(밤색은 그림에 들어 있어 따로 안 덮음) */
   function draw(el){
     if (performance.now() - cvSyncT > 250){ cvSyncT = performance.now(); syncCv(); } ctx.setTransform(csB, 0, 0, csB, 0, 0); /* 뒷판 = 화면 장치 해상도 (720을 줄여 늘리지 않음) */
     var bg = ctx.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, '#26304d'); bg.addColorStop(1, '#1a2a1d');
@@ -3861,7 +3867,7 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
     // 스테이지 줄은 HUD 오른쪽에 있어요
     if (flash > 0){ flash -= el; ctx.fillStyle = 'rgba(255,255,255,' + Math.max(0, flash) + ')'; ctx.fillRect(0, 0, W, H); }
     updSkillBars(); // 스킬 막대는 전장 위 DOM(왼쪽 위 내 스킬, 오른쪽 위 적 스킬)
-    var allU = bt.A.concat(bt.E).sort(function(a, b){ return posOf(a)[1] - posOf(b)[1]; }); allU.filter(function(u){ return !u.alive; }).forEach(function(u){ drawUnit(u, el); }); STARQ = []; allU.filter(function(u){ return u.alive; }).forEach(function(u){ drawUnit(u, el); }); STARQ.forEach(function(q){ drawGradeStar(ctx, q[0], q[1], q[2]); }); STARQ = null; /* 무덤은 항상 살아 있는 캐릭터보다 뒤에, 그 안에서 아래쪽 유닛이 앞에 (2026-11-25 사용자: RIP은 캐릭터보다 뒤에 무조건) */
+    var allU = bt.A.concat(bt.E).sort(function(a, b){ return posOf(a)[1] - posOf(b)[1]; }); allU.filter(function(u){ return !u.alive; }).forEach(function(u){ drawUnit(u, el); }); STARQ = []; allU.filter(function(u){ return u.alive; }).forEach(function(u){ drawUnit(u, el); }); drawFg(); STARQ.forEach(function(q){ drawGradeStar(ctx, q[0], q[1], q[2]); }); STARQ = null; /* 무덤은 항상 살아 있는 캐릭터보다 뒤에, 그 안에서 아래쪽 유닛이 앞에 (2026-11-25 사용자: RIP은 캐릭터보다 뒤에 무조건) */
     if (HAS_FX) FX.draw(ctx, 'front');
     drawUltPops(el); drawArrows(el); drawUx(el);
     shots = shots.filter(function(s){ if (s.wait > 0){ s.wait -= el; return true; } s.t += el * 5; if (s.t >= 1){ if (s.land) s.land(); return false; }
