@@ -519,7 +519,16 @@
   // 돈고블린 룰렛(2026-11-26): 한 번 돌리는 값, 레벨별 횟수, 후보(골드 칸 = 낸 값 × goldWin)
   function grollCost(data, n, plv) { var G = data.events.groll || {}; return Math.max(1, Math.round(stageReward(data, n, 0, null, plv) * (G.cost || 1))); }
   function grollSpins(data, plv) { var S = data.player && data.player.grollSpins; return S ? S[Math.max(0, Math.min((plv || 1) - 1, S.length - 1))] : 1; }
-  function rollGroll(data, n, rnd, plv) { var g = grollCost(data, n, plv) * ((data.events.groll || {}).goldWin || 2); return lootPool(data, stageTeam(data, n, null, 0, plv), rnd, plv).map(function (k) { return lootParse(k).type === 'g' ? 'g:' + g : k; }); }
+  // 후보(2026-11-26 별도 표): 영웅 heroes명 + 유물 skills개 + 골드 goldSlots칸(낸 값 × goldWin). 등급은 groll.grade[레벨]. rnd를 안 주면 스테이지·레벨로 고정 시드 → 같은 스테이지는 같은 구성
+  function rollGroll(data, n, rnd, plv, owned) { var G = data.events.groll || {}, W = G.grade ? G.grade[Math.max(0, Math.min((plv || 1) - 1, G.grade.length - 1))] : [1, 1, 1, 1], out = [];
+    rnd = rnd || makeRng(n * 7919 + (plv || 1) * 104729 + 17);
+    function pickG() { var t = W.reduce(function (a, b) { return a + b; }, 0), x = rnd() * t; for (var k = 0; k < W.length; k++) { x -= W[k]; if (x < 0) return k + 1; } return 1; }
+    var PL0 = data.recruit.pool, hs = data.heroes.filter(function (h) { return !h.mob && h.art !== false && (!PL0 || !PL0.length || PL0.indexOf(h.id) >= 0); });
+    for (var i = 0; i < (G.heroes || 0) && hs.length; i++) { var g = pickG(), c = []; for (var d = 0; d < 4 && !c.length; d++) c = hs.filter(function (h) { return Math.abs((h.grade || 1) - g) === d; }); var h = c[Math.floor(rnd() * c.length)]; hs.splice(hs.indexOf(h), 1); out.push('h:' + h.id); }
+    var sk = skillPool(data).filter(function (x) { return canTake(data, owned || [], x.id, 999); });
+    for (var j = 0; j < (G.skills || 0) && sk.length; j++) { var g2 = pickG(), c2 = []; for (var d2 = 0; d2 < 4 && !c2.length; d2++) c2 = sk.filter(function (x) { return Math.abs((x.grade || 1) - g2) === d2; }); var s = c2[Math.floor(rnd() * c2.length)]; sk.splice(sk.indexOf(s), 1); out.push('s:' + s.id); }
+    var gold = grollCost(data, n, plv) * (G.goldWin || 2); for (var q = 0; q < (G.goldSlots || 0); q++) out.push('g:' + gold);
+    return out; }
   function oddEvenBet(data, n) { var O = data.events.oddeven || {}; return Math.max(1, Math.round(stageReward(data, n, 0, null) * (O.bet || 1))); }
   function oddEvenResult(data, n, pick, roll, k) { var bet = oddEvenBet(data, n) * Math.max(1, Math.min(k || 1, (data.events.oddeven || {}).maxBets || 1)), win = (roll % 2 === 1 ? 'odd' : 'even') === pick; return { bet: bet, win: win, gain: win ? bet * ((data.events.oddeven || {}).win || 2) - bet : -bet }; }
   function mobLoot(st, units) { var out = []; if (!st.event || !st.event.drops) return out; // 쓰러뜨린 몹(units: 전투 결과)이 든 전리품을 모두. units가 없으면 전부
