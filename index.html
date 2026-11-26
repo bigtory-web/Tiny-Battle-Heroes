@@ -2740,9 +2740,11 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 img.rimg{image-rendering:pixelated;border-radius:50%}
 #skA .skc:has(img.rimg),#skE .skc:has(img.rimg),#tab-shop .stile.sk .ic:has(img.rimg){background:none!important;box-shadow:none!important;border:0!important;clip-path:none!important}
 /* 전장 유물 줄 = 목록 칸처럼 "사각 칸 안 원", 장식 없이 차분하게 (2026-11-26 사용자: "데코 때문에 눈에 너무 띈다") */
-#skA .skc,#skE .skc{width:38px!important;height:38px!important;padding:3px!important}
+#skA .skc,#skE .skc{width:38px!important;height:38px!important;padding:3px!important;border-radius:0!important;clip-path:none!important} #skA .skc .cd,#skE .skc .cd{border-radius:0!important}
 #skA .skc:has(img.rimg):not(.over),#skE .skc:has(img.rimg){background:#17141d!important;box-shadow:inset 0 0 0 1px var(--sg,#5d5470),0 0 0 1px #17141d!important}
-#skA .skc img.rimg,#skE .skc img.rimg{width:32px!important;height:32px!important;box-sizing:border-box;padding:4px;border-radius:50%;background:#2f2a39;box-shadow:inset 0 0 0 1px #4a4358;image-rendering:pixelated}
+#skA .skc img.rimg,#skE .skc img.rimg{width:30px!important;height:30px!important;box-sizing:border-box;padding:3px;border-radius:50%;background:#34303f;box-shadow:inset 0 0 0 2px #6b6478,0 0 0 1px #0f0d14;image-rendering:pixelated} /* 네모 칸 안 원 틀 안 아이콘 (2026-11-26 사용자) */
+#skA .skc.empty,#skE .skc.empty,#skA i.skc.empty{width:38px!important;height:38px!important;border-radius:0!important;clip-path:none!important;background:#17141d!important;box-shadow:inset 0 0 0 1px #4a4358,0 0 0 1px #17141d!important;opacity:.7}
+#skA .skc.empty::before,#skA .skc.empty::after{display:none!important}
 #skA .skc .cd,#skE .skc .cd{left:3px!important;right:3px!important;top:3px!important}
 #skA .skc:has(img.rimg),#skE .skc:has(img.rimg){padding:0!important}
 #skA .skc img.rimg,#skE .skc img.rimg{width:44px!important;height:44px!important}
@@ -2760,9 +2762,6 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
 #evWin .mercline span{width:100%;box-sizing:border-box;min-width:0;padding:13px 10px;box-shadow:inset 0 0 0 2px #17141d!important;background:radial-gradient(2px 2px at 8px 4px,#fff0b0 60%,transparent) 0 0/24px 8px repeat-x,radial-gradient(2px 2px at 8px 4px,#fff0b0 60%,transparent) 0 100%/24px 8px repeat-x,linear-gradient(#17141d 0 2px,#5fcf6a 2px 6px,#2f7a3a 6px 8px,#d9a12a 8px 10px,#24452a 10px calc(100% - 10px),#d9a12a calc(100% - 10px) calc(100% - 8px),#2f7a3a calc(100% - 8px) calc(100% - 6px),#5fcf6a calc(100% - 6px) calc(100% - 2px),#17141d calc(100% - 2px))!important}
 #evWin .mercline span::before{content:'';position:absolute;left:50%;top:-5px;width:12px;height:12px;margin-left:-6px;background:#ffd34d;box-shadow:inset 0 0 0 2px #17141d;transform:rotate(45deg)}
 #evWin .mshake{display:none}
-/* 메인 유물 줄: 원만. 빈 칸은 어두운 회색 원 */
-#skA .skc,#skE .skc{border-radius:50%!important}
-#skA .skc.empty{background:#221f2a!important;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #3a3546!important;opacity:.75;clip-path:none!important}
 #skA .skc.empty span{background:linear-gradient(#4a4556,#4a4556) center/14px 3px no-repeat,linear-gradient(#4a4556,#4a4556) center/3px 14px no-repeat!important}
 /* 설명 글 속 얼굴 = 작은 아이콘(전신, 성급 없음) 40px, 상점 창은 조금 더 높게(구매 버튼 여유) (2026-11-26 사용자) */
 .sfaces{gap:4px}
