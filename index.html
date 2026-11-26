@@ -2845,6 +2845,9 @@ img.rimg{image-rendering:auto!important}
 #rSpin:disabled{cursor:default}
 #rSpin:disabled .lvbox{filter:grayscale(1) brightness(.6)}
 #rSpin:disabled b{color:#b8b0c4}
+/* 파랑 일반 미믹: 44칸 (도트 1칸 = 갈색과 같게) */
+.foe > .mhop.g2{background-image:url(img/p/mimic_g2_hop.png)}
+#mimicPop .mmc.g2 b{left:-7px;right:-7px;top:-14px;background:url(img/p/mimic_g2.png) 50% 100%/88px 88px no-repeat}
 </style>
 </head>
 <body>
@@ -3408,7 +3411,7 @@ img.rimg{image-rendering:auto!important}
       if (inner && hid && hero(hid).mob !== 'chest') fbars.push({ x: px, y: py, ally: side === 'A', mob: !!hero(hid).mob, id: hid, star: side === 'A' ? (U(key) ? U(key).star : 0) : (hero(hid).mob ? 0 : estar || 1) });
       return '<div class="unit"' + (side === 'A' && key ? ' data-uid="' + key + '"' : '') + ' style="left:' + (100 * px / W) + '%;top:' + (100 * (py + OFF + FOOT) / H) + '%;z-index:' + Math.round(py) + '">' + inner + '</div>'; }
     function foeHtml(u){ if (!u) return ''; var h = hero(u.id); if (h.mob === 'chest'){ return foeHtml0(u, h, chestImgKey(chestGrade(), 1)); } /* 전투 때 그림(등급)으로 미리 그려요: 예전 replace는 외곽선 그림 주소라 안 맞았음 */ return foeHtml0(u, h); }
-    function foeHtml0(u, h, key){ return '<div class="foe' + (u.boss ? ' boss' : '') + (u.merc ? ' merc' : '') + (h.mob ? ' mob' : '') + (MOBSZ[h.mob] ? ' mobsz' + (MOBSZ[h.mob] > 1 ? '2' : '') : '') + (h.mob === 'chest' ? ' chestbig' + chestFlashCls() : '') + '" data-foe="' + u.slot + '" style="--el:' + ELC[h.el] + footCss(h.id) + '" title="' + h.name + '">' + avO(h.id, key) + '' + bnBubble(u.bonus) + (h.mob === 'mimic' ? '<i class="mhop' + (h.king ? ' king' : '') + '" style="animation-delay:-' + (u.slot * .37).toFixed(2) + 's"></i>' : mobBub(u)) + (h.mob === 'chest' ? chestBub() : '') + '</div>'; } // 레벨 표시는 뺐어요
+    function foeHtml0(u, h, key){ return '<div class="foe' + (u.boss ? ' boss' : '') + (u.merc ? ' merc' : '') + (h.mob ? ' mob' : '') + (MOBSZ[h.mob] ? ' mobsz' + (MOBSZ[h.mob] > 1 ? '2' : '') : '') + (h.mob === 'chest' ? ' chestbig' + chestFlashCls() : '') + '" data-foe="' + u.slot + '" style="--el:' + ELC[h.el] + footCss(h.id) + '" title="' + h.name + '">' + avO(h.id, key) + '' + bnBubble(u.bonus) + (h.mob === 'mimic' ? '<i class="mhop' + (h.king ? ' king' : u.slot % 2 ? ' g2' : '') + '" style="animation-delay:-' + (u.slot * .37).toFixed(2) + 's"></i>' : mobBub(u)) + (h.mob === 'chest' ? chestBub() : '') + '</div>'; } // 레벨 표시는 뺐어요
     var bySlot = []; st.team.forEach(function(u){ bySlot[u.slot] = u; });
 
     function slotHtml(i){
@@ -4548,7 +4551,7 @@ img.rimg{image-rendering:auto!important}
       ctx.imageSmoothingEnabled = !EX; ctx.imageSmoothingQuality = 'high'; var sx = Math.round(-S / 2 * csB) / csB, sy = Math.round((-S + S * .04) * csB) / csB; /* 정수배(EX)면 최근접 + 장치 px에 딱 맞춤 */
       if (inspect && inspect.uid === u.uid){ var ps = sl(Math.floor(performance.now() / 350) % 2 ? '#fff3b0' : '#ffd34d'), o2 = EX ? 2 / csB : 2; [[o2, 0], [-o2, 0], [0, o2], [0, -o2]].forEach(function(d){ ctx.drawImage(ps, sx + d[0], sy + d[1], S, S); }); } /* 전투 중에도 고른 캐릭터(아군·적)에 금색 선택 라인, 0.7초 깜빡임 (편성 화면 .picked와 같은 모양) */
       ctx.globalAlpha = u.h.mob === 'mimic' ? 0 : ga0 * .65; [[o, 0], [-o, 0], [0, o], [0, -o]].forEach(function(d){ ctx.drawImage(sil, sx + d[0], sy + d[1], S, S); }); ctx.globalAlpha = ga0;
-      var KG = !!u.h.king, HS = KG ? MKHOP : MHOP, FW = KG ? 52 : 44; if (u.h.mob === 'mimic' && HS.complete && HS.naturalWidth){ var dW = S * FW / 37, smo = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.drawImage(HS, mimicFrame(u.uid) * FW, 0, FW, FW, -dW / 2, sy + S - dW, dW, dW); ctx.imageSmoothingEnabled = smo; } else
+      var KG = !!u.h.king, HS = KG ? MKHOP : (u.slot % 2 ? MGHOP : MHOP), FW = KG ? 52 : 44; if (u.h.mob === 'mimic' && HS.complete && HS.naturalWidth){ var dW = S * FW / 37, smo = ctx.imageSmoothingEnabled; ctx.imageSmoothingEnabled = false; ctx.drawImage(HS, mimicFrame(u.uid) * FW, 0, FW, FW, -dW / 2, sy + S - dW, dW, dW); ctx.imageSmoothingEnabled = smo; } else
       ctx.drawImage(imU, sx, sy, S, S);
       var clA = cloudStr(); if (clA > .005){ clA *= cloudDens(x, foot - S * .4); if (clA > .005){ ctx.globalAlpha = ga0 * clA; ctx.drawImage(sl('#000000'), sx, sy, S, S); ctx.globalAlpha = ga0; } } /* 캐릭터도 구름 그림자 밑이면 어두워짐 */
       if (u._cfl > 0){ ctx.globalAlpha = ga0 * Math.min(1, u._cfl / .25); ctx.drawImage(sl('#ffffff'), sx, sy, S, S); ctx.globalAlpha = ga0; } /* 상자 그림이 바뀌는 순간 반짝 */
@@ -4644,7 +4647,7 @@ img.rimg{image-rendering:auto!important}
     return '<div class="sfaces">' + allyHeroes().filter(function(h){ return heroVals(h, y.k).some(function(v){ return y.vs.indexOf(v) >= 0; }); }).map(function(h){ return '<span class="sfa">' + av(h.id) + '</span>'; }).join('') + '</div>'; }
   function heroVals(h, k){ return k === 'el' && h.el2 && h.el2 !== h.el ? [h.el, h.el2] : [h[k]]; } // 발판으로 더해진 진영까지
   /* 미믹 대기 튀기 = 44칸 4장(기본·웅크림·뜀·착지). 도트 1칸 크기는 정지 그림(37칸)과 같게: 칸 폭 = S × 44/37, 바닥 맞춤 */
-  var MHOP = new Image(); MHOP.src = 'img/p/mimic_hop.png'; var MKHOP = new Image(); MKHOP.src = 'img/p/mimic_king_hop.png'; /* 킹은 52칸: 도트 1칸을 같게 두면 더 큼 */
+  var MHOP = new Image(); MHOP.src = 'img/p/mimic_hop.png'; var MKHOP = new Image(); MKHOP.src = 'img/p/mimic_king_hop.png'; var MGHOP = new Image(); MGHOP.src = 'img/p/mimic_g2_hop.png'; /* 일반 미믹: 칸 번호 홀수 = 파랑 (2026-11-26 사용자: 섞어서) */ /* 킹은 52칸: 도트 1칸을 같게 두면 더 큼 */
   function mimicFrame(seed){ var p = ((performance.now() / 1200 + (seed || 0) * .37) % 1); return p < .4 ? 0 : p < .6 ? 1 : p < .8 ? 2 : 3; }
   var MOBSZ = { slime: 0.9, bat: 0.9, skeleton: 0.9, ogre: 1.4, mimic: 0.9 }; // 영웅보다 약간 작게, 오우거만 크게 // 몹 무리 몹 크기 배율
   function mobDropList(u){ var d = u && u.drop; return d ? [].concat(d).filter(Boolean) : []; }
@@ -4669,7 +4672,7 @@ img.rimg{image-rendering:auto!important}
   var mimicT = [];
   function showMimicPop(){ var P = S.mimicPend, o = $('mimicPop'); if (!P || !o) return; mimicT.forEach(clearTimeout); mimicT = [];
     var row = o.querySelector('.mmrow'), loot = o.querySelector('.mmloot'), btn = $('mmGet'), n = P.m.length;
-    row.innerHTML = n ? P.m.map(function(id){ return '<i class="mmc' + (id === 'mimicKing' ? ' king' : '') + '"><b></b></i>'; }).join('') : '<span class="mmnone">미믹이 모두 도망쳤어요.</span>';
+    row.innerHTML = n ? P.m.map(function(id){ return '<i class="mmc' + (id === 'mimicKing' ? ' king' : id === 'mimic:g2' ? ' g2' : '') + '"><b></b></i>'; }).join('') : '<span class="mmnone">미믹이 모두 도망쳤어요.</span>';
     loot.innerHTML = ''; btn.disabled = true; o.hidden = false;
     var cells = [].slice.call(row.querySelectorAll('.mmc'));
     cells.forEach(function(c, i){ mimicT.push(setTimeout(function(){ c.classList.add('in'); }, 200 + i * 300)); mimicT.push(setTimeout(function(){ c.classList.add('open'); }, 200 + n * 300 + i * 180)); });
@@ -4840,7 +4843,7 @@ img.rimg{image-rendering:auto!important}
     var r = bt.finish(), st = E.stageTeam(D, curStage, curEv, curBell, curPlv), html = '', reward = 0, gain = '';
     save(); // 경험치는 처치할 때마다 이미 더했어요
     var chestDone = !!(curEv && curEv.kind === 'chest' && E.chestReward), advanced = false;
-    if (curEv && curEv.kind === 'mimic' && E.mobLoot){ var ml = [].concat.apply([], E.mobLoot(st, r.units) || []).filter(Boolean), mk = r.units.filter(function(x){ return x.side === 'E' && !x.alive && !x.escaped; }).map(function(x){ return x.id; });
+    if (curEv && curEv.kind === 'mimic' && E.mobLoot){ var ml = [].concat.apply([], E.mobLoot(st, r.units) || []).filter(Boolean), mk = r.units.filter(function(x){ return x.side === 'E' && !x.alive && !x.escaped; }).map(function(x){ return x.id === 'mimic' && x.slot % 2 ? 'mimic:g2' : x.id; }); /* 전장에서 본 색 그대로 */
       if (curStage === S.stage) S.mimicPend = { m: mk, loot: ml };
       S.adv = { up: false }; S.bellGold = 0; save();
       setTimeout(function(){ closeBattle(); if (S.mimicPend){ scrollPend = true; renderAll(); showMimicPop(); } else evGo(); }, skipNow ? 0 : 650); return; }
