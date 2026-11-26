@@ -2866,6 +2866,10 @@ img.rimg{image-rendering:auto!important}
 #trWin .rbtns{margin-top:8px;display:flex;justify-content:center;gap:10px}
 #trWin .trinfo{align-self:center!important;height:360px!important;margin:0!important}
 #trWin .rbtns button.go{height:39px;min-width:78px;padding:10px 22px;font:700 16px var(--display);box-sizing:border-box}
+/* 초월 팝업과 상세 창을 16px 겹쳐 한 덩어리로: 팝업이 위, 상세는 왼쪽 여백을 늘려 내용 안 가림 (2026-11-26 사용자: "1,2열 창 겹치게 해") */
+#trWin{gap:0!important}
+#trWin .rbox{position:relative!important;z-index:3}
+#trWin .trinfo{margin-left:-16px!important;padding-left:30px!important;width:276px!important;z-index:2}
 </style>
 </head>
 <body>
