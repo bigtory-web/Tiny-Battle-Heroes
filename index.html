@@ -2665,6 +2665,12 @@ img.rimg{image-rendering:auto!important}
 /* 룰렛 골드: 금화 주머니 48x56, 영웅과 같은 도트 밀도, 바닥 = 단상 윗끝에서 11칸 아래 */
 #roul:not(.chestpop) .rbox .rstage.onped .rpic.loot.gold{left:calc(50% - 24 * var(--P))!important;bottom:calc(38px + 22 * var(--P))!important;width:calc(48 * var(--P))!important;height:calc(56 * var(--P))!important}
 #roul .rbox .rpic.loot.gold img.gbag{width:100%;height:100%;image-rendering:pixelated}
+/* 룰렛: 도는 빛줄기 없음, 도트 별 */
+.rbox .rfx .rays{display:none!important}
+.rstage > .rstars{position:absolute;inset:6px;pointer-events:none;z-index:3;overflow:hidden}
+.rstars s{position:absolute;width:2px;height:2px;background:var(--sc,#fff);box-shadow:0 -2px var(--sc,#fff),0 2px var(--sc,#fff),-2px 0 var(--sc,#fff),2px 0 var(--sc,#fff);animation:rstar 1.4s steps(4) infinite;opacity:0;text-decoration:none}
+.rstars s.s3{width:3px;height:3px;box-shadow:0 -3px var(--sc,#fff),0 3px var(--sc,#fff),-3px 0 var(--sc,#fff),3px 0 var(--sc,#fff),0 -6px var(--sc,#fff),0 6px var(--sc,#fff),-6px 0 var(--sc,#fff),6px 0 var(--sc,#fff)}
+@keyframes rstar{0%,100%{opacity:0;transform:scale(.4)}40%,60%{opacity:1;transform:scale(1)}}
 </style>
 </head>
 <body>
@@ -3358,7 +3364,12 @@ img.rimg{image-rendering:auto!important}
       bz.insertAdjacentHTML('beforeend', '<i style="--dx:' + Math.round(Math.cos(a) * d) + 'px;--dy:' + Math.round(Math.sin(a) * d) + 'px;--dl:' + (Math.random() * .15).toFixed(2) + 's"></i>'); }
     if (gr === 3){ var r = $('roul'); r.classList.remove('flash'); void r.offsetWidth; r.classList.add('flash'); }
   }
-  function rayFx(key){ var rb = $('roul').querySelector('.rbox'), t = lootTier(key); rb.classList.remove('rl1', 'rl2', 'rl3', 'rl4'); rb.classList.add('rl' + t); rb.style.setProperty('--gcol', GR(t).col); } /* 뒤 빛줄기: 1등급 없음, 2등급 이상은 등급색, 높을수록 진하고 빠르게. 도는 중 칸이 바뀌면 같이 바뀜 */
+  /* 도는 빛줄기 대신 단상 주변 도트 별 반짝임, 색 = 결과 등급색 (2026-11-26 사용자). 등급이 높을수록 많이·자주 */
+  function starFx(stage, tier, col){ if (!stage) return; var el = stage.querySelector(':scope > .rstars'); if (!el){ el = document.createElement('i'); el.className = 'rstars'; stage.appendChild(el); }
+    el.style.setProperty('--sc', col || '#fff'); var key = String(tier); if (el.dataset.t === key) return; el.dataset.t = key; var n = 7 + tier * 4, o = '';
+    for (var i = 0; i < n; i++){ var side = i % 2 ? 1 : -1, x = 50 + side * (6 + Math.random() * 40), y = 10 + Math.random() * 78, sz = Math.random() < .45 ? 3 : 2, du = (1.5 - tier * .15 + Math.random() * .8).toFixed(2), dl = (-Math.random() * 2).toFixed(2); o += '<s class="s' + sz + '" style="left:' + x.toFixed(1) + '%;top:' + y.toFixed(1) + '%;animation-duration:' + du + 's;animation-delay:' + dl + 's"></s>'; }
+    el.innerHTML = o; }
+  function rayFx(key){ var rb = $('roul').querySelector('.rbox'), t = lootTier(key); rb.classList.remove('rl1', 'rl2', 'rl3', 'rl4'); rb.classList.add('rl' + t); rb.style.setProperty('--gcol', GR(t).col); starFx(rb.querySelector('.rstage'), t, GR(t).col); } /* 뒤 빛줄기: 1등급 없음, 2등급 이상은 등급색, 높을수록 진하고 빠르게. 도는 중 칸이 바뀌면 같이 바뀜 */
   /* 룬 단상 (2026-11-26 사용자 확정): 영웅 도트와 같은 밀도(1칸 = P css px, 장치 px 정수배). 발 = 단상 윗끝에서 10.5칸 아래, 이름판은 단상 아래. 룬은 등급색으로 반짝 */
   var PEDRUNE = new Image(), PEDC = {}; PEDRUNE.src = 'img/p/pedestal_rune.png';
   function pedRune(col){ if (PEDC[col]) return PEDC[col]; if (!PEDRUNE.complete || !PEDRUNE.naturalWidth) return 'img/p/pedestal_rune.png'; var c = document.createElement('canvas'); c.width = 96; c.height = 33; var x = c.getContext('2d'); x.drawImage(PEDRUNE, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = col; x.fillRect(0, 0, 96, 33); return PEDC[col] = c.toDataURL(); }
@@ -4571,7 +4582,7 @@ img.rimg{image-rendering:auto!important}
     TR.slice(0, ci.tier).forEach(function(R){ var ti0 = items.length; if (R.gold) items.push({ ic: goldImg(), n: '+' + R.gold.toLocaleString() }); if (R.mana) items.push({ ic: manaIcon('mni'), n: '+' + R.mana });
       for (var q = 0; q < R.scroll; q++){ var id = ci.got[gi++]; items.push(id ? { ic: lootIcon('s:' + id), n: '', tip: id } : { ic: '<span class="rpe">\u{1F4DC}</span>', n: '', miss: 1 }); } tierItems.push(items.length - ti0); });
     var pic = o.querySelector('.rpic'), strip = o.querySelector('.rstrip'), btn = $('cpGet'), box = o.querySelector('.rbox');
-    var cpG = (E.chestGrade && E.chestGrade(D, curPlv)) || 1; pic.style.backgroundImage = 'url(img/p/' + chestImgKey(cpG, 1) + '.png)'; o.querySelector('.rname').innerHTML = '<span class="cphp"><i class="cphpf"></i>' + TR.filter(function(R){ return R.at < 1; }).map(function(R){ return '<s style="left:' + ((1 - R.at) * 100).toFixed(2) + '%"></s>'; }).join('') + '</span>';
+    var cpG = (E.chestGrade && E.chestGrade(D, curPlv)) || 1; pic.style.backgroundImage = 'url(img/p/' + chestImgKey(cpG, 1) + '.png)'; starFx(o.querySelector('.rstage'), cpG, '#ffd34d'); o.querySelector('.rname').innerHTML = '<span class="cphp"><i class="cphpf"></i>' + TR.filter(function(R){ return R.at < 1; }).map(function(R){ return '<s style="left:' + ((1 - R.at) * 100).toFixed(2) + '%"></s>'; }).join('') + '</span>';
     strip.innerHTML = items.map(function(){ return '<span class="cps"></span>'; }).join('') || '<span class="cps none">없음</span>'; btn.hidden = true; o.hidden = false;
     var i = 0, fill = o.querySelector('.cphpf'), seq = TR.slice(0, ci.tier).map(function(R, t){ return { to: 1 - R.at, n: tierItems[t], t: 1 }; }).concat([{ to: 1 - ci.frac, n: 0 }]), left = 0, onDone = null, tc = 0; pic.parentNode.style.setProperty('--cpd', '1.9s');
     fill.style.transition = 'none'; fill.style.width = '100%';
