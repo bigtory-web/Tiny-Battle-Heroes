@@ -118,9 +118,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 .vsbar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:0 4px 8px}
 #amb{position:absolute;inset:9px;z-index:3;overflow:hidden;pointer-events:none}
 #amb s{position:absolute;width:3px;height:3px;text-decoration:none}
-#amb[data-k=altar]{background:linear-gradient(rgba(90,40,170,.22),rgba(90,40,170,.08) 55%,rgba(150,100,230,.3))}
+/* 가운데 땅은 맑게, 색은 위 하늘과 가장자리에만 (2026-11-26 사용자: "화면이 너무 뿌해") */
+#amb[data-k=altar]{background:linear-gradient(rgba(55,20,120,.2),rgba(55,20,120,0) 40%),radial-gradient(ellipse at 50% 62%,rgba(55,20,120,0) 52%,rgba(55,20,120,.28))}
 #amb[data-k=altar] s{background:#e3d2ff;box-shadow:0 0 5px 1px #a77bff;animation:ambrise linear infinite}
-#amb[data-k=campfire]{background:radial-gradient(ellipse at 50% 75%,rgba(255,150,40,.26),rgba(200,80,20,.2) 55%,rgba(90,30,40,.26))}
+#amb[data-k=campfire]{background:linear-gradient(rgba(170,60,20,.18),rgba(170,60,20,0) 40%),radial-gradient(ellipse at 50% 62%,rgba(150,55,10,0) 52%,rgba(110,35,15,.28))}
 #amb[data-k=campfire] s{background:#ffb347;box-shadow:0 0 4px 1px #ff7a1a;animation:ambrise linear infinite}
 #amb[data-k=mimic]{background:radial-gradient(ellipse at 55% 60%,rgba(12,8,24,.18),rgba(12,8,24,.42))}
 #amb[data-k=mimic] s{width:8px;height:6px;background:#ffd34d;box-shadow:inset 0 -2px #b8861c,0 0 0 1px #17141d;animation:ambglint steps(1) infinite}
