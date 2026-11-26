@@ -373,7 +373,7 @@ var IDLE_DATA = {
       endure: { name: '불굴', icon: '🛡️', v: 1, desc: '적 전체가 처음 쓰러질 때 한 번 체력 1로 버틴다.' },
       more:   { name: '증원', icon: '➕', v: 1,    desc: '적 1명이 더 나온다.' },
       haste:  { name: '성급함', icon: '💨', v: 0.15, desc: '적 전체의 공격 속도가 15% 빨라진다.' },
-      relic:  { name: '적 유물', icon: '📜', v: 1,    desc: '적 팀이 유물 1개를 더 갖는다.' },
+      relic:  { name: '발굴', /* 2026-11-26: 적 유물 → 발굴(사용자) */ icon: '📜', v: 1,    desc: '적 팀이 유물 1개를 더 갖는다.' },
       energy: { name: '선제', icon: '⚡', v: 50,   desc: '적 전체가 궁극기 에너지 50을 들고 시작한다.' },
       elite:  { name: '강적 출현', icon: '👑', v: 1, desc: '한 등급 위 영웅 1명이 더 나온다.' },
       curse:  { name: '저주', icon: '🕯️', v: 0.3, desc: '우리 팀의 회복량과 보호막이 30% 줄어든다.' },
