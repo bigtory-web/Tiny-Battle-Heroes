@@ -227,7 +227,7 @@ b.pasx{display:inline-flex;align-items:center;justify-content:center;width:100%;
 #dsWin .dsstage > em{position:absolute;left:0;right:0;top:24px;text-align:center;font:400 56px var(--display);font-style:normal;color:#ffd34d;z-index:2}
 #dsWin .dscorner{position:absolute;right:8px;bottom:8px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:rgba(23,20,29,.85);box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 5px var(--pc);cursor:help;z-index:5}
 #dsWin .dscorner img{width:32px;height:32px;image-rendering:pixelated}
-#dsWin .dskinds{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;margin-top:6px}
+#dsWin .dskinds{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:6px;overflow:hidden;padding:2px} /* 다른 룰렛처럼 7칸, 결과 가운데 (2026-11-26 사용자) */
 #dsWin .dskinds i{display:flex;align-items:center;justify-content:center;height:38px;background:#1d1a24;box-shadow:inset 0 0 0 2px var(--pc)}
 #dsWin .dskinds i{cursor:pointer} #dsWin .dskinds i.view{background:#4a4358;box-shadow:0 0 0 2px #fff}
 #dsWin .dskinds img{width:32px;height:32px;image-rendering:pixelated}
@@ -2868,8 +2868,12 @@ img.rimg{image-rendering:auto!important}
 /* 초월: 보고 있는 영웅 노란 테두리. 아래 줄 [등록/해제](파랑)·[초월](노랑) 같은 너비 */
 #trWin .rbtns{display:flex!important;justify-content:center;gap:8px} #trWin .rbtns button{width:150px!important}
 #trWin .trc.seen,#roster .chip.trsel{outline:3px solid #ffd34d!important;outline-offset:-1px}
-#dsWin .dsstage > .dsdeco{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 20' shape-rendering='crispEdges'%3E%3Cpath fill='%237a5fd0' d='M1 9h2v1h-2zM1 10h2v1h-2zM2 8h2v1h-2zM2 11h2v1h-2zM4 6h2v1h-2zM4 13h2v1h-2zM5 5h2v1h-2zM5 14h2v1h-2zM7 3h2v1h-2zM7 16h2v1h-2zM8 2h2v1h-2zM8 17h2v1h-2zM10 0h2v1h-2zM10 19h2v1h-2z'/%3E%3Cpath fill='%23b9a6ff' d='M3 7h2v1h-2zM3 12h2v1h-2zM6 4h2v1h-2zM6 15h2v1h-2zM9 1h2v1h-2zM9 18h2v1h-2z'/%3E%3Cpath fill='%23e9ddff' d='M6 5h2v2h-2zM6 13h2v2h-2zM10 1h2v2h-2zM10 17h2v2h-2z'/%3E%3Cpath fill='%23fff3b0' d='M0 9h4v2H0zM1 7h2v6H1z'/%3E%3Cpath fill='%23ffffff' d='M1 9h2v2H1z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat}
-#field .pad,#field .padtgt,#field .dsomen,#field .dsgone,#field .rugw,#field .cellhl,#field .altcell{scale:1.2} /* 칸 1.2배 */
+/* 양탄자 팝업 장식 = 밤하늘 양털 뭉치 몇 개, 천천히 둥실 (2026-11-26 사용자: "좌우 테두리 없애고 양털이나") */
+#dsWin .dsstage > .dstuft{position:absolute;aspect-ratio:18/13;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 13' shape-rendering='crispEdges'%3E%3Cpath fill='%2317141d' d='M5 0h4v1h2v1h3v1h2v2h1v1h1v4h-1v2h-2v1h-3v-1h-2v1H6v-1H4v1H2v-1H1v-2H0V5h1V3h2V2h2z'/%3E%3Cpath fill='%233a2c7e' d='M6 1h3v1h2v1h3v1h1v2h1v1h1v2h-1v2h-2v1h-1v-1h-3v1H8v-1H6v1H5v-1H3v1H2V9H1V6h1V4h2V3h2z'/%3E%3Cpath fill='%236a55c4' d='M6 2h3v1H6zM3 4h2v2H3zM11 4h3v1h-3z'/%3E%3Cpath fill='%23fff' d='M8 5h1v1H8zM12 7h1v1h-1z'/%3E%3Cpath fill='%23bfe4ff' d='M5 8h1v1H5z'/%3E%3Cpath fill='%23e2c4ff' d='M14 8h1v1h-1z'/%3E%3C/svg%3E") 0 0/100% 100% no-repeat;image-rendering:pixelated;pointer-events:none;z-index:1;animation:dsfloat 4s ease-in-out infinite}
+#dsWin .dstuft.t1{left:14px;bottom:26px;width:36px} #dsWin .dstuft.t2{right:64px;bottom:20px;width:27px;animation-delay:-1.4s} #dsWin .dstuft.t3{left:30px;top:22px;width:22px;animation-delay:-2.2s} #dsWin .dstuft.t4{right:20px;top:34px;width:30px;animation-delay:-3s}
+#field .pad,#field .padtgt,#field .altcell{width:calc(100% * 112.8 / 720);height:calc(100% * 74.4 / 400)} /* 칸 1.2배: scale 대신 크기를 직접 (scale 은 가운데 맞춤 translate 까지 키워 어긋났음) */
+#field .dsomen,#field .dsgone,#field > .cellhl{width:calc(100% * 93.6 / 720);height:calc(100% * 67.2 / 400)}
+#field .rugw{width:calc(100% * 91.2 / 720);height:calc(100% * 64.8 / 400)}
 /* 룰렛형 팝업 장식 자리(팝업기준안 2-7): 큰 칸 좌우 끝·세로 가운데·끝이 바깥. 팝업마다 그림(background)만 따로 */
 .dvine{position:absolute;left:12px;top:calc(50% - 28px);width:34px;height:56px;pointer-events:none;z-index:3} .dvine.r{left:auto;right:12px;transform:scaleX(-1)} /* 대칭 꺾쇠 < > (2026-11-26 사용자) */
 #roul .rstage > .fdust,#roul .rstage > .fvine{display:none}
@@ -3828,9 +3832,6 @@ img.rimg{image-rendering:auto!important}
       if (!host.offsetParent || (host._busy && host._busy())){ if (!quiet) host.textContent = ''; quiet = true; return; } var now = Date.now();
       if (quiet){ quiet = false; next = now + 2400; (host.closest('.rl3,.rl4') ? [450, 730, 1070, 1400, 1650] : [450, 730, 1070]).forEach(function(d){ setTimeout(function(){ if (host.isConnected && !(host._busy && host._busy())) fwShot(host); }, d); }); }
       else if (now >= next){ next = now + 2400; fwShot(host); } }, 150); }
-  /* 결과가 아니라 제안인 용병 영입의 수락 순간: 화면은 그대로 두고 짧게 터뜨린 뒤 닫음 (2026-11-26 사용자: "뎁스가 있어") */
-  function fwQuick(stage, box, done){ if (box.style.pointerEvents === 'none') return; box.style.pointerEvents = 'none'; var f = stage.querySelector(':scope > .rfw'); if (!f){ fwFx(stage, function(){ return true; }); f = stage.querySelector(':scope > .rfw'); }
-    [0, 140, 280].forEach(function(d){ setTimeout(function(){ if (f && f.isConnected) fwShot(f); }, d); }); setTimeout(function(){ box.style.pointerEvents = ''; done(); }, 1100); }
   function rayFx(key){ var rb = $('roul').querySelector('.rbox'), t = lootTier(key); rb.classList.remove('rl1', 'rl2', 'rl3', 'rl4'); rb.classList.add('rl' + t); rb.style.setProperty('--gcol', GR(t).col); fwFx(rb.querySelector('.rstage'), function(){ return rb.classList.contains('spin') || rb.classList.contains('gwait') || (roulPeek != null && roulPeek !== S.offer); /* 다른 후보 미리 보는 중엔 폭죽 없음 (2026-11-26 사용자) */ }); } /* 뒤 빛줄기: 1등급 없음, 2등급 이상은 등급색, 높을수록 진하고 빠르게. 도는 중 칸이 바뀌면 같이 바뀜 */
   /* 룬 단상 (2026-11-26 사용자 확정): 영웅 도트와 같은 밀도(1칸 = P css px, 장치 px 정수배). 발 = 단상 윗끝에서 10.5칸 아래, 이름판은 단상 아래. 룬은 등급색으로 반짝 */
   var PEDRUNE = new Image(), PEDC = {}; PEDRUNE.src = 'img/p/pedestal_rune.png';
@@ -5245,7 +5246,7 @@ img.rimg{image-rendering:auto!important}
     var pic = box.querySelector('.rpic');
     if (IMGS[id]){ w.style.setProperty('--rpq', (66 * qR() / (sApp() * (window.devicePixelRatio || 1))).toFixed(2) + 'px'); OUTLN = qN(); pic.style.backgroundImage = 'url(' + outlinedURL(id, NOLINE) + ')'; pic.style.setProperty('--o1', 'url(' + outlinedURL(id, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(id, '#ffffff') + ')'); /* 룰렛 결과처럼 외곽선 깜빡임에 필요 */ OUTLN = 0; pic.style.imageRendering = 'pixelated'; }
     else pic.innerHTML = AV[id];
-    pedestal(box.querySelector('.rstage'), col);
+    pedestal(box.querySelector('.rstage'), col); fwFx(box.querySelector('.rstage')); /* 합류 제안이 보일 때 폭죽 (2026-11-26 사용자) */
     mercAnim = IMGS[id] && ANIM_IDS.indexOf(id) >= 0 ? { id: id, nk: qN(), t0: performance.now(), f: '' } : null;
     w.hidden = false;
   }
@@ -5258,7 +5259,7 @@ img.rimg{image-rendering:auto!important}
     var o = S.evOffer; if (!o) return;
     var b = e.target.closest('[data-evmerc],[data-evleave]'); if (!b || b.disabled) return;
     if (b.dataset.evleave){ S.evOffer = null; save(); $('evWin').hidden = true; renderAll(); tryWinAfter(); return; }
-    if (b.dataset.evmerc){ if (S.gold < o.price) return; var win = this; if (!win.dataset.fw){ fwQuick(win.querySelector('.rstage'), win, function(){ win.dataset.fw = '1'; b.click(); delete win.dataset.fw; }); return; } S.gold -= o.price; S.evOffer = null; recruitFrom(o.id); save();
+    if (b.dataset.evmerc){ if (S.gold < o.price) return; S.gold -= o.price; S.evOffer = null; recruitFrom(o.id); save();
       $('evWin').hidden = true; renderAll(); tryWinAfter(); return; }
   });
   var offerIds = [];
@@ -5601,10 +5602,12 @@ img.rimg{image-rendering:auto!important}
       if (k === 'rr') return daisSpin();
       if (k === 'get') return daisTake();
       daisClose(); renderForm(); }); }
-  function daisShow(v, win, peek){ var w = $('dsWin'); if (!w) return; w.querySelectorAll('.dskinds i').forEach(function(c){ var on = c.dataset.v === v; c.classList.toggle('view', !!peek && on); if (peek) return; c.classList.toggle('lit', on && !win); c.classList.toggle('win', on && !!win); }); /* peek = 보기만: 결과(노란 테두리)는 그대로 */
+  function daisStrip(box, v){ var K = daisKinds(), n = K.length, at = Math.max(0, K.indexOf(v)), o = ''; for (var i = -3; i <= 3; i++){ var x = K[((at + i) % n + n) % n]; o += '<i data-v="' + x + '" style="--pc:' + daisCol() + '" title="' + padName(x) + '"><img src="' + padIc(x) + '" alt="' + padWord(x) + '"></i>'; }
+    var moved = box.dataset.at !== String(at); box.dataset.at = at; box.innerHTML = o; if (moved && daisBusy) [].forEach.call(box.children, function(c){ if (c.animate) c.animate([{ transform: 'translateX(calc(100% + 3px))' }, { transform: 'none' }], { duration: 70, easing: 'linear' }); }); }
+  function daisShow(v, win, peek){ var w = $('dsWin'); if (!w) return; var box = w.querySelector('.dskinds'); if (!peek && v) daisStrip(box, v); var mid = box.children[3]; box.querySelectorAll('i').forEach(function(c){ var on = c.dataset.v === v; c.classList.toggle('view', !!peek && on); if (peek) return; on = c === mid && on; c.classList.toggle('lit', on && !win); c.classList.toggle('win', on && !!win); }); /* peek = 보기만: 결과(노란 테두리)는 그대로 */
     w.querySelector('.dsstage').classList.toggle('win', !!win);
     var tip = v ? '이 칸에 선 영웅은 ' + padWord(v) + (padRace(v) ? ' 종족이' : ' 속성이') + ' 더해져요. ' + padWord(v) + ' 조건 유물·' + padWord(v) + ' 시너지에 들어가요' : '';
-    w.querySelector('.dsstage').innerHTML = (v ? '<img class="dsrug' + (win ? ' win' : '') + '" src="' + padURL(v) + '" alt="">' : '<em>?</em>') + '<i class="dsdeco dvine"></i><i class="dsdeco dvine r"></i><i class="dsped rped"><i class="rrune" style="background-image:url(' + pedRune(daisCol()) + ')"></i></i>' + (v ? '<b class="dsnm" style="color:' + daisCol() + '">' + padName(v) + '</b><span class="dscorner" style="--pc:' + daisCol() + '" data-tipt="' + padName(v) + '" data-tiptx="' + tip + '"><img src="' + padIc(v) + '" alt="' + padName(v) + '"></span>' : '') ; if (win) fwFx(w.querySelector('.dsstage'), function(){ return daisBusy; }); }
+    w.querySelector('.dsstage').innerHTML = (v ? '<img class="dsrug' + (win ? ' win' : '') + '" src="' + padURL(v) + '" alt="">' : '<em>?</em>') + '<i class="dstuft t1"></i><i class="dstuft t2"></i><i class="dstuft t3"></i><i class="dstuft t4"></i><i class="dsped rped"><i class="rrune" style="background-image:url(' + pedRune(daisCol()) + ')"></i></i>' + (v ? '<b class="dsnm" style="color:' + daisCol() + '">' + padName(v) + '</b><span class="dscorner" style="--pc:' + daisCol() + '" data-tipt="' + padName(v) + '" data-tiptx="' + tip + '"><img src="' + padIc(v) + '" alt="' + padName(v) + '"></span>' : '') ; if (win) fwFx(w.querySelector('.dsstage'), function(){ return daisBusy; }); }
   function daisPrice(){ return E.lootRerollPrice(D, S.event.dsRr || 0, S.stage - 1); } /* 룰렛 리셋과 같은 값 */
   function daisPaint(){ var w = $('dsWin'); if (!w) return; var ev = S.event, mx = E.daisRerolls(D, plv()), left = Math.max(0, mx - (ev.dsRr || 0)), has = !daisBusy, price = Math.floor(daisPrice());
     if (!daisBusy) daisShow(has ? ev.tag : null, has);
