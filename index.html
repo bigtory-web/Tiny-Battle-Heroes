@@ -3012,28 +3012,28 @@ img.rimg{image-rendering:auto!important}
 #upWin{position:absolute;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;background:rgba(10,8,14,.62)} #upWin[hidden]{display:none} #upWin .upbox{width:94%;height:94%;display:flex;flex-direction:column;gap:6px;padding:8px;background:#2a2533;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #5d5470}
 #upWin .uphead{position:relative;display:flex;align-items:center;gap:14px;min-height:36px;padding:2px 4px;font:400 16px var(--display);color:#f3e6c4} #upWin .uphead .popx{position:absolute!important;right:0!important;left:auto!important;top:0!important}
 #upWin .upcheat{height:28px;padding:0 10px;border:0;border-radius:0;cursor:pointer;font:400 12px var(--display);color:#fff;text-shadow:0 1px 0 #17141d;background:#3f6fc4;box-shadow:inset 0 0 0 2px #17141d} #upWin .upweb{flex:1;min-height:0;overflow:auto;display:flex;background:#17141d} #upWin .upmap{position:relative;flex:none;margin:auto} #upWin .upmap svg{position:absolute;inset:0} #upWin .upmap path{fill:none;stroke:#8a8296;stroke-width:4;shape-rendering:crispEdges} #upWin .upmap path.on{stroke:#ffd34d}
-#upWin .upn{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:56px;height:46px;padding:2px 2px 6px;border:0;border-radius:0;cursor:pointer;background:var(--uc);color:#fff;font:400 11px/1.1 var(--display);text-shadow:0 1px 0 #17141d;box-shadow:0 0 0 2px #8a8296,0 0 0 4px #17141d;word-break:keep-all} #upWin .upn em{position:absolute;right:2px;bottom:0;font-style:normal;color:#f3e6c4}
+#upWin .upn{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:50px;height:50px;padding:2px;border:0;border-radius:0;cursor:pointer;background:var(--uc);color:#fff;font:400 11px/1.1 var(--display);text-shadow:0 1px 0 #17141d;box-shadow:0 0 0 2px #8a8296,0 0 0 4px #17141d;word-break:keep-all} #upWin .upn em{position:absolute;right:-5px;bottom:-5px;min-width:14px;padding:1px 3px;font:400 11px/12px var(--display);font-style:normal;text-align:center;color:#f3e6c4;background:#17141d;box-shadow:0 0 0 1px #8a8296}
 #upWin .upn.zero{background:color-mix(in srgb,var(--uc) 55%,#17141d)} #upWin .upn.can{box-shadow:0 0 0 2px #ffd34d,0 0 0 4px #17141d} #upWin .upn.max{box-shadow:0 0 0 2px #6fd06a,0 0 0 4px #17141d} #upWin .upn.sel{box-shadow:0 0 0 3px #fff,0 0 0 5px #17141d}
 #upWin .upinfo{padding:0 4px;font:400 12px/1.4 var(--body);color:#9d94ab} #upWin .upbox{position:relative} #upWin .upico{width:24px;height:24px;image-rendering:pixelated;pointer-events:none}
 #upWin .upn:not(.can):not(.max){filter:grayscale(.65);cursor:default}
 #upWin .uptip{position:absolute;z-index:70;width:290px;word-break:keep-all;display:flex;flex-direction:column;gap:5px;padding:9px 10px;background:#17141d;box-shadow:inset 0 0 0 2px #8a7652,0 0 0 2px #17141d;pointer-events:none;font:400 12px/1.4 var(--body);color:#d9d0e6} #upWin .uptip[hidden]{display:none} #upWin .uptip b{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font:400 15px var(--display);color:#ffd34d} #upWin .uptip small{margin-left:auto;font-size:12px;color:#9d94ab} #upWin .uptip i{display:flex;align-items:center;gap:4px;font:400 14px var(--display);font-style:normal;color:#f3e6c4} #upWin .uptip i.no{color:#ff8a80} #upWin .uptip u{text-decoration:none;font-weight:700;color:#7ee08a} #upWin .uptip i .medic{text-decoration:none}
 #upWin .uplv{display:flex;align-items:center;gap:8px;font:400 13px var(--display);color:#f3e6c4} #upWin .uplv i{flex:1;height:10px;background:#17141d;box-shadow:inset 0 0 0 1px #5d5470} #upWin .uplv s{display:block;height:100%;background:#7fd0ff;text-decoration:none}
 /* 오른쪽 줄: [강화]가 늘어 버튼 높이를 54 -> 41 (아이콘 24 + 글자) */ .underbar .ugrp .abtn{height:41px!important;padding:1px 0 0!important;gap:0!important} .underbar .ugrp.utest{margin-top:6px!important}
-/* 강화 창 꾸밈 (2026-11-27 사용자: "그라데이션 좀 줘봐. 좀 예쁘게") */
-#upWin .upbox{background:linear-gradient(#3a2f4e,#241d33 60%,#1b1526);box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #8a7652,0 0 24px rgba(0,0,0,.6)}
-#upWin .upweb{background:radial-gradient(ellipse at 50% 46%,#463463,#231a38 55%,#0e0a17);box-shadow:inset 0 0 0 2px #17141d}
-#upWin .upmap{background:radial-gradient(circle 230px at 288px 140px,rgba(255,170,80,.30),rgba(170,100,220,.14) 55%,transparent 100%)}
-#upWin .upmap::before{content:'';position:absolute;left:238px;top:90px;width:100px;height:100px;background:radial-gradient(circle,rgba(255,196,90,.55),transparent 68%);animation:upfire 2.4s ease-in-out infinite;pointer-events:none}
-@keyframes upfire{0%,100%{scale:.8;opacity:.6}50%{scale:1.15;opacity:1}}
-#upWin .upmap path{stroke:#5a4a78} #upWin .upmap path.can{stroke:#b89a55} #upWin .upmap path.on{stroke:#ffd34d;filter:drop-shadow(0 0 3px rgba(255,200,70,.8))}
-#upWin .upn{background:linear-gradient(color-mix(in srgb,var(--uc) 62%,#fff),var(--uc) 42%,color-mix(in srgb,var(--uc) 62%,#000));box-shadow:inset 0 0 0 1px rgba(255,255,255,.28),0 0 0 2px #8a8296,0 0 0 4px #17141d,0 4px 6px 3px rgba(0,0,0,.45)}
-#upWin .upn.zero{background:linear-gradient(color-mix(in srgb,var(--uc) 78%,#fff),color-mix(in srgb,var(--uc) 75%,#17141d) 42%,color-mix(in srgb,var(--uc) 45%,#17141d))}
-#upWin .upn.can{box-shadow:inset 0 0 0 1px rgba(255,255,255,.35),0 0 0 2px #ffd34d,0 0 0 4px #17141d,0 0 10px 5px rgba(255,200,70,.45)}
-#upWin .upn.max{box-shadow:inset 0 0 0 1px rgba(255,255,255,.35),0 0 0 2px #7fe874,0 0 0 4px #17141d,0 0 10px 5px rgba(110,230,100,.4)}
+/* 강화 창 꾸밈: 도트 느낌(계단 띠, 흐림 없는 테두리) (2026-11-27 사용자: "픽셀 느낌 나게") */
+#upWin .upbox{background:linear-gradient(#3a2f4e 0 33%,#2c2340 33% 66%,#201930 66%);box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #8a7652}
+#upWin .upweb{min-width:0;cursor:grab;user-select:none;background:#120e20;box-shadow:inset 0 0 0 2px #17141d}
+#upWin .upmap{background-size:100% 100%;image-rendering:pixelated}
+#upWin .upmap::before{content:'';position:absolute;left:318px;top:132px;width:66px;height:66px;box-shadow:0 0 0 3px rgba(255,196,90,.75),0 0 0 9px rgba(255,196,90,.28);animation:upfire 2.4s steps(4) infinite alternate;pointer-events:none}
+@keyframes upfire{from{scale:.96;opacity:.45}to{scale:1.08;opacity:1}}
+#upWin .upmap path{stroke:#b9a4ee;stroke-width:6} #upWin .upmap path.can{stroke:#fff0c0} #upWin .upmap path.on{stroke:#ffc21f}
+#upWin .upn{background:linear-gradient(color-mix(in srgb,var(--uc) 62%,#fff) 0 6px,var(--uc) 6px 70%,color-mix(in srgb,var(--uc) 62%,#000) 70%);box-shadow:0 0 0 2px #8a8296,0 0 0 4px #17141d,0 6px 0 4px rgba(0,0,0,.35)}
+#upWin .upn.zero{background:linear-gradient(color-mix(in srgb,var(--uc) 78%,#fff) 0 6px,color-mix(in srgb,var(--uc) 75%,#17141d) 6px 70%,color-mix(in srgb,var(--uc) 45%,#17141d) 70%)}
+#upWin .upn.can{box-shadow:0 0 0 2px #ffd34d,0 0 0 4px #17141d,0 0 0 6px rgba(255,200,70,.55),0 0 0 9px rgba(255,200,70,.2)}
+#upWin .upn.max{box-shadow:0 0 0 2px #7fe874,0 0 0 4px #17141d,0 0 0 6px rgba(110,230,100,.5),0 0 0 9px rgba(110,230,100,.18)}
 #upWin .upn.can:hover,#upWin .upn.max:hover{filter:brightness(1.18)}
-#upWin .uptip{background:linear-gradient(#2c2342,#15111f);box-shadow:inset 0 0 0 2px #b99a5a,0 0 0 2px #17141d,0 6px 16px rgba(0,0,0,.6)}
+#upWin .uptip{background:#221b36;box-shadow:inset 0 0 0 2px #b99a5a,0 0 0 2px #17141d,0 6px 0 2px rgba(0,0,0,.4)}
 #upWin .uphead b{color:#ffe9a8;text-shadow:0 2px 0 #17141d}
-#upWin .uplv s{background:linear-gradient(90deg,#5aa8ff,#9fe6ff)}
+#upWin .uplv s{background:linear-gradient(#9fe6ff 0 3px,#5aa8ff 3px)}
 /* 토탈 레벨은 제목 왼쪽 위, 막대는 짧게 (2026-11-27 사용자: "좌상단으로") */ #upWin .uphead .uplv{gap:6px;padding:3px 8px;background:#17141d;box-shadow:inset 0 0 0 2px #8a7652;font-size:12px} #upWin .uphead .uplv b{color:#ffe9a8} #upWin .uphead .uplv i{flex:none;width:72px;height:8px}
 /* 늪 칸 = 바닥 그림 94×62, 양탄자와 같은 크기·중심 (2장) */ #field .swampc{position:absolute;transform:translate(-50%,-46.8%);width:calc(100% * 112.8 / 720);height:calc(100% * 74.4 / 400);z-index:1;background:url(img/p/swamp_cell.png) center/100% 100% no-repeat;image-rendering:pixelated} #field.scrollin .swampc{opacity:0}
 /* 잠긴 칸 바깥 테두리 = 빈 칸과 같은 1px (2026-11-27 사용자: "외각이 더 큰데 그러지않게") */ .lbag #roster .chip.baglock,#potBar i.baglock{box-shadow:inset 3px 0 0 #1a1621,inset -2px 0 0 #4a4358,inset 0 -1px 0 #554d66,0 0 0 1px #17141d!important}
@@ -5556,7 +5556,13 @@ img.rimg{image-rendering:auto!important}
   /* 실제로 쓴 훈장(리셋 때 돌려줌). 예전 저장은 찍은 칸 값으로 셈. [모두 찍기]는 안 씀 */
   function upSpent(up){ if (up.spent != null) return up.spent; var t = 0; D.meta.lines.forEach(function(L){ L.nodes.forEach(function(N){ for (var i = 0; i < Math.min(up.nodes[N.id] || 0, N.cost.length); i++) t += N.cost[i]; }); }); return t; }
   function upCheat(kind){ var u = upLoad(); u.spent = upSpent(u); if (kind === 'all') D.meta.lines.forEach(function(L){ L.nodes.forEach(function(N){ u.nodes[N.id] = N.cost.length; }); }); else { u.medals += u.spent; u.spent = 0; u.nodes = {}; } upSave(u); }
-  function upOpen(){ if (shopOpen()) setShop(false); hideInfo(); hideTip(); upSel = null; var o = $('upWin'); if (!o){ o = document.createElement('div'); o.id = 'upWin'; popAdd(o, true); o.addEventListener('click', upClick);
+  /* 망은 마우스로 끌어서 상하좌우 이동(터치·휠은 기본 스크롤). 끌고 놓은 것은 누름으로 치지 않음 (2026-11-27 사용자: "좌우 스크롤도 지원해") */
+  function upDrag(o){ var d = null, moved = false;
+    o.addEventListener('pointerdown', function(e){ moved = false; var w = e.target.closest('.upweb'); if (w && e.pointerType === 'mouse' && e.button === 0) d = { w: w, x: e.clientX, y: e.clientY, l: w.scrollLeft, t: w.scrollTop }; });
+    window.addEventListener('pointermove', function(e){ if (!d) return; if (!moved && Math.abs(e.clientX - d.x) + Math.abs(e.clientY - d.y) < 6) return; moved = true; upTip(null); var k = d.w.getBoundingClientRect().width / (d.w.offsetWidth || 1) || 1; d.w.scrollLeft = d.l - (e.clientX - d.x) / k; d.w.scrollTop = d.t - (e.clientY - d.y) / k; });
+    window.addEventListener('pointerup', function(){ d = null; });
+    o.addEventListener('click', function(e){ if (moved){ moved = false; e.stopImmediatePropagation(); e.preventDefault(); } }, true); }
+  function upOpen(){ if (shopOpen()) setShop(false); hideInfo(); hideTip(); upSel = null; var o = $('upWin'); if (!o){ o = document.createElement('div'); o.id = 'upWin'; popAdd(o, true); upDrag(o); o.addEventListener('click', upClick);
       o.addEventListener('pointerdown', function(e){ upTouch = e.pointerType !== 'mouse'; });
       o.addEventListener('pointerover', function(e){ if (e.pointerType !== 'mouse') return; var c = e.target.closest('[data-upn]'); upTip(c ? c.dataset.upn : null); });
       ['wheel', 'touchmove'].forEach(function(t){ o.addEventListener(t, function(){ upTip(null); }, { passive: true }); }); } o.hidden = false; upRender(); }
@@ -5565,15 +5571,20 @@ img.rimg{image-rendering:auto!important}
     var c = e.target.closest('[data-upn]'); if (!c){ upSel = null; return upTip(null); } var id = c.dataset.upn;
     if (upTouch && upSel !== id){ upSel = id; return upTip(id); } /* 터치: 한 번 누르면 팁, 같은 칸을 다시 누르면 강화 */
     var up = upLoad(); upSel = id; var spent0 = upSpent(up), m0 = up.medals; if (E.metaBuy(D, up, id)){ up.spent = spent0 + m0 - up.medals; upSave(up); upRender(); } upTip(id); } /* PC: 누르면 바로 강화 */
+  /* 도트 바탕: 점 1개 = 3px, 색 띠를 계단처럼 끊고 경계는 체크 점 섞기 (2026-11-27 사용자: "픽셀 느낌 나게") */
+  var upBgCache = {};
+  function upBg(W, H, cx, cy){ var key = W + 'x' + H; if (upBgCache[key]) return upBgCache[key]; var DOT = 3, c = document.createElement('canvas'), x = c.getContext('2d'), C = ['#7a5058', '#634264', '#4d3566', '#3a2a57', '#2a2045', '#1c1631', '#120e20'], B = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]; c.width = Math.ceil(W / DOT); c.height = Math.ceil(H / DOT);
+    for (var j = 0; j < c.height; j++) for (var i = 0; i < c.width; i++){ var d = Math.hypot(i * DOT - cx, (j * DOT - cy) * 1.15) / 62, b = Math.floor(d), f = d - b; if (f > .62 && (f - .62) / .38 > (B[(j % 4) * 4 + i % 4] + .5) / 16) b++; x.fillStyle = C[Math.min(b, C.length - 1)]; x.fillRect(i, j, 1, 1); }
+    return upBgCache[key] = c.toDataURL(); }
   function upRender(){ var o = $('upWin'), M = D.meta, up = upLoad(), sc = o.querySelector('.upweb'), keep = sc ? [sc.scrollLeft, sc.scrollTop] : null;
-    var CW = 64, CH2 = 56, X0 = 4, Y0 = 2, all = {}; M.lines.forEach(function(L){ L.nodes.forEach(function(N){ all[N.id] = { N: N, L: L }; }); });
+    var CW = 78, CH2 = 66, X0 = 4, Y0 = 2, all = {}; M.lines.forEach(function(L){ L.nodes.forEach(function(N){ all[N.id] = { N: N, L: L }; }); });
     var vis = Object.keys(all).filter(function(id){ return E.metaStatus(D, up, id) !== 'locked'; }), extra = 0, at = function(id){ var p = UPPOS[id] || (all[id].p = all[id].p || [-3 + (extra++ % 8), 6]); return [(p[0] + X0) * CW + CW / 2, (p[1] + Y0) * CH2 + CH2 / 2]; };
     var lines = '', nodes = '';
     vis.forEach(function(id){ var it = all[id], N = it.N, b = at(id), n = Math.min(up.nodes[id] || 0, N.cost.length), max = n >= N.cost.length, can = !max && up.medals >= N.cost[n];
       (N.req || []).forEach(function(q){ if (all[q] && vis.indexOf(q) >= 0){ var a = at(q); lines += '<path d="M' + a[0] + ' ' + a[1] + (a[0] === b[0] || a[1] === b[1] ? 'L' + b[0] + ' ' + b[1] : 'V' + (b[1] - CH2 / 2) + 'H' + b[0] + 'V' + b[1]) + '"' + (n ? ' class="on"' : can ? ' class="can"' : '') + '/>'; /* 가로·세로만 */ } });
       nodes += '<button type="button" class="upn' + (max ? ' max' : can ? ' can' : '') + (n ? '' : ' zero') + '" data-upn="' + id + '" style="--uc:' + UPCOL[it.L.id] + ';left:' + b[0] + 'px;top:' + b[1] + 'px">' + (UPICO[id] ? '<img class="upico" data-raw="1" src="img/p/up_' + id + '.png" alt="' + N.name + '">' : '<span>' + (it.L.job ? N.name : N.name.replace(' +1', '')) + '</span>') + (N.cost.length > 1 && n ?'<em>' + n + '</em>' : '') + '</button>'; });
     var W = 10 * CW, H = 8 * CH2;
-    var web = '<div class="upmap" style="width:' + W + 'px;height:' + H + 'px"><svg width="' + W + '" height="' + H + '">' + lines + '</svg>' + nodes + '</div>';
+    var cx = (X0 + .5) * CW, cy = (Y0 + .5) * CH2; var web = '<div class="upmap" style="width:' + W + 'px;height:' + H + 'px;background-image:url(' + upBg(W, H, cx, cy) + ')"><svg width="' + W + '" height="' + H + '">' + lines + '</svg>' + nodes + '</div>';
     var per = (M.totalLv || {}).per || 5, ex = E.metaExp(D, up), lv = E.metaLevel(D, up), un = ((M.totalLv || {}).unlock || {})[lv + 1];
     o.innerHTML = '<div class="upbox"><div class="uphead"><div class="uplv" title="' + (un ? '다음 혜택: ' + [].concat(un).join(', ') : '레벨 경험치') + '"><b>레벨 ' + lv + '</b><i><s style="width:' + (ex % per) / per * 100 + '%"></s></i><span>' + (ex % per) + '/' + per + '</span></div><b>영구 강화</b><span><i class="medic"></i>' + up.medals + '</span><button type="button" class="upcheat" data-upcheat="1">훈장 +50 (시험)</button><button type="button" class="upcheat" data-upall="1">모두 찍기</button><button type="button" class="upcheat" data-upreset="1">리셋</button><button type="button" class="spX popx" data-upx="1" title="닫기">✕</button></div><div class="upweb">' + web + '</div><div class="uptip" hidden></div></div>';
     var s2 = o.querySelector('.upweb'); if (keep){ s2.scrollLeft = keep[0]; s2.scrollTop = keep[1]; } else { s2.scrollLeft = (X0 + .5) * CW - s2.clientWidth / 2; s2.scrollTop = (Y0 + .5) * CH2 - s2.clientHeight / 2; } } /* 처음 열면 가운데 칸이 가운데 */
