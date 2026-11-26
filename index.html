@@ -4493,10 +4493,14 @@ img.rimg{image-rendering:auto!important}
   /* 편성 화면: 우리 영웅 → 첫 공격 대상 포물선 화살표 (2026-11-26 사용자). 대상은 버리는 전투를 한 걸음 돌려 엔진 그대로 얻음 */
   var aimKey = '', aimAt = 0;
   function aimArrows(b0){ var f = $('field'); if (!f) return; var old = f.querySelector(':scope > .aimsvg'); if (old) old.remove(); if (!b0 || bt) return;
-    var at = function(u){ return [zx(u.x), zy(u.y) + OFF + FOOT - 24]; }, from = b0.A.map(function(u){ return [u, at(u)]; }), to = b0.E.map(function(u){ return [u, at(u)]; });
+    var at = function(u){ u.y0 = u.y; return [zx(u.x), zy(u.y) + OFF + FOOT - 24]; }, from = b0.A.map(function(u){ return [u, at(u)]; }), to = b0.E.map(function(u){ return [u, at(u)]; });
     try { b0.step(); } catch (e) { return; } var P = '', fly = [];
-    /* 우리→적(노랑, 위로 휨) · 적→우리(빨강, 아래로 휨) (2026-11-26 사용자: "색다르게해서") */ [[from, to, '', -1], [to, from, 'en', 1]].forEach(function(side){ var en = side[2], bend = side[3], dest = side[1], S0 = '', mk = {};
-    side[0].forEach(function(a){ var tg = a[0].tgt, e = dest.filter(function(x){ return x[0] === tg; })[0]; if (!e) return; var p = a[1], q = e[1], dx = q[0] - p[0], dy = q[1] - p[1], len = Math.sqrt(dx * dx + dy * dy) || 1, cx = (p[0] + q[0]) / 2, cy = (p[1] + q[1]) / 2 + bend * Math.min(60, 14 + len * .14);
+    /* 우리→적(노랑, 위로 휨) · 적→우리(빨강, 아래로 휨) (2026-11-26 사용자: "색다르게해서") */ [[from, to, '', -1], [to, from, 'en', 1]].forEach(function(side){ var en = side[2], bend = side[3], dest = side[1], S0 = '', mk = {}, inRow = {};
+    side[0].forEach(function(a){ var tg = a[0].tgt, e = dest.filter(function(x){ return x[0] === tg; })[0]; if (!e) return; var p = a[1], q = e[1], dx = q[0] - p[0], dy = q[1] - p[1], len = Math.sqrt(dx * dx + dy * dy) || 1, cx = (p[0] + q[0]) / 2, cy;
+      /* 겹침 줄이기 (2026-11-26 사용자: "너무 겹침. 위로도 하고"): 휘는 방향·높이 = 출발한 줄(윗줄 위로 크게, 가운데 줄 살짝, 아랫줄 아래로), 같은 줄은 높이를 다르게 */
+      var rows = hexCells().A.map(function(c){ return c[1]; }).filter(function(v, i, a2){ return a2.indexOf(v) === i; }).sort(function(x, y){ return x - y; }), ry = rows.reduce(function(b, v, i){ return Math.abs(v - a[0].y0) < Math.abs(rows[b] - a[0].y0) ? i : b; }, 0), mid = (rows.length - 1) / 2, rel = ry < mid ? -1 : ry > mid ? 1 : bend * .35, nth = inRow[ry] = (inRow[ry] || 0) + 1;
+      cy = (p[1] + q[1]) / 2 + rel * (Math.min(62, 22 + len * .13) + (nth - 1) * 20) + (en ? 7 : -7);
+      /* 같은 대상에 여러 선: 몸의 다른 높이에 꽂힘 */ var hit = a[0].tgt.__aim = (a[0].tgt.__aim || 0) + 1; q = [q[0] + (en ? 6 : -6), q[1] + [0, -15, 13, -26, 22][(hit - 1) % 5]]; dx = q[0] - p[0]; dy = q[1] - p[1];
       var ux = q[0] - cx, uy = q[1] - cy, ul = Math.sqrt(ux * ux + uy * uy) || 1; ux /= ul; uy /= ul; var bx = q[0] - ux * 10, by = q[1] - uy * 10, d = 'M' + p[0] + ' ' + p[1] + ' Q' + cx + ' ' + cy + ' ' + bx + ' ' + by;
       fly.push([p, [cx, cy], q, en]); mk[q[0] + ',' + q[1]] = q; S0 += '<path class="ao" d="' + d + '"/><path class="ai" d="' + d + '"/><polygon class="hd" points="' + q[0] + ',' + q[1] + ' ' + (bx - uy * 6) + ',' + (by + ux * 6) + ' ' + (bx + uy * 6) + ',' + (by - ux * 6) + '"/>'; });
       Object.keys(mk).forEach(function(k){ var q = mk[k]; S0 += '<g transform="translate(' + q[0] + ' ' + q[1] + ')"><g class="rg"><circle r="11"/><path d="M-16 0H-8M8 0H16M0 -16V-8M0 8V16"/></g></g>'; }); if (S0) P += '<g class="' + (en || 'us') + '">' + S0 + '</g>'; });
