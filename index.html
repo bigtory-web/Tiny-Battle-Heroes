@@ -225,6 +225,10 @@ b.pasx{display:inline-flex;align-items:center;justify-content:center;width:100%;
 #dsWin .rbtns{display:flex!important;justify-content:center;align-items:center;position:relative}
 #dsWin .rbtns button{width:116px!important;white-space:nowrap;padding-left:6px!important;padding-right:6px!important}
 #dsWin .dsleft{position:absolute;right:0;font:400 11px var(--display);color:#ffd34d}
+#dsWin .rbox:has(.dsswap) .dsstage{height:144px;gap:4px} #dsWin .rbox:has(.dsswap) .dsstage > img{width:141px;height:93px} /* 알림 줄만큼 큰 칸을 줄여 창이 안 잘리게 */
+#dsWin .dsswap{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px;padding:4px 8px;background:#2a1720;box-shadow:inset 0 0 0 2px #d8443e;font:400 13px var(--display);color:#f3e6c4}
+#dsWin .dsswap img{width:47px;height:31px;image-rendering:pixelated} #dsWin .dsswap b{font-weight:400;margin-right:3px}
+#field .dsgone{position:absolute;transform:translate(-50%,-46.8%);width:calc(100% * 78 / 720);height:calc(100% * 56 / 400);z-index:900;pointer-events:none;background:rgba(216,68,62,.55);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);animation:dsomen 1s ease-in-out infinite}
 /* 예고: 바닥 빛이 일렁이고 빛가루가 오르며 희미한 ? */
 #field .dsomen{position:absolute;transform:translate(-50%,-46.8%);width:calc(100% * 78 / 720);height:calc(100% * 56 / 400);z-index:2;pointer-events:none;font-style:normal}
 #field .dsomen u{position:absolute;inset:6%;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:radial-gradient(closest-side,rgba(214,176,255,.95),rgba(130,80,220,.55) 60%,rgba(90,40,170,.25));animation:dsomen 1.4s ease-in-out infinite}
@@ -5445,6 +5449,7 @@ img.rimg{image-rendering:auto!important}
   var daisBusy = false, daisFx = false;
   function daisKey(i){ return ckey(hexCells().A[i]); }
   function daisRollCell(){ var P = {}; hexCells().A.forEach(function(c, i){ var v = (S.pads || {})[ckey(c)]; if (v) P[i] = v; }); return daisKey(E.rollDaisCell(D, Math.random, P)); }
+  function daisOld(){ var ks = Object.keys(S.pads || {}).filter(function(k){ return k.indexOf(',') > 0; }), mx = ((D.events || {}).dais || {}).max || 2; return ks.length >= mx && !S.event.dsDone ? ks[0] : null; } /* S.pads는 넣은 순서 = 첫 키가 가장 오래됨 */
   function daisKinds(){ return Object.keys(D.races || {}).filter(function(r){ return r !== 'monster'; }).map(function(r){ return 'r:' + r; }).concat(Object.keys(D.elements.names)); }
   /* 칸은 판에 들어올 때 하나 정해 저장. 받기 전까지 그 칸에 "이상한 일" 예고 */
   function daisHtml(){ var ev = S.event; if (!ev.tag){ ev.tag = E.rollDais(D, Math.random); save(); } if (!ev.dsCell){ ev.dsCell = daisRollCell(); save(); } if (ev.dsDone) return daisFx ? daisBurst(ev.dsCell) : '';
@@ -5457,11 +5462,11 @@ img.rimg{image-rendering:auto!important}
     var P = S.pads || (S.pads = {}), old = P[cell]; P[cell] = tag; var after = rel.map(function(d){ return synInfo(d); }); if (old) P[cell] = old; else delete P[cell];
     return head + rel.map(function(d, i){ return before[i] && after[i] && before[i].n !== after[i].n ? '<span>' + d.name + ' · ' + after[i].lab + ' ' + before[i].n + '→' + after[i].n + '</span>' : ''; }).join(''); }
   /* 팝업: 가운데 당첨 단상, 아래 9종 띠 룰렛. 칸은 고정이라 종류만 돌림 */
-  function daisClose(){ var w = $('dsWin'); if (w) (w.parentNode.classList.contains('popw') ? w.parentNode : w).remove(); daisBusy = false; }
+  function daisClose(){ document.querySelectorAll('#field .dsgone').forEach(function(x){ x.remove(); }); var w = $('dsWin'); if (w) (w.parentNode.classList.contains('popw') ? w.parentNode : w).remove(); daisBusy = false; }
   function daisOpen(){ if (!isDais() || S.event.dsDone || S.offer || S.pending) return; if (shopOpen()) setShop(false); clearSel(); hideInfo(); hideTip(); daisClose();
     var w = document.createElement('div'); w.id = 'dsWin'; w.className = 'evwin';
-    w.innerHTML = '<div class="rbox"><button class="spX" type="button" data-ds="x" title="닫기">✕</button><div class="rt">단상</div><div class="dsstage"></div><div class="dskinds">' + daisKinds().map(function(v){ return '<i data-v="' + v + '" style="--pc:' + padCol(v) + '" title="' + padName(v) + '"><img src="' + padURL(v) + '" alt="' + padWord(v) + '"></i>'; }).join('') + '</div><div class="dsres"></div><div class="rbtns"></div></div>';
-    document.body.appendChild(w); popAdd(w, true); daisPaint();
+    w.innerHTML = '<div class="rbox"><button class="spX" type="button" data-ds="x" title="닫기">✕</button><div class="rt">단상</div><div class="dsstage"></div><div class="dskinds">' + daisKinds().map(function(v){ return '<i data-v="' + v + '" style="--pc:' + padCol(v) + '" title="' + padName(v) + '"><img src="' + padURL(v) + '" alt="' + padWord(v) + '"></i>'; }).join('') + '</div>' + (daisOld() ? '<div class="dsswap"><img src="' + padURL(S.pads[daisOld()]) + '" alt=""><span><b style="color:' + padCol(S.pads[daisOld()]) + '">' + padName(S.pads[daisOld()]) + '</b>이 사라지고 대체돼요</span></div>' : '') + '<div class="dsres"></div><div class="rbtns"></div></div>';
+    document.body.appendChild(w); popAdd(w, true); daisPaint(); if (daisOld()) $('field').insertAdjacentHTML('beforeend', '<i class="dsgone" style="' + daisAt(daisOld()) + '"></i>');
     w.addEventListener('click', function(e){ e.stopPropagation(); var b = e.target.closest('[data-ds]'); if (!b || b.disabled) return; var k = b.dataset.ds;
       if (k === 'spin' || k === 'rr') return daisSpin();
       if (k === 'get') return daisTake();
@@ -5477,10 +5482,10 @@ img.rimg{image-rendering:auto!important}
     ev.dsRolled = true; save(); /* 결과는 먼저 저장 */ daisBusy = true; daisPaint();
     var kinds = daisKinds(), steps = 18 + kinds.indexOf(ev.tag), n = 0;
     (function tick(){ if (!$('dsWin') || S.event !== ev){ daisBusy = false; return; } daisShow(kinds[n % kinds.length]); if (n++ >= steps){ setTimeout(function(){ daisBusy = false; daisPaint(); }, 280); return; } setTimeout(tick, 55 + Math.pow(n / steps, 3) * 260); })(); }
-  function daisTake(){ var ev = S.event; if (!isDais() || !ev.dsRolled || ev.dsDone || daisBusy) return; S.pads = S.pads || {}; S.pads[ev.dsCell] = ev.tag; padNew = ev.dsCell; ev.dsDone = true; save(); daisClose(); daisFx = true; renderAll(); setTimeout(function(){ daisFx = false; }, 1200); }
+  function daisTake(){ var ev = S.event; if (!isDais() || !ev.dsRolled || ev.dsDone || daisBusy) return; S.pads = S.pads || {}; var old = daisOld(); if (old && old !== ev.dsCell) delete S.pads[old]; S.pads[ev.dsCell] = ev.tag; padNew = ev.dsCell; ev.dsDone = true; save(); daisClose(); daisFx = true; renderAll(); setTimeout(function(){ daisFx = false; }, 1200); }
   function finishDais(){ daisClose(); daisFx = false; S.event = nextEvent(false); S.bell = 0; S.bellGold = 0; save(); evGo(); }
   /* 이벤트 대사 말풍선: 들어와 캐릭터가 나타난 뒤 한 번(enter), 이벤트를 마치고 팝업이 닫힌 뒤 한 번(done). 타이핑. 사라지지 않고 남음 (2026-11-26 사용자) */
-  var SPK_AT = { campfire: '.unit.cfh:not(.fairy):not(.merchnpc):not(.oegob):not(.altseer):not(.fork):not(.altA):not(.altM)', merchant: '.unit.merchnpc', groll: '.unit.oegob', fairy: '.unit.cfh.fairy', altar: '.unit.altseer' };
+  var SPK_AT = { campfire: '.unit.cfh:not(.fairy):not(.merchnpc):not(.oegob):not(.altseer):not(.fork):not(.altA):not(.altM)', merchant: '.unit.merchnpc', groll: '.unit.oegob', fairy: '.unit.cfh.fairy', altar: '.unit.altseer', dais: '.unit.dsheep' /* 양 그림이 오면 이 칸에 세움 */ };
   var spkWait = 0, spkTimer = 0, spkKey = '';
   function spkOff(){ clearInterval(spkTimer); var b = $('spk'); if (b) b.remove(); }
   function spkSay(host, text){ spkOff(); var A = $('arena'), R = A.getBoundingClientRect(), v = host.querySelector('.cfslot, .cfspr') || host, r = v.getBoundingClientRect(), q = R.width / A.offsetWidth || 1;
