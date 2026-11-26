@@ -1508,6 +1508,11 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 /* 몹 정보 창·도감 몹 칸 */
 .hinfo .mlootrow{display:flex;align-items:center;gap:8px} .hinfo .mlootrow .mlh{font:400 13px var(--display);color:#c9bfae;white-space:nowrap}
 .hinfo .mlootrow .mdrops{display:flex;gap:4px;flex-wrap:wrap;margin:0}
+/* 미믹 전리품: 글자 아래 줄에 상점 아이콘 크기로 */
+.hinfo .mlootrow.big{flex-direction:column;align-items:flex-start;gap:6px}
+.hinfo .mlootrow.big .mdrops{gap:8px}
+.hinfo .mlootrow.big .mdrop{width:56px;height:56px}
+.hinfo .mlootrow.big .mdrop img{width:44px!important;height:44px!important}
 .evlist .mobcd{position:static!important;width:auto!important;margin:0 0 8px;transform:none!important}
 .evlist:has(.mobcd){display:grid;grid-template-columns:1fr 1fr;gap:8px} .evlist .mobcd{margin:0}
 /* 유물 빈 칸 */
@@ -2758,9 +2763,7 @@ img.rimg{image-rendering:auto!important}
 #roul .rbulbs s{position:absolute;width:6px;height:6px;margin:-3px 0 0 -3px;text-decoration:none;background:#ffe27a;box-shadow:0 0 0 1px #17141d,0 0 4px 1px rgba(255,210,80,.6)}
 #roul .rbox.groll.spin .rbulbs s{animation:bulbrun .48s steps(1) infinite;animation-delay:var(--d)}
 #roul .rbox.groll.reveal:not(.still):not(.spin) .rbulbs s{animation:bulbflash .6s steps(1),bulbon 1.4s steps(1) .6s infinite}
-#roul .rbox.groll.reveal:not(.still):not(.spin) .rbulbs s.o{animation-delay:0s,-.1s}
 #roul .rbox.groll:not(.spin) .rbulbs s{animation:bulbon 1.4s steps(1) infinite}
-#roul .rbox.groll:not(.spin) .rbulbs s.o{animation-delay:-.7s}
 #roul .rbox.groll.gwait .rbulbs{filter:saturate(.5) brightness(.8)}
 #roul .rbox.groll.gwait .rbulbs s{animation:none!important} /* 돌리기 전엔 안 움직임 (2026-11-26 사용자) */
 @keyframes bulbon{0%{background:#ffe27a;box-shadow:0 0 0 1px #17141d,0 0 5px 1px rgba(255,210,80,.8)}50%{background:#6b5420;box-shadow:0 0 0 1px #17141d}}
@@ -3971,9 +3974,13 @@ img.rimg{image-rendering:auto!important}
   // o: { lv, hp, maxHp, atk, def, interval, drops(전리품 키), dropHtml(도감용), dead }
   function mobInfoHtml(id, o){ var h = hero(id); o = o || {};
     var dd = o.dropHtml != null ? o.dropHtml : (o.drops || []).map(dropIc).join('');
-    return '<div class="hi-top"><span class="hi-av hic mobav" style="--hg:' + HG(id).col + '">' + av(id) + '</span><div><b>' + h.name + (o.lv ? ' <em class="hlv">Lv ' + o.lv + '</em>' : '') + '</b>' + (o.dead ? '<div class="hi-tag"><span class="hi-dead">쓰러짐</span></div>' : '') + '<div class="hi-tags">' + tagHtml(h) + '</div></div></div>' +
+    var mm = h.mob === 'mimic', mk = mm ? (h.king ? 'k' : o.blue ? 'b' : 'w') : '', ms = mm && ((D.events && D.events.mimicSkills) || {})[mk]; /* 미믹: 색깔별 얼굴·스킬, 공격 = 방해 고정 피해 (2026-11-26 사용자) */
+    var face = mm ? '<span class="av pic pix" style="background-image:url(img/p/' + (mk === 'k' ? 'mimic_king' : mk === 'b' ? 'mimic_g2' : 'mimic') + '.png);--fs:112%;--fx:50%;--fy:50%"></span>' : av(id);
+    if (mm && D.events && D.events.mimic) o.atk = D.events.mimic.dmg;
+    return '<div class="hi-top"><span class="hi-av hic mobav" style="--hg:' + HG(id).col + '">' + face + '</span><div><b>' + h.name + (o.lv ? ' <em class="hlv">Lv ' + o.lv + '</em>' : '') + '</b>' + (o.dead ? '<div class="hi-tag"><span class="hi-dead">쓰러짐</span></div>' : '') + '<div class="hi-tags">' + tagHtml(h) + '</div></div></div>' +
       '<div class="hi-st4"><span>체력<b>' + Math.round(o.hp).toLocaleString() + '</b></span><span>공격<b>' + Math.round(o.atk) + '</b></span><span>방어<b>' + Math.round(o.def) + '</b></span><span>공속<b>' + (+(1 / (o.interval || h.interval)).toFixed(2)) + '</b></span><span>사거리<b>' + (RNG_NM[h.range] || '-') + '</b></span></div>' +
-      (dd ? '<div class="hi-ult mlootrow"><b class="mlh">전리품</b><div class="mdrops">' + dd + '</div></div>' : ''); }
+      (ms ? skRow(skFrame(pasIcon(mk === 'k' ? 'shieldBreakStun' : mk === 'b' ? 'ultBlind' : 'hitSlow'), HG(id).col), ms.name, 1, ms.desc) : '') +
+      (dd ? '<div class="hi-ult mlootrow' + (mm ? ' big' : '') + '"><b class="mlh">전리품</b><div class="mdrops">' + dd + '</div></div>' : ''); }
   function infoHtml(id, lv, st, mul, foe, noStar, unit){
     var EL = E.effectLevels(D, id), GE = D.gradeEffects || {};
     var h = hero(id), hT = h, pe0 = unit && padOf(unit.uid); if (pe0 && pe0 !== h.el) hT = Object.assign({}, h, { el2: pe0 });
@@ -3992,7 +3999,7 @@ img.rimg{image-rendering:auto!important}
   function battleInfoHtml(u){
     var h = u.h, foe = u.side !== 'A', st = foe ? 0 : curGrades[u.slot], GE = D.gradeEffects || {}, U = h.ult;
     var bm = foe ? (curFoeMul[u.slot] || {}) : gmul(st), bg = 1 + D.growth.perLevel * ((u.level || 1) - 1);
-    if (h.mob) return mobInfoHtml(u.id, { lv: u.level, hp: h.hp * bg * (bm.hp || 1), atk: h.atk * bg * (bm.atk || 1), def: h.def * bg, interval: h.interval, dead: !u.alive, drops: (curEv && curEv.kind === 'mobs' && curEv.drops) ? [].concat(curEv.drops[u.slot] || []) : [] });
+    if (h.mob) return mobInfoHtml(u.id, { blue: u.blue, lv: u.level, hp: h.hp * bg * (bm.hp || 1), atk: h.atk * bg * (bm.atk || 1), def: h.def * bg, interval: h.interval, dead: !u.alive, drops: (curEv && curEv.kind === 'mobs' && curEv.drops) ? [].concat(curEv.drops[u.slot] || []) : [] });
     if (false) return '<div class="hi-top"><span class="hi-av">' + av(u.id) + '</span><div><b>돈고블린</b><div class="hi-tag">싸우지 않아요 · ' + D.events.goblin.flee + '초 뒤 도망</div></div></div><div class="hi-ult"><div>잡고 이기면 클리어 골드 ×' + D.events.goblin.goldMul + '</div></div>';
     var PS = h.passive && (D.passives || {})[h.passive.kind];
     return '<div class="hi-top"><span class="hi-av hic" style="--hg:' + HG(u.id).col + '">' + av(u.id) + starsIn(foe ? u.star || 1 : st, u.id) + '</span><div><b>' + nmH(h) + ' <em class="hlv">Lv ' + (u.level || '') + '</em></b>' +
@@ -4086,7 +4093,7 @@ img.rimg{image-rendering:auto!important}
     if (t.classList.contains('foe')){
       sel = null; applySel(); $('field').dataset.sf = t.dataset.foe; /* 적도 고르면 아군과 같은 선택 라인 */
       var st = E.stageTeam(D, S.stage, S.event, S.bell || 0, bt ? curPlv : plv()), fu = st.team.filter(function(x){ return x.slot === +t.dataset.foe; })[0]; if (!fu) return;
-      if (hero(fu.id).mob){ var mh0 = hero(fu.id), gr0 = 1 + D.growth.perLevel * (fu.level - 1); showInfo(mobInfoHtml(fu.id, { lv: fu.level, hp: mh0.hp * gr0 * ((fu.mul && fu.mul.hp) || 1), atk: mh0.atk * gr0 * ((fu.mul && fu.mul.atk) || 1), def: mh0.def * gr0, interval: mh0.interval, drops: mobDropList(fu) }), 'left'); return; }
+      if (hero(fu.id).mob){ var mh0 = hero(fu.id), gr0 = 1 + D.growth.perLevel * (fu.level - 1); showInfo(mobInfoHtml(fu.id, { blue: fu.slot % 2 === 1, lv: fu.level, hp: mh0.hp * gr0 * ((fu.mul && fu.mul.hp) || 1), atk: mh0.atk * gr0 * ((fu.mul && fu.mul.atk) || 1), def: mh0.def * gr0, interval: mh0.interval, drops: mobDropList(fu) }), 'left'); return; }
       if (false){ showInfo('<div class="hi-top"><span class="hi-av">' + av(fu.id) + '</span><div><b>돈고블린</b><div class="hi-tag">싸우지 않아요 · ' + D.events.goblin.flee + '초 뒤 도망</div></div></div><div class="hi-ult"><div>잡고 이기면 클리어 골드 ×' + D.events.goblin.goldMul + '</div></div>', 'left'); return; }
       showInfo(infoHtml(fu.id, fu.level, fu.star || 1, fu.mul, true) + (fu.boss ? daisRow() : ''), 'left'); return;
     }
