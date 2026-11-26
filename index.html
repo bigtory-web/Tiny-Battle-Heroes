@@ -2560,6 +2560,10 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 #tab-shop.wander .stile .synn{top:34px}
 #shopBuy .was{opacity:.55;margin-left:6px;text-decoration:line-through;text-decoration-thickness:2px}
 #shopBuy .now{font-weight:400;margin-left:4px} #shopBuy .now img{width:14px;height:14px;image-rendering:pixelated;vertical-align:-2px;margin-right:2px}
+/* 판매 두 번 누르기 알림: 떠나기 알림과 같은 틀, 버튼 위 */
+#hinfo .hi-btns{position:relative}
+#hinfo .hi-btns .lvwarn.tap2{position:absolute;left:0;right:0;bottom:calc(100% + 8px);max-width:none;text-align:center}
+#hinfo .hi-btns .lvwarn.tap2::after{right:auto;left:calc(50% - 6px)}
 </style>
 </head>
 <body>
@@ -3621,8 +3625,13 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   function infoSide(x){ var r = $('arena').getBoundingClientRect(); return x < r.left + r.width * .5 ? 'right' : 'left'; } // 손가락 반대쪽
   function selEl(){ if (!sel) return null; return document.querySelector('#field .slot.on[data-uid="' + sel.uid + '"]') || document.querySelector('#roster .chip[data-uid="' + sel.uid + '"]'); }
   var heroSellArm = null; // 판매: 한 번 누르면 확인, 한 번 더 누르면 판매
+  /* 두 번 누르기 확인 알림 글: 여기 한 곳 (판매·떠나기 공통, 2026-11-26 사용자) */
+  var TAP2 = { sell: '한 번 더 터치하면 판매됩니다.', leave: '아무 행동도 하지 않으셨습니다. 한 번 더 터치하면 이벤트를 스킵합니다.' };
+  function sellHtml(price, arm, attr){ return '<button class="hi-b sell' + (arm ? ' arm' : '') + '" ' + attr + ' type="button">판매 ' + price.toLocaleString() + 'G</button>' + (arm ? '<i class="lvwarn tap2">' + TAP2.sell + '</i>' : ''); }
+  /* 다른 곳을 누르면 확인 취소 */
+  document.addEventListener('pointerdown', function(e){ if (e.target.closest && e.target.closest('.hi-b.sell, #fightBtn')) return; var had = heroSellArm != null || relSellArm != null; heroSellArm = null; relSellArm = null; if (had) document.querySelectorAll('.tap2').forEach(function(x){ x.previousElementSibling && x.previousElementSibling.classList.remove('arm'); x.remove(); }); if (leaveArm){ leaveArm = ''; evLeaveSync(); } }, true);
   function sellBtn(u){ if (!E.heroSellPrice) return ''; if (heroSellArm !== u.uid) heroSellArm = null; var p = E.heroSellPrice(D, u.id, u.star);
-    return '<button class="hi-b sell' + (heroSellArm === u.uid ? ' arm' : '') + '" data-hi="sell" type="button">' + (heroSellArm === u.uid ? '판매 ' + p.toLocaleString() + 'G?' : '판매') + '</button>'; }
+    return sellHtml(p, heroSellArm === u.uid, 'data-hi="sell"'); }
   function sellHero(uid){ var u = U(uid); if (!u) return;
     if (heroSellArm !== u.uid){ heroSellArm = u.uid; return applySel(); }
     var g0 = S.gold, ti = S.team.indexOf(u.uid); if (ti >= 0) S.team[ti] = null; /* 전장 영웅도 바로 팔기 */ S.gold += E.heroSellPrice(D, u.id, u.star); S.units = S.units.filter(function(x){ return x.uid !== u.uid; }); if (S.pos) delete S.pos[u.uid];
@@ -3654,7 +3663,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   function relInfoHtml(){ var r = relSel, d = E.skillById(D, r.id), gg = skG(r.id, r.lv), mine = r.side === 'A' && !bt && S.skills.filter(function(x){ return x.id === r.id; })[0];
     var sp = mine ? E.skillSellPrice(D, mine, S.stage) : 0, arm = mine && relSellArm === r.id;
     return '<div class="hi-rel"><div class="hi-top"><span class="hi-av hic" style="--hg:' + gg.col + '">' + skIconHtml(d) + '</span><div><b>' + d.name + '</b></div></div>' + skRow(skFrame(skIconHtml(d), gg.col), d.name, r.lv, skillDesc(d, r.lv) + synLine(d, r.side) + (r.side === 'E' ? '' : synFaces(d)), cdBox(d).replace(/<[^>]+>/g, ''), 'cd') + '</div>' +
-      '<button class="hi-x" data-hix="1" type="button" title="닫기">✕</button>' + (mine ? '<div class="hi-btns"><button class="hi-b sell' + (arm ? ' arm' : '') + '" data-rel="sell" type="button">' + (arm ? '판매 ' + sp.toLocaleString() + 'G?' : '판매') + '</button></div>' : ''); }
+      '<button class="hi-x" data-hix="1" type="button" title="닫기">✕</button>' + (mine ? '<div class="hi-btns">' + sellHtml(sp, arm, 'data-rel="sell"') + '</div>' : ''); }
   function showRelInfo(side){ if (!relSel) return; showInfo(relInfoHtml(), side || ($('hinfo').className.replace('hinfo', '').trim() || 'right')); }
   document.addEventListener('click', function(e){ var c = e.target.closest('#skA .skc, #skE .skc'); if (!c || c.classList.contains('empty')) return;
     var k = (c.dataset.k || '').split(':'); if (!k[1]) return;
@@ -3701,7 +3710,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
   var leaveArm = '';
   function evKey(){ return S.stage + ':' + ((S.event || {}).kind || ''); }
   function evActed(){ var ev = S.event || {}; if (isAltar()) return (ev.trCount || 0) > 0; if (isMerch()){ var wo = S.evOffer; return !!(wo && ((wo.bought && wo.bought.length) || wo.rerolls)); } if (isCamp() || isFairy()) return !!S.offerGot || !!S.offerDecided; return false; } /* 홀짝은 굴리면 바로 떠나요 */
-  function evLeaveSync(){ var w = $('lvWarn'); if (!w){ w = document.createElement('i'); w.id = 'lvWarn'; w.className = 'lvwarn'; w.textContent = '아무 행동도 하지 않으셨습니다. 한 번 더 터치하면 이벤트를 스킵합니다.'; $('fightBtn').parentNode.appendChild(w); } if (leaveArm && leaveArm !== evKey()) leaveArm = ''; w.hidden = !leaveArm || !$('arena').classList.contains('evstage'); var fb = $('fightBtn'); fb.classList.toggle('busyhide', fb.disabled && fb.textContent.trim() === '진행 중'); }
+  function evLeaveSync(){ var w = $('lvWarn'); if (!w){ w = document.createElement('i'); w.id = 'lvWarn'; w.className = 'lvwarn'; w.textContent = TAP2.leave; $('fightBtn').parentNode.appendChild(w); } if (leaveArm && leaveArm !== evKey()) leaveArm = ''; w.hidden = !leaveArm || !$('arena').classList.contains('evstage'); var fb = $('fightBtn'); fb.classList.toggle('busyhide', fb.disabled && fb.textContent.trim() === '진행 중'); }
   $('fightBtn').addEventListener('click', function(e){ if ($('arena').classList.contains('evstage') && !this.disabled && !evActed() && leaveArm !== evKey()){ e.stopImmediatePropagation(); leaveArm = evKey(); evLeaveSync(); } }, true);
   $('fightBtn').addEventListener('click', function(){ if (isLvPick() || isFork()) return; leaveArm = ''; if (isAltar()) finishAltar(); else if (isOddEven()){ if (!oeBusy) finishOddEven(); } else if (isFairy() || isCamp()) finishCamp(); else if (isMerch()) leaveMerch(); else if (bagCount() > bagMax() || S.skills.length > PK().skillSlots) showOver(); else startBattle(); });
   function showOver(){ var b = bagCount() > bagMax(), r = S.skills.length > PK().skillSlots, o = $('bagOver');
