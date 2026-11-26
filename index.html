@@ -2485,6 +2485,9 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 @keyframes dfunroll{0%{opacity:0;transform:scaleY(.05)}1%{opacity:1}75%{transform:scaleY(1.05)}100%{opacity:1;transform:scaleY(1)}}
 @keyframes dffade{0%{visibility:hidden;opacity:0;clip-path:inset(0 0 100% 0)}1%{visibility:visible}100%{visibility:visible;opacity:1;clip-path:inset(-8px)}}
 #resPop .dfban:not(:has(.rpits)) .rpok{margin-top:50px!important}
+.camp3 > .lbag .ubagbox{border-radius:0!important}
+.camp3 > .lbag .ubagbox::before{display:none}
+.lbag .ubagbox > .bagtop{position:absolute;left:0;top:0;z-index:2;pointer-events:none;image-rendering:pixelated}
 </style>
 </head>
 <body>
@@ -4977,6 +4980,19 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
       setBell(n + 1); if (n === 0) toast('종을 울렸어요! 이번 판은 되돌릴 수 없어요'); }); })();
   function renderAll(){ renderXp(); renderEvent(); renderBell(); $('goldTag').textContent = g(S.gold); renderCampaign(); renderHeroes(); renderIdle(); renderForm(); renderShop(); renderPlvTool(); }
   renderFilters(); renderAll(); renderMods();
+  /* 백팩 윗부분: 3px 계단으로 깎은 모서리 + 계단을 따라가는 가죽 띠·바느질 (2026-11-26 사용자: "픽셀느낌처럼 깍아야지") */
+  setTimeout(function(){ var b = document.querySelector('.camp3 > .lbag .ubagbox'); if (!b || !b.offsetWidth || b.querySelector(':scope > .bagtop')) return;
+    var w = b.offsetWidth, h = 24, INS = [15, 9, 6, 3, 3], c = document.createElement('canvas'), x = c.getContext('2d'); c.width = w; c.height = h; c.className = 'bagtop';
+    function ins(y){ return INS[Math.floor(y / 3)] || 0; }
+    function inside(px, py){ return py >= 0 && px >= ins(py) && px < w - ins(py); }
+    function near(px, py, d){ for (var i = -d; i <= d; i++) for (var j = -d; j <= d; j++) if (!inside(px + i, py + j)) return true; return false; }
+    for (var y = 0; y < h; y++) for (var px = 0; px < w; px++){ if (!inside(px, y)) continue;
+      var col = y < 6 ? '#b07a45' : y < 14 ? '#8a5a30' : y < 17 ? '#6b4222' : y < 19 ? '#170d07' : '#3a2314';
+      if (near(px, y, 3)) col = '#170d07'; else if (y < 17 && near(px, y, 4)) col = '#c99058'; else if (y >= 9 && y < 11 && px % 7 < 4 && !near(px, y, 6)) col = '#e8c27a';
+      x.fillStyle = col; x.fillRect(px, y, 1, 1); }
+    b.appendChild(c);
+    var L = [], R = []; for (var k = 0; k <= INS.length; k++){ var v = INS[k] || 0, y0 = k * 3, y1 = k < INS.length ? y0 + 3 : null; L.push(v + 'px ' + y0 + 'px'); if (y1 != null) L.push(v + 'px ' + y1 + 'px'); R.push('calc(100% - ' + v + 'px) ' + y0 + 'px'); if (y1 != null) R.push('calc(100% - ' + v + 'px) ' + y1 + 'px'); }
+    b.style.setProperty('clip-path', 'polygon(' + L.slice().reverse().concat(R, ['100% 100%', '0 100%']).join(',') + ')', 'important'); }, 0);
   setTimeout(function(){ var b = document.querySelector('.lbag .ubagbox'); if (b && !b.querySelector(':scope > .bagflap')){ var f = document.createElement('i'); f.className = 'bagflap'; b.appendChild(f); } }, 0); /* 가방 버클 */
   if (S.offer){ offerIds = S.offerIds || [S.offer]; startRoulette(offerIds, S.offer, !!S.offerDecided); }
   else if (S.adv && !S.pending){ applyAdv(); }
