@@ -2842,7 +2842,8 @@ img.rimg{image-rendering:auto!important}
 #trWin .rbtns{display:flex;justify-content:center}
 /* 돈고블린 = 카지노 딜러 아이들 8칸 (방랑상인과 같은 틀, 좌우 반전은 .oegob .cfslot이 함) */
 .oegob .cfslot{display:flex;align-items:flex-end;justify-content:center}
-.altseer .cfslot{display:flex;align-items:flex-end;justify-content:center} #field .altseer .cfslot{transform:scaleX(-1)}
+.altseer .cfslot,.dsheep .cfslot{display:flex;align-items:flex-end;justify-content:center} #field .altseer .cfslot,#field .dsheep .cfslot{transform:scaleX(-1)}
+.dsheep .dlr{display:block;flex:none;height:100%;aspect-ratio:1;background:url(img/p/ev_sheep_anim.png) 0 0/800% 100% no-repeat;image-rendering:pixelated;animation:trader 2s steps(8,jump-none) infinite} /* 밤하늘 양: 무녀와 같은 틀, 우리 쪽을 봄 (2026-11-26) */
 .altseer .dlr,.oegob .dlr{display:block;flex:none;height:100%;aspect-ratio:1;background:url(img/p/ev_dealer_anim.png) 0 0/800% 100% no-repeat;image-rendering:pixelated;animation:trader 2s steps(8,jump-none) infinite}
 .altseer .dlr{background-image:url(img/p/ev_seeress_anim.png)}
 /* 요정 팝업 */
@@ -5516,9 +5517,11 @@ img.rimg{image-rendering:auto!important}
   function daisOld(){ var ev = S.event; return !ev.dsDone && (S.pads || {})[ev.dsCell] ? ev.dsCell : null; } /* 덮일 칸: 9칸이 다 찼을 때만 생김 */
   function daisKinds(){ return Object.keys(D.races || {}).filter(function(r){ return r !== 'monster'; }).map(function(r){ return 'r:' + r; }).concat(Object.keys(D.elements.names)); }
   /* 칸은 판에 들어올 때 하나 정해 저장. 받기 전까지 그 칸에 "이상한 일" 예고 */
-  function daisHtml(){ var ev = S.event; if (!ev.tag){ ev.tag = E.rollDais(D, Math.random); save(); } if (!ev.dsCell){ ev.dsCell = daisRollCell(); save(); } if (ev.dsDone) return daisFx ? daisBurst(ev.dsCell) : '';
+  function daisHtml(){ var ev = S.event; if (!ev.tag){ ev.tag = E.rollDais(D, Math.random); save(); } if (!ev.dsCell){ ev.dsCell = daisRollCell(); save(); }
+    var sheep = '<div class="unit cfh dsheep" style="left:' + (100 * 506 / W) + '%;top:' + (100 * (184 + OFF + FOOT) / H) + '%;z-index:184"><div class="cfslot"><i class="dlr" role="img" aria-label="밤하늘 양"></i></div></div>'; /* 적 쪽 5번 칸 */
+    if (ev.dsDone) return sheep + (daisFx ? daisBurst(ev.dsCell) : '');
     var m = [[24, 'm', 0], [50, '', -1], [76, 'l', -2]].map(function(s){ return '<s class="tw ' + s[1] + '" style="left:' + s[0] + '%;animation-delay:' + s[2] + 's"></s>'; }).join('');
-    return '<i class="dsomen" style="' + daisAt(ev.dsCell) + '"><u></u>' + m + '<i></i><b></b></i>'; }
+    return sheep + '<i class="dsomen" style="' + daisAt(ev.dsCell) + '"><u></u>' + m + '<i></i><b></b></i>'; }
   function daisBurst(k){ var s = ''; for (var i = 0; i < 10; i++) s += '<s style="--a:' + (i * 36) + 'deg;animation-delay:' + (i % 3) * .08 + 's"></s>'; return '<i class="dsfx" style="' + daisAt(k) + '"><b></b>' + s + '</i>'; }
   function daisInfo(tag, cell){ var u = null; S.team.forEach(function(uid){ var p = uid && S.pos && S.pos[uid]; if (p && p.x + ',' + p.y === cell) u = U(uid); });
     var head = '<b><em style="color:' + daisCol() + '">' + padName(tag) + '</em> ' + (u ? hero(u.id).name : '빈 칸') + '</b><small>' + padDesc(tag) + '</small>';
@@ -5557,7 +5560,7 @@ img.rimg{image-rendering:auto!important}
   function daisTake(){ var ev = S.event; if (!isDais() || ev.dsDone || daisBusy) return; S.pads = S.pads || {}; var old = daisOld(); if (old && !daisArm) return daisWarn(old); S.pads[ev.dsCell] = ev.tag; padNew = ev.dsCell; ev.dsDone = true; save(); daisClose(); daisFx = true; renderAll(); setTimeout(function(){ daisFx = false; }, 1200); }
   function finishDais(){ daisClose(); daisFx = false; S.event = nextEvent(false); S.bell = 0; S.bellGold = 0; save(); evGo(); }
   /* 이벤트 대사 말풍선: 들어와 캐릭터가 나타난 뒤 한 번(enter), 이벤트를 마치고 팝업이 닫힌 뒤 한 번(done). 타이핑. 사라지지 않고 남음 (2026-11-26 사용자) */
-  var SPK_AT = { campfire: '.unit.cfh:not(.fairy):not(.merchnpc):not(.oegob):not(.altseer):not(.fork):not(.altA):not(.altM)', merchant: '.unit.merchnpc', groll: '.unit.oegob', fairy: '.unit.cfh.fairy', altar: '.unit.altseer', dais: '.unit.dsheep' /* 양 그림이 오면 이 칸에 세움 */ };
+  var SPK_AT = { campfire: '.unit.cfh:not(.fairy):not(.merchnpc):not(.oegob):not(.altseer):not(.fork):not(.altA):not(.altM)', merchant: '.unit.merchnpc', groll: '.unit.oegob', fairy: '.unit.cfh.fairy', altar: '.unit.altseer', dais: '.unit.dsheep' };
   var spkWait = 0, spkTimer = 0, spkKey = '';
   function spkOff(){ clearInterval(spkTimer); var b = $('spk'); if (b) b.remove(); }
   function spkSay(host, text){ spkOff(); var A = $('arena'), R = A.getBoundingClientRect(), v = host.querySelector('.cfslot, .cfspr') || host, r = v.getBoundingClientRect(), q = R.width / A.offsetWidth || 1;
