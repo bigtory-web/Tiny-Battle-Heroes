@@ -2710,6 +2710,9 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
 #skA .skc .cd,#skE .skc .cd{left:7px!important;right:7px!important;top:7px!important;max-height:30px;z-index:2;-webkit-mask:radial-gradient(circle 15px at 50% 15px,#000 98%,transparent);mask:radial-gradient(circle 15px at 50% 15px,#000 98%,transparent)}
 #tab-shop .srow2:not(.h) .stile{height:100px;padding:3px 4px 4px!important;gap:3px}
 #tab-shop .stile.sk .ic,#tab-shop .stile.sk .ic img.rimg{width:72px!important;height:72px!important;flex:none}
+/* 상점 유물 = 영웅 칸과 같은 56px 사각 틀 안에 원 아이콘 (2026-11-26 사용자: "통일해 유물도 캐릭터처럼") */
+#tab-shop #stock .stile.sk .ic:has(img.rimg){width:56px!important;height:56px!important;background:#17141d!important;box-shadow:inset 0 0 0 2px var(--sg,#8a8296)!important}
+#tab-shop #stock .stile.sk .ic img.rimg{width:48px!important;height:48px!important}
 #tab-shop .srow2 .stile.lockd,#tab-shop .srow2 .stile.empty.keep{height:100px!important}
 #roul:not(.chestpop) .rbox .rstage.onped .rpic.loot.relic{width:calc(48 * var(--P))!important;height:calc(48 * var(--P))!important;left:calc(50% - 24 * var(--P))!important;bottom:calc(38px + 22 * var(--P))!important;filter:drop-shadow(0 0 8px var(--rg,#d9dde8))!important}
 #roul .rbox .rpic.loot.relic img.lic{width:calc(48 * var(--P))!important;height:calc(48 * var(--P))!important}
