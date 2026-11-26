@@ -4229,7 +4229,7 @@ img.rimg{image-rendering:auto!important}
     box.querySelector('small').textContent = Math.round(hp).toLocaleString();
     var em = box.querySelector('.tpw'), t0 = em.querySelector('em').textContent, t1 = pw.toLocaleString(); if (t0 !== t1){ em.querySelector('em').textContent = t1; if (pop){ em.classList.remove('pop'); void em.offsetWidth; em.classList.add('pop'); } } pwTint(); }
   // 전투 전: 편성 그대로 전투를 하나 만들어 체력·보호막 합을 읽어요 (전투력은 편성 ⚔ 합계 계산)
-  function mobPw(u){ return u && u.atk > 0 ? Math.sqrt(u.maxHp * u.atk / (u.interval || 1)) : 0; } // 몹 전투력: 영웅 전투력과 같은 식
+  function mobPw(u){ var a = u && u.h && u.h.mob === 'mimic' ? ((D.events.mimic || {}).dmg || 0) : u && u.atk; return a > 0 ? Math.sqrt(u.maxHp * a / (u.interval || 1)) : 0; } /* 미믹은 atk 0, 고정 피해로 계산 */ // 몹 전투력: 영웅 전투력과 같은 식
   function vsBarForm(){ var bar = $('vsBar'); if (!bar) return; var tb0 = $('talkBtn'); if (tb0) tb0.style.visibility = isOddEven() || isFork() || isLvPick() ? 'hidden' : ''; if (bt) return; var done = S.stage >= E.stageCount(D);
     if (done){ bar.hidden = true; return; } vsBarInit(); var evm = noFight(); bar.classList.toggle('evmode', evm);
     var st = evm ? { team: [], skills: [] } : E.stageTeam(D, S.stage, S.event, S.bell || 0, plv()), spA = teamSpec().map(function(sp){ var pe = padOf(sp.tuid); if (pe) sp.el2 = pe; return sp; }), b0 = null;
