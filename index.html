@@ -2685,6 +2685,9 @@ img.rimg{image-rendering:auto!important}
 #roul .rbox.still .rgrade{opacity:1}
 /* 용병 팝업도 열 때 튀어 오름 없음 */
 #evWin .rbox.reveal:not(.spin) .rstage .rpic:not(.loot){animation:rpblink .8s steps(1) infinite!important}
+/* 룰렛 유물·골드 결과는 단상 위에서 둥실 (3px, 2초, 1px 계단). 안쪽 그림만 움직여 단상·튀어 오름과 안 겹침 (2026-11-26 사용자) */
+#roul .rbox:not(.spin) .rstage .rpic.loot > *{animation:lootfloat 2s steps(1) infinite}
+@keyframes lootfloat{0%{translate:0 0}17%{translate:0 -1px}33%{translate:0 -2px}50%{translate:0 -3px}67%{translate:0 -2px}83%{translate:0 -1px}}
 </style>
 </head>
 <body>
