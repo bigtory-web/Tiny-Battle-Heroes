@@ -123,14 +123,16 @@ button{font:inherit;color:inherit;cursor:pointer}
 #amb[data-k=altar] s{background:#e3d2ff;box-shadow:0 0 5px 1px #a77bff;animation:ambrise linear infinite}
 #amb[data-k=campfire]{background:linear-gradient(rgba(170,60,20,.18),rgba(170,60,20,0) 40%),radial-gradient(ellipse at 50% 62%,rgba(150,55,10,0) 52%,rgba(110,35,15,.28))}
 #amb[data-k=campfire] s{background:#ffb347;box-shadow:0 0 4px 1px #ff7a1a;animation:ambrise linear infinite}
-#amb[data-k=mimic] s{width:7px;height:7px;background:#ffd34d;box-shadow:inset -2px -2px #b8861c,0 0 0 1px #17141d;opacity:0;animation:ambpop .9s linear forwards}
+#amb[data-k=mimic] s{width:7px;height:7px;background:#ffd34d;box-shadow:inset -2px -2px #b8861c,0 0 0 1px #17141d;opacity:0;animation:ambpop 2.2s cubic-bezier(.3,.6,.5,1) forwards}
 #amb[data-k=mimic] s.d{width:auto;height:auto;background:none;box-shadow:none}
 #amb s.d::before{content:attr(data-c);font:400 15px var(--display);color:#ffe27a;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d}
 /* 방랑상인: 주황 % 만, 가운데는 맑게 */
 #amb[data-k=merchant]{background:linear-gradient(rgba(150,100,20,.14),rgba(150,100,20,0) 40%),radial-gradient(ellipse at 50% 62%,rgba(120,75,10,0) 52%,rgba(120,75,10,.22))}
 #amb[data-k=merchant] s{width:auto;height:auto;animation:ambrise linear infinite}
 #amb[data-k=merchant] s.d::before{font-size:17px;color:#ff8a3d;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d}
-@keyframes ambpop{0%{translate:0 0;opacity:1}40%{translate:calc(var(--dx) * .55) -48px;opacity:1}80%{opacity:1}100%{translate:var(--dx) 6px;opacity:0}}
+#amb[data-k=mimic]{transition:opacity .9s}
+#amb[data-k=mimic].bt{opacity:0}
+@keyframes ambpop{0%{translate:0 0;opacity:1}40%{translate:calc(var(--dx) * .6) -120px;opacity:1}80%{opacity:1}100%{translate:var(--dx) -10px;opacity:0}}
 #amb[data-k=fairy]{background:linear-gradient(rgba(255,160,220,.14),rgba(255,200,230,.04) 60%,rgba(140,230,180,.12))}
 #amb[data-k=fairy] s{width:6px;height:4px;background:#ffb3de;box-shadow:2px 2px #ff8ac8;animation:ambfall linear infinite}
 #amb[data-k=groll]{background:radial-gradient(ellipse at 25% 0,rgba(255,220,90,.26),transparent 55%),radial-gradient(ellipse at 75% 0,rgba(255,220,90,.26),transparent 55%);animation:ambcasino 2.4s steps(2) infinite}
@@ -2778,6 +2780,8 @@ img.rimg{image-rendering:auto!important}
 /* 상점 칸: 할인 딱지·UP이 얼굴을 가리지 않게 (2026-11-26 사용자: "대가리부분아니잖아"). 자르기는 공통 170%·위 40% 그대로 */
 #tab-shop .stile .upmk{top:-6px!important}
 #tab-shop .stile.up::before{top:-4px!important}
+/* UP = 칸 아이콘 영역의 왼쪽 아래 (2026-11-26 사용자: "좌하단이면 겹치는거없을꺼야") */
+#tab-shop .srow2 .stile.up::before,#tab-shop .srow2 .stile .upmk{left:3px!important;right:auto!important;top:auto!important;bottom:25px!important;transform:none!important;z-index:7}
 /* 이름 줄은 상점과 같은 주황 (2026-11-26 사용자: "호버팁도 이름은 주황") */
 .tip b.tipn,.hi-top b,.hi-skh b{color:#ff9a3a!important}
 /* 돈고블린 룰렛만 (2026-11-26 사용자 정정: "고블린 룰렛만 해야 하는데"): 바깥 모서리를 3px 계단 5단(15px)으로 (2026-11-26 사용자: "약간만 일단 깎고"). 안쪽 칸·버튼은 사각 */
@@ -5620,9 +5624,9 @@ img.rimg{image-rendering:auto!important}
   setInterval(ambSync, 300);
   /* 미믹 판: 아래 왼쪽·오른쪽 수풀에서 금화·$가 톡톡 튀어 오름. 미믹과는 상관없는 화면 효과 (2026-11-26 사용자) */
   var ambNext = [0, 0];
-  setInterval(function(){ var el = $('amb'); if (!el || el.dataset.k !== 'mimic' || document.hidden) return; var now = Date.now();
+  setInterval(function(){ var el = $('amb'); if (!el) return; var mm = el.dataset.k === 'mimic'; el.classList.toggle('bt', mm && !!bt); if (!mm || bt || document.hidden) return; var now = Date.now(); /* 전투 중엔 스르르 사라짐 */
     [7, 93].forEach(function(x, side){ if (now < ambNext[side]) return; ambNext[side] = now + 700 + Math.random() * 1100;
-      for (var i = 0; i < 3; i++){ var s = document.createElement('s'); if (i === 2){ s.className = 'd'; s.dataset.c = '$'; } s.style.left = (x + (Math.random() - .5) * 9).toFixed(1) + '%'; s.style.top = (91 + Math.random() * 6).toFixed(1) + '%'; s.style.setProperty('--dx', Math.round((side ? -1 : 1) * Math.random() * 22 + (i - 1) * 10) + 'px'); s.style.animationDelay = (i * .09) + 's'; el.appendChild(s); setTimeout(function(n){ return function(){ n.remove(); }; }(s), 1300); } }); }, 250);
+      for (var i = 0; i < 3; i++){ var s = document.createElement('s'); if (i === 2){ s.className = 'd'; s.dataset.c = '$'; } s.style.left = (x + (Math.random() - .5) * 9).toFixed(1) + '%'; s.style.top = (91 + Math.random() * 6).toFixed(1) + '%'; s.style.setProperty('--dx', Math.round((side ? -1 : 1) * (30 + Math.random() * 80) + (i - 1) * 28) + 'px'); s.style.animationDelay = (i * .18) + 's'; el.appendChild(s); setTimeout(function(n){ return function(){ n.remove(); }; }(s), 2800); } }); }, 250);
   function renderTalk(){ var t = $('talkBtn'); if (t) t.querySelector('.tic').innerHTML = campImg('ui_talk', '💬', 'timg'); var et = $('evTalk'); if (et) et.querySelector('.eai').innerHTML = campImg('ui_talk', '💬', 'timg'); }
   function grollBtn(gr){ var b = $('evBet'), lab = b.querySelector('b'), dots = b.querySelector('.oedots'), n = $('grLeft'); if (!n){ n = document.createElement('span'); n.id = 'grLeft'; n.className = 'grleft'; b.parentNode.insertBefore(n, b); }
     b.classList.toggle('groll', gr); var ti = b.querySelector('.timg'), want = gr ? 'img/p/ev_goblin.png' : 'img/p/hud_gold.png'; if (ti && ti.getAttribute('src') !== want) ti.src = want; n.hidden = true; if (dots) dots.hidden = gr;
