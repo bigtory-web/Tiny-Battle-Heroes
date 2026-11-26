@@ -2095,7 +2095,9 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .tbar{overflow:visible!important}
 .tbar .tpw{position:absolute;top:calc(100% + 4px);left:6px;padding:2px 6px;background:rgba(23,20,29,.72);box-shadow:inset 0 0 0 2px #17141d}
 .tbar.e .tpw{left:auto;right:6px}
-#hud #skipBtn{min-width:64px;gap:5px} #hud #punchBtn{min-width:72px;gap:3px;white-space:nowrap}
+#hinfo .hi-b:disabled{background:#6a6272!important;--bb:#6a6272!important;--bh:#857d8e!important;--bl:#4a4452!important;color:#cfc6d8!important} #hud #skipBtn{min-width:48px;white-space:nowrap} #hud #punchBtn{min-width:60px;white-space:nowrap} #hud #jumpBtn{white-space:nowrap}
+#jumpList{position:fixed;z-index:200;display:grid;grid-template-columns:auto auto;grid-auto-flow:column;grid-template-rows:repeat(5,auto);gap:3px;padding:5px;background:#17141d;box-shadow:inset 0 0 0 1px #6b6478,0 0 0 1px #0f0d14}
+#jumpList[hidden]{display:none} #jumpList button{display:flex;align-items:center;justify-content:center;gap:3px;min-width:64px;height:26px;border:0;border-radius:0;cursor:pointer;font:400 14px var(--display);color:#f3e6c4;background:#34303f} #jumpList button.cur{color:#3a2408;background:#ffd34d} #jumpList img{width:14px;height:14px;image-rendering:pixelated}
 .underbar .evdock .edbody{max-height:220px!important} /* 펼친 목록이 HUD를 가리지 않게 (넘치면 스크롤) */
 /* 상점 제목 띠 (상점·방랑상점 같은 모양) */
 .shopPop .spHead{margin:-10px -12px 0;padding:6px 12px;gap:6px;background:#2a2533;box-shadow:0 2px 0 #17141d!important}
@@ -2745,13 +2747,12 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
 /* 전장 유물 줄 = 목록 칸처럼 "사각 칸 안 원", 장식 없이 차분하게 (2026-11-26 사용자: "데코 때문에 눈에 너무 띈다") */
 #skA .skc,#skE .skc{width:38px!important;height:38px!important;padding:3px!important;border-radius:0!important;clip-path:none!important} #skA .skc .cd,#skE .skc .cd{border-radius:0!important}
 #skA .skc:has(img.rimg):not(.over),#skE .skc:has(img.rimg){background:#17141d!important;box-shadow:inset 0 0 0 1px var(--sg,#5d5470),0 0 0 1px #17141d!important}
-#skA .skc img.rimg,#skE .skc img.rimg{width:30px!important;height:30px!important;box-sizing:border-box;padding:3px;border-radius:50%;background:#34303f;box-shadow:inset 0 0 0 2px #6b6478,0 0 0 1px #0f0d14;image-rendering:pixelated} /* 네모 칸 안 원 틀 안 아이콘 (2026-11-26 사용자) */
-#skA .skc.empty,#skE .skc.empty,#skA i.skc.empty{width:38px!important;height:38px!important;border-radius:0!important;clip-path:none!important;background:#17141d!important;box-shadow:inset 0 0 0 1px #4a4358,0 0 0 1px #17141d!important;opacity:.7}
+/* 메인 유물 칸 = 상점 유물 칸 아이콘 부분을 줄인 것: 40px 어두운 사각(등급색 1px) 안에 상점과 같은 원 틀 그림(relicSrc) 36px (2026-11-26 사용자: "메인 화면 이렇게 나오길") */
+#skA .skc,#skE .skc,#skA i.skc.empty{width:40px!important;height:40px!important;padding:0!important}
+#skA .skc img.rimg,#skE .skc img.rimg{width:36px!important;height:36px!important;flex:none;display:block;margin:auto}
+#skA .skc.empty,#skE .skc.empty,#skA i.skc.empty{border-radius:0!important;clip-path:none!important;background:#17141d!important;box-shadow:inset 0 0 0 1px #4a4358,0 0 0 1px #17141d!important;opacity:.7}
 #skA .skc.empty::before,#skA .skc.empty::after{display:none!important}
-#skA .skc .cd,#skE .skc .cd{left:3px!important;right:3px!important;top:3px!important}
-#skA .skc:has(img.rimg),#skE .skc:has(img.rimg){padding:0!important}
-#skA .skc img.rimg,#skE .skc img.rimg{width:44px!important;height:44px!important}
-#skA .skc .cd,#skE .skc .cd{left:7px!important;right:7px!important;top:7px!important;max-height:30px;z-index:2;-webkit-mask:radial-gradient(circle 15px at 50% 15px,#000 98%,transparent);mask:radial-gradient(circle 15px at 50% 15px,#000 98%,transparent)}
+#skA .skc .cd,#skE .skc .cd{left:5px!important;right:5px!important;top:5px!important;max-height:30px;z-index:2;-webkit-mask:radial-gradient(circle 15px at 50% 15px,#000 98%,transparent);mask:radial-gradient(circle 15px at 50% 15px,#000 98%,transparent)}
 #tab-shop .srow2:not(.h) .stile{height:100px;padding:3px 4px 4px!important;gap:3px}
 #tab-shop .stile.sk .ic,#tab-shop .stile.sk .ic img.rimg{width:72px!important;height:72px!important;flex:none}
 /* 상점 유물 = 영웅 칸과 같은 56px 사각 틀 안에 원 아이콘 (2026-11-26 사용자: "통일해 유물도 캐릭터처럼") */
@@ -3119,7 +3120,7 @@ img.rimg{image-rendering:auto!important}
     <div class="camp3">
       <aside class="lbag" id="lbag"><div class="ubagbox"><div class="bagcol bagdrawer open ubag" id="bagDrawer"><div class="bagin"><div class="roster" id="roster"></div></div></div></div></aside>
       <div class="mid">
-        <div class="hud" id="hud"><span class="it hudbag" title="백팩"><img class="hi" src="img/p/hud_bag.png" alt=""></span><span class="hudits" id="hudItems"></span><span class="hudbtns"><button class="hbtn" id="spdBtn" type="button" title="배속"><span class="spem">⏩</span>X1.5</button><button class="hbtn" id="skipBtn" type="button" title="건너뛰기" disabled><span class="spem">⏭️</span>스킵</button><button class="hbtn" id="punchBtn" type="button" title="원펀치(시험용): 이번 스테이지를 승리로 처리"><span class="spem">👊</span>원펀치</button></span><span class="hudits" id="hudStg"></span></div>
+        <div class="hud" id="hud"><span class="it hudbag" title="백팩"><img class="hi" src="img/p/hud_bag.png" alt=""></span><span class="hudits" id="hudItems"></span><span class="hudbtns"><button class="hbtn" id="spdBtn" type="button" title="배속"><span class="spem">⏩</span>X1.5</button><button class="hbtn" id="skipBtn" type="button" title="건너뛰기" disabled>스킵</button><button class="hbtn" id="punchBtn" type="button" title="원펀치(시험용): 이번 스테이지를 승리로 처리">원펀치</button><button class="hbtn" id="jumpBtn" type="button" title="스테이지 이동(시험용): 고르면 바로 그 판 편성 화면">이동 ▾</button></span><span class="hudits" id="hudStg"></span></div>
         <div class="arena" id="arena"><div class="dps a" id="dpsA" hidden><div class="dpsh" data-dps="A"><b>우리 DPS</b></div><div class="dpsb"></div></div><div class="dps e" id="dpsE" hidden><div class="dpsh" data-dps="E"><b>상대 DPS</b></div><div class="dpsb"></div></div><div class="evban" id="evBan" hidden></div><div class="evmerch" id="evMerch" hidden></div><div class="hinfo left" id="hinfo" hidden></div>
           <div class="evdock" id="evDock" hidden><button class="edtab" id="edTab" type="button">이벤트</button><div class="edbody"><div class="edfe" title="0이면 평소 확률, N이면 스테이지 N개마다 이벤트 스테이지가 꼭 나와요"><button id="edFeDown" type="button">−</button><b id="edFe">간격 0</b><button id="edFeUp" type="button">+</button></div><div class="edlist" id="edList"></div></div></div><div class="field" id="field"></div>
           <canvas id="cv" width="720" height="400" aria-label="전투 화면" hidden></canvas><div id="amb" aria-hidden="true"></div>
@@ -4227,7 +4228,7 @@ img.rimg{image-rendering:auto!important}
   function hiFill(html, fresh){ var p = $('hinfo'), old = p.querySelector('.hi-body'), sc = !fresh && old ? old.scrollTop : 0;
     html = html.replace(/<button class="hi-x"[^>]*>✕<\/button>/g, ''); var i = html.indexOf('<div class="hi-st4">'), j = html.indexOf('<div class="hi-btns">');
     if (i >= 0) html = html.slice(0, i) + '<div class="hi-body">' + html.slice(i, j > i ? j : html.length) + '</div>' + (j > i ? html.slice(j) : '');
-    p.innerHTML = '<button class="hi-x" data-hix="1" type="button" title="닫기">✕</button>' + html; var b = p.querySelector('.hi-body'); if (b) b.scrollTop = sc; } /* 모든 상세 창에 닫기 ✕ */
+    p.innerHTML = '<button class="hi-x" data-hix="1" type="button" title="닫기">✕</button>' + html; var b = p.querySelector('.hi-body'); if (b) b.scrollTop = sc; if ($('arena').classList.contains('ending')) p.querySelectorAll('.hi-b').forEach(function(x){ x.disabled = true; }); /* 모험 완료 장면: 판매·초월 회색 (2026-11-26 사용자: "막아") */ } /* 모든 상세 창에 닫기 ✕ */
   function showInfo(html, side){ var p = $('hinfo'); if (shopOpen()) setShop(false); /* 창은 한 번에 하나 */ hiFill(html, true); p.className = 'hinfo ' + side; p.hidden = false; }
   function hideInfo(){ $('hinfo').hidden = true; }
   new MutationObserver(function(){ if ($('hinfo').hidden){ delete $('field').dataset.sf; document.querySelectorAll('#field > .cellhl').forEach(function(x){ x.remove(); }); } }).observe($('hinfo'), { attributes: true, attributeFilter: ['hidden'] }); /* 상세 창이 닫히면 적 선택 라인도 풀림 */
@@ -4439,6 +4440,15 @@ img.rimg{image-rendering:auto!important}
     bt.E.forEach(function(u){ u.alive = false; u.hp = 0; u.escaped = false; killXp(u.uid, true); }); logI = bt.log.length; done = true; draw(0); finishBattle(); return true; }
   $('punchBtn').addEventListener('click', function(){ if (this.disabled) return; if (onePunch()) return; var f = $('fightBtn'); if (f.disabled || noFight()) return; f.click(); var n = 0, t = setInterval(function(){ if (onePunch() || ++n > 60) clearInterval(t); }, 50); });
   setInterval(function(){ var b = $('punchBtn'); if (b) b.disabled = !!(S && (S.stage >= E.stageCount(D) || (!bt && (noFight() || $('fightBtn').disabled)))); }, 300); /* 전투 없는 판은 회색 */
+  /* 스테이지 이동(시험용, 2026-11-26 사용자): 하던 전투·창은 보상 없이 버리고 그 판 편성 화면으로. 새로 읽어서 한 번에 정리 */
+  function jumpStage(n){ var k0 = oeK(); if (k0 && E.oddEvenBet) S.gold += E.oddEvenBet(D, S.stage) * k0; /* 홀짝에 넣은 돈은 돌려줌 */
+    S.stage = n; S.best = Math.max(S.best || 0, n); S.adv = S.pending = S.mobPend = S.mimicPend = S.evOffer = S.offer = S.offerMode = S.offerPlv = S.offerGot = S.oeBets = S.grollN = null; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; S.bell = 0; S.bellGold = 0; S.bellPaid = 0;
+    S.event = n < E.stageCount(D) ? nextEvent(true) : null; save(); location.reload(); }
+  (function(){ var b = $('jumpBtn'), L = document.createElement('div'); L.id = 'jumpList'; L.hidden = true; document.body.appendChild(L);
+    b.addEventListener('click', function(){ if (!L.hidden){ L.hidden = true; return; } var h = '', P = D.campaign.perChapter; for (var i = 0; i < E.stageCount(D); i++) h += '<button type="button" data-jump="' + i + '" class="' + (i === S.stage ? 'cur' : '') + '">' + E.stageName(D, i) + (E.isBoss(D, i) ? '<img src="img/p/ui_boss.png" alt="보스">' : '') + '</button>'; L.innerHTML = h; L.hidden = false;
+      var r = b.getBoundingClientRect(); L.style.top = (r.bottom + 4) + 'px'; L.style.left = Math.max(4, Math.min(r.left, innerWidth - L.offsetWidth - 4)) + 'px'; });
+    L.addEventListener('click', function(e){ var t = e.target.closest('[data-jump]'); if (t) jumpStage(+t.dataset.jump); });
+    document.addEventListener('pointerdown', function(e){ if (!L.hidden && !L.contains(e.target) && !b.contains(e.target)) L.hidden = true; }, true); })();
   $('skipBtn').addEventListener('click', function(){ if (!bt || done) return; closeInspect(); skipNow = true; while (!bt.result) bt.step(); for (var j = logI; j < bt.log.length; j++) if (bt.log[j].kind === 'die') killXp(bt.log[j].uid, true); logI = bt.log.length; done = true; draw(0); finishBattle(); });
 
   var tpw = null;
@@ -5038,9 +5048,9 @@ img.rimg{image-rendering:auto!important}
     return side === 'E' ? ids.map(hero) : allyHeroes(); }
   function skCell(x, side){ var d = E.skillById(D, x.id);
     var sy = synInfo(d, side); return '<button class="skc ' + side + gCls(x.id, x.lv) + (sy && sy.off ? ' synoff' : '') + '"' + gAttr(x.id, x.lv) + ' data-tipsk="' + x.id + '" data-tiplv="' + x.lv + '" data-tipside="' + side + '" data-k="' + side + ':' + x.id + '">' +
-      (SKIMG[x.id] ? '<img class="rimg" src="img/p/skill_' + x.id + '.png" alt="">' /* 전장 유물 줄 = 장식 틀 없이 도트만 */ : '<span class="emo">' + d.icon + '</span>') + synN(d, side) + '<i class="cd"></i></button>'; }
+      (SKIMG[x.id] ? '<img class="rimg" data-smb="1" src="' + relicSrc(x.id, x.lv) + '" alt="">' /* 상점과 같은 원 틀 그림 */ : '<span class="emo">' + d.icon + '</span>') + synN(d, side) + '<i class="cd"></i></button>'; }
   function updSkillBars(){
-    var L = skList(), key = 'n' + PK().skillSlots + (bt ? 'b' + bt.A.filter(function(u){ return u.alive; }).length : 'f' + S.team.join()) + JSON.stringify([L.A.map(function(x){ return x.id + x.lv; }), L.E.map(function(x){ return x.id + x.lv; })]);
+    var L = skList(), key = (RRING.naturalWidth && RGLOW.naturalWidth ? 'r' : '') + 'n' + PK().skillSlots + (bt ? 'b' + bt.A.filter(function(u){ return u.alive; }).length : 'f' + S.team.join()) + JSON.stringify([L.A.map(function(x){ return x.id + x.lv; }), L.E.map(function(x){ return x.id + x.lv; })]);
     if (key !== skKey){ skKey = key; var emp = ''; for (var ei = (S.skills || []).length; ei < (PK().skillSlots || 0); ei++) emp += '<i class="skc A empty"><span>+</span></i>'; var SS = PK().skillSlots || 0, SN = L.A.length; $('skA').innerHTML = L.A.map(function(x, xi){ var c = skCell(x, 'A'); return xi >= SS ? c.replace('class="skc ', 'class="skc over ') : c; }).join('') + emp + ''; /* 넘쳤을 때만 빨간 칸 수 */ $('skE').innerHTML = L.E.map(function(x){ return skCell(x, 'E'); }).join(''); renderLootPrev(); fitSkRows(); }
     $('lootPrev').hidden = !!bt;
     if (!bt) return;
