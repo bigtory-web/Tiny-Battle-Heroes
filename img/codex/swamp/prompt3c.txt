@@ -1,0 +1,15 @@
+Look at two images:
+- img/codex/swamp/swamp3_src_v2.png : our mangrove swamp battle background. This is the picture to edit.
+- img/p/bg_field.png : our chapter 1 background. Look at how its tree roots are drawn: short, thick, gnarled, irregular roots with chunky outlines that grip the rocks.
+
+Edit the first image and save the result as img/codex/swamp/swamp3_src.png. Change ONLY the mangrove ROOTS and where they meet the water. Keep the sky, clouds, leaf canopies, tree positions and sizes, water color, lily pads, mud ground and puddles the same.
+
+What is wrong with the roots now: they are long thin smooth tubes spread out like spider legs, every big tree has the same copied root shape, and all root ends stop on one straight line and sit on top of the water.
+
+Draw the roots like this instead:
+- shorter, thicker, gnarled and knotty, wider at the trunk and twisting and crossing each other, a dense tangled root base rather than separate arches;
+- each tree clearly different: different number of roots, lean and shape, left and right not mirrored;
+- the roots really sink INTO the water: entry points at different heights, ripples, dark shadow and reflection where they enter, a few mossy rocks, mud clumps and reeds among the bases to hide the ends;
+- same chunky pixel-art-like drawing with dark outlines and 3-tone shading as the chapter 1 roots, bark texture in warm dull brown with some moss.
+
+No characters, no text, no UI. Same size and aspect ratio. Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
