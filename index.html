@@ -812,7 +812,8 @@ html,body{overflow:hidden;background:#0b0c14}
 #talkBtn:active{transform:translateX(-50%) translateY(2px)}
 .field .unit.cfire,.field .unit.cfh{pointer-events:none}
 /* 모닥불: 108×36 가로 3프레임, 영웅과 같은 크기(--u)로 0.18초마다 */
-.cfspr{display:block;width:var(--u,72px);height:var(--u,72px);background:url(img/p/ev_campfire.png) 0 0/300% 100% no-repeat;image-rendering:pixelated;animation:cffl .54s steps(3) infinite}
+/* 그림 36px = 캐릭터 점의 2배(72/64)여야 점이 안 깨져요. #raw = 부드럽게 늘리는 처리에서 빼기 (2026-11-27 사용자: "깨져보인다") */
+.cfspr{display:block;flex:none;width:calc(var(--u,64px) * 1.125);height:calc(var(--u,64px) * 1.125);background:url(img/p/ev_campfire.png#raw) 0 0/300% 100% no-repeat;image-rendering:pixelated;animation:cffl .54s steps(3) infinite}
 @keyframes cffl{to{background-position:150% 0}}
 .cfire .cfimg{width:calc(var(--u,72px) * .6);height:calc(var(--u,72px) * .6);image-rendering:pixelated;display:block} .cfire .emo{font-size:calc(var(--u,72px) * .45);line-height:1;display:block}
 .fairy .fairyimg{transform:scaleX(-1);width:100%;height:100%;object-fit:contain;image-rendering:pixelated;animation:fairyf 1.6s ease-in-out infinite} .fairy .fairyimg.emo{display:flex;align-items:flex-end;justify-content:center;font-size:44px}
@@ -1565,7 +1566,7 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 #field .fork:hover .cfslot{filter:drop-shadow(2px 0 0 #fff3b0) drop-shadow(-2px 0 0 #fff3b0) drop-shadow(0 2px 0 #fff3b0) drop-shadow(0 -2px 0 #fff3b0)}
 #field .fork .fkimg{width:100%;height:100%;object-fit:contain;image-rendering:pixelated} #field .fork .fkimg.emo{display:flex;align-items:flex-end;justify-content:center;font-size:44px}
 #field .fork .altspr{transform:scale(1.4);transform-origin:50% 100%}
-#field .fork .cfspr{--u:72px}
+#field .fork .cfspr{width:72px;height:72px}
 /* 몹 전리품 결과 창 */
 .gover.ml .gobox{min-width:240px}
 .mlrow{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:340px}
