@@ -542,8 +542,10 @@
   function rollDais(data, rnd, not) { var DS = (data.events && data.events.dais) || {}, K = DS.kinds || { race: 1, el: 1 }, rc = Object.keys(data.races || {}).filter(function (r) { return r !== 'monster'; }).map(function (r) { return 'r:' + r; }), el = Object.keys(data.elements.names);
     for (var tries = 0; tries < 20; tries++) { var pool = rnd() * ((K.race || 0) + (K.el || 0)) < (K.race || 0) ? rc : el, v = pool[Math.floor(rnd() * pool.length)]; if (v !== not) return v; } return v; }
   // 단상 칸 뽑기(2026-11-26, 사용자: "역시 단상 칸에서 랜덤이어야겟어 … 룰렛처럼"): 우리 쪽 칸(battle.arena.pos 번호) 중 단상이 없는 칸 하나. 단상이 이미 max개면 가장 먼저 놓은 단상이 사라지고 새 칸에 깔려요(화면은 "단상 보기" 때 대체된다고 알림, 2026-11-26 사용자: "단상인 곳은 제외하고 랜덤하고. 다 단상이면 단상보기 누를때 대체된다고 뜨도록")
-  function rollDaisCell(data, rnd, pads) { var n = data.battle.arena.pos.length, has = Object.keys(pads || {}).map(Number), pool = [];
-    for (var i = 0; i < n; i++) if (has.indexOf(i) < 0) pool.push(i);
+  // occ: 영웅이 서 있는 칸 번호들. 빈 칸(영웅도 양탄자도 없음) 중에서 먼저 고르고, 빈 칸이 없으면 영웅이 선 칸도 넣어요(2026-11-26 사용자: "빈슬롯 중에서 하고 없으면 있는 슬롯도 포함하라고")
+  function rollDaisCell(data, rnd, pads, occ) { var n = data.battle.arena.pos.length, has = Object.keys(pads || {}).map(Number), oc = (occ || []).map(Number), pool = [], i;
+    for (i = 0; i < n; i++) if (has.indexOf(i) < 0 && oc.indexOf(i) < 0) pool.push(i);
+    if (!pool.length) for (i = 0; i < n; i++) if (has.indexOf(i) < 0) pool.push(i);
     return pool.length ? pool[Math.floor(rnd() * pool.length)] : 0; }
   function daisRerolls(data, plv) { var P = data.player && data.player.daisReroll; return P ? P[Math.max(0, Math.min((plv || 1) - 1, P.length - 1))] : 0; }
   // 돈고블린 홀짝: 걸 골드(스테이지 n), 결과 판정. pick = 'odd' | 'even', roll = 1~6 같은 숫자
@@ -926,7 +928,7 @@
           var host = units.filter(function (x) { return team.some(function (t) { return t.uid === x.uid; }) && canTranscend(data, x, wk); }).sort(function (a, b) { return (canTranscend(data, b, wk) === 'up') - (canTranscend(data, a, wk) === 'up'); })[0];
           if (host) { transcend(data, units, host.uid, wk.uid); recruits.transcend = (recruits.transcend || 0) + 1; } });
         continue; }
-      if (ev && ev.kind === 'dais') { /* 봇: 다시 돌리지 않고, 단상 없는 무작위 칸(rollDaisCell)에 놓아요. max개면 가장 먼저 놓은 것이 사라져요 */ events.dais.got = (events.dais.got || 0) + 1; var DM2 = (data.events.dais || {}).max || 2, dc = rollDaisCell(data, rnd, pads); while (daisOrder.length >= DM2) delete pads[daisOrder.shift()]; pads[dc] = ev.tag; daisOrder.push(dc); continue; }
+      if (ev && ev.kind === 'dais') { /* 봇: 다시 돌리지 않고, 단상 없는 무작위 칸(rollDaisCell)에 놓아요. max개면 가장 먼저 놓은 것이 사라져요 */ events.dais.got = (events.dais.got || 0) + 1; var DM2 = (data.events.dais || {}).max || 2, dc = rollDaisCell(data, rnd, pads, team.map(function (x) { return x.slot; })); while (daisOrder.length >= DM2) delete pads[daisOrder.shift()]; pads[dc] = ev.tag; daisOrder.push(dc); continue; }
       if (ev && ev.kind === 'groll') { events.groll = events.groll || { passed: 0 }; events.groll.passed++; continue; } // 봇: 돈고블린 룰렛은 안 돌리고 지나가요
       if (ev && ev.kind === 'oddeven') { events.oddeven.passed = (events.oddeven.passed || 0) + 1; continue; } // 봇: 내기는 안 하고 지나가요(기대값 0)
       if (ev && ev.kind === 'fairy') { if (ev.ids.length) { var fid = ev.ids[lootPick(data, ev.ids, plv, rnd)]; if (canTake(data, skills, fid, data.player ? perk(data, plv).skillSlots : 0)) takeSkill(data, skills, fid); } continue; } // 요정: 룰렛으로 유물 1개
