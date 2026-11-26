@@ -1716,8 +1716,6 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .spang b:nth-child(6){--dx:0;--dy:46px}.spang b:nth-child(7){--dx:-33px;--dy:33px}.spang b:nth-child(8){--dx:-46px;--dy:0}.spang b:nth-child(9){--dx:-33px;--dy:-33px}
 @keyframes spangu{0%{transform:scale(.3)}30%{transform:scale(1.4)}100%{transform:scale(2.6);opacity:0}}
 @keyframes spangb{0%{transform:translate(0,0) scale(.4)}40%{transform:translate(var(--dx),var(--dy)) scale(1.2);background:#fff}100%{transform:translate(calc(var(--dx) * 1.3),calc(var(--dy) * 1.3)) scale(.6);opacity:0}}
-#field .foe.starup{animation:starup .6s steps(6) 1}
-@keyframes starup{0%{transform:scale(1)}30%{transform:scale(1.25);filter:brightness(1.8)}60%{transform:scale(.95)}100%{transform:scale(1)}}
 .hinfo .hi-b.sell{background:#b86a1f}
 .hinfo .hi-b.sell.arm{background:#b8323a;animation:sellb .5s steps(2) infinite}
 #field .altflow{position:absolute;width:84px;height:28px;margin:-14px 0 0 -42px;z-index:300;pointer-events:none}
@@ -4050,10 +4048,10 @@ img.rimg{image-rendering:auto!important}
   // 성급이 올랐을 때: 한 번 퍼지는 픽셀 링 + 새로 생긴 별(마지막 별)이 크게 반짝 (반복 없음)
   /* 머리(별) 위로 UP! 가 튀어 올랐다 사라짐. 칸·아이콘에 잘리지 않게 body에 붙임 (2026-11-26 사용자: 사각 테두리가 어색) */
   function upWord(uid, lift){ var f = suFind(uid); if (!f) return; var r = (f.el.querySelector('.fst, .hst') || f.el).getBoundingClientRect(); if (!r.width) return; var k = f.host.getBoundingClientRect().width / (f.host.offsetWidth || 1) || 1, b = document.createElement('b'); b.className = 'upword'; b.textContent = 'UP!'; b.style.left = (r.left + r.width / 2) + 'px'; b.style.top = (r.top - (lift || 0) * k) + 'px'; b.style.fontSize = Math.round(22 * k) + 'px'; document.body.appendChild(b); setTimeout(function(){ b.remove(); }, 900); }
-  function suFind(uid){ var el = document.querySelector('#field .slot.on[data-uid="' + uid + '"]') || document.querySelector('#roster .chip[data-uid="' + uid + '"]'); return el ? { el: el, host: el.closest('.unit') || el } : null; }
+  function suFind(uid){ if (uid && uid.nodeType) return { el: uid, host: uid.closest('.unit') || uid }; /* 적(정예)은 요소를 바로 넘김 */ var el = document.querySelector('#field .slot.on[data-uid="' + uid + '"]') || document.querySelector('#roster .chip[data-uid="' + uid + '"]'); return el ? { el: el, host: el.closest('.unit') || el } : null; }
   function starUpFx(uid, ghost, gr){ setTimeout(function(){ starUpFx2(uid, ghost, gr); }, 0); } // 합성 뒤 다시 그리기가 끝난 다음에 시작
   function starUpFx2(uid, ghost, gr){ var f0 = suFind(uid); if (!f0) return; var el = f0.el;
-    var u = U(uid), star = u ? u.star : 2, host = f0.host, onField = !!el.closest('#field'), t0 = 0;
+    var u = uid && uid.nodeType ? null : U(uid), star = u ? u.star : (+(uid && uid.dataset && uid.dataset.sustar) || 2), host = f0.host, onField = !!el.closest('#field'), t0 = 0;
     host.style.setProperty('--suc', star >= 3 ? '#ffd34d' : '#8fd8ff'); host.style.setProperty('--sus', star >= 3 ? 1.35 : 1);
     // 재료가 받는 쪽으로 빨려 들어가요
     var av = el.querySelector('.av'), tr = (av || el).getBoundingClientRect();
@@ -5975,22 +5973,20 @@ img.rimg{image-rendering:auto!important}
     S.bell = n; save(); renderAll();
     if (gain){ var bb = $('bellBtn'); if (HAS_FX) FX.playOn(bb, 'coin', { size: 200, scale: 1, cy: 30, z: 60 }); goldCount(g0, S.gold); }
     if (n > before){
-      updSkillBars(); [].forEach.call($('skE').children, function(x){ if (relK.indexOf(x.dataset.k) >= 0) return; popWord(x, '펑!', '#ffb02e'); x.classList.add('relnew'); /* 글자 먼저: 연출 시작은 크기 0 */ if (HAS_FX) FX.playOn(x, 'poof', { size: 120, scale: 1, cy: 0 }); setTimeout(function(){ x.classList.remove('relnew'); }, 800); });
+      updSkillBars(); [].forEach.call($('skE').children, function(x){ if (relK.indexOf(x.dataset.k) >= 0) return; x.classList.add('relnew'); if (HAS_FX) FX.playOn(x, 'poof', { size: 120, scale: 1, cy: 0 }); setTimeout(function(){ x.classList.remove('relnew'); }, 800); });
       var stN = E.stageTeam(D, S.stage, S.event, S.bell || 0, plv()), topG = 0, topId = null;
       newFoeSlots(old, foeSlots()).forEach(function(sl){ var fe = document.querySelector('#field .foe[data-foe="' + sl + '"]'); if (!fe) return;
         var fu = stN.team.filter(function(x){ return x.slot === sl; })[0], gr = fu ? E.heroGrade(D, fu.id) : 1; if (fu && gr > topG){ topG = gr; topId = fu.id; }
-        var un = fe.closest('.unit') || fe.parentNode; spawnDrama(un, fe, gr, fu ? HG(fu.id).col : '#fff'); popWord(fe, '팡!', '#ffffff'); if (HAS_FX) FX.playOn(un, 'poof', { size: 200, scale: 1.3, cy: 30 }); else un.insertAdjacentHTML('beforeend', '<i class="puff"><b></b><b></b><b></b><b></b><b></b></i>');
+        var un = fe.closest('.unit') || fe.parentNode; spawnDrama(un, fe, 1, fu ? HG(fu.id).col : '#fff'); /* 연기 구름 속에서 나타남만: 글자·낙하·링 없음 (2026-11-26 사용자: "펑팡은 빼. 구름 팡 하면서") */
         setTimeout(function(){ fe.classList.remove('spawn'); var p = un.querySelector('.puff'); if (p) p.remove(); }, 600); });
       var stP = E.stageTeam(D, S.stage, S.event, before, plv());
       stN.team.forEach(function(x){ var p = stP.team.filter(function(y){ return y.slot === x.slot; })[0]; if (!p || (x.star || 1) <= (p.star || 1)) return;
-        var fe = document.querySelector('#field .foe[data-foe="' + x.slot + '"]'); if (fe) starPang(fe.closest('.unit') || fe.parentNode, fe); });
+        var fe = document.querySelector('#field .foe[data-foe="' + x.slot + '"]'); if (fe) starPang(fe.closest('.unit') || fe.parentNode, fe, x.star || 1); });
       var b = $('bellBtn'); b.classList.add('ring'); setTimeout(function(){ b.classList.remove('ring'); }, 500); } }
-  /* 분노 연출: 누를 때 그 단계 하나만 (2026-11-26 사용자): 1 새 적 "팡!", 2 새 유물 "펑!", 3 적 한 명 "UP!"(우리 레벨업과 같은 글자·빛) */
+  /* 분노 연출: 누를 때 그 단계 하나만 (2026-11-26 사용자): 1 새 적 = 연기 구름, 2 새 유물 = 연기 구름, 3 적 한 명 "UP!"(우리 성급 오름 연출) */
   function popWord(el, txt, col){ var r = el.getBoundingClientRect(); if (!r.width) return; var f = $('field'), k = f.getBoundingClientRect().width / (f.offsetWidth || 1) || 1, b = document.createElement('b'); b.className = 'upword'; b.textContent = txt; if (col) b.style.color = col; b.style.left = (r.left + r.width / 2) + 'px'; b.style.top = (r.top + r.height * .2) + 'px'; b.style.fontSize = Math.round(22 * k) + 'px'; document.body.appendChild(b); setTimeout(function(){ b.remove(); }, 900); }
-  function starPang(un, fe){ var z0 = un.style.zIndex; un.style.zIndex = 9000;
-    popWord(fe, 'UP!'); if (HAS_FX) FX.playOn(un, 'levelup', { size: 200, scale: 1.3, cy: 30 });
-    fe.classList.add('starup'); var sb = fe.querySelectorAll('.fst b'); if (sb.length) sb[sb.length - 1].classList.add('nw');
-    setTimeout(function(){ fe.classList.remove('starup'); un.style.zIndex = z0; }, 1300); }
+  /* 정예 UP! = 우리 성급 오름 연출 그대로 (starUpFx 한 길, 2026-11-26 사용자: "왜 레벨업 연출 서로 다르냐") */
+  function starPang(un, fe, star){ var z0 = un.style.zIndex; un.style.zIndex = 9000; fe.dataset.sustar = star; starUpFx(fe); setTimeout(function(){ un.style.zIndex = z0; }, 1300); }
   // 종으로 나온 적 하나: 일반·고급은 가볍게 펑, 희귀부터 위에서 쿵 떨어지며 등급 색 링, 전설은 더 무겁게
   function spawnDrama(un, fe, gr, col){ var heavy = gr >= 3;
     fe.classList.add(heavy ? (gr >= 4 ? 'drop4' : 'drop') : 'spawn');
