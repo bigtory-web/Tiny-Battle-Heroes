@@ -389,15 +389,17 @@
             if (!alive(E).length) { result = 'win'; break; } if (!alive(A).length) { result = 'lose'; break; } } }
         if (u.castT > 0) { u.castT -= B.dt; u.moving = false; if (u.castT <= 0) { u.castT = 0; var hc = u.stats.healed; ultimate(u); (u.extra || []).forEach(function (e) { if (u.alive) ultimate(u, e.ult, e.k, e.el); }); afterUlt(u, u.stats.healed - hc); // 주문 끝: 스킬이 나가요 (기절하면 멈췄다가 이어서 외워요)
             if (!alive(E).length) { result = 'win'; break; } if (!alive(A).length) { result = 'lose'; break; } } continue; } // 넉백으로 잠깐 멈춤
-        if (u.h.mob === 'mimic') { /* 미믹(2026-11-26): every초마다 영웅 1명 방해(갈색 둔화, 파랑 실명, 왕관 밀치기) + 고정 피해 dmg. dur초가 지나면 도망 */
+        if (u.h.mob === 'mimic') { /* 미믹(2026-11-26): 평타 = 고정 피해 dmg, 에너지가 차면 영웅 1명 방해(갈색 둔화, 파랑 실명, 왕관 밀치기). dur초가 지나면 도망 */
           var MM = data.events.mimic || {}; u.age = (u.age || 0) + B.dt; u.moving = false;
           if (t >= (MM.dur || 20)) { /* 전투 시간 기준(기절해도 흘러요) */ u.alive = false; u.escaped = true; if (rec) log.push({ t: t, kind: 'escape', uid: u.uid }); if (!alive(E).length) { result = 'win'; break; } continue; }
-          if (u.stun > 0) continue; u.dis = (u.dis == null ? (MM.first || 2) + rand() * 1.5 : u.dis) - B.dt;
-          if (u.dis <= 0) { u.dis += MM.every || 4.5; var MF = alive(foes(u)); if (MF.length) { var mv2 = MF[Math.floor(rand() * MF.length)];
-            if (MM.dmg) { var mab = Math.min(mv2.shield || 0, MM.dmg); mv2.shield -= mab; mv2.hp -= MM.dmg - mab; u.stats.dealt += MM.dmg; mv2.stats.taken += MM.dmg; if (rec) log.push({ t: t, kind: 'hit', from: u.uid, to: mv2.uid, amt: MM.dmg }); if (mv2.hp <= 0) die(mv2, u); } /* 2026-11-26: 방해할 때 고정 피해(사용자: 1의 피해) */
+          if (u.stun > 0) continue; u.mt = (u.mt == null ? rand() * 0.5 : u.mt) + B.dt; /* 2026-11-26: 공속(interval)마다 평타(고정 피해 dmg, 거리 상관없이 아무 영웅), 평타로 에너지가 차면 방해 스킬(사용자: 공속을 쳐야지 스킬 생기자나) */
+          if (u.mt >= u.interval) { u.mt -= u.interval; var MF = alive(foes(u)); if (MF.length) { var mt2 = MF[Math.floor(rand() * MF.length)];
+            if (MM.dmg) { var mab = Math.min(mt2.shield || 0, MM.dmg); mt2.shield -= mab; mt2.hp -= MM.dmg - mab; u.stats.dealt += MM.dmg; mt2.stats.taken += MM.dmg; if (rec) log.push({ t: t, kind: 'hit', from: u.uid, to: mt2.uid, amt: MM.dmg }); if (mt2.hp <= 0) die(mt2, u); }
+            u.energy = Math.min(B.energyMax, u.energy + (EN.onAttack || 0)); MF = alive(foes(u));
+            if (u.energy >= B.energyMax && MF.length) { u.energy = 0; var mv2 = MF[Math.floor(rand() * MF.length)];
             if (u.h.king) { var kdx = (mv2.side === 'A' ? -1 : 1) * (MM.knock || 40); mv2.x += kdx; mv2.stun = Math.max(mv2.stun || 0, MM.knockStun || 0.4); if (rec) { log.push({ t: t, kind: 'knock', uid: mv2.uid, dx: kdx }); log.push({ t: t, kind: 'mimicFx', uid: u.uid, to: mv2.uid, fx: 'knock' }); } }
             else if (u.blue) { mv2.blind = Math.max(mv2.blind || 0, MM.blindDur || 2); mv2.blindAmt = Math.max(mv2.blindAmt || 0, MM.blindAmt || 0.5); if (rec) log.push({ t: t, kind: 'mimicFx', uid: u.uid, to: mv2.uid, fx: 'blind' }); } /* 파랑 = 실명(2026-11-26: 색깔별 방해) */
-            else { mv2.slow = Math.max(mv2.slow || 0, MM.slowDur || 2); mv2.slowAmt = Math.max(mv2.slowAmt || 0, MM.slowAmt || 0.4); if (rec) log.push({ t: t, kind: 'mimicFx', uid: u.uid, to: mv2.uid, fx: 'slow' }); } } }
+            else { mv2.slow = Math.max(mv2.slow || 0, MM.slowDur || 2); mv2.slowAmt = Math.max(mv2.slowAmt || 0, MM.slowAmt || 0.4); if (rec) log.push({ t: t, kind: 'mimicFx', uid: u.uid, to: mv2.uid, fx: 'slow' }); } } } }
           continue; }
         if (u.h.mob === 'chest') { // 보물상자: 아무것도 안 해요. dur초가 지나면 사라져요(그때까지 입힌 피해로 보상)
           u.age = (u.age || 0) + B.dt; u.moving = false;
