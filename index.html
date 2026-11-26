@@ -2639,6 +2639,10 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
 #shopBuy .bp s{color:#a89a80;text-decoration-thickness:2px;margin-right:2px}
 #shopBuy .bp b{font-weight:400;color:#ffe27a}
 #shopBuy:disabled .bp{background:#3a3442} #shopBuy:disabled .bp b{color:#e6e0ee}
+#roul .rbox.groll .rbtns #rSpin{width:150px;height:36px;font-size:16px;margin:0}
+#roul .rbox.groll .rbtns #rSpin[hidden]{display:none}
+#roul .rbox.groll .rpic.gridle{display:flex;align-items:flex-end;justify-content:center;animation:none!important}
+#roul .rbox.groll .rpic.gridle .av{width:100%;height:100%;background-size:contain!important;background-position:50% 100%!important}
 </style>
 </head>
 <body>
@@ -3417,14 +3421,14 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
     if (S.offerMode === 'mobs'){ $('rAgain').hidden = true; $('roul').querySelectorAll('.rstrip span').forEach(function(sp){ sp.classList.add('res'); }); $('roul').querySelector('.rmeta').textContent = ''; }
     if (S.offerMode === 'fairy'){ if (!(D.recruit.reroll || {}).fairy) $('rAgain').hidden = true; $('rX').hidden = !decided || pend; } /* reroll.fairy면 요정 룰렛도 리셋 */
     if (S.offerMode === 'camp' || S.offerMode === 'lvpick'){ $('rAgain').hidden = true; $('rX').hidden = !decided || pend; }
-    if (S.offerMode === 'groll'){ $('rAgain').hidden = true; $('rNo').hidden = decided || pend; $('rNo').textContent = '포기'; $('rX').hidden = !decided || pend; } /* 리셋 없음: 받기 / 포기 */
+    if (S.offerMode === 'groll'){ $('rAgain').hidden = true; $('rNo').hidden = decided || pend; $('rNo').textContent = '포기'; $('rX').hidden = true; if ($('rSpin')) $('rSpin').hidden = true; $('rLeft').hidden = true; } /* 리셋 없음: 받기 / 포기 */
     $('rRes').hidden = true; $('rRes').innerHTML = S.offerLast || '';
     $('rPend').hidden = !pend; $('rPend').innerHTML = pend ? pendHtml() : ''; $('roul').querySelector('.rbox').classList.toggle('pendmode', pend);
     if (decided) $('roul').querySelector('.rmeta').textContent = '';
     renderAgain();
   }
   $('talkBtn').addEventListener('click', function(){ if (isMerch()) openMerch(); else if (isFairy()) startFairy(); else startCampfire(); });
-  $('evBet').addEventListener('click', function(){ if (this.disabled) return; if (isGroll()) grollSpin(); else oeAddBet(); });
+  $('evBet').addEventListener('click', function(){ if (this.disabled) return; if (isGroll()){ delete $('roul').querySelector('.rbox').dataset.grs; grollIdle(); } else oeAddBet(); });
   $('evTalk').addEventListener('click', function(){ if (this.disabled) return; if (isMerch()) openMerch(); else if (isFairy()) startFairy(); else if (isCamp()) startCampfire(); });
   $('rAgain').addEventListener('click', function(){
     var p = againPrice(), left = leftPool(); if (!S.offer || S.offerDecided || S.pending || S.gold < p || !left.length || rerollLeft().n <= 0) return;
@@ -3462,12 +3466,13 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
   function exitOffer(){
     if (!S.offer || !S.offerDecided || S.pending) return;
     var log = S.offerLog || [];
-    var wasCamp = S.offerMode === 'camp' || S.offerMode === 'fairy'; S.offerMode = null;
+    var wasCamp = S.offerMode === 'camp' || S.offerMode === 'fairy', wasGr = S.offerMode === 'groll'; S.offerMode = null;
     S.offer = null; S.offerPlv = null; S.offerDecided = false; S.offerLast = ''; S.offerLog = [];
     $('roul').hidden = true; $('roul').querySelector('.rbox').classList.remove('pop');
     save(); renderAll();
     var gb = $('gainBox'); if (gb){ gb.innerHTML = ''; $('res').hidden = true; } // 받은 결과 카드는 띄우지 않아요 (사용자 요청)
     if (wasCamp && S.event && S.event.start && S.offerGot){ var sev = S.event; sev.got = (sev.got || []).concat([S.offerGot]); S.offerGot = null; save(); if (sev.got.length < ((D.events.campfire || {}).startPicks || 1) && sev.ids.some(function(id){ return sev.got.indexOf(id) < 0; })){ startCampfire(); return; } S.offerGot = sev.got[0]; }
+    if (wasGr && isGroll()){ grollIdle(); return; }
     if (wasCamp){ finishCamp(); return; }
     applyAdv(); // 보상을 받은 뒤에 스테이지가 올라요
     setTimeout(function(){ showEvWin(); tryWinAfter(); }, 200);
@@ -4705,7 +4710,7 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
   });
   $('rNo').addEventListener('click', function(){ decideOffer(false); exitOffer(); });
   $('rExit').addEventListener('click', exitOffer);
-  $('rX').addEventListener('click', function(){ if (S.offerMode === 'mobs' && S.mobPend){ takeMobLoot(); return; } if (S.pending) return; if (!S.offerDecided) decideOffer(false); exitOffer(); });
+  $('rX').addEventListener('click', function(){ if (grOpen && !S.offer){ grollClose(); return; } if (S.offerMode === 'mobs' && S.mobPend){ takeMobLoot(); return; } if (S.pending) return; if (!S.offerDecided) decideOffer(false); exitOffer(); });
 
   // ───── 도구 탭 ─────
   function renderMods(){
@@ -4979,11 +4984,22 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
   /* 돈고블린 룰렛(groll, 홀짝 대신, 2026-11-26 사용자): 돈 넣기 → 룰렛 → 받기/포기. 리셋 없음, 횟수는 레벨별 */
   function isGroll(){ return !bt && !!S.event && S.event.kind === 'groll' && !!E.rollGroll && S.stage < E.stageCount(D); }
   function grollUsed(){ var u = S.grollN; return u && u.st === S.stage ? u.n : 0; }
+  /* 팝업 안에서 돌리기 (2026-11-26 사용자): "룰렛하기"는 팝업만 열고, 팝업의 "돌리기 N G"로 돌림. 받기/포기 뒤에도 같은 팝업에서 다시 */
+  var grOpen = false;
+  function grollIdle(){ if (!isGroll()) return; grOpen = true; var r = $('roul'), box = r.querySelector('.rbox'), rt = box.querySelector('.rt'), cost = E.grollCost(D, S.stage, plv()), mx = E.grollSpins(D, plv()), left = Math.max(0, mx - grollUsed());
+    r.hidden = false; box.classList.add('groll'); box.classList.remove('spin', 'pendmode', 'camp'); rt.textContent = '돈고블린';
+    if (!box.querySelector('.rstage .rpic').style.backgroundImage || !box.dataset.grs){ var pic = box.querySelector('.rpic'); pic.innerHTML = av('goblin'); pic.style.backgroundImage = 'none'; pic.className = 'rpic gridle'; box.querySelector('.rname').textContent = '돈고블린'; $('rTags').innerHTML = ''; $('rSk').hidden = true; box.querySelector('.rstrip').innerHTML = ''; pedestal(box.querySelector('.rstage'), '#ffd34d'); }
+    box.querySelector('.rmeta').textContent = ''; $('rWait').hidden = true; $('rRes').hidden = true; $('rPend').hidden = true;
+    box.querySelector('.rbtns').hidden = false; ['rYes', 'rNo', 'rAgain', 'rExit'].forEach(function(b){ $(b).hidden = true; });
+    var sp = $('rSpin'); if (!sp){ sp = document.createElement('button'); sp.id = 'rSpin'; sp.type = 'button'; sp.className = 'go'; box.querySelector('.rbtns').insertBefore(sp, $('rYes')); sp.addEventListener('click', function(){ if (!this.disabled) grollSpin(); }); }
+    sp.hidden = false; sp.textContent = '돌리기 ' + cost.toLocaleString() + 'G'; sp.disabled = !left || S.gold < cost;
+    var rl = $('rLeft'); rl.hidden = false; rl.textContent = left + '/' + mx; rl.classList.toggle('z', !left); $('rX').hidden = false; }
+  function grollClose(){ grOpen = false; $('roul').hidden = true; var b = $('roul').querySelector('.rbox'); delete b.dataset.grs; if ($('rSpin')) $('rSpin').hidden = true; renderAll(); }
   function grollHtml(){ var gx = 506, gy = 184; return '<div class="unit cfh oegob" style="left:' + (100 * gx / W) + '%;top:' + (100 * (gy + OFF + FOOT) / H) + '%;z-index:' + gy + '"><div class="cfslot">' + av('goblin') + '</div></div>'; }
-  function grollSpin(){ if (!isGroll() || S.offer || S.pending) return; var cost = E.grollCost(D, S.stage, plv()), n = grollUsed(); if (n >= E.grollSpins(D, plv()) || S.gold < cost) return;
+  function grollSpin(){ if (!isGroll() || S.offer || S.pending) return; if ($('rSpin')) $('rSpin').hidden = true; $('roul').querySelector('.rbox').dataset.grs = '1'; var gp = $('roul').querySelector('.rpic'); if (gp) gp.classList.remove('gridle'); var cost = E.grollCost(D, S.stage, plv()), n = grollUsed(); if (n >= E.grollSpins(D, plv()) || S.gold < cost) return;
     var c = E.rollGroll(D, S.stage, Math.random, plv()); if (!c || !c.length) return;
     S.gold -= cost; S.grollN = { st: S.stage, n: n + 1 }; S.offer = c[E.lootPick(D, c, plv(), Math.random)]; offerIds = S.offerIds = c.slice(); S.offerPlv = null; S.offerMode = 'groll'; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; save(); oeCoins(document.querySelector('#hud .goldit'), document.querySelector('#field .oegob'), 4); renderAll(); startRoulette(offerIds, S.offer); }
-  function finishGroll(){ S.grollN = null; S.event = nextEvent(false); S.bell = 0; S.bellGold = 0; save(); evGo(); }
+  function finishGroll(){ grOpen = false; S.grollN = null; S.event = nextEvent(false); S.bell = 0; S.bellGold = 0; save(); evGo(); }
   function oddEvenHtml(){ var bet = E.oddEvenBet ? E.oddEvenBet(D, S.stage) * oeK() : 0, ok = oeK() > 0 && !oeBusy, gx = 506, gy = 184; /* 2026-11-24: 적 쪽 5번 칸(보물상자와 같은 자리) */
     return '<div class="unit cfh oegob" style="left:' + (100 * gx / W) + '%;top:' + (100 * (gy + OFF + FOOT) / H) + '%;z-index:' + gy + '"><div class="cfslot">' + av('goblin') + '</div></div>' +
       '<div class="oebox" id="oeBox"><div class="oedie" id="oeDie">' + dieFace(5) + '</div><div class="oebet">' + (HUDOK.gold ? '<img src="img/p/hud_gold.png" alt="">' : '🪙') + '<b>' + bet.toLocaleString() + '</b></div>' +
@@ -5152,8 +5168,8 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
   var BELLIMG = {}; [1, 2, 3].forEach(function(n){ var im = new Image(); im.onload = function(){ BELLIMG[n] = true; renderBell(); }; im.src = 'img/p/ui_foe' + n + '.png'; });
   function renderTalk(){ var t = $('talkBtn'); if (t) t.querySelector('.tic').innerHTML = campImg('ui_talk', '💬', 'timg'); var et = $('evTalk'); if (et) et.querySelector('.eai').innerHTML = campImg('ui_talk', '💬', 'timg'); }
   function grollBtn(gr){ var b = $('evBet'), lab = b.querySelector('b'), dots = b.querySelector('.oedots'), n = $('grLeft'); if (!n){ n = document.createElement('span'); n.id = 'grLeft'; n.className = 'grleft'; b.parentNode.insertBefore(n, b); }
-    b.classList.toggle('groll', gr); n.hidden = !gr; if (dots) dots.hidden = gr;
-    if (!gr){ lab.textContent = '돈 넣기'; return; } var cost = E.grollCost(D, S.stage, plv()), mx = E.grollSpins(D, plv()), left = Math.max(0, mx - grollUsed()); lab.textContent = '돈 넣기 ' + cost.toLocaleString() + 'G'; b.disabled = !!S.offer || !!S.pending || !left || S.gold < cost; n.textContent = left + '/' + mx; n.classList.toggle('z', !left); }
+    b.classList.toggle('groll', gr); n.hidden = true; if (dots) dots.hidden = gr;
+    if (!gr){ lab.textContent = '돈 넣기'; return; } lab.textContent = '룰렛하기'; b.disabled = !!S.offer || !!S.pending; }
   function updEvActs(){ var box = $('evActs'); if (!box) return; var ok = !bt && !isLvPick() && !isFork(), tk = ok && (isCamp() || isFairy() || isMerch()), busy = !!S.offer || !!S.pending;
     $('evTalk').hidden = !tk; $('evTalk').disabled = busy; $('evTalk').classList.toggle('busyhide', busy); $('evBet').classList.toggle('busyhide', oeBusy); var oe = ok && isOddEven(), k = oeK(), mx = oeMax(), gr = ok && isGroll(); $('evBet').hidden = !oe && !gr; box.hidden = !tk && !oe && !gr; grollBtn(gr);
     if (oe){ $('evBet').disabled = oeBusy || k >= mx || S.gold < E.oddEvenBet(D, S.stage); $('evBet').querySelectorAll('.oedots i').forEach(function(d, i){ d.classList.toggle('on', i < k); d.hidden = i >= mx; }); } } /* 말 걸기: 위 가운데(종·초월 자리) */
