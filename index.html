@@ -2867,6 +2867,8 @@ img.rimg{image-rendering:auto!important}
 #trWin{gap:0!important}
 /* 초월 팝업 손보기 (2026-11-26 사용자): 넓은 버튼, 영웅이 단상 앞, 재료 반전, 후보 = 얼굴, 가운데 옮길 스킬, 결과 반짝임, 데코 */
 #trWin .rbtns button.go{min-width:180px}
+/* 룰렛 팝업: 받기와 옆 버튼은 같은 너비 (2026-11-26 사용자) */
+#roul .rbox:not(.groll) .rbtns #rYes,#roul .rbox:not(.groll) .rbtns #rAgain,#roul .rbox:not(.groll) .rbtns #rNo{width:130px!important;flex:none!important;box-sizing:border-box}
 #trWin .trslot .trfig{z-index:3}
 #trWin .trslot.sM .trfig .av{transform:scaleX(-1)}
 #trWin .trc .hic.hicf > .av.pic{background-size:var(--fs,170%) auto!important;background-position:var(--fx,50%) var(--fy,40%)!important}
@@ -5300,7 +5302,7 @@ img.rimg{image-rendering:auto!important}
     var sp = $('rSpin'); if (!sp){ sp = document.createElement('button'); sp.id = 'rSpin'; sp.type = 'button'; sp.className = 'go'; box.querySelector('.rbtns').insertBefore(sp, $('rYes')); sp.addEventListener('click', function(){ if (!this.disabled){ leverPull(); grollSpin(); } }); }
     leverDeco(box);
     sp.hidden = false; sp.textContent = '돌리기 ' + cost.toLocaleString() + 'G'; sp.disabled = !left || S.gold < cost;
-    var rl = $('rLeft'); rl.hidden = false; rl.textContent = '횟수 ' + (mx - left) + '/' + mx; rl.classList.toggle('z', !left); $('rX').hidden = false; $('rX').disabled = false; }
+    var rl = $('rLeft'); rl.hidden = false; rl.textContent = '횟수 ' + left + '/' + mx; rl.classList.toggle('z', !left); $('rX').hidden = false; $('rX').disabled = false; }
   /* 레버는 꾸밈 (누를 수 없음): 돌리기 버튼을 누르면 저절로 당겨짐 (2026-11-26 사용자: "그냥 디자인 말한 거였어") */
   function leverDeco(box){ if (box.querySelector(':scope > #grLever')) return; box.insertAdjacentHTML('beforeend', '<i id="grLever" aria-hidden="true"><i class="lvrod"></i><i class="lvknob"></i><i class="lvbase"></i></i>'); }
   function leverPull(){ var l = $('grLever'); if (!l) return; l.classList.remove('pull'); void l.offsetWidth; l.classList.add('pull'); }
