@@ -2755,6 +2755,7 @@ img.rimg{image-rendering:auto!important}
 #roul .rbox.groll:not(.spin) .rbulbs s{animation:bulbon 1.4s steps(1) infinite}
 #roul .rbox.groll:not(.spin) .rbulbs s.o{animation-delay:-.7s}
 #roul .rbox.groll.gwait .rbulbs{filter:saturate(.5) brightness(.8)}
+#roul .rbox.groll.gwait .rbulbs s{animation:none!important} /* 돌리기 전엔 안 움직임 (2026-11-26 사용자) */
 @keyframes bulbon{0%{background:#ffe27a;box-shadow:0 0 0 1px #17141d,0 0 5px 1px rgba(255,210,80,.8)}50%{background:#6b5420;box-shadow:0 0 0 1px #17141d}}
 @keyframes bulbrun{0%{background:#fff3b0;box-shadow:0 0 0 1px #17141d,0 0 6px 2px rgba(255,220,90,.9)}25%,100%{background:#6b5420;box-shadow:0 0 0 1px #17141d}}
 @keyframes bulbflash{0%,66%{background:#fffbe0;box-shadow:0 0 0 1px #17141d,0 0 8px 3px rgba(255,230,120,1)}33%{background:#6b5420;box-shadow:0 0 0 1px #17141d}}
