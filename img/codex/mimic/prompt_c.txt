@@ -1,0 +1,11 @@
+Look at these images:
+- img/gemini/ref/chest_g1_s1_x8.png = our game's treasure chest (pixel art 36x36, 8x enlarged). The mimic must look like THIS chest: same wood color, gold trim, shape, outline and shading style.
+- img/gemini/ref/goblin_x8.png = one of our small monsters (8x enlarged), for monster style and size.
+- img/gemini/ref/bear_x8.png = our hero, the overall style standard (cute, soft, reddish-brown outline #4b150c, seen slightly from above).
+
+Generate ONE new image with your image generation tool and save it as img/codex/mimic/mimic_c.png
+A cute but mischievous MIMIC monster: this treasure chest come alive. The lid is half open like a big mouth with a row of pointed white teeth on the lid and on the box edge, a long pink tongue lolling out to one side, two round glowing eyes inside the dark under the lid, a few gold coins in its mouth. Slightly tilted as if hopping. Not scary, playful.
+- View: 3/4 view facing the RIGHT, camera looking down about 20 degrees (we see the top of the lid).
+- VERY LOW RESOLUTION, a 36x36 pixel sprite exactly like our chest (our chest is only 36x36 art pixels and 28 wide): the whole mimic is at most 32 art pixels wide and 32 tall. One art pixel = 36 image pixels, image 1152x1152 (the mimic about 1150 x 1150 at most). Huge chunky square blocks; keep it simple: 2 eyes of 2x2 pixels, only 4 or 5 big teeth on each edge, one tongue, 2 coins. No anti-aliasing, no gradients, nothing smaller than one block.
+[Format] Plain solid #FF00FF magenta background, no text, no shadow.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
