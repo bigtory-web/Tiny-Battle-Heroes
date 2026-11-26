@@ -403,6 +403,12 @@ var IDLE_DATA = {
     // 2026-11-26 배치: 1열(우리 쪽에 가까운 줄) 갈색, 2열 파랑, 3열 가운데 왕관. 칸 번호는 battle.arena.pos 순서(0 = 1열 가운데, 2 = 1열 위, 3 = 2열 가운데, 5 = 2열 위, 6 = 3열 가운데). 갈색 짝수·파랑 홀수 칸은 화면 색 고르기(slot % 2)와 맞춤
     //   blueHp: 파랑 미믹 체력 배율(갈색보다 셈). dmg: 방해할 때 그 영웅에게 주는 고정 피해. 방해는 색깔별: 갈색 둔화(slow*), 파랑 실명(blind*: blindDur초 동안 평타가 blindAmt 확률로 빗나감), 왕관 밀치기(knock*)
     mimic: { dur: 20, kingFrom: 7, every: 4.5, first: 2, slowDur: 2, slowAmt: 0.4, knock: 40, knockStun: 0.4, gold: 0.3, kingGold: 0.5, blueHp: 1.5, dmg: 1, blindDur: 2, blindAmt: 0.5, slots: { w: [0, 2, 1], b: [3, 5, 4], k: [6] } },
+    // 미믹 방해 스킬 이름·설명(2026-11-26, 상세 창 스킬 칸용). w 갈색, b 파랑, k 왕관. 위 숫자(every·slowDur·blindAmt·knock 등)를 바꾸면 설명도 같이 고친다
+    mimicSkills: {
+      w: { name: '끈적한 침', desc: '4.5초마다 영웅 1명에게 피해 1을 주고, 2초 동안 40% 느리게 한다.' },
+      b: { name: '먹물 뿜기', desc: '4.5초마다 영웅 1명에게 피해 1을 주고, 2초 동안 평타가 50% 확률로 빗나가게 한다.' },
+      k: { name: '뚜껑 박치기', desc: '4.5초마다 영웅 1명에게 피해 1을 주고, 뒤로 밀치며 0.4초 기절시킨다.' }
+    },
     chest: { dur: 15, // 체력·방어는 mobs의 chest 값 (스테이지 레벨·초반 배율을 똑같이 받아요)
       tiers: [ { at: 0.25, gold: 0.5 }, { at: 0.5, gold: 1 }, { at: 0.75, gold: 0.5, scroll: 1 }, { at: 1, gold: 1.5 } ],
       bell: { hp: 0.5, reward: 0.7 }, // grades가 있으면 안 써요 (2026-11-24: 보물상자 판에는 용 버튼 없음)
