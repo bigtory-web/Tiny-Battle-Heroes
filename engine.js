@@ -113,12 +113,15 @@
       if (u.pas && u.pas.kind === 'burnRally') a *= 1 + u.pv * alive(foes(u)).filter(function (x) { return x.burn; }).length; return a; }
 
     function nearGoblin(u, F) { return (F || alive(foes(u))).filter(function (x) { return x.h.mob === 'goblin' && dist(u, x) <= u.reach * 1.2; })[0] || null; }
+    function F0hack(u, list) { var CW = B.crowd || {}, cpen = u.range === 'melee' ? (CW.pen || 0) : 0, mates = alive(team(u.side)).filter(function (y) { return y !== u && y.tgt; }); var sc = function (x) { return dist(u, x) + cpen * mates.filter(function (y) { return y.tgt === x && dist(y, x) <= y.reach + 8; }).length; }; return list.reduce(function (m, x) { return sc(x) < sc(m) ? x : m; }); } // 막혔을 때 다른 대상 고르기(아군이 덜 붙은 가까운 적)
     // 공격 대상 고르기
     function pickTarget(u) {
       var F0 = alive(foes(u)); if (!F0.length) return null; var F = F0.filter(function (x) { return !(x.stealth > 0); }); if (!F.length) F = F0; // 숨은 적은 못 노려요
       var tauntU = F.filter(function (x) { return x.taunt > 0; }); if (tauntU.length) return tauntU[0];
       var gob = nearGoblin(u, F); if (gob) return gob; // 돈고블린이 사거리 근처에 있으면 먼저 노려요
-      if (TG === 'near') return F.reduce(function (m, x) { return dist(u, x) < dist(u, m) ? x : m; }); // 실제로 가장 가까운 적 (앞에 선 유닛이 먼저 맞아요)
+      if (TG === 'near') { var CW = B.crowd || {}, cpen = u.range === 'melee' ? (CW.pen || 0) : 0, mates = cpen ? alive(team(u.side)).filter(function (y) { return y !== u && y.tgt; }) : []; /* 2026-11-26: 근접은 아군이 이미 붙어 때리는 적을 덜 골라요(사용자: "다른캐릭터가 또 그대상을때릴때 사이를비집으면 … 계속 밀고 들어오려고만해") */
+        var sc = function (x) { return dist(u, x) + (cpen ? cpen * mates.filter(function (y) { return y.tgt === x && dist(y, x) <= y.reach + 8; }).length : 0); };
+        return F.reduce(function (m, x) { return sc(x) < sc(m) ? x : m; }); } // 실제로 가장 가까운 적 (앞에 선 유닛이 먼저 맞아요)
       if (TG === 'lowest') return F.reduce(function (m, x) { return x.hp / x.maxHp < m.hp / m.maxHp ? x : m; });
       if (TG === 'random') return F[Math.floor(rand() * F.length)];
       var front = F.filter(function (x) { return x.front; }), pool = front.length ? front : F;
@@ -372,7 +375,7 @@
         var u = all[k]; if (!u.alive) continue; shSrc = u;
         if (EN.perSec && !(u.trig && u.trig.kind === 'start')) u.energy = Math.min(B.energyMax, u.energy + EN.perSec * B.dt);
         if (u.pas && u.pas.kind === 'auraRegen') alive(team(u.side)).forEach(function (x) { if (x.hp < x.maxHp) heal(u, x, x.maxHp * u.pv * B.dt); });
-        ['taunt', 'slow', 'haste', 'buffT', 'stun', 'stealth', 'root', 'blind', 'burnAmp', 'winT', 'markT'].forEach(function (f) { if (u[f] > 0) u[f] = Math.max(0, u[f] - B.dt); });
+        ['taunt', 'slow', 'haste', 'buffT', 'stun', 'stealth', 'root', 'blind', 'burnAmp', 'winT', 'markT', 'tbT'].forEach(function (f) { if (u[f] > 0) u[f] = Math.max(0, u[f] - B.dt); });
         if (u.stone > 0) { u.stone -= B.dt; if (u.stone <= 0) { u.stone = 0; heal(u, u, u.maxHp * u.pv); } u.moving = false; continue; } // 가고일: 돌이 된 동안 아무것도 안 해요
         if (u.bShT > 0) { u.bShT -= B.dt; if (u.bShT <= 0) { u.shield = Math.max(0, u.shield - (u.bSh || 0)); u.bSh = 0; } } // 바위곰: 1초 보호막이 사라져요
         if (PP(u).every) { var EP = PP(u); u.evT = (u.evT || 0) + B.dt; if (u.evT >= EP.every) { u.evT -= EP.every; var pk = EP.kind, mt = alive(team(u.side));
@@ -422,8 +425,11 @@
           continue; }
         // 대상: 없거나 죽었거나, 상대에 도발이 걸렸으면 다시 골라요
         var taunting = alive(foes(u)).some(function (x) { return x.taunt > 0; });
-        if (!u.tgt || !u.tgt.alive || (taunting && !(u.tgt.taunt > 0)) || (!taunting && u.tgt.h.mob !== 'goblin' && nearGoblin(u))) u.tgt = pickTarget(u);
+        if (!u.tgt || !u.tgt.alive || (taunting && !(u.tgt.taunt > 0) && !(u.tbT > 0)) || (!taunting && u.tgt.h.mob !== 'goblin' && nearGoblin(u))) u.tgt = pickTarget(u);
         var tg = u.tgt; if (tg && dist(u, tg) > u.reach) { /* 2026-11-26: 대상이 막혀 못 닿으면 사거리 안의 적부터 쳐요(같은 편이 안 비켜 주니 갇히지 않게) */ var nr = alive(foes(u)).filter(function (x) { return dist(u, x) <= u.reach && x.h.mob !== 'chest'; })[0]; if (nr && !(tg.taunt > 0)) tg = u.tgt = nr; }
+        if (tg && dist(u, tg) > u.reach && tg.h.mob !== 'goblin' && (B.crowd || {}).stuck) { /* 2026-11-26: 대상 쪽으로 가는데 가까워지지 않으면(아군에 막힘) crowd.stuck초 뒤 다른 적으로 바꿔요 */ var dNow = dist(u, tg); u.stuckT = (u.lastTg === tg && u.lastD != null && dNow >= u.lastD - 0.5) ? (u.stuckT || 0) + B.dt : 0; u.lastTg = tg; u.lastD = dNow;
+          if (u.stuckT >= B.crowd.stuck && tg.taunt > 0) { /* 도발한 적에게 막혀 못 닿으면 tauntWait초 동안 사거리 안의 다른 적을 쳐요 */ var nr2 = alive(foes(u)).filter(function (x) { return x !== tg && dist(u, x) <= u.reach && x.h.mob !== 'chest' && !(x.stealth > 0); })[0]; if (nr2) { u.tbT = B.crowd.tauntWait || 1.5; tg = u.tgt = nr2; } u.stuckT = 0; u.lastD = null; }
+          else if (u.stuckT >= B.crowd.stuck) { var old = tg; u.tgt = null; var others = alive(foes(u)).filter(function (x) { return x !== old && !(x.stealth > 0); }); if (others.length) { var keep = F0hack(u, others); tg = u.tgt = keep; } else tg = u.tgt = old; u.stuckT = 0; u.lastD = null; } }
         if (!tg) { // 칠 수 있는 적이 없으면 가장 가까운 적 쪽으로 다가가요
           var near = alive(foes(u)).sort(function (a, b) { return Math.abs(a.x - u.x) - Math.abs(b.x - u.x); })[0];
           if (near) { var dx = near.x - u.x; u.face = dx >= 0 ? 1 : -1; u.moving = Math.abs(dx) > 30; if (u.moving) u.x += Math.sign(dx) * Math.min(Math.abs(dx) - 30, u.spd * B.dt); }
