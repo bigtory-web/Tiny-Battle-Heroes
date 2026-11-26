@@ -2582,9 +2582,6 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 #evWin .rbox .rstage{background:radial-gradient(60% 70% at 50% 38%,rgba(255,214,140,.30),transparent 70%),linear-gradient(#1b2130 0 55%,#2b2530 55% 70%,#3a2c24 70%)!important}
 #evWin .mercline{margin:10px 6px;padding:0;background:none;box-shadow:none;text-shadow:none;display:flex;justify-content:center}
 #evWin .mercline span{position:relative;display:flex;align-items:center;gap:10px;padding:8px 18px;min-width:240px;justify-content:center;background:#24452a;color:#f3ffe8;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #5fcf6a;font:400 18px var(--display);text-shadow:0 2px 0 #17141d}
-#evWin .mercline span::before,#evWin .mercline span::after{content:'';position:absolute;top:8px;bottom:-6px;width:26px;z-index:-1;background:#3f7a44;box-shadow:0 0 0 2px #17141d;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,40% 50%)}
-#evWin .mercline span::before{left:-18px} #evWin .mercline span::after{right:-18px;transform:scaleX(-1)}
-#evWin .mercline span{isolation:isolate} #evWin .mercline b{font-weight:400}
 #evWin .mshake{width:24px;height:24px;display:block}
 #evWin .mswords{width:24px;height:24px;display:block;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%2317141d' d='M0 0h3v1h1v1h1v1h2V2h1V1h1V0h3v3h-1v1h-1v1h-1v2h1v1h1v1h1v1h1v3H9v-1H8v-1H7V9H5v1H4v1H3v1H0V9h1V8h1V7h1V5H2V4H1V3H0z'/%3E%3Cpath fill='%23dfe6f0' d='M1 1h1v1h1v1h1v1h1v1h2V4h1V3h1V2h1V1h1v1h-1v1H9v1H8v1H7v2h1v1H7V7H5v1H4V7h1V5H4V4H3V3H2V2H1z'/%3E%3Cpath fill='%23c9892a' d='M2 8h2v2H2zM8 8h2v2H8zM1 10h1v1H1zM10 10h1v1h-1z'/%3E%3C/svg%3E") 0 0/24px 24px no-repeat;image-rendering:pixelated}
 /* 모닥불 룰렛: 밤 + 아래에서 비추는 주황 불빛 일렁임, 불씨. 빛줄기 없음 */
@@ -2605,6 +2602,15 @@ img.rimg{image-rendering:pixelated;border-radius:50%}
 .rstrip span.sk{border-radius:50%!important;clip-path:none!important}
 #roul:not(.chestpop) .rbox .rstage.onped .rpic.loot.relic{width:calc(63 * var(--P))!important;height:calc(63 * var(--P))!important;left:calc(50% - 31.5 * var(--P))!important;bottom:calc(38px + 22 * var(--P))!important;filter:drop-shadow(0 0 8px var(--rg,#d9dde8))!important}
 #roul .rbox .rpic.loot.relic img.lic{width:calc(63 * var(--P))!important;height:calc(63 * var(--P))!important}
+/* 합류 띠: 위 큰 칸 너비, 양 끝 장식 없이 위아래 변 장식(초록 띠 + 금줄 + 리벳, 위 가운데 마름모) (2026-11-26 사용자) */
+#evWin .mercline{margin:8px 0!important;align-self:stretch;display:block}
+#evWin .mercline span{width:100%;box-sizing:border-box;min-width:0;padding:13px 10px;box-shadow:inset 0 0 0 2px #17141d!important;background:radial-gradient(2px 2px at 8px 4px,#fff0b0 60%,transparent) 0 0/24px 8px repeat-x,radial-gradient(2px 2px at 8px 4px,#fff0b0 60%,transparent) 0 100%/24px 8px repeat-x,linear-gradient(#17141d 0 2px,#5fcf6a 2px 6px,#2f7a3a 6px 8px,#d9a12a 8px 10px,#24452a 10px calc(100% - 10px),#d9a12a calc(100% - 10px) calc(100% - 8px),#2f7a3a calc(100% - 8px) calc(100% - 6px),#5fcf6a calc(100% - 6px) calc(100% - 2px),#17141d calc(100% - 2px))!important}
+#evWin .mercline span::before{content:'';position:absolute;left:50%;top:-5px;width:12px;height:12px;margin-left:-6px;background:#ffd34d;box-shadow:inset 0 0 0 2px #17141d;transform:rotate(45deg)}
+#evWin .mshake{display:none}
+/* 메인 유물 줄: 원만. 빈 칸은 어두운 회색 원 */
+#skA .skc,#skE .skc{border-radius:50%!important}
+#skA .skc.empty{background:#221f2a!important;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #3a3546!important;opacity:.75;clip-path:none!important}
+#skA .skc.empty span{background:linear-gradient(#4a4556,#4a4556) center/14px 3px no-repeat,linear-gradient(#4a4556,#4a4556) center/3px 14px no-repeat!important}
 </style>
 </head>
 <body>
