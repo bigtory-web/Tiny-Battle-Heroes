@@ -2079,7 +2079,9 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .tbar{overflow:visible!important}
 .tbar .tpw{position:absolute;top:calc(100% + 4px);left:6px;padding:2px 6px;background:rgba(23,20,29,.72);box-shadow:inset 0 0 0 2px #17141d}
 .tbar.e .tpw{left:auto;right:6px}
-#hinfo .hi-b:disabled{background:#6a6272!important;--bb:#6a6272!important;--bh:#857d8e!important;--bl:#4a4452!important;color:#cfc6d8!important} #hud #skipBtn{min-width:48px;white-space:nowrap} #hud #punchBtn{min-width:60px;white-space:nowrap} #hud #jumpBtn{white-space:nowrap}
+#hinfo .hi-b:disabled{background:#6a6272!important;--bb:#6a6272!important;--bh:#857d8e!important;--bl:#4a4452!important;color:#cfc6d8!important} #hud #skipBtn{min-width:48px;white-space:nowrap}
+/* 단축키 표시: 배속·스킵·원펀치 위 빈 줄에 작은 키캡 (2026-11-26 사용자: "여기만 단축키 표시"). HUD 가 모서리를 잘라 밖에 따로 둠. 터치 기기는 숨김 */
+.keycap{position:absolute;z-index:5;transform:translateX(-50%);min-width:13px;padding:0 2px;text-align:center;font:400 10px/12px var(--display);color:#b9b2c4;background:#2a2533;box-shadow:0 0 0 1px #5d5470,0 2px 0 1px #17141d;pointer-events:none} .keycap.off{opacity:.4} @media (hover:none){.keycap{display:none}}
 #jumpList{position:fixed;z-index:200;display:grid;grid-template-columns:auto auto;grid-auto-flow:column;grid-template-rows:repeat(5,auto);gap:3px;padding:5px;background:#17141d;box-shadow:inset 0 0 0 1px #6b6478,0 0 0 1px #0f0d14}
 #jumpList[hidden]{display:none} #jumpList button{display:flex;align-items:center;justify-content:center;gap:3px;min-width:64px;height:26px;border:0;border-radius:0;cursor:pointer;font:400 14px var(--display);color:#f3e6c4;background:#34303f} #jumpList button.cur{color:#3a2408;background:#ffd34d} #jumpList img{width:14px;height:14px;image-rendering:pixelated}
 .underbar .evdock .edbody{max-height:220px!important} /* 펼친 목록이 HUD를 가리지 않게 (넘치면 스크롤) */
@@ -2590,17 +2592,15 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 #credits h2{margin:0;font:400 38px var(--display);color:#ffd34d;letter-spacing:3px;text-shadow:3px 0 #17141d,-3px 0 #17141d,0 3px #17141d,0 -3px #17141d,0 6px #17141d}
 #credits h3{margin:0 0 6px;font:400 15px var(--display);color:#ffd34d}
 #credits .crst{display:grid;grid-template-columns:auto auto;gap:4px 14px;justify-content:center;text-align:left} #credits .crst b{font-weight:400;color:#fff;text-align:right}
-#credits .crteam{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:300px} #credits .crh{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px} #credits .crh .hic{width:40px!important;height:40px!important;background:#17141d}
+#credits .crmvp{display:flex;flex-direction:column;align-items:center;gap:12px} #credits .crmvp > div{display:flex;justify-content:center;gap:12px} #credits .crh{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;min-width:76px} #credits .crh b{font-weight:400;font-size:13px;color:#ffd34d} #credits .crh i{font-style:normal;font-size:12px;color:#fff} #credits .crh .hic{width:36px!important;height:36px!important;background:#17141d} #credits .crh.big .hic{width:60px!important;height:60px!important} #credits .crh.big b{font-size:17px} #credits .crh.big i{font-size:15px}
 #credits .crev{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 12px;max-width:300px} #credits .crev span{display:flex;align-items:center;gap:3px} #credits .crev img{width:24px!important;height:24px!important;image-rendering:pixelated}
-#credits .crrel{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;max-width:300px} #credits .crrel i{width:30px;height:30px;background:#17141d;display:flex;align-items:center;justify-content:center;cursor:help} #credits .crrel img{width:24px;height:24px;border-radius:50%;background:#2f2a39;image-rendering:pixelated}
 #credits .rpok{border:0;cursor:pointer;padding:10px 30px;font:700 18px var(--display);white-space:nowrap}
 #credits .rpok{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:none;z-index:5} #credits.end .rpok{display:block} #credits.end{cursor:default}
 #credits.end .crscroll{bottom:70px;overflow-y:auto;overscroll-behavior:contain;cursor:grab;touch-action:pan-y;scrollbar-width:thin;scrollbar-color:#8a7652 transparent} #credits.end .crscroll::-webkit-scrollbar{width:6px} #credits.end .crscroll::-webkit-scrollbar-thumb{background:#8a7652;border-radius:0} #credits.end .crscroll::-webkit-scrollbar-track{background:rgba(23,20,29,.4)}
 #credits .rfw{z-index:4}
 /* 끝난 판: 적·막대·전투 UI 숨기고, 우리 영웅은 제자리에서 기뻐함 */
 #arena.ending canvas.fbar,#arena.ending .vsmark,#arena.ending #bellBtn,#arena.ending #abar,#arena.ending #vsBar,#arena.ending #skE,#arena.ending .foe,#arena.ending .dpswrap{visibility:hidden!important}
-#arena.ending #field .slot.on .av{animation:cheer 1.1s ease-in-out infinite} #arena.ending #field .unit:nth-child(even) .slot.on .av{animation-delay:.35s} #arena.ending #field .unit:nth-child(3n) .slot.on .av{animation-delay:.7s}
-@keyframes cheer{0%,55%,100%{translate:0 0}20%{translate:0 -12px}35%{translate:0 0}45%{translate:0 -5px}}
+#arena.ending.marching #field{background-repeat:repeat-x!important} #arena.ending.marching #field .hexg{opacity:0} #arena.ending.marching #field .unit[data-uid] .slot{animation:scrhop .27s cubic-bezier(.3,.6,.4,1) infinite} #arena.ending.marching #field .unit[data-uid]:nth-child(even) .slot{animation-delay:.07s}
 
 /* 패배 팝업 */
 #resPop .dfc{position:relative;width:348px;height:432px;flex:none}
@@ -3333,7 +3333,7 @@ img.rimg{image-rendering:auto!important}
 
   // ───── 상태 저장 ─────
   var R = D.recruit, KEY = 'idle-testbed-v2', S;
-  function runStats0(){ return { heroes: 0, battles: 0, wins: 0, kills: 0, events: {}, lastTeam: [], startAt: Date.now(), playMs: 0 }; } /* 이번 판 기록 (모험 완료 팝업) */
+  function runStats0(){ return { bought: 0, by: {}, heroes: 0, battles: 0, wins: 0, kills: 0, events: {}, lastTeam: [], startAt: Date.now(), playMs: 0 }; } /* 이번 판 기록 (모험 완료 팝업) */
   function fresh(){ var s = { runStats: runStats0(), gold: 0, stage: 0, units: [], levels: {}, team: [null, null, null, null, null], idleAt: Date.now(), modules: {}, pending: null, life: D.life ? D.life.max : 10, streak: 0, mana: 0, xp: 0, bell: 0, bellGold: 0 }; // 새 판: 체력·마나스톤·경험치도 처음 값
     if (E.campfireAtStart && E.campfireAtStart(D) && E.rollCampfire){ s.event = { kind: 'campfire', ids: E.rollCampfire(D, Math.random, 1), start: true }; return s; } // 시작 모닥불: 1명을 얻고 1-1로
     var u = E.newUnit(s.units, R.startHero, 1); s.levels[R.startHero] = D.startLevel; s.team[0] = u.uid; return s; }
@@ -3465,7 +3465,7 @@ img.rimg{image-rendering:auto!important}
   function heroPass(h){ if (filter === 'all') return true; if (filter === 'own') return owns(h.id); var p = filter.split(':'); return h[p[0]] === p[1]; }
   function skillPass(d){ if (filter === 'all') return true; if (filter === 'own') return S.skills.some(function(x){ return x.id === d.id; }); var p = filter.split(':'); return p[0] === 'g' && String(d.grade || 1) === p[1]; }
   // 이벤트 아이콘: 배너와 같은 그림 (없으면 이모지)
-  function evIcon(k){ if (k === 'mimic') return '<img class="evi mimicevi" src="img/p/mimic.png" alt="">'; var key = k === 'campfire' ? 'ev_campfire_i' : k === 'oddeven' || k === 'groll' ? 'ev_goblin' : 'ev_' + k; return EVIMG[key] ? '<img class="evi" src="img/p/' + key + '.png" alt="">' : ({ dais: '⬢', campfire: '🔥', fairy: '🧚', merchant: '🧳', chest: '🧰', altar: '✦', mobs: '👾', goblin: '💰', merc: '📜' })[k] || '❔'; }
+  function evIcon(k){ if (k === 'altar') return '<img class="evi" src="img/p/ui_transcend.png" alt="">'; if (k === 'mimic') return '<img class="evi mimicevi" src="img/p/mimic.png" alt="">'; var key = k === 'campfire' ? 'ev_campfire_i' : k === 'oddeven' || k === 'groll' ? 'ev_goblin' : 'ev_' + k; return EVIMG[key] ? '<img class="evi" src="img/p/' + key + '.png" alt="">' : ({ dais: '⬢', campfire: '🔥', fairy: '🧚', merchant: '🧳', chest: '🧰', altar: '✦', mobs: '👾', goblin: '💰', merc: '📜' })[k] || '❔'; }
   function renderHeroes(){
     var html;
     if (cdxTab === 'lv'){ var PLD = D.player || {}, me = plv(), GC = D.gradeColor || {}, odds = function(w){ if (!w) return '-'; var s = w.reduce(function(a, b){ return a + b; }, 0) || 1; return w.map(function(v, i){ return '<i style="color:' + (GC[i + 1] || '#ccc') + '">' + Math.round(v * 100 / s) + '</i>'; }).join(''); };
@@ -3975,7 +3975,7 @@ img.rimg{image-rendering:auto!important}
   // S.adv = { up }: 끝난 전투의 뒤처리. up이면 다음 스테이지로. 룰렛·진 판 전리품 카드를 다 닫은 뒤 한 번만
   function applyAdv(noRender){ var A = S.adv; if (!A) return; S.adv = null;
     if (A.up){ S.stage++; S.best = Math.max(S.best || 0, S.stage); }
-    S.event = nextEvent(A.up); S.bell = 0; S.bellGold = 0; if (A.up || A.cleared){ restock(); S.bellPaid = 0; } // 지면 상점 그대로, 종 골드 받은 횟수도 그대로
+    S.event = S.stage < E.stageCount(D) ? nextEvent(A.up) : null; S.bell = 0; S.bellGold = 0; if (A.up || A.cleared){ restock(); S.bellPaid = 0; } // 지면 상점 그대로, 종 골드 받은 횟수도 그대로
     save(); if (!noRender) renderAll(); }
   function exitOffer(){
     if (!S.offer || !S.offerDecided || S.pending) return;
@@ -4434,6 +4434,8 @@ img.rimg{image-rendering:auto!important}
       var r = b.getBoundingClientRect(); L.style.top = (r.bottom + 4) + 'px'; L.style.left = Math.max(4, Math.min(r.left, innerWidth - L.offsetWidth - 4)) + 'px'; });
     L.addEventListener('click', function(e){ var t = e.target.closest('[data-jump]'); if (t) jumpStage(+t.dataset.jump); });
     document.addEventListener('pointerdown', function(e){ if (!L.hidden && !L.contains(e.target) && !b.contains(e.target)) L.hidden = true; }, true); })();
+  (function(){ var caps = [['spdBtn', 'Q'], ['skipBtn', 'W'], ['punchBtn', 'E']].map(function(c){ var e = document.createElement('i'); e.className = 'keycap'; e.style.fontStyle = 'normal'; e.textContent = c[1]; e.hidden = true; document.querySelector('.app').appendChild(e); return [c[0], e]; });
+    setInterval(function(){ var a = document.querySelector('.app').getBoundingClientRect(), k = a.width / 960, H = $('hud').getBoundingClientRect(); caps.forEach(function(c){ var b = $(c[0]), r = b.getBoundingClientRect(); c[1].hidden = !r.width; if (!r.width) return; c[1].style.left = (r.left - a.left + r.width / 2) / k + 'px'; c[1].style.top = (H.top - a.top) / k - 13 + 'px'; c[1].classList.toggle('off', b.disabled); }); }, 300); })();
   /* 단축키 (2026-11-26 사용자): 스페이스=전투 시작, Q 배속, W 스킵, E 원펀치. 회색·숨김 버튼은 안 먹고, 창이 떠 있으면 전투를 시작하지 않음 */
   function keyWinOpen(){ return shopOpen() || ['hinfo', 'roul', 'chestPop', 'mimicPop', 'mobLoot', 'bagOver', 'evWin', 'lvPop', 'res', 'resPop', 'trWin', 'jumpList'].some(function(id){ var x = $(id); return x && !x.hidden && x.getClientRects().length > 0; }) || !!document.querySelector('.gover:not([hidden])'); }
   document.addEventListener('keydown', function(e){ var id = { Space: 'fightBtn', KeyQ: 'spdBtn', KeyW: 'skipBtn', KeyE: 'punchBtn' }[e.code], t = e.target;
@@ -5185,20 +5187,22 @@ img.rimg{image-rendering:auto!important}
   function clearCheck(){ evCount(); var o = $('credits'), end = S && S.stage >= E.stageCount(D) && !(LIFE_ON && S.life <= 0) && !bt && !S.offer && !S.pending && !S.mobPend && !S.mimicPend && !S.adv && $('roul').hidden && !($('mimicPop') && !$('mimicPop').hidden), A = $('arena');
     A.classList.toggle('ending', !!end); if (!end){ if (o) o.remove(); return; } if (o) return; hideInfo(); if (shopOpen()) setShop(false);
     var RS = S.runStats || runStats0(), q = function(t){ return String(t || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;'); };
-    var st = [['얻은 영웅', RS.heroes + '명'], ['승 / 패', RS.wins + ' / ' + (RS.battles - RS.wins)], ['처치한 적', (RS.kills || 0).toLocaleString()], ['플레이 시간', Math.floor(RS.playMs / 3600000) + ':' + ('0' + Math.floor(RS.playMs / 60000) % 60).slice(-2)]];
-    var team = (RS.lastTeam || []).filter(function(x){ return E.heroById(D, x.id); }).map(function(x){ return '<span class="crh">' + heroFr(x.id, x.star, x.tr) + hero(x.id).name + '</span>'; }).join('');
+    var st = [['얻은 영웅', RS.heroes + '명'], ['승 / 패', RS.wins + ' / ' + (RS.battles - RS.wins)], ['처치한 적', (RS.kills || 0).toLocaleString()], ['구매한 상품', (RS.bought || 0) + '개'], ['플레이 시간', Math.floor(RS.playMs / 3600000) + ':' + ('0' + Math.floor(RS.playMs / 60000) % 60).slice(-2)]];
+    /* MVP: 이번 판 전체 합계. 값이 0인 상은 뺌 */ var by = RS.by || {}, mvp = function(key){ var best = null; Object.keys(by).forEach(function(id){ if (E.heroById(D, id) && by[id][key] > 0 && (!best || by[id][key] > by[best][key])) best = id; }); return best; };
+    var mv = function(key, label, unit, cls){ var id = mvp(key); return id ? '<span class="crh ' + (cls || '') + '"><b>' + label + '</b>' + heroFr(id, 0) + '<i>' + hero(id).name + '</i><small>' + unit(Math.round(by[id][key]).toLocaleString()) + '</small></span>' : ''; };
+    var top = mv('dealt', '피해 MVP', function(v){ return '총 피해 ' + v; }, 'big'), sub = mv('taken', '방어 MVP', function(v){ return '받은 피해 ' + v; }) + mv('healed', '회복 MVP', function(v){ return '회복 ' + v; }) + mv('ults', '스킬 MVP', function(v){ return '궁극기 ' + v + '회'; });
     var evs = Object.keys(RS.events || {}).filter(function(k){ return (D.events.info || {})[k]; }).map(function(k){ return '<span title="' + q(D.events.info[k].name) + '">' + evIcon(k) + '×' + RS.events[k] + '</span>'; }).join('');
-    var rel = (S.skills || []).map(function(x){ return '<i data-tipsk="' + x.id + '" data-tiplv="' + (x.lv || 1) + '" data-tipside="A"><img src="img/p/skill_' + x.id + '.png" alt=""></i>'; }).join('');
     o = document.createElement('div'); o.id = 'credits';
-    o.innerHTML = '<div class="crscroll"><div class="crin"><h2>모험 완료!</h2><div class="crst">' + st.map(function(r){ return '<span>' + r[0] + '</span><b>' + r[1] + '</b>'; }).join('') + '</div>' + (team ? '<div><h3>함께한 영웅</h3><div class="crteam">' + team + '</div></div>' : '') + (evs ? '<div><h3>만난 이벤트</h3><div class="crev">' + evs + '</div></div>' : '') + (rel ? '<div><h3>모은 유물</h3><div class="crrel">' + rel + '</div></div>' : '') + '</div></div><button class="rpok" type="button">처음부터</button>';
+    o.innerHTML = '<div class="crscroll"><div class="crin"><h2>모험 완료!</h2><div class="crst">' + st.map(function(r){ return '<span>' + r[0] + '</span><b>' + r[1] + '</b>'; }).join('') + '</div>' + (evs ? '<div><h3>만난 이벤트</h3><div class="crev">' + evs + '</div></div>' : '') + (top || sub ? '<div class="crmvp">' + top + '<div>' + sub + '</div></div>' : '') + '</div></div><button class="rpok" type="button">처음부터</button>';
     A.appendChild(o); o.querySelector('.rpok').onclick = function(ev){ ev.stopPropagation(); newRun(); };
-    var sc = o.querySelector('.crscroll'), box = o.querySelector('.crin'), finish = function(){ box.style.transform = ''; o.classList.add('end'); sc.scrollTop = sc.scrollHeight; };
+    var sc = o.querySelector('.crscroll'), box = o.querySelector('.crin'), run = null, finish = function(){ box.style.transform = ''; o.classList.add('end'); sc.scrollTop = sc.scrollHeight; A.classList.remove('marching'); if (run){ run.cancel(); run = null; } };
     /* 끝난 뒤 마우스로 끌어서도 스크롤 (휠·터치는 기본 동작) */
     var drag = null; sc.addEventListener('pointerdown', function(ev){ if (o.classList.contains('end') && ev.pointerType === 'mouse'){ drag = { y: ev.clientY, t: sc.scrollTop }; sc.setPointerCapture(ev.pointerId); } });
     sc.addEventListener('pointermove', function(ev){ if (drag) sc.scrollTop = drag.t - (ev.clientY - drag.y) / (sc.getBoundingClientRect().height / (sc.offsetHeight || 1)); }); ['pointerup', 'pointercancel'].forEach(function(t){ sc.addEventListener(t, function(){ drag = null; }); });
     if (RS.credits || !box.animate || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)){ finish(); return; }
-    var B = o.clientHeight, y0 = Math.round(B * .45), y1 = Math.min(0, B - 70 - box.offsetHeight), an = box.animate([{ transform: 'translateY(' + y0 + 'px)' }, { transform: 'translateY(' + y1 + 'px)' }], { duration: Math.max(1000, (y0 - y1) / 34 * 1000), easing: 'linear', fill: 'forwards' }); an.onfinish = function(){ an.cancel(); finish(); RS.credits = true; save(); };
-    o.addEventListener('click', function(){ if (!o.classList.contains('end')) an.playbackRate = 7; });
+    var B = o.clientHeight, y0 = Math.round(B * .45), y1 = Math.min(0, B - 70 - box.offsetHeight), T = Math.max(1000, (y0 - y1) / 34 * 1000), an = box.animate([{ transform: 'translateY(' + y0 + 'px)' }, { transform: 'translateY(' + y1 + 'px)' }], { duration: T, easing: 'linear', fill: 'forwards' }); an.onfinish = function(){ an.cancel(); finish(); RS.credits = true; save(); };
+    /* 같은 길이: 85%까지 일정하게, 마지막 15%에서 감속. 화면 너비의 정수배를 흘러 처음 배경에서 멈춤 */ var fd = $('field'), dist = Math.max(1, Math.round(T / 2800)) * fd.clientWidth; A.classList.add('marching'); run = fd.animate([{ backgroundPositionX: '0px', offset: 0 }, { backgroundPositionX: -dist * .919 + 'px', offset: .85, easing: 'cubic-bezier(.33,.66,.66,1)' }, { backgroundPositionX: -dist + 'px', offset: 1 }], { duration: T, fill: 'forwards' });
+    o.addEventListener('click', function(){ if (o.classList.contains('end')) return; an.playbackRate = 7; if (run) run.playbackRate = 7; fd.querySelectorAll('.unit[data-uid] .slot').forEach(function(x){ x.getAnimations().forEach(function(m){ m.playbackRate = 2; }); }); });
     fwFx(o, function(){ return true; }); var host = o.querySelector(':scope > .rfw'); [250, 600, 950, 1350].forEach(function(d){ setTimeout(function(){ if (host && host.isConnected) fwShot(host); }, d); }); }
   function newRun(){ var keep = { modules: S.modules || {}, ui: S.ui };
     var n = fresh(); n.modules = keep.modules; if (keep.ui) n.ui = keep.ui; n.skills = []; n.mana = 0; n.xp = 0; n.life = D.life ? D.life.max : 10; n.streak = 0; n.bell = 0; n.bellGold = 0; n.bellPaid = 0;
@@ -5206,7 +5210,7 @@ img.rimg{image-rendering:auto!important}
   function finishBattle(){
     if (!bt) return;
     $('skipBtn').disabled = true; renderDps();
-    var r = bt.finish(), st = E.stageTeam(D, curStage, curEv, curBell, curPlv), html = '', reward = 0, gain = ''; if (S.runStats){ S.runStats.battles++; if (r.win) S.runStats.wins++; S.runStats.kills += r.units.filter(function(x){ return x.side === 'E' && !x.alive && !x.escaped; }).length; }
+    var r = bt.finish(), st = E.stageTeam(D, curStage, curEv, curBell, curPlv), html = '', reward = 0, gain = ''; if (S.runStats){ S.runStats.battles++; if (r.win) S.runStats.wins++; S.runStats.kills += r.units.filter(function(x){ return x.side === 'E' && !x.alive && !x.escaped; }).length; bt.A.forEach(function(u){ var s = u.stats; if (!s || !E.heroById(D, u.id)) return; var t = S.runStats.by[u.id] || (S.runStats.by[u.id] = { dealt: 0, taken: 0, healed: 0, ults: 0 }); for (var k in t) t[k] += s[k] || 0; }); /* MVP 집계: 합성으로 사라진 영웅도 남음 */ }
     save(); // 경험치는 처치할 때마다 이미 더했어요
     var chestDone = !!(curEv && curEv.kind === 'chest' && E.chestReward), advanced = false;
     if (curEv && curEv.kind === 'mimic' && E.mobLoot){ var ml = [].concat.apply([], E.mobLoot(st, r.units) || []).filter(Boolean), mk = r.units.filter(function(x){ return x.side === 'E' && !x.alive && !x.escaped; }).map(function(x){ return x.id === 'mimic' && x.slot % 2 ? 'mimic:g2' : x.id; }); /* 전장에서 본 색 그대로 */
@@ -5230,7 +5234,7 @@ img.rimg{image-rendering:auto!important}
         (!cr.tier ? '<div class="evgain miss">상자가 사라졌어요</div>' : '');
     } else if (r.win){
       reward = E.stageReward ? E.stageReward(D, curStage, curBell, curEv, curPlv) : Math.round(D.campaign.reward.base * Math.pow(D.campaign.reward.growth, curStage));
-      if (curStage === S.stage){ var capBefore = cap(); S.gold += reward; advanced = true; offerIds = S.offerIds = E.lootPool(D, st, Math.random, curPlv); S.offerBonus = bonusMap(st.team); S.offer = offerIds[E.lootPick(D, offerIds, curPlv, Math.random)]; S.offerPlv = curPlv; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; gain = '<div id="gainBox"></div>'; }
+      if (curStage === S.stage){ var capBefore = cap(); S.gold += reward; advanced = true; if (curStage < E.stageCount(D) - 1){ offerIds = S.offerIds = E.lootPool(D, st, Math.random, curPlv); S.offerBonus = bonusMap(st.team); S.offer = offerIds[E.lootPick(D, offerIds, curPlv, Math.random)]; S.offerPlv = curPlv; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; gain = '<div id="gainBox"></div>'; } /* 최종 보스는 전리품 룰렛 없음 (2026-11-26 사용자) */ }
       if (LIFE_ON){ S.streak = 0; if (st.boss && D.life.recoverOnBoss && S.life < D.life.max){ S.life = Math.max(S.life, D.life.max); setTimeout(function(){ toast('보스를 깼어요! 체력이 모두 찼어요'); }, 600); } }
       if (curEv && curEv.kind === 'goblin' && bt.E.some(function(u){ return u.h.mob === 'goblin' && !u.alive && !u.escaped; })){ var gb2 = Math.round(reward * D.events.goblin.goldMul); S.gold += gb2; gain += '<div class="evgain">' + (EVIMG.ev_goblin ? '<img class="evi" src="img/p/ev_goblin.png" alt="">' : '💰 ') + '돈고블린 +' + gb2.toLocaleString() + ' G</div>'; }
       else if (curEv && curEv.kind === 'goblin') gain += '<div class="evgain miss">💨 돈고블린이 도망쳤어요</div>';
@@ -5264,6 +5268,7 @@ img.rimg{image-rendering:auto!important}
     $('again').onclick = function(){ closeBattle(); };
     if (r.win && !chestDone){ $('res').hidden = true; var gFrom = goldStart, gTo = S.gold;
       goldCount(gFrom, gTo);
+      if (curStage === E.stageCount(D) - 1){ setTimeout(function(){ closeBattle(); renderAll(); }, skipNow ? 0 : 650); return; } /* 최종: 행진은 모험 완료 장면이 이어받음 */
       scrollPend = true; winAfter = function(){ stageScroll(); };
       if (skipNow){ closeBattle(); setTimeout(function(){ if (S.offer) startRoulette(offerIds, S.offer); else { showEvWin(); tryWinAfter(); } }, 200); return; }
       setTimeout(function(){ closeBattle(); if (S.offer) startRoulette(offerIds, S.offer); else { showEvWin(); tryWinAfter(); } }, 650); return; }
@@ -5561,14 +5566,14 @@ img.rimg{image-rendering:auto!important}
     if (shopSel.t === 'merch'){ var wo = merchOffer(), mi = shopSel.i, it = wo && wo.stock[mi]; if (!it || wo.bought.indexOf(mi) >= 0) return; var payM = it.cur === 'mana'; if ((payM ? (S.mana || 0) : S.gold) < it.price) return;
       if (it.type === 's'){ if (!E.canTake(D, S.skills, it.id, PK().skillSlots)) return; E.takeSkill(D, S.skills, it.id); skKey = ''; }
       else recruitFrom(it.id); // 산 것은 HUD·백팩에 바로 보여서 구매 알림은 없어요
-      if (payM) S.mana = (S.mana || 0) - it.price; else S.gold -= it.price; wo.bought.push(mi); save(); renderAll(); return; }
+      if (payM) S.mana = (S.mana || 0) - it.price; else S.gold -= it.price; wo.bought.push(mi); if (S.runStats) S.runStats.bought++; save(); renderAll(); return; }
     if (shopSel.t === 'hero'){ var hj = shopSel.i, hb = (S.shop.heroes || [])[hj]; if (!hb || (S.shop.hsold || []).indexOf(hj) >= 0 || S.gold < hb.price) return;
-      S.gold -= hb.price; S.shop.hsold = (S.shop.hsold || []).concat([hj]); shopSel = null; recruitFrom(hb.id); save(); renderAll(); return; } // 방랑상인 영웅 구매와 같은 경로 (백팩/전장)
+      S.gold -= hb.price; S.shop.hsold = (S.shop.hsold || []).concat([hj]); shopSel = null; recruitFrom(hb.id); if (S.runStats) S.runStats.bought++; save(); renderAll(); return; } // 방랑상인 영웅 구매와 같은 경로 (백팩/전장)
     if (shopSel.t !== 'stock') return;
     var i = shopSel.i, id = S.shop.stock[i], c = buyPrice(id);
     if (S.shop.sold.indexOf(i) >= 0 || !E.canTake(D, S.skills, id, PK().skillSlots) || !canPay(c)) return;
     S.shop.soldRow = S.shop.soldRow || {}; S.shop.soldRow[i] = c.mana > 0 ? 'm' : 'g'; S.shop.soldCost = S.shop.soldCost || {}; S.shop.soldCost[i] = c; // 품절 칸이 이 줄에 그대로 남게
-    var had = myLv(id) > 0, ut = had ? upText(id) : ''; S.gold -= c.gold || 0; S.mana = (S.mana || 0) - (c.mana || 0); E.takeSkill(D, S.skills, id); S.shop.sold.push(i); skKey = ''; save(); renderAll(); // 구매·등급업 알림 없음
+    var had = myLv(id) > 0, ut = had ? upText(id) : ''; S.gold -= c.gold || 0; S.mana = (S.mana || 0) - (c.mana || 0); E.takeSkill(D, S.skills, id); S.shop.sold.push(i); skKey = ''; if (S.runStats) S.runStats.bought++; save(); renderAll(); // 구매·등급업 알림 없음
   });
 
   // ───── 플레이어 경험치 바 (화면 맨 아래) ─────
