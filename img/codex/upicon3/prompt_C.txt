@@ -1,0 +1,11 @@
+Look at img/codex/upicon2/sheet_raw.png : our approved icon set. Draw new icons in EXACTLY the same style: chunky pixel art with large hard square pixels designed on a 24 x 24 grid, the same thick very dark brown outline, 3 flat tones per color with the light from the top left, rich saturated colors, very few big shapes, no thin details.
+
+Generate ONE new image with your image generation tool and save it as img/codex/upicon3/sheet_C.png.
+
+Layout: 3 icons, in one row, every icon about the same size and filling its square cell, with WIDE empty magenta gaps between neighbouring icons so they never touch. Reading order:
+1. a wizard's pointed blue hat with a gold star shape and a gold band
+2. a golden lute (round-bodied string instrument), diagonal
+3. three steel swords with gold hilts fanned out like a bundle, points up
+
+[Format] Plain solid #FF00FF magenta background everywhere else (also through holes). No frames, no text, no letters, no drop shadow, no glow. Do not use pink or purple colors close to magenta.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

@@ -1,0 +1,18 @@
+Look at img/codex/upicon2/sheet_raw.png : our approved icon set. Draw new icons in EXACTLY the same style: chunky pixel art with large hard square pixels designed on a 24 x 24 grid, the same thick very dark brown outline, 3 flat tones per color with the light from the top left, rich saturated colors, very few big shapes, no thin details.
+
+Generate ONE new image with your image generation tool and save it as img/codex/upicon3/sheet_B.png.
+
+Layout: 10 icons, in 2 rows of 5, every icon about the same size and filling its square cell, with WIDE empty magenta gaps between neighbouring icons so they never touch. Reading order:
+1. a small fairy: pale blue wings with a golden-haired little head and body
+2. a flying carpet: red rug with gold border and tassels, gently waving, seen from the front at a slant
+3. a green goblin face holding a big gold coin
+4. a mimic: a wooden treasure chest monster with open lid, sharp white teeth and a red tongue
+5. a closed ornate treasure chest, wood with gold bands and a gold lock
+6. an open treasure chest overflowing with gold coins and a blue gem
+7. a knight's steel helmet with a red plume (front view)
+8. a double-bladed steel battle axe with a wooden handle, diagonal
+9. an assassin: a dark navy hood and mask with two glowing yellow eyes
+10. a wooden bow with a nocked arrow, diagonal
+
+[Format] Plain solid #FF00FF magenta background everywhere else (also through holes). No frames, no text, no letters, no drop shadow, no glow. Do not use pink or purple colors close to magenta.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
