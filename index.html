@@ -2448,6 +2448,9 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
 #arena:not(.evstage) #fightBtn:active:not(:disabled),#arena.evstage .evacts .evact:active:not(:disabled),#arena.evstage #altGoBtn:active:not(:disabled){padding-bottom:1px!important}
 #arena.evstage .evacts .evact > b,#arena.evstage #altGoBtn > b{line-height:1!important;color:#3a2208!important;text-shadow:0 1px 0 #ffe9a8!important}
 #arena.evstage .evacts .evact:disabled > b,#arena.evstage #altGoBtn:disabled > b{color:#ece6f2!important;text-shadow:-1px 0 #3a3442,1px 0 #3a3442,0 -1px #3a3442,0 1px #3a3442!important}
+/* 전장 칸 안쪽을 전투 캔버스와 같은 720:400 비율로(765x425): 예전 774x422는 2% 비율이 달라 전투 때 세로로 눌려 전환 순간 모양이 바뀜 (2026-11-26 사용자) */
+#arena{aspect-ratio:auto!important;width:783px!important;height:443px!important;justify-self:center}
+#field .slot.on .av.olb,#field .foe .av.olb{translate:0 var(--fdy,0px)}
 </style>
 </head>
 <body>
@@ -2960,7 +2963,7 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
     bc.style.marginTop = Math.round(top / k) + "px"; bc.style.height = ar.offsetHeight + "px";
     // 룰렛 팝업: 앱 전체가 아니라 게임 화면(전장) 가운데에 오도록 덮개를 전장 크기에 맞춰요
     var rl = $("roul"), app = document.querySelector(".app"); if (rl && app){ var a2 = ar.getBoundingClientRect(), p2 = app.getBoundingClientRect(); rl.style.inset = "auto"; rl.style.left = Math.round((a2.left - p2.left) / k) + "px"; rl.style.top = Math.round((a2.top - p2.top) / k) + "px"; rl.style.width = Math.round(a2.width / k) + "px"; rl.style.height = Math.round(a2.height / k) + "px"; rl.style.justifyContent = "center"; } }
-  function fitUnit(){ alignBtnCol(); if (!$('field')) return; var fw = $('field').clientWidth; QC.t = -1e9; if (fw) $('field').style.setProperty('--u', (fw * unitPx(false) / 720).toFixed(3) + 'px'); var qk = Math.round(unitPx(false) * 100); if (Math.abs(qR() - Math.round(qR())) < .02) delete document.documentElement.dataset.smooth; else document.documentElement.dataset.smooth = '1'; /* 속성이 비어 있어도 있으면 부드럽게가 걸리므로 정수배면 지움 */ if (QK_last !== null && qk !== QK_last){ QK_last = qk; try { renderAll(); } catch (e) {} } QK_last = qk; }
+  function fitUnit(){ alignBtnCol(); if (!$('field')) return; var fw = $('field').clientWidth; QC.t = -1e9; if (fw) $('field').style.setProperty('--u', (fw * unitPx(false) / 720).toFixed(3) + 'px'); if (fw){ var Dd = unitPx(false) * devPerUnit(), sd = sApp() * (window.devicePixelRatio || 1); $('field').style.setProperty('--fdy', ((Dd - Math.round(.96 * Dd)) / sd).toFixed(3) + 'px'); } /* 전투 캔버스는 그림 발밑을 foot + 4%에 둠 -> 편성도 같은 만큼 내려 전환 때 안 튀게 */ var qk = Math.round(unitPx(false) * 100); if (Math.abs(qR() - Math.round(qR())) < .02) delete document.documentElement.dataset.smooth; else document.documentElement.dataset.smooth = '1'; /* 속성이 비어 있어도 있으면 부드럽게가 걸리므로 정수배면 지움 */ if (QK_last !== null && qk !== QK_last){ QK_last = qk; try { renderAll(); } catch (e) {} } QK_last = qk; }
   var QK_last = null;
   window.addEventListener('resize', fitUnit);
   // 편성 화면 막대: 전장(720×400 논리 좌표)과 같은 크기의 캔버스를 덮어 그려요. 체력은 가득, 에너지는 0
@@ -3833,6 +3836,7 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
       var bgY = OFF + 321 - BG.naturalHeight * bgK; /* 아래 맞춤: 107줄이면 OFF부터, 134줄이면 맨 위(0)까지 덮어요 */ if (bgY > 0){ ctx.fillStyle = "#b8a0a6"; ctx.fillRect(0, 0, W, bgY + 1); } var bsx = march ? Math.round(march.sx) : 0; ctx.drawImage(BG, -bsx, bgY, BG.naturalWidth * bgK, BG.naturalHeight * bgK); if (bsx) ctx.drawImage(BG, W - bsx, bgY, BG.naturalWidth * bgK, BG.naturalHeight * bgK);
       var ENd = D.battle.enrage, dk0 = ENd && ENd.dusk != null && bt && !bt.result ? Math.max(0, Math.min(1, ((bt.time || 0) - ENd.dusk) / Math.max(1, ENd.at - ENd.dusk))) : 0; if (dk0 > 0 && BGD.complete && BGD.naturalWidth){ ctx.globalAlpha = dk0; ctx.drawImage(BGD, -bsx, bgY, BGD.naturalWidth * bgK, BGD.naturalHeight * bgK); if (bsx) ctx.drawImage(BGD, W - bsx, bgY, BGD.naturalWidth * bgK, BGD.naturalHeight * bgK); ctx.globalAlpha = 1; } /* 낮 → 노을 크로스페이드 (30~40초). 밤은 이 위에 밤 색을 덮음 */ }
     var EN2 = D.battle.enrage, night = !!(EN2 && bt && !bt.result && (bt.time || 0) > EN2.at); nightA += ((night ? 1 : 0) - nightA) * Math.min(1, el * 1.5); if (nightA > .01){ ctx.fillStyle = "rgba(10,14,44," + (.55 * nightA).toFixed(3) + ")"; ctx.fillRect(0, 0, W, H); } /* 광폭화: 배경만 어두운 밤 (캐릭터는 이 뒤에 그려서 그대로) */ if (night && bt && !bt._nightMsg){ bt._nightMsg = 1; nightNotice(); }
+    var tg = ctx.createLinearGradient(0, 0, 0, H * .62); [[0, .55], [.3, .25], [.7, .08], [1, 0]].forEach(function(s){ tg.addColorStop(s[0], 'rgba(12,10,18,' + s[1] + ')'); }); ctx.fillStyle = tg; ctx.fillRect(0, 0, W, H * .62); /* 편성 화면 #field::before와 같은 위쪽 어둠: 전투 시작 때 하늘 밝기가 안 바뀌게 */
     drawCloud(ctx); /* 구름 그림자: 바닥 위, 캐릭터 아래(캐릭터는 drawUnit에서 같은 밀도로) */
     // 스테이지 줄은 HUD 오른쪽에 있어요
     if (flash > 0){ flash -= el; ctx.fillStyle = 'rgba(255,255,255,' + Math.max(0, flash) + ')'; ctx.fillRect(0, 0, W, H); }
