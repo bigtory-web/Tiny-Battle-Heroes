@@ -2677,7 +2677,7 @@ html[data-smooth] .av.pic.olb[data-oid]{image-rendering:auto!important}
   var BG = new Image(), BGD = new Image(); /* 낮·노을 배경 */
   var FG = new Image(), FGD = new Image(), FGN = new Image(); FG.src = 'img/p/fg_field.png'; FGD.src = 'img/p/fg_field_dusk.png'; FGN.src = 'img/p/fg_field_night.png'; /* 앞쪽 아래 장식(720×80): 캐릭터보다 앞. 2026-11-26 */
   /* 배경을 BGUP px 위로 올림(2026-11-26 사용자: 9칸이 뒷배경 바위와 겹쳐 보임). 아래 빈 띠는 맨 아래 땅을 뒤집어 이어 붙임. 전투 캔버스와 편성 화면이 같은 합성 그림을 씀 */
-  var BGUP = 48; /* 30 -> 48 (2026-11-26): 윗줄 칸이 절벽 밑동 풀과 아직 겹침 */
+  var BGUP = 66; /* 30 -> 48 -> 66 (2026-11-26 사용자 선택): 윗줄 칸 전체가 흙 위에 */
   function bgRaise(src, done){ var im = new Image(); im.onload = function(){ var c = document.createElement('canvas'); c.width = im.width; c.height = im.height; var x = c.getContext('2d'); x.drawImage(im, 0, -BGUP); x.translate(0, im.height); x.scale(1, -1); x.drawImage(im, 0, im.height - BGUP, im.width, BGUP, 0, 0, im.width, BGUP); c.complete = true; c.naturalWidth = c.width; c.naturalHeight = c.height; done(c); }; im.src = src; }
   bgRaise('img/p/bg_field.png', function(c){ BG = c; try { var st = document.createElement('style'); st.textContent = '.field{background:url(' + c.toDataURL() + ') 50% 50% / 100% 100.5% no-repeat,#b8a0a6}'; document.head.appendChild(st); } catch (e) {} });
   bgRaise('img/p/bg_field_dusk.png', function(c){ BGD = c; });
