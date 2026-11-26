@@ -1,0 +1,11 @@
+Look at img/codex/potion/life24.png and img/codex/potion/life_src.png : the first potion icon of a set (heart bottle, green liquid, heart sticker). Make the next potion of the SAME set in exactly the same pixel-art style: same pixel size, same dark brown 1px outline, same glass rim colors, same cork, same cream paper sticker, same highlight.
+
+- bottle shape: a wide TRIANGULAR conical flask
+- liquid color: RED liquid (muted, not neon), filled about three quarters
+- front sticker: a cream paper label in the middle with a WOLF HEAD silhouette drawn on it in one strong dark color that contrasts with the cream, simple and readable at tiny size
+
+The whole bottle including cork must be at most 22 art pixels wide and 24 art pixels tall (each art pixel 40 real pixels in a 1024x1024 image).
+
+Generate ONE new image with your image generation tool and save it as img/codex/potion/wolf_src.png
+Large crisp square pixels, no anti-aliasing, no gradients, no shadow, flat solid #FF00FF magenta background, no text.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

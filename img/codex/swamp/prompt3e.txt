@@ -1,0 +1,13 @@
+Look at two images:
+- img/codex/swamp/swamp3_src_v3.png : our mangrove swamp battle background with the big roots showing. This is the picture to edit.
+- img/p/frog.png : one of our game characters, to show the chunky pixel-art style of the game.
+
+Edit the first image and save the result as img/codex/swamp/swamp3_src.png.
+
+1) Hide most of the big roots, but with a FEW LARGE shapes, not many small ones: only 3 or 4 big, bold leafy masses (large low mangrove crowns / big rounded foliage clumps), each about as wide as one of the big trees' root bases, placed in front of the root bases. No rows of little trees, no scattered small bushes, no lots of thin reeds. The big shapes have different sizes and uneven spacing.
+
+2) Redraw the whole picture as REAL PIXEL ART with clearly visible square pixels: draw it as if on a 360 x 202 pixel canvas and scaled up with nearest-neighbour. Hard pixel edges, flat color clusters, limited palette of about 40 colors, simple 3-tone shading, dark outlines on the foreground shapes, pixel dithering only in the sky and water. No anti-aliasing, no smooth gradients, no painterly texture, no tiny noisy detail.
+
+Keep the same composition: sky and clouds, big tree crowns and trunks, the water band with lily pads, the flat calm mud ground with the small puddles at the left and right edges, and the same colors.
+
+No characters, no text, no UI. Same aspect ratio. Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

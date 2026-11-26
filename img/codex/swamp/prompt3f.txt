@@ -1,0 +1,14 @@
+Look at:
+- img/codex/swamp/swamp3_src_v5.png : our mangrove swamp background in pixel art. This is the picture to refine.
+- img/p/bg_field.png : our chapter 1 background. Match its level of detail in the foliage.
+
+Refine the first image and save the result as img/codex/swamp/swamp3_src.png. Keep the same composition, colors, clearly visible square pixels and hard edges (no anti-aliasing, no smooth gradients).
+
+Change only:
+- the four large front bushes look like the same flat stamped blob. Make them large mangrove foliage masses with readable leaf clusters and 4-tone shading, each with a clearly different silhouette, height and width, spacing uneven; a few short roots or a little water reflection under them. Still only a few LARGE shapes, no small trees or reeds.
+- the big tree crowns and trunks: a bit more leaf-cluster and bark detail, similar richness to the chapter 1 picture.
+- outlines: very dark green or dark brown instead of near-black, thinner.
+- mud ground: calmer, fewer flat patches.
+- pixel size slightly finer: like a 480 x 270 pixel-art canvas scaled up.
+
+No characters, no text, no UI. Same aspect ratio. Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
