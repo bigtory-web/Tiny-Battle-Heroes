@@ -2576,7 +2576,7 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 .upword{position:fixed;z-index:9999;transform:translate(-50%,-100%);pointer-events:none;font-family:var(--display);font-weight:400;line-height:1;color:#ffd34d;white-space:nowrap;text-shadow:2px 0 #17141d,-2px 0 #17141d,0 2px #17141d,0 -2px #17141d,2px 2px #17141d,-2px -2px #17141d,2px -2px #17141d,-2px 2px #17141d;animation:upword .9s ease-out both}
 #skE .skc.relnew{animation:relnew .6s cubic-bezier(.3,1.7,.5,1) both;z-index:5} @keyframes relnew{0%{transform:scale(0);filter:brightness(3)}55%{transform:scale(1.4);filter:brightness(1.8) drop-shadow(0 0 8px #ffb02e)}100%{transform:scale(1);filter:none}}
 /* 위 가운데 용 버튼 = 단계 등급색: 테두리·바탕·점·용 그림 (2026-11-26 사용자) */
-#bellBtn .cbox,#bellBtn.inbt .cbox,#bellBtn.b3 .cbox{background:color-mix(in srgb,var(--rg,#d9dde8) 30%,#17141d)!important;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px var(--rg,#d9dde8)!important}
+#bellBtn .cbox,#bellBtn.inbt .cbox,#bellBtn.b3 .cbox{background:#17141d!important;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px var(--rg,#d9dde8)!important} /* 바탕은 늘 어둡게, 등급색은 테두리·용·점만 (2026-11-26 사용자) */
 #bellBtn .bdots i.on,#bellBtn.b1 .bdots i.on,#bellBtn.b2 .bdots i.on,#bellBtn.b3 .bdots i.on{background:var(--rg)!important;box-shadow:inset 0 0 0 2px #17141d!important}
 #bellBtn.b0 .bic{filter:grayscale(1) brightness(1.05)} #bellBtn.b1 .bic{filter:grayscale(1) sepia(1) saturate(3.2) hue-rotate(70deg)} #bellBtn.b2 .bic{filter:grayscale(1) sepia(1) saturate(4.2) hue-rotate(170deg)} #bellBtn.b3 .bic{filter:grayscale(1) sepia(1) saturate(4.6) hue-rotate(-10deg)} /* 용 그림 색 임시(필터). 그림 4장이 오면 걷어 냄 */
 /* 모닥불 받을 기회 = 받기 왼쪽 위 작은 딱지(남은/최대), 하늘색 (2026-11-26 사용자: "1번 할인 마크처럼") */
@@ -3001,6 +3001,9 @@ img.rimg{image-rendering:auto!important}
 #tab-shop .stile.lockd em::before,.baglock em::before{display:none!important}
 #tab-shop .srow2 .stile.lockd{background:linear-gradient(#08070b 0 3px,#0e0c13 3px 6px,#131019 6px calc(100% - 3px),#2e2938 calc(100% - 3px))!important;box-shadow:inset 3px 0 0 #08070b,inset -2px 0 0 #2a2533!important}
 #tab-shop .stile.lockd em{color:#f3e6c4!important}
+/* 규칙: 빈 칸은 주변 바탕보다 늘 더 어둡게, "+"는 옅게 (2026-11-26 사용자: "이건 규칙이야") */
+.bagcol .chip.bagempty,.lbag .chip.bagempty{background-color:#140c06!important;box-shadow:inset 0 0 0 1px #4a2f1a,0 0 0 1px #17141d!important} .lbag .chip.bagempty,.bagcol .chip.bagempty{background-image:linear-gradient(#8a6a48,#8a6a48),linear-gradient(#8a6a48,#8a6a48)!important;background-position:center!important;background-repeat:no-repeat!important;background-size:18px 4px,4px 18px!important}
+#skA .skc.empty,#skE .skc.empty,#skA i.skc.empty{background:#0b090f!important;box-shadow:inset 0 0 0 1px #2e2938,0 0 0 1px #17141d!important;opacity:.92!important}
 /* 미믹킹: 보라 52칸 */
 .foe > .mhop.king{width:calc(var(--u) * 52 / 64);background-image:url(img/p/mimic_king_hop.png)}
 #mimicPop .mmc.king{width:78px;height:78px}
