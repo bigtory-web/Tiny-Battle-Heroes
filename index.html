@@ -2589,17 +2589,16 @@ html[data-font="galmuri"]{--display:'GalmuriB',sans-serif;--body:'Galmuri',sans-
 #credits .crmvp{display:flex;flex-direction:column;align-items:center;gap:12px} #credits .crmvp > div{display:flex;justify-content:center;gap:12px} #credits .crh{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;min-width:76px} #credits .crh b{font-weight:400;font-size:13px;color:#ffd34d} #credits .crh i{font-style:normal;font-size:12px;color:#fff} #credits .crh .hic{width:36px!important;height:36px!important;background:#17141d} #credits .crh.big .hic{width:60px!important;height:60px!important} #credits .crh.big b{font-size:17px} #credits .crh.big i{font-size:15px}
 #credits .crev{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 12px;max-width:300px} #credits .crev span{display:flex;align-items:center;gap:3px} #credits .crev img{width:24px!important;height:24px!important;image-rendering:pixelated}
 #credits .rpok{border:0;cursor:pointer;padding:10px 30px;font:700 18px var(--display);white-space:nowrap}
-#credits .rpok{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:none;z-index:5} #credits.end .rpok{display:block} #credits.end{cursor:default}
+#credits .rpok{position:absolute;left:0;right:0;margin:0 auto;width:max-content;bottom:14px;display:none;z-index:5} /* 가운데 맞춤에 transform을 쓰면 눌림(translateY)이 덮어써 버튼이 튐 */ #credits.end .rpok{display:block} #credits.end{cursor:default}
 #credits{top:6px!important;right:6px!important;bottom:6px!important;user-select:none;-webkit-user-select:none} #credits .crscroll{-webkit-mask-image:linear-gradient(transparent,#000 22px,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(transparent,#000 22px,#000 calc(100% - 22px),transparent)} /* 전장 틀 안으로, 위아래는 사라지듯 (2026-11-26 사용자) */
 #credits.end .crscroll{bottom:70px;overflow-y:auto;overscroll-behavior:contain;cursor:grab;touch-action:pan-y;scrollbar-width:thin;scrollbar-color:#8a7652 transparent} #credits.end .crscroll::-webkit-scrollbar{width:6px} #credits.end .crscroll::-webkit-scrollbar-thumb{background:#8a7652;border-radius:0} #credits.end .crscroll::-webkit-scrollbar-track{background:rgba(23,20,29,.4)}
 #credits .rfw{z-index:4}
 /* 끝난 판: 적·막대·전투 UI 숨기고, 우리 영웅은 제자리에서 기뻐함 */
 #arena.ending canvas.fbar,#arena.ending .vsmark,#arena.ending #bellBtn,#arena.ending #abar,#arena.ending #vsBar,#arena.ending #skE,#arena.ending .foe,#arena.ending .dpswrap{visibility:hidden!important}
-#arena.ending #field .hexg,#arena.ending #field .pad,#arena.ending #field .vsmark,#arena.ending #field .cellhl{visibility:hidden!important} /* 끝 장면: 칸 격자·깔개 숨김 */
-#arena.ending.marching #field{background-repeat:repeat-x!important} #arena.ending.marching #field .unit[data-uid] .slot{animation:crrun .22s steps(4) infinite} #arena.ending.marching #field .unit[data-uid]:nth-child(even) .slot{animation-delay:-.11s} #arena.ending.marching #field .unit[data-uid]:nth-child(3n) .slot{animation-delay:-.05s}
-@keyframes crrun{0%,100%{transform:translateY(0) skewX(-7deg)}50%{transform:translateY(-6px) skewX(-10deg)}}
-#arena.ending.marching #field .unit[data-uid]::before{content:"";position:absolute;left:12%;bottom:4px;width:5px;height:5px;background:#d8bfa0;box-shadow:-8px -3px 0 -1px #d8bfa0,-15px 1px 0 -1px #c4a888;animation:crdust .33s steps(3) infinite;pointer-events:none}
-@keyframes crdust{0%{transform:translateX(0);opacity:.9}100%{transform:translateX(-14px) translateY(-4px);opacity:0}}
+#arena.ending #field .pad,#arena.ending #field .vsmark,#arena.ending #field .cellhl{visibility:hidden!important} /* 끝 장면: 깔개·VS 숨김 */
+/* 달리는 동안은 칸 숨김, 멈추면 우리 쪽 칸만 (2026-11-26 사용자) */ #arena.ending.marching #field .hexg{visibility:hidden!important} #arena.ending:not(.marching) #field .hexg{clip-path:inset(0 50% 0 0)}
+/* 멈춘 뒤 제자리에서 신난 점프, 박자 엇갈리게 */ #arena.ending:not(.marching) #field .unit[data-uid] .slot{animation:crjump 1s ease-in-out infinite} #arena.ending:not(.marching) #field .unit[data-uid]:nth-child(even) .slot{animation-delay:-.35s} #arena.ending:not(.marching) #field .unit[data-uid]:nth-child(3n) .slot{animation-delay:-.7s}
+@keyframes crjump{0%,100%{transform:translateY(0)}30%{transform:translateY(-12px)}55%{transform:translateY(0)}70%{transform:translateY(-4px)}85%{transform:translateY(0)}}
 
 /* 패배 팝업 */
 #resPop .dfc{position:relative;width:348px;height:432px;flex:none}
@@ -3595,15 +3594,17 @@ img.rimg{image-rendering:auto!important}
   function foePos(team){ var C = hexCells().E, out = {}; (team || []).forEach(function(u){ out[u.slot] = C[u.slot] || POS.E[u.slot] || POS.E[0]; }); return out; }
   function foeTeamAt(team){ var FP = foePos(team); return team.map(function(u){ var y = {}; for (var k in u) y[k] = u[k]; var p = FP[u.slot]; if (p){ y.x = p[0]; y.y = p[1]; } return y; }); }
   var HEXURL = {};
-  function hexURL(nOpen){ if (HEXURL[nOpen]) return HEXURL[nOpen]; var cv5 = document.createElement('canvas'); cv5.width = W; cv5.height = H; var c = cv5.getContext('2d');
+  function hexURL(nOpen, occ){ occ = occ || ''; if (HEXURL[nOpen + occ]) return HEXURL[nOpen + occ]; var cv5 = document.createElement('canvas'); cv5.width = W; cv5.height = H; var c = cv5.getContext('2d');
     function hex(cx, cy, fill, line){ cx = zx(cx); cy = zy(cy - OFF - FOOT) + OFF + FOOT; var P = [[0, -27], [38, -13], [38, 13], [0, 27], [-38, 13], [-38, -13]]; c.beginPath(); P.forEach(function(q, i){ var x = Math.round(cx + q[0] * CZ) + .5, y = Math.round(cy + q[1] * CZ) + .5; if (i) c.lineTo(x, y); else c.moveTo(x, y); }); c.closePath(); if (fill){ c.fillStyle = fill; c.fill(); } c.strokeStyle = line; c.lineWidth = 1; c.stroke(); }
     var LN = D.battle.arena.lines || [], LF = ['rgba(255,196,120,.26)', 'rgba(255,240,205,.05)', 'rgba(150,180,255,.22)']; // 전방·중반·후반
-    hexCells().A.forEach(function(p, i){ hex(p[0], p[1] + OFF + FOOT, LF[LN[i]] || 'rgba(255,240,205,.10)', 'rgba(255,236,190,.5)'); });
+    /* 빈 칸은 땅보다 어둡게, 영웅이 선 칸은 그대로 (2026-11-26 사용자: 빈 칸 규칙). occ = 우리 9칸 + 적 9칸 */
+    function slot(side, i, p, fill){ if (occ && occ.charAt(side * 9 + i) !== '1'){ hex(p[0], p[1] + OFF + FOOT, 'rgba(16,10,6,.36)', 'rgba(255,236,190,.28)'); fill = fill.replace(/[\d.]+\)$/, function(a){ return (parseFloat(a) * .35).toFixed(3) + ')'; }); hex(p[0], p[1] + OFF + FOOT, fill, 'rgba(0,0,0,0)'); } else hex(p[0], p[1] + OFF + FOOT, fill, side ? 'rgba(255,236,190,.35)' : 'rgba(255,236,190,.5)'); }
+    hexCells().A.forEach(function(p, i){ slot(0, i, p, LF[LN[i]] || 'rgba(255,240,205,.10)'); });
     if (String(nOpen).indexOf('lv1') > 0){ var lsk = String(nOpen).indexOf('skill') > 0; hex(LV1_POS[0], LV1_POS[1] + OFF + FOOT, lsk ? 'rgba(181,140,255,.22)' : 'rgba(127,216,255,.22)', lsk ? 'rgba(200,170,255,.95)' : 'rgba(150,225,255,.95)'); }
     else if (String(nOpen).indexOf('fork') > 0) FORK_POS.forEach(function(p, i){ hex(p[0], p[1] + OFF + FOOT, i ? 'rgba(181,140,255,.22)' : 'rgba(127,216,255,.22)', i ? 'rgba(200,170,255,.95)' : 'rgba(150,225,255,.95)'); });
     else if (String(nOpen).indexOf('alt') > 0) [0, 1, 2, 3, 4, 5, 6, 7, 8].forEach(function(i){ var p = hexCells().E[i]; if (p) hex(p[0], p[1] + OFF + FOOT, LF[LN[i]] || 'rgba(255,240,205,.06)', 'rgba(255,236,190,.35)'); }); /* 제단: 적 쪽 9칸 (건물·단상이 위에 그려져요) */
-    else if (String(nOpen).indexOf('ev') > 0) hexCells().E.forEach(function(p, i){ hex(p[0], p[1] + OFF + FOOT, LF[LN[i]] ? LF[LN[i]].replace(/[\d.]+\)$/, function(a){ return (parseFloat(a) * .6).toFixed(3) + ')'; }) : 'rgba(255,240,205,.06)', 'rgba(255,236,190,.35)'); });
-    return (HEXURL[nOpen] = cv5.toDataURL()); }
+    else if (String(nOpen).indexOf('ev') > 0) hexCells().E.forEach(function(p, i){ slot(1, i, p, LF[LN[i]] ? LF[LN[i]].replace(/[\d.]+\)$/, function(a){ return (parseFloat(a) * .6).toFixed(3) + ')'; }) : 'rgba(255,240,205,.06)'); });
+    return (HEXURL[nOpen + occ] = cv5.toDataURL()); }
   function mixC(a, b, k){ var p = function(s, i){ return parseInt(s.slice(1 + i * 2, 3 + i * 2), 16); }; var o = '#'; for (var i = 0; i < 3; i++){ var v = Math.round(p(a, i) * (1 - k) + p(b, i) * k); o += (v < 16 ? '0' : '') + v.toString(16); } return o; }
   function padIc(el){ return 'img/p/ic_pad_' + (padRace(el) || el) + '.png'; } /* 정면 아이콘 48x48: 아이콘으로 보이는 자리. 큰 칸·전장 깔개는 padURL (2026-11-26 사용자) */
   function padURL(el){ return 'img/p/pad_' + (padRace(el) || el) + '.png'; } /* 단상 그림 94×62 (2026-11-26 확정) */
@@ -3680,7 +3681,7 @@ img.rimg{image-rendering:auto!important}
     setTimeout(function(){ drawFieldBars(fbars); }, 0);
     function padPos(i){ var p = POS.A[i], u = S.team[i], cp = u && S.pos && S.pos[u]; return cp ? [cp.x, cp.y] : [p[0], p[1]]; }
     var vsHtml = noFight() || isLvPick() || isFork() ? '' : '<b class="vsmark" style="left:50%;top:' + (100 * (74 + OFF + FOOT) / H) + '%"><img class="vsv" src="img/p/ui_vs_v.png" alt=""><img class="vss" src="img/p/ui_vs_s.png" alt="V S"></b>'; /* 배치 화면(전투 판)만, 전투가 시작되면 tilesHtml째 빠져요 */
-    var tilesHtml = bt ? '' : vsHtml + '<i class="hexg" style="background-image:url(' + hexURL(PK().field + (isLvPick() ? 'lv1' + lvKind() : isFork() ? 'fork' : isAltar() ? 'alt' : 'ev')) + ')"></i>' + (scrollPend || noFight() ? '' : st.team.filter(function(u){ return u.boss && FP[u.slot]; }).map(function(u){ var q = FP[u.slot]; return '<i class="pad dais" style="left:' + (100 * zx(q[0]) / W) + '%;top:' + (100 * (zy(q[1]) + OFF + FOOT) / H) + '%;background-image:url(' + DAISURL + ')" data-tipt="보스 단상" data-tiptx="' + daisDesc() + '"></i>'; }).join(''));
+    var tilesHtml = bt ? '' : vsHtml + '<i class="hexg" style="background-image:url(' + hexURL(PK().field + (isLvPick() ? 'lv1' + lvKind() : isFork() ? 'fork' : isAltar() ? 'alt' : 'ev'), hexCells().A.map(function(c){ return cellUid(c) ? 1 : 0; }).join('') + hexCells().E.map(function(c){ return !scrollPend && !noFight() && st.team.some(function(u){ var p = FP[u.slot]; return p && p[0] === c[0] && p[1] === c[1]; }) ? 1 : 0; }).join('')) + ')"></i>' + (scrollPend || noFight() ? '' : st.team.filter(function(u){ return u.boss && FP[u.slot]; }).map(function(u){ var q = FP[u.slot]; return '<i class="pad dais" style="left:' + (100 * zx(q[0]) / W) + '%;top:' + (100 * (zy(q[1]) + OFF + FOOT) / H) + '%;background-image:url(' + DAISURL + ')" data-tipt="보스 단상" data-tiptx="' + daisDesc() + '"></i>'; }).join(''));
     function cellStyle(k){ var q = k.split(','); return 'left:' + (100 * zx(q[0]) / W) + '%;top:' + (100 * (zy(+q[1]) + OFF + FOOT) / H) + '%'; }
     var PD = S.pads || {}, padsHtml = bt ? '' : Object.keys(PD).filter(function(k){ return k.indexOf(',') > 0; }).map(function(k){ return '<i class="pad' + (padNew === k ? ' nw' : '') + '" style="' + cellStyle(k) + ';background-image:url(' + padURL(PD[k]) + ')"' + padTipAttr(PD[k]) + '></i>' + (padNew === k ? '<i class="rugw" style="' + cellStyle(k) + '"><i></i><u></u></i>' : ''); }).join('') +
       (S.padPend && !bt ? hexCells().A.map(function(c){ var k = ckey(c); return '<button class="padtgt" type="button" data-padcell="' + k + '" style="' + cellStyle(k) + ';background-image:url(' + padURL(S.padPend) + ')"></button>'; }).join('') : '');
@@ -4051,7 +4052,9 @@ img.rimg{image-rendering:auto!important}
   /* 머리(별) 위로 UP! 가 튀어 올랐다 사라짐. 칸·아이콘에 잘리지 않게 body에 붙임 (2026-11-26 사용자: 사각 테두리가 어색) */
   function upWord(uid, lift){ var f = suFind(uid); if (!f) return; var r = (f.el.querySelector('.fst, .hst') || f.el).getBoundingClientRect(); if (!r.width) return; var k = f.host.getBoundingClientRect().width / (f.host.offsetWidth || 1) || 1, b = document.createElement('b'); b.className = 'upword'; b.textContent = 'UP!'; b.style.left = (r.left + r.width / 2) + 'px'; b.style.top = (r.top - (lift || 0) * k) + 'px'; b.style.fontSize = Math.round(22 * k) + 'px'; document.body.appendChild(b); setTimeout(function(){ b.remove(); }, 900); }
   function suFind(uid){ if (uid && uid.nodeType) return { el: uid, host: uid.closest('.unit') || uid }; /* 적(정예)은 요소를 바로 넘김 */ var el = document.querySelector('#field .slot.on[data-uid="' + uid + '"]') || document.querySelector('#roster .chip[data-uid="' + uid + '"]'); return el ? { el: el, host: el.closest('.unit') || el } : null; }
-  function starUpFx(uid, ghost, gr){ setTimeout(function(){ starUpFx2(uid, ghost, gr); }, 0); } // 합성 뒤 다시 그리기가 끝난 다음에 시작
+  function fxHold(ms){ fxUntil = Math.max(fxUntil || 0, Date.now() + ms); } /* 행진 전에 기다릴 성장 연출 */
+  var fxUntil = 0, holdT = 0;
+  function starUpFx(uid, ghost, gr){ if (!(uid && uid.nodeType)) fxHold(1000); setTimeout(function(){ starUpFx2(uid, ghost, gr); }, 0); } // 합성 뒤 다시 그리기가 끝난 다음에 시작
   function starUpFx2(uid, ghost, gr){ var f0 = suFind(uid); if (!f0) return; var el = f0.el;
     var u = uid && uid.nodeType ? null : U(uid), star = u ? u.star : (+(uid && uid.dataset && uid.dataset.sustar) || 2), host = f0.host, onField = !!el.closest('#field'), t0 = 0;
     host.style.setProperty('--suc', star >= 3 ? '#ffd34d' : '#8fd8ff'); host.style.setProperty('--sus', star >= 3 ? 1.35 : 1);
@@ -4068,7 +4071,7 @@ img.rimg{image-rendering:auto!important}
       var fd = onField ? $('field') : null; if (fd){ fd.classList.remove('shk1', 'shk2'); void fd.offsetWidth; fd.classList.add(star >= 3 ? 'shk2' : 'shk1'); setTimeout(function(){ fd.classList.remove('shk1', 'shk2'); }, 420); }
       st.forEach(function(b, i){ setTimeout(function(){ b.classList.remove('suHide'); b.classList.add('suSlam'); }, 120 + i * 110); }); // 별이 하나씩 박혀요
       setTimeout(function(){ host.querySelectorAll('.supil,.suburst').forEach(function(x){ x.remove(); }); st.forEach(function(b){ b.classList.remove('suSlam', 'suHide'); }); host.classList.remove('suOn', 'suHit'); }, 640); }, t0 + 260); }
-  function mergeFx(uid){ var el = document.querySelector('#field .slot.on[data-uid="' + uid + '"]') || document.querySelector('#roster .chip[data-uid="' + uid + '"]');
+  function mergeFx(uid){ fxHold(600); var el = document.querySelector('#field .slot.on[data-uid="' + uid + '"]') || document.querySelector('#roster .chip[data-uid="' + uid + '"]');
     if (el){ el.classList.remove('mergeFx'); void el.offsetWidth; el.classList.add('mergeFx'); } }
   // ───── 초월: 영웅 위에 다른 영웅을 놓으면 재료가 사라지고 그 스킬이 붙어요(새 스킬 또는 같은 스킬 하나 더) ─────
   function trKind(a, m){ return a && m && E.canTranscend && trOpen() && !E.canMerge(D, a, m) ? E.canTranscend(D, a, m) : null; }
@@ -4765,7 +4768,7 @@ img.rimg{image-rendering:auto!important}
   /* 편성 화면(전투 시작 전) 캐릭터: 프레임 시트 영웅은 대기 1~4칸을 0.18초마다 바꿔 그려요. 외곽선은 avO와 같은 색으로 프레임마다 다시 구움 */
   setInterval(function(){ var k = 1 + Math.floor(performance.now() / 180) % 4; document.querySelectorAll('#field .av.pic.olb[data-oid], #hlist .av.pic.olb[data-oid]').forEach(function(e){ if (e.dataset.fk === '' + k) return; var id = e.dataset.oid, f = id + '_a' + k; if (!IMGS[f]) return; e.dataset.fk = k; OUTLN = +e.dataset.nk || 0; e.style.backgroundImage = 'url(' + outlinedURL(f, gc(id) + 'b3') + ')'; OUTLN = 0; }); }, 60);
   var rpAnim = { id: null };
-  function rpAnimTick(){ var id = rpAnim.id, box = $('roul'); if (!id || !box || box.hidden || box.classList.contains('spin')) return; var f = id + '_a' + (1 + Math.floor(performance.now() / 180) % 4); if (!IMGS[f]) return; var pic = box.querySelector('.rpic');
+  function rpAnimTick(){ var id = rpAnim.id, box = $('roul'); if (!id || !box || box.hidden || box.classList.contains('spin') || box.querySelector('.rbox.spin')){ rpAnim.key = null; return; } if (rpAnim.key !== id){ rpAnim.key = id; rpAnim.t0 = performance.now(); } /* 멈춘 뒤부터 대기 2바퀴 → 공격 1번 (용병과 같은 동작, 2026-11-26 사용자: 규칙) */ var f = id + '_a' + showFrame(rpAnim.t0); if (!IMGS[f]) return; var pic = box.querySelector('.rpic');
     OUTLN = rpAnim.nk || 0; pic.style.backgroundImage = 'url(' + outlinedURL(f, NOLINE) + ')'; pic.style.setProperty('--o1', 'url(' + outlinedURL(f, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(f, '#ffffff') + ')'); OUTLN = 0; } /* 같은 외곽선 색(등급·파랑·흰색)으로 프레임마다 다시 그려 연출 유지 */
   setInterval(rpAnimTick, 90);
   var NOLINE = 'rgba(0,0,0,0)'; /* 단상 그림: 크기·자리는 두고 외곽선만 투명 */
@@ -5199,15 +5202,13 @@ img.rimg{image-rendering:auto!important}
     o = document.createElement('div'); o.id = 'credits';
     o.innerHTML = '<div class="crscroll"><div class="crin"><h2>모험 완료!</h2><div class="crst">' + st.map(function(r){ return '<span>' + r[0] + '</span><b>' + r[1] + '</b>'; }).join('') + '</div>' + (evs ? '<div><h3>만난 이벤트</h3><div class="crev">' + evs + '</div></div>' : '') + (top || sub ? '<div class="crmvp">' + top + '<div>' + sub + '</div></div>' : '') + '</div></div><button class="rpok" type="button">처음부터</button>';
     A.appendChild(o); o.querySelector('.rpok').onclick = function(ev){ ev.stopPropagation(); newRun(); };
-    var sc = o.querySelector('.crscroll'), box = o.querySelector('.crin'), run = null, fd = $('field'), P = 1500 /* 한 화면 달리는 시간 */, finish = function(){ box.style.transform = ''; o.classList.add('end'); sc.scrollTop = sc.scrollHeight; if (run) setTimeout(brake, 500); };
-    /* 지금 속도에서 부드럽게 줄여 처음 배경 위치(화면 너비의 정수배)에서 멈춤 */ var brake = function(){ if (!run || !o.isConnected) return; var w = fd.clientWidth, ph = ((run.currentTime || 0) % P) / P, end = ph > .6 ? 2 : 1, dist = (end - ph) * w, ms = 2 * dist / w * P, stop = fd.animate([{ backgroundPositionX: -ph * w + 'px' }, { backgroundPositionX: -end * w + 'px' }], { duration: ms, easing: 'cubic-bezier(.33,.66,.66,1)', fill: 'forwards' }); run.cancel(); run = null;
-      setTimeout(function(){ fd.querySelectorAll('.unit[data-uid] .slot').forEach(function(x){ x.getAnimations().forEach(function(m){ m.updatePlaybackRate(.5); }); }); }, ms * .55); stop.onfinish = function(){ stop.cancel(); A.classList.remove('marching'); }; };
+    var sc = o.querySelector('.crscroll'), box = o.querySelector('.crin'), fd = $('field'), running = false, stopping = false, finish = function(){ box.style.transform = ''; o.classList.add('end'); sc.scrollTop = sc.scrollHeight; if (running) setTimeout(function(){ stopping = true; }, 500); };
     /* 끝난 뒤 마우스로 끌어서도 스크롤 (휠·터치는 기본 동작) */
     var drag = null; sc.addEventListener('pointerdown', function(ev){ if (o.classList.contains('end') && ev.pointerType === 'mouse'){ drag = { y: ev.clientY, t: sc.scrollTop }; sc.setPointerCapture(ev.pointerId); } });
     sc.addEventListener('pointermove', function(ev){ if (drag) sc.scrollTop = drag.t - (ev.clientY - drag.y) / (sc.getBoundingClientRect().height / (sc.offsetHeight || 1)); }); ['pointerup', 'pointercancel'].forEach(function(t){ sc.addEventListener(t, function(){ drag = null; }); });
     if (RS.credits || !box.animate || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)){ finish(); return; }
     var B = o.clientHeight, y0 = Math.round(B * .45), y1 = Math.min(0, B - 70 - box.offsetHeight), T = Math.max(1000, (y0 - y1) / 34 * 1000), an = box.animate([{ transform: 'translateY(' + y0 + 'px)' }, { transform: 'translateY(' + y1 + 'px)' }], { duration: T, easing: 'linear', fill: 'forwards' }); an.onfinish = function(){ an.cancel(); finish(); RS.credits = true; save(); };
-    A.classList.add('marching'); run = fd.animate([{ backgroundPositionX: '0px' }, { backgroundPositionX: -fd.clientWidth + 'px' }], { duration: P, iterations: Infinity });
+    /* 평소 행진(dashOn)을 이어서 반복. [처음부터]가 나오고 0.5초 뒤의 걸음이 마지막 (그 걸음의 감속으로 멈춤) */ A.classList.add('marching'); running = true; (function step(){ var off = dashOn(fd); setTimeout(function(){ off(); if (!o.isConnected){ return; } if (!stopping) step(); else { running = false; A.classList.remove('marching'); } }, 700); })();
     o.addEventListener('click', function(){ if (!o.classList.contains('end')) an.playbackRate = 7; });
     fwFx(o, function(){ return true; }); var host = o.querySelector(':scope > .rfw'); [250, 600, 950, 1350].forEach(function(d){ setTimeout(function(){ if (host && host.isConnected) fwShot(host); }, d); }); }
   function newRun(){ var keep = { modules: S.modules || {}, ui: S.ui };
@@ -5289,10 +5290,11 @@ img.rimg{image-rendering:auto!important}
   var scrollPend = false, newHeroUid = null;
   function evGo(){ restock(); scrollPend = true; renderAll(); stageScroll(); } // 이벤트 판을 끝내고 다음 판으로
   // 다음 스테이지로: 아군은 그 자리에 선 채로, 배경이 한 화면 흘러가고 새 적이 오른쪽에서 들어와요. 새로 얻은 영웅만 짧게 등장
-  function stageScroll(){ scrollPend = false; renderForm(); var fd = $('field'); if (!fd) return;
-    fd.style.setProperty('--fw', fd.clientWidth + 'px'); fd.classList.remove('scrollin', 'padshow', 'altshow'); fd.classList.toggle('altstage', isAltar() && !isLvPick()); void fd.offsetWidth; fd.classList.add('scrollin', 'padhold');
-    var wl = document.createElement('i'); wl.className = 'whoosh'; fd.appendChild(wl); // 바람 줄
-    setTimeout(function(){ fd.classList.remove('scrollin'); wl.remove(); // 휘리릭이 끝나면 다음 판 적이 그 자리에 생겨나요
+  /* 행진 한 번(0.7초): 배경이 한 화면 흐르고 아군이 달림 + 바람 줄. 돌려주는 함수로 끝냄. 스테이지 행진·모험 완료가 같이 씀 */
+  function dashOn(fd){ fd.style.setProperty('--fw', fd.clientWidth + 'px'); fd.classList.remove('scrollin'); void fd.offsetWidth; fd.classList.add('scrollin'); var wl = document.createElement('i'); wl.className = 'whoosh'; fd.appendChild(wl); return function(){ fd.classList.remove('scrollin'); wl.remove(); }; }
+  function stageScroll(){ /* 레벨업·성급 오름·합성 연출이 있으면 제자리에서 끝날 때까지(최대 1초) 기다렸다 행진. 배속·스킵이면 짧게 (2026-11-26 사용자) */ clearTimeout(holdT); var wait = (fxUntil - Date.now()) / Math.max(1, speed); if (skipNow) wait = Math.min(wait, 300); wait = Math.min(1000, wait); if (wait > 60){ scrollPend = true; holdT = setTimeout(function(){ fxUntil = 0; if (bt){ scrollPend = false; return; } stageScroll(); }, wait); return; } scrollPend = false; renderForm(); var fd = $('field'); if (!fd) return;
+    fd.classList.remove('padshow', 'altshow'); fd.classList.toggle('altstage', isAltar() && !isLvPick()); fd.classList.add('padhold'); var dashOff = dashOn(fd);
+    setTimeout(function(){ dashOff(); // 휘리릭이 끝나면 다음 판 적이 그 자리에 생겨나요
       var alt0 = .35; fd.classList.add('gridin'); setTimeout(function(){ fd.classList.remove('gridin'); }, 400); /* 모든 판: 칸이 먼저 나타나요 */ if (fd.classList.contains('altstage')){ fd.classList.add('altshow'); setTimeout(function(){ fd.classList.remove('altshow', 'altstage'); }, 1300); } /* 제단: 칸 먼저, 배치는 뒤에 */
       var nF = 0; [].slice.call(fd.querySelectorAll('.unit:not([data-uid])')).sort(function(a, b){ return a.offsetLeft - b.offsetLeft; }).forEach(function(el, i){ nF = i + 1; el.style.animationDelay = (alt0 + i * .1) + 's'; el.style.setProperty('--d', (alt0 + i * .1) + 's'); el.classList.add('fspawn'); setTimeout(function(){ el.classList.remove('fspawn'); el.style.animationDelay = ''; }, 900 + i * 100); });
       setTimeout(function(){ fd.classList.remove('padhold'); fd.classList.add('padshow'); setTimeout(function(){ fd.classList.remove('padshow'); }, 600); }, 900 + nF * 100); }, 700); /* 칸이 먼저 (.35초) 나온 뒤 발판 */
@@ -5603,7 +5605,7 @@ img.rimg{image-rendering:auto!important}
     if (b2 > a){ var pb = PK(), up = [];
       if (pb.field > pa.field) up.push('전장 칸 +' + (pb.field - pa.field));
       if (pb.field > pa.field) teamFlashUntil = Date.now() + 2800;
-      lvFlashUntil = Date.now() + 2800; setTimeout(function(){ var li = document.querySelector('#hud .lvit'); if (li && HAS_FX) FX.playOn(li, 'levelup', { size: 220, scale: .9, cy: 40, z: 950 }); }, 0); setTimeout(function(){ var it = document.querySelector('#hud .lvit'); if (it){ it.classList.remove('lvup'); void it.offsetWidth; it.classList.add('lvup'); } }, 0);
+      lvFlashUntil = Date.now() + 2800; fxHold(900); setTimeout(function(){ var li = document.querySelector('#hud .lvit'); if (li && HAS_FX) FX.playOn(li, 'levelup', { size: 220, scale: .9, cy: 40, z: 950 }); }, 0); setTimeout(function(){ var it = document.querySelector('#hud .lvit'); if (it){ it.classList.remove('lvup'); void it.offsetWidth; it.classList.add('lvup'); } }, 0);
       var chip = function(img, emo, t){ return '<em>' + (HUDOK[img] ? '<img src="img/p/hud_' + img + '.png" alt="">' : emo) + t + '</em>'; };
       var pop = $('lvPop'); pop.innerHTML = '<i class="lvrays"></i><b class="lvban">LEVEL UP</b><span class="lvnum"><s>' + a + '</s><i>▶</i><u>' + b2 + '</u></span>' +
         '<span class="lvchips">' + (pb.field > pa.field ? chip('team', '🧍', '전장 칸 +' + (pb.field - pa.field)) : '') + chip('shop', '🛒', '상점 등급↑') + '</span>'; pop.hidden = false; lvPopCenter(pop); pop.classList.remove('show'); void pop.offsetWidth; pop.classList.add('show');
@@ -5741,7 +5743,7 @@ img.rimg{image-rendering:auto!important}
     S.offerBonus = {}; S.offerMode = 'lvpick'; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; save(); renderAll(); startRoulette(offerIds, S.offer); }
   document.addEventListener('click', function(e){ var b = e.target.closest('#field [data-lvpick]'); if (!b || b.classList.contains('lock')) return; startLvPick(b.dataset.lvpick); });
   // 강화 연출: 유물은 HUD 유물 칸, 스킬은 그 영웅 위에서 스킬 아이콘이 튀어나와요 (글자 없음)
-  function lvUpFx(kind, k){ var el, ic;
+  function lvUpFx(kind, k){ fxHold(900); var el, ic;
     if (kind === 'relic'){ el = document.querySelector('#skA .skc[data-k="A:' + k + '"]'); if (!el) return; el.classList.remove('lvupc'); void el.offsetWidth; el.classList.add('lvupc'); el.insertAdjacentHTML('beforeend', '<i class="upmk big lvupar"></i>'); setTimeout(function(){ el.classList.remove('lvupc'); var a = el.querySelector('.lvupar'); if (a) a.remove(); }, 900); return; }
     var u = U(k); if (!u) return; el = document.querySelector('#field .slot.on[data-uid="' + k + '"]') || document.querySelector('#roster .chip[data-uid="' + k + '"]'); if (!el) return;
     var host = el.closest('.unit') || el; host.insertAdjacentHTML('beforeend', '<i class="tgic trpop lvsk">' + ultIcon(hero(u.id), 24) + '<i class="upmk"></i></i>'); upWord(u.uid, 24);
