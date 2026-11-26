@@ -3001,6 +3001,7 @@ img.rimg{image-rendering:auto!important}
 #tab-shop .stile.lockd em{color:#f3e6c4!important}
 /* 규칙: 빈 칸은 주변 바탕보다 늘 더 어둡게, "+"는 옅게 (2026-11-26 사용자: "이건 규칙이야") */
 #field .aimsvg{position:absolute;inset:0;width:100%;height:100%;z-index:342;pointer-events:none;opacity:.8} #field .aimsvg path{fill:none;stroke-linecap:butt} #field .aimsvg .ao{stroke:#17141d;stroke-width:5} #field .aimsvg .ai{stroke:#ffe27a;stroke-width:2.5;stroke-dasharray:8 5} #field .aimsvg polygon{fill:#ffe27a;stroke:#17141d;stroke-width:1.5} #field .aimsvg .ai{animation:aimflow 1.4s linear infinite} @keyframes aimflow{from{stroke-dashoffset:26}to{stroke-dashoffset:0}} #field .aimsvg .rg circle,#field .aimsvg .rg path{fill:none;stroke:#ff6a5a;stroke-width:2.5} #field .aimsvg.shoot .ao,#field .aimsvg.shoot .hd{animation:aimin .12s .4s both} #field .aimsvg.shoot .ai{animation:aimin .12s .4s both,aimflow 1.4s linear .4s infinite} #field .aimsvg.shoot .rg{animation:aimstamp .28s .4s cubic-bezier(.3,1.7,.5,1) both} @keyframes aimin{from{opacity:0}to{opacity:1}} @keyframes aimstamp{from{opacity:0;transform:scale(2.2)}to{opacity:1;transform:scale(1)}} #field.scrollin .aimsvg,#field.gridin .aimsvg,#arena.ending #field .aimsvg{display:none}
+/* 모험 완료 버튼 줄: 2장 시작(노랑) · 처음부터(파랑) */ #credits .crbtns{position:absolute;left:0;right:0;bottom:14px;display:none;justify-content:center;gap:8px;z-index:5} #credits.end .crbtns{display:flex} #credits .crbtns .rpok{position:static!important;display:block!important;margin:0!important;width:auto!important} #credits .crbtns .ch2 ~ .again0{background:#3f78c8!important;color:#fff!important;text-shadow:0 1px 0 #17141d!important}
 #field .vsmark{width:var(--vsw,64px)!important;height:var(--vsh,48px)!important} #field .vsmark img{width:var(--vsw,64px)!important;height:var(--vsh,48px)!important;image-rendering:pixelated!important;animation-name:vsbob3!important} @keyframes vsbob3{50%{transform:translateY(calc(-2 * var(--dp,.75px)))}} /* 흐림 고침: 정수배 도트 (2026-11-26) */
 /* 분노 단계 점 숨김: 시험 (2026-11-26 사용자: "점 세개 일단빼봐"). 되돌리려면 이 두 줄 삭제 */
 #bellBtn.bell .bdots{display:none!important} #bellBtn.bell:not(.inbt) .cbox{height:44px!important}
@@ -3236,7 +3237,7 @@ img.rimg{image-rendering:auto!important}
 <script>
 (function(){
   'use strict';
-  var D = IDLE_DATA, E = IdleEngine;
+  var E = IdleEngine, CH = (function(){ try { return JSON.parse(localStorage.getItem('idle-testbed-v2')).chapter || 1; } catch (e) { return 1; } })(), D = E.chapterData ? E.chapterData(IDLE_DATA, CH) : IDLE_DATA; /* 지금 판의 장(2026-11-26 2장). 장을 바꾸면 새 판 + 새로 읽기 */
   // 가로 무대 960x540을 창에 맞춰 확대·축소 (가운데 정렬)
   function fitBag(){ var a = document.querySelector('.arena'), c = document.querySelector('.bagcol'), b = c && c.querySelector('.bagin'); if (!a || !b) return;
     var ar = a.getBoundingClientRect(), cr = c.getBoundingClientRect(), k = cr.height / (c.offsetHeight || 1); if (!k) return;
@@ -3346,7 +3347,7 @@ img.rimg{image-rendering:auto!important}
   // ───── 상태 저장 ─────
   var R = D.recruit, KEY = 'idle-testbed-v2', S;
   function runStats0(){ return { bought: 0, by: {}, heroes: 0, battles: 0, wins: 0, kills: 0, events: {}, lastTeam: [], startAt: Date.now(), playMs: 0 }; } /* 이번 판 기록 (모험 완료 팝업) */
-  function fresh(){ var s = { runStats: runStats0(), gold: 0, stage: 0, units: [], levels: {}, team: [null, null, null, null, null], idleAt: Date.now(), modules: {}, pending: null, life: D.life ? D.life.max : 10, streak: 0, mana: 0, xp: 0, bell: 0, bellGold: 0 }; // 새 판: 체력·마나스톤·경험치도 처음 값
+  function fresh(){ var s = { chapter: CH, runStats: runStats0(), gold: 0, stage: 0, units: [], levels: {}, team: [null, null, null, null, null], idleAt: Date.now(), modules: {}, pending: null, life: D.life ? D.life.max : 10, streak: 0, mana: 0, xp: 0, bell: 0, bellGold: 0 }; // 새 판: 체력·마나스톤·경험치도 처음 값
     if (E.campfireAtStart && E.campfireAtStart(D) && E.rollCampfire){ s.event = { kind: 'campfire', ids: E.rollCampfire(D, Math.random, 1), start: true }; return s; } // 시작 모닥불: 1명을 얻고 1-1로
     var u = E.newUnit(s.units, R.startHero, 1); s.levels[R.startHero] = D.startLevel; s.team[0] = u.uid; return s; }
   // 예전 저장(영웅 종류 기준) → 개체 기준: owned{id:{star}} → { id, grade: star }, spare → 1등급 개체, team의 id → 그 개체 uid
@@ -5220,8 +5221,9 @@ img.rimg{image-rendering:auto!important}
     var top = mv('dealt', '피해 MVP', function(v){ return '총 피해 ' + v; }, 'big'), sub = mv('taken', '방어 MVP', function(v){ return '받은 피해 ' + v; }) + mv('healed', '회복 MVP', function(v){ return '회복 ' + v; }) + mv('ults', '스킬 MVP', function(v){ return '궁극기 ' + v + '회'; });
     var evs = Object.keys(RS.events || {}).filter(function(k){ return (D.events.info || {})[k]; }).map(function(k){ return '<span title="' + q(D.events.info[k].name) + '">' + evIcon(k) + '×' + RS.events[k] + '</span>'; }).join('');
     o = document.createElement('div'); o.id = 'credits';
-    o.innerHTML = '<div class="crscroll"><div class="crin"><h2>모험 완료!</h2><div class="crst">' + st.map(function(r){ return '<span>' + r[0] + '</span><b>' + r[1] + '</b>'; }).join('') + '</div>' + (evs ? '<div><h3>만난 이벤트</h3><div class="crev">' + evs + '</div></div>' : '') + (top || sub ? '<div class="crmvp">' + top + '<div>' + sub + '</div></div>' : '') + '</div></div><button class="rpok" type="button">처음부터</button>';
-    A.appendChild(o); o.querySelector('.rpok').onclick = function(ev){ ev.stopPropagation(); newRun(); };
+    o.innerHTML = '<div class="crscroll"><div class="crin"><h2>모험 완료!</h2><div class="crst">' + st.map(function(r){ return '<span>' + r[0] + '</span><b>' + r[1] + '</b>'; }).join('') + '</div>' + (evs ? '<div><h3>만난 이벤트</h3><div class="crev">' + evs + '</div></div>' : '') + (top || sub ? '<div class="crmvp">' + top + '<div>' + sub + '</div></div>' : '') + '</div></div><div class="crbtns">' + (CH === 1 ? '<button class="rpok ch2" type="button">2장 시작</button>' : '') + '<button class="rpok again0" type="button">처음부터</button></div>';
+    if (CH === 1) try { localStorage.setItem('idle-testbed-meta', JSON.stringify({ ch2: true })); } catch (e) {} /* 2장 열림: 판을 넘어 저장 (타이틀이 생기면 거기서 고름) */
+    A.appendChild(o); o.querySelector('.rpok.again0').onclick = function(ev){ ev.stopPropagation(); newRun(); }; var c2 = o.querySelector('.rpok.ch2'); if (c2) c2.onclick = function(ev){ ev.stopPropagation(); newRun(2); };
     var sc = o.querySelector('.crscroll'), box = o.querySelector('.crin'), fd = $('field'), running = false, stopping = false, finish = function(){ box.style.transform = ''; o.classList.add('end'); sc.scrollTop = sc.scrollHeight; if (running) setTimeout(function(){ stopping = true; }, 500); };
     /* 끝난 뒤 마우스로 끌어서도 스크롤 (휠·터치는 기본 동작) */
     var drag = null; sc.addEventListener('pointerdown', function(ev){ if (o.classList.contains('end') && ev.pointerType === 'mouse'){ drag = { y: ev.clientY, t: sc.scrollTop }; sc.setPointerCapture(ev.pointerId); } });
@@ -5231,8 +5233,8 @@ img.rimg{image-rendering:auto!important}
     /* 평소 행진(dashOn)을 이어서 반복. [처음부터]가 나오고 0.5초 뒤의 걸음이 마지막 (그 걸음의 감속으로 멈춤) */ A.classList.add('marching'); running = true; (function step(){ var off = dashOn(fd); setTimeout(function(){ off(); if (!o.isConnected){ return; } if (!stopping) step(); else { running = false; A.classList.remove('marching'); } }, 700); })();
     o.addEventListener('click', function(){ if (!o.classList.contains('end')) an.playbackRate = 7; });
     fwFx(o, function(){ return true; }); var host = o.querySelector(':scope > .rfw'); [250, 600, 950, 1350].forEach(function(d){ setTimeout(function(){ if (host && host.isConnected) fwShot(host); }, d); }); }
-  function newRun(){ var keep = { modules: S.modules || {}, ui: S.ui };
-    var n = fresh(); n.modules = keep.modules; if (keep.ui) n.ui = keep.ui; n.skills = []; n.mana = 0; n.xp = 0; n.life = D.life ? D.life.max : 10; n.streak = 0; n.bell = 0; n.bellGold = 0; n.bellPaid = 0;
+  function newRun(ch){ var keep = { modules: S.modules || {}, ui: S.ui };
+    if (typeof ch === 'number') CH = ch, D = E.chapterData(IDLE_DATA, ch); var n = fresh(); n.modules = keep.modules; if (keep.ui) n.ui = keep.ui; n.skills = []; n.mana = 0; n.xp = 0; n.life = D.life ? D.life.max : 10; n.streak = 0; n.bell = 0; n.bellGold = 0; n.bellPaid = 0;
     try { localStorage.setItem(KEY, JSON.stringify(n)); } catch (e) {} location.reload(); }
   function finishBattle(){
     if (!bt) return;
