@@ -130,7 +130,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 #amb[data-k=merchant]{background:linear-gradient(rgba(150,100,20,.14),rgba(150,100,20,0) 40%),radial-gradient(ellipse at 50% 62%,rgba(120,75,10,0) 52%,rgba(120,75,10,.22))}
 #amb[data-k=merchant] s{width:auto;height:auto;animation:ambrise linear infinite}
 #amb[data-k=merchant] s.d::before{font-size:17px;color:#ff8a3d;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d}
-@keyframes ambpop{0%{translate:0 0;opacity:1}40%{translate:calc(var(--dx) * .55) -34px;opacity:1}80%{opacity:1}100%{translate:var(--dx) 6px;opacity:0}}
+@keyframes ambpop{0%{translate:0 0;opacity:1}40%{translate:calc(var(--dx) * .55) -48px;opacity:1}80%{opacity:1}100%{translate:var(--dx) 6px;opacity:0}}
 #amb[data-k=fairy]{background:linear-gradient(rgba(255,160,220,.14),rgba(255,200,230,.04) 60%,rgba(140,230,180,.12))}
 #amb[data-k=fairy] s{width:6px;height:4px;background:#ffb3de;box-shadow:2px 2px #ff8ac8;animation:ambfall linear infinite}
 #amb[data-k=groll]{background:radial-gradient(ellipse at 25% 0,rgba(255,220,90,.26),transparent 55%),radial-gradient(ellipse at 75% 0,rgba(255,220,90,.26),transparent 55%);animation:ambcasino 2.4s steps(2) infinite}
@@ -5618,13 +5618,11 @@ img.rimg{image-rendering:auto!important}
     for (var i = 0; a && i < a[0]; i++){ var du = (4 + Math.random() * 4).toFixed(2); o += '<s' + (k === 'groll' ? ' class="g' + (i % 2 ? 2 : 0) + '" data-c="' + (i % 2 ? '♣' : '7') + '"' : k === 'merchant' ? ' class="d" data-c="%"' : '') + ' style="left:' + (a[1] + Math.random() * (a[2] - a[1])).toFixed(1) + '%;top:' + (a[3] + Math.random() * (a[4] - a[3])).toFixed(1) + '%;animation-duration:' + du + 's;animation-delay:' + (-Math.random() * du).toFixed(2) + 's"></s>'; }
     el.innerHTML = o; }
   setInterval(ambSync, 300);
-  /* 미믹 판: 미믹 몸에서 금화가 톡 튀었다 떨어짐. 미믹마다 3~5초, 엇갈리게. 쓰러지거나 도망친 미믹은 없음 */
-  var ambNext = {};
-  setInterval(function(){ var el = $('amb'); if (!el || el.dataset.k !== 'mimic' || document.hidden) return; var now = Date.now(), R = el.getBoundingClientRect(), list = [];
-    if (bt) bt.E.forEach(function(u){ if (u.h.mob === 'mimic' && u.alive && !u.escaped){ var p = posOf(u); list.push([u.slot, 100 * p[0] / W, 100 * (p[1] - 20) / H]); } });
-    else document.querySelectorAll('#field .foe.mob').forEach(function(f){ if (!f.querySelector('.mhop')) return; var r = f.getBoundingClientRect(); list.push([+f.dataset.foe, 100 * (r.left + r.width / 2 - R.left) / R.width, 100 * (r.top + r.height * .55 - R.top) / R.height]); });
-    list.forEach(function(m){ if (ambNext[m[0]] == null){ ambNext[m[0]] = now + 500 + Math.random() * 3000; return; } if (now < ambNext[m[0]]) return; ambNext[m[0]] = now + 3000 + Math.random() * 2000;
-      for (var i = 0; i < 5; i++){ var s = document.createElement('s'); if (i > 2){ s.className = 'd'; s.dataset.c = '$'; } s.style.left = m[1] + '%'; s.style.top = m[2] + '%'; s.style.setProperty('--dx', Math.round(((i < 3 ? i - 1 : i === 3 ? -1.6 : 1.6)) * 16 + Math.random() * 8 - 4) + 'px'); s.style.animationDelay = (i * .07) + 's'; el.appendChild(s); setTimeout(function(x){ return function(){ x.remove(); }; }(s), 1200); } }); }, 250);
+  /* 미믹 판: 아래 왼쪽·오른쪽 수풀에서 금화·$가 톡톡 튀어 오름. 미믹과는 상관없는 화면 효과 (2026-11-26 사용자) */
+  var ambNext = [0, 0];
+  setInterval(function(){ var el = $('amb'); if (!el || el.dataset.k !== 'mimic' || document.hidden) return; var now = Date.now();
+    [7, 93].forEach(function(x, side){ if (now < ambNext[side]) return; ambNext[side] = now + 700 + Math.random() * 1100;
+      for (var i = 0; i < 3; i++){ var s = document.createElement('s'); if (i === 2){ s.className = 'd'; s.dataset.c = '$'; } s.style.left = (x + (Math.random() - .5) * 9).toFixed(1) + '%'; s.style.top = (91 + Math.random() * 6).toFixed(1) + '%'; s.style.setProperty('--dx', Math.round((side ? -1 : 1) * Math.random() * 22 + (i - 1) * 10) + 'px'); s.style.animationDelay = (i * .09) + 's'; el.appendChild(s); setTimeout(function(n){ return function(){ n.remove(); }; }(s), 1300); } }); }, 250);
   function renderTalk(){ var t = $('talkBtn'); if (t) t.querySelector('.tic').innerHTML = campImg('ui_talk', '💬', 'timg'); var et = $('evTalk'); if (et) et.querySelector('.eai').innerHTML = campImg('ui_talk', '💬', 'timg'); }
   function grollBtn(gr){ var b = $('evBet'), lab = b.querySelector('b'), dots = b.querySelector('.oedots'), n = $('grLeft'); if (!n){ n = document.createElement('span'); n.id = 'grLeft'; n.className = 'grleft'; b.parentNode.insertBefore(n, b); }
     b.classList.toggle('groll', gr); var ti = b.querySelector('.timg'), want = gr ? 'img/p/ev_goblin.png' : 'img/p/hud_gold.png'; if (ti && ti.getAttribute('src') !== want) ti.src = want; n.hidden = true; if (dots) dots.hidden = gr;
