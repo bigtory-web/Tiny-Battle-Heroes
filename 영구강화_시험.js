@@ -36,3 +36,6 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
   assert.strictEqual(E.metaMedals(H,10,false),E.metaMedals(D,10,false)*2); assert.ok(E.difficultyData(C2,"hard").campaign.swamp,"장 정보 유지");
   const MH=E.metaData(H,{nodes:{bag:1}}); assert.strictEqual(MH.campaign.diff.id,"hard","강화와 같이 써도 제약 유지");
   console.log("ok · 제약"); }
+// 장 정보(장 고르기 화면)
+{ const I1=E.chapterInfo(D,1), I2=E.chapterInfo(D,2); assert.strictEqual(I1.bell.length,3); assert.strictEqual(I1.feats.length,0);
+  assert.ok(I2.feats[0].desc.includes("5초마다 공격력 1%")); assert.strictEqual(I2.bell[2].name,"늪지대"); assert.ok(I2.events[0].note.includes("70%")); console.log("ok · 장 정보"); }
