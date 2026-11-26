@@ -1,0 +1,20 @@
+Look at img/p/ev_campfire_i.png and img/p/pot_life.png : existing 24x24 icons of our pixel art game (very dark outline, flat cel shading, rich saturated colors).
+
+Generate ONE new image with your image generation tool and save it as img/codex/upicon2/sheet_raw.png.
+
+It is a sheet of 5 upgrade-tree icons, all drawn as ONE matching set, in a single horizontal row with equal spacing, each icon the same overall size and filling its square cell edge to edge:
+1. a campfire (big bold flame over two crossed logs)
+2. an adventurer's backpack (front view, flap and gold buckle)
+3. a merchant's market stall (red and cream striped awning with scalloped edge, wooden counter)
+4. a gold money pouch with a few big gold coins in front
+5. three red hearts (one big in front, two smaller behind)
+
+Style, identical for all five:
+- chunky bold pixel art designed on a 24 x 24 pixel grid, then scaled up with large hard square pixels (each art pixel is a big clear square, all squares the same size and aligned to one grid)
+- very few, very big shapes: no thin lines, no tiny details, every feature at least 2 art pixels wide
+- the same 1-art-pixel very dark brown outline around every icon
+- 3 flat tones per color (highlight top-left, base, shadow bottom-right), saturated and bright so they read on a black or dark purple tile
+- each icon about 22 x 22 art pixels, no gradients, no glow, no drop shadow, no frames, no text
+
+[Format] Plain solid #FF00FF magenta background everywhere else. Wide landscape image. No anti-aliasing against the magenta.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

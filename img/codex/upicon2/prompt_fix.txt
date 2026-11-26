@@ -1,0 +1,9 @@
+Look at img/codex/upicon2/sheet_raw.png : our icon set. Generate ONE new image with your image generation tool and save it as img/codex/upicon2/fix_raw.png.
+
+Draw TWO icons in EXACTLY the same style, pixel size, outline and shading as that sheet, side by side with a wide gap:
+1. start gold: one money pouch tied with a red cord (gold-yellow cloth), and ONE very big round gold coin with a square hole standing in front of its lower right side. The coin must read clearly as a round coin, separated from the pouch by the dark outline. No other coins. Nothing that looks like a face or mouth.
+2. team hp: THREE separate red hearts that do NOT touch or overlap: two hearts on top side by side and one slightly bigger heart below in the middle, with a clear empty magenta gap of at least one art pixel between all outlines. Each heart has its own full outline and a small highlight.
+
+Both icons about 22 x 22 art pixels (design on a 24 x 24 grid, large hard square pixels, no thin details).
+[Format] Plain solid #FF00FF magenta background everywhere else. Wide landscape image. No text.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
