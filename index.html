@@ -3684,7 +3684,7 @@ img.rimg{image-rendering:auto!important}
   var roulPeek = null;
   (function(){ var st = function(){ return $('roul').querySelector('.rstrip'); };
     function end(){} // 떼도 그대로 둬요
-    document.addEventListener('pointerdown', function(e){ var sp = e.target.closest('#roul .rstrip span[data-id]'); if (!sp || !S.offer || $('roul').querySelector('.rbox').classList.contains('spin')) return; roulPeek = sp.dataset.id; showOffer(roulPeek); });
+    document.addEventListener('pointerdown', function(e){ var sp = e.target.closest('#roul .rstrip span[data-id]'); if (!sp || (!S.offer && S.offerMode !== 'groll') || $('roul').querySelector('.rbox').classList.contains('spin')) return; roulPeek = sp.dataset.id; showOffer(roulPeek); });
     ['pointerup', 'pointercancel'].forEach(function(t){ document.addEventListener(t, end); });
     document.addEventListener('pointerout', function(e){ if (roulPeek != null && e.target.closest('#roul .rstrip span[data-id]') && !(e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest('#roul .rstrip span[data-id="' + roulPeek + '"]'))) end(); }); })();
   function stripIn(x){ var lp = LP(x); return (lp.type === 'g' ? '<img class="lic gbs" data-smb="1" src="img/p/ui_goldbag.png" alt="">' : lootIcon(x)) + (lp.type === 's' ? synN(E.skillById(D, lp.id)) : ''); } // 후보 칸 속: 아이콘(골드는 단상과 같은 주머니)·인원 숫자. UP 마크는 단상에만 (2026-11-26 사용자)
