@@ -1670,7 +1670,7 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .rbox:not(.spin) .rstage .rpic:not(.loot){animation:rpblink .8s steps(1) infinite}
 .rbox.reveal:not(.spin) .rstage .rpic:not(.loot){animation:popin .45s cubic-bezier(.3,1.7,.5,1),rpblink .8s steps(1) .45s infinite}
 .rbox.got .rstage .rpic:not(.loot){animation:gotf .28s steps(3)}
-@keyframes rpblink{0%{background-image:var(--o1)}50%{background-image:var(--o2)}}
+@keyframes rpblink{} /* 단상 캐릭터 외곽선·깜빡임 없음 (2026-11-26 사용자: "룰렛 외곽선은 빼자") */
 #shopReroll .spRe:disabled{opacity:.5;cursor:default}
 #resPop .rpsub{font:400 15px var(--display);color:#f3e6c4;text-shadow:0 2px 0 #17141d;margin:-2px 0 4px;text-align:center}
 #field.scrollin .unit[data-uid].newin{animation:newin .6s steps(6) both} /* 판 넘김 중에도 새 영웅은 제자리 등장 */
@@ -3453,7 +3453,7 @@ img.rimg{image-rendering:auto!important}
     pic.style.imageRendering = p.type === 'h' && IMGS[p.id] ? 'pixelated' : '';
     var rk = qN(), rq = { k: rk, css: 66 * qR() / (sApp() * (window.devicePixelRatio || 1)) };
     var lm = Math.max(2, Math.round(qR() * 64 * .8 / 24)); document.documentElement.style.setProperty('--rlq', (24 * lm / (sApp() * (window.devicePixelRatio || 1))).toFixed(2) + 'px'); /* 유물·골드 그림도 영웅과 같은 크기(영웅이 칸에서 차지하는 높이 약 80%), 24px 원본의 정수배 장치 px */ document.documentElement.style.setProperty('--rpq', (p.type === 'h' && IMGS[p.id] ? rq.css : 114) + 'px'); rpAnim.nk = p.type === 'h' ? rq.k : 0; OUTLN = rpAnim.nk;
-    if (p.type === 'h'){ var id = p.id; pic.innerHTML = IMGS[id] ? '' : AV[id]; pic.style.backgroundImage = IMGS[id] ? 'url(' + outlinedURL(id, gc(id)) + ')' : 'none'; pic.style.setProperty('--gc', gc(id)); if (IMGS[id]){ pic.style.setProperty('--o1', 'url(' + outlinedURL(id, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(id, '#ffffff') + ')'); } OUTLN = 0; /* 결과가 뜨면 외곽선 파랑↔흰색 */ pic.classList.remove('loot'); }
+    if (p.type === 'h'){ var id = p.id; pic.innerHTML = IMGS[id] ? '' : AV[id]; pic.style.backgroundImage = IMGS[id] ? 'url(' + outlinedURL(id, NOLINE) + ')' : 'none'; pic.style.setProperty('--gc', gc(id)); if (IMGS[id]){ pic.style.setProperty('--o1', 'url(' + outlinedURL(id, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(id, '#ffffff') + ')'); } OUTLN = 0; /* 결과가 뜨면 외곽선 파랑↔흰색 */ pic.classList.remove('loot'); }
     else { pic.style.backgroundImage = 'none'; pic.innerHTML = p.type === 'g' && !box.classList.contains('chestpop') ? '<img class="gbag" data-smb="1" src="img/p/ui_goldbag.png" alt="">' : lootIcon(key); pic.classList.add('loot'); } pic.classList.toggle('gold', p.type === 'g' && !box.classList.contains('chestpop'));
     rpAnim.id = p.type === 'h' && ANIM_IDS.indexOf(p.id) >= 0 ? p.id : null; /* 프레임 시트 영웅은 룰렛 큰 그림도 대기 1~4 반복 */
     $('rTags').innerHTML = p.type === 'h' ? tagHtml(hero(p.id)) : '';
@@ -4286,8 +4286,9 @@ img.rimg{image-rendering:auto!important}
   setInterval(function(){ var k = 1 + Math.floor(performance.now() / 180) % 4; document.querySelectorAll('#field .av.pic.olb[data-oid], #hlist .av.pic.olb[data-oid]').forEach(function(e){ if (e.dataset.fk === '' + k) return; var id = e.dataset.oid, f = id + '_a' + k; if (!IMGS[f]) return; e.dataset.fk = k; OUTLN = +e.dataset.nk || 0; e.style.backgroundImage = 'url(' + outlinedURL(f, gc(id) + 'b3') + ')'; OUTLN = 0; }); }, 60);
   var rpAnim = { id: null };
   function rpAnimTick(){ var id = rpAnim.id, box = $('roul'); if (!id || !box || box.hidden || box.classList.contains('spin')) return; var f = id + '_a' + (1 + Math.floor(performance.now() / 180) % 4); if (!IMGS[f]) return; var pic = box.querySelector('.rpic');
-    OUTLN = rpAnim.nk || 0; pic.style.backgroundImage = 'url(' + outlinedURL(f, gc(id)) + ')'; pic.style.setProperty('--o1', 'url(' + outlinedURL(f, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(f, '#ffffff') + ')'); OUTLN = 0; } /* 같은 외곽선 색(등급·파랑·흰색)으로 프레임마다 다시 그려 연출 유지 */
+    OUTLN = rpAnim.nk || 0; pic.style.backgroundImage = 'url(' + outlinedURL(f, NOLINE) + ')'; pic.style.setProperty('--o1', 'url(' + outlinedURL(f, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(f, '#ffffff') + ')'); OUTLN = 0; } /* 같은 외곽선 색(등급·파랑·흰색)으로 프레임마다 다시 그려 연출 유지 */
   setInterval(rpAnimTick, 90);
+  var NOLINE = 'rgba(0,0,0,0)'; /* 단상 그림: 크기·자리는 두고 외곽선만 투명 */
   function outlinedURL(id, col){ var k = id + col + '@' + (IMGS[id] && IMGS[id].width === 64 ? (OUTLN || qN()) : 0); if (OUTL[k]) return OUTL[k]; var im = IMGS[id], w = im.width, hh = im.height, c = document.createElement('canvas'); c.width = w + 2; c.height = hh + 2; var x = c.getContext('2d'); x.imageSmoothingEnabled = false;
     var s = silhouette(id, col); [[0, 1], [2, 1], [1, 0], [1, 2]].forEach(function(o){ x.drawImage(s, o[0], o[1]); }); x.drawImage(im, 1, 1); var N = w === 64 ? (OUTLN || qN()) : Math.max(1, Math.ceil(100 / w)); if (N > 1){ var c2 = document.createElement('canvas'); c2.width = c.width * N; c2.height = c.height * N; var x2 = c2.getContext('2d'); x2.imageSmoothingEnabled = false; x2.drawImage(c, 0, 0, c2.width, c2.height); c = c2; } return (OUTL[k] = c.toDataURL()); }
   // 발 그림자 자리: 그림 맨 아래 3줄(발)의 좌우 끝(l,r = 그림 폭 비율)과 발 밑 빈 줄 높이(g = 그림 높이 비율)
@@ -4786,7 +4787,7 @@ img.rimg{image-rendering:auto!important}
       (h2.ult ? '<div class="rsk" style="--rg:' + col + '" data-tipt="' + q(ultName(h2)) + '" data-tiptx="' + q(ultDescFull(h2, h2.ult, 1)) + '">' + ultIcon(h2, 28) + '</div>' : '') + '<div class="rname">' + h2.name + '</div></div>' +
       '<div class="mercline"><span><i class="mshake"></i><b>합류를 원해요!</b></span></div><div class="rbtns"><button class="go" type="button" data-evmerc="1"' + (S.gold >= o.price ? '' : ' disabled') + '>영입(' + g(o.price) + ')</button><button class="go again" type="button" data-evleave="1">거절</button></div></div>';
     var pic = box.querySelector('.rpic');
-    if (IMGS[id]){ w.style.setProperty('--rpq', (66 * qR() / (sApp() * (window.devicePixelRatio || 1))).toFixed(2) + 'px'); OUTLN = qN(); pic.style.backgroundImage = 'url(' + outlinedURL(id, gc(id)) + ')'; pic.style.setProperty('--o1', 'url(' + outlinedURL(id, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(id, '#ffffff') + ')'); /* 룰렛 결과처럼 외곽선 깜빡임에 필요 */ OUTLN = 0; pic.style.imageRendering = 'pixelated'; }
+    if (IMGS[id]){ w.style.setProperty('--rpq', (66 * qR() / (sApp() * (window.devicePixelRatio || 1))).toFixed(2) + 'px'); OUTLN = qN(); pic.style.backgroundImage = 'url(' + outlinedURL(id, NOLINE) + ')'; pic.style.setProperty('--o1', 'url(' + outlinedURL(id, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(id, '#ffffff') + ')'); /* 룰렛 결과처럼 외곽선 깜빡임에 필요 */ OUTLN = 0; pic.style.imageRendering = 'pixelated'; }
     else pic.innerHTML = AV[id];
     pedestal(box.querySelector('.rstage'), col);
     mercAnim = IMGS[id] && ANIM_IDS.indexOf(id) >= 0 ? { id: id, nk: qN(), t0: performance.now(), f: '' } : null;
@@ -4796,7 +4797,7 @@ img.rimg{image-rendering:auto!important}
   var mercAnim = null;
   setInterval(function(){ var m = mercAnim, w = $('evWin'); if (!m || !w || w.hidden) return; var pic = w.querySelector('.rpic'); if (!pic) return;
     var IDLE = 180, ATK = 150, T = (performance.now() - m.t0) % (8 * IDLE + 4 * ATK), n = T < 8 * IDLE ? 1 + Math.floor(T / IDLE) % 4 : 5 + Math.min(3, Math.floor((T - 8 * IDLE) / ATK)), f = m.id + '_a' + n;
-    if (f === m.f || !IMGS[f]) return; m.f = f; OUTLN = m.nk; pic.style.backgroundImage = 'url(' + outlinedURL(f, gc(m.id)) + ')'; pic.style.setProperty('--o1', 'url(' + outlinedURL(f, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(f, '#ffffff') + ')'); OUTLN = 0; }, 60);
+    if (f === m.f || !IMGS[f]) return; m.f = f; OUTLN = m.nk; pic.style.backgroundImage = 'url(' + outlinedURL(f, NOLINE) + ')'; pic.style.setProperty('--o1', 'url(' + outlinedURL(f, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(f, '#ffffff') + ')'); OUTLN = 0; }, 60);
   $('evWin').addEventListener('click', function(e){
     var o = S.evOffer; if (!o) return;
     var b = e.target.closest('[data-evmerc],[data-evleave]'); if (!b || b.disabled) return;
