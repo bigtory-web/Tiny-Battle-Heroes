@@ -1,0 +1,8 @@
+Look at img/codex/swampshop/ref_trader.png : our wandering merchant, a small chibi pixel-art character used on the battlefield. Draw a NEW character for the same game in exactly the same pixel-art style: same pixel size (about a 52x52 pixel-art sprite on a 64x64 grid), thick dark brown outline, muted colors, 3-tone shading, big head and small body, seen slightly from above, facing to the RIGHT.
+
+The character: a SWAMP FROG POTION MERCHANT. A real standing frog creature (not a person wearing a frog hood): plump olive-green frog with a pale cream belly, two big round eyes on top of the head looking slightly down to the right, a wide friendly mouth. It wears a small floppy brown merchant hat or a lily-pad hat between the eyes and a worn brown vest. On its back a wooden rack loaded with a few corked potion bottles (red, teal, yellow), and in its front hand it holds up one teal potion bottle to sell. Feet at the bottom.
+
+Generate ONE new image with your image generation tool and save it as img/codex/swampshop/frog_src.png
+Large crisp square pixels, no anti-aliasing, no gradients, no ground shadow.
+[Format] Plain solid #FF00FF magenta background, no text, nothing else.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
