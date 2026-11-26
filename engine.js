@@ -31,14 +31,15 @@
 
     function makeUnit(spec, side, team) {
       var h = heroById(data, spec.id), lv = spec.level || 1, g = 1 + data.growth.perLevel * (lv - 1), m = spec.mul || {};
-      var hp = h.hp * g * (m.hp || 1);
+      var HB = side === 'A' && data.heroBoost ? data.heroBoost : null, hb = function (s) { return HB ? ((HB[h.job] || {})[s] || 0) + ((HB.all || {})[s] || 0) : 0; }; // 2026-11-27 영구 강화 영웅 줄(우리 편만). shortcut: 방어력도 %라 탱커만 득, 숫자 정할 때 고정값으로 바꿀지 봄
+      var hp = h.hp * g * (m.hp || 1) * (1 + hb('hp'));
       var AR = B.arena, p0 = AR.pos[spec.slot] || AR.pos[0];
       return { uid: ++uid, id: h.id, name: h.name, h: h, side: side, slot: spec.slot, star: spec.star || 1, line: AR.lines ? (AR.lines[spec.slot] || 0) : (spec.slot < 2 ? 0 : 1), front: (AR.lines ? (AR.lines[spec.slot] || 0) === 0 : spec.slot < 2) || h.mob === 'goblin' || h.mob === 'chest', level: lv,
         x: spec.x != null ? spec.x : (side === 'A' ? p0[0] : AR.w - p0[0]), y: spec.y != null ? spec.y : p0[1], face: side === 'A' ? 1 : -1, moving: false, tgt: null,
         reach: AR.reach[h.range], spd: AR.speed[h.range],
-        maxHp: hp, hp: hp, atk: h.atk * g * (m.atk || 1), def: h.def * g, interval: h.interval / (spec.spd || 1), range: h.range, swampV: spec.swamp || 0, swampE: spec.swampE || 0, /* 2026-11-26 늪: 살아 있는 1초마다 공격력 +swampV. 2026-11-27: swampE가 있으면 swampE초마다 계단식(늪 칸) */ race2: spec.race2 && spec.race2 !== h.race ? spec.race2 : null, /* 단상으로 더해진 종족 */ el: spec.el || h.el, el2: spec.el2 && spec.el2 !== (spec.el || h.el) ? spec.el2 : null, // el2: 진영 발판으로 더해진 진영 // spec.el: 진영 발판 위면 그 진영
+        maxHp: hp, hp: hp, atk: h.atk * g * (m.atk || 1) * (1 + hb('atk')), def: h.def * g * (1 + hb('def')), interval: h.interval / (spec.spd || 1), range: h.range, swampV: spec.swamp || 0, swampE: spec.swampE || 0, /* 2026-11-26 늪: 살아 있는 1초마다 공격력 +swampV. 2026-11-27: swampE가 있으면 swampE초마다 계단식(늪 칸) */ race2: spec.race2 && spec.race2 !== h.race ? spec.race2 : null, /* 단상으로 더해진 종족 */ el: spec.el || h.el, el2: spec.el2 && spec.el2 !== (spec.el || h.el) ? spec.el2 : null, // el2: 진영 발판으로 더해진 진영 // spec.el: 진영 발판 위면 그 진영
         energy: h.ult && h.ult.trig ? (h.ult.trig.kind === 'start' ? B.energyMax : 0) : Math.min(B.energyMax, SE.value + (spec.energy || 0)), trig: h.ult && h.ult.trig || null, timer: rand() * B.startJitter, alive: true, shield: 0, taunt: 0, slow: 0, slowAmt: 0, haste: 0, hasteAmt: 0,
-        grade: h.grade || 1, ultLv: 0, pasLv: 0, uk: 1, pas: null, pv: 0, crit: critChance(data, h),
+        grade: h.grade || 1, ultLv: 0, pasLv: 0, uk: 1, pas: null, pv: 0, crit: critChance(data, h) + hb('crit'),
         boss: !!spec.boss, merc: !!spec.merc, blue: !!spec.blue, endureOnce: !!spec.endure, stats: { dealt: 0, taken: 0, healed: 0, ults: 0, shield: 0 } };
     }
     var A = ally.map(function (s) { return makeUnit(s, 'A'); }), E = enemy.map(function (s) { return makeUnit(s, 'E'); });
@@ -873,9 +874,28 @@
     return { unit: u, merged: n }; }
 
   // 봇 진행: 도전 → 이기면 적 중 1명 영입 → 지면 출전 영웅을 고르게 레벨업 → 돈이 없으면 방치 보상을 기다림
+  // ───── 영구 강화(2026-11-27 뼈대): state = { medals, nodes: { 칸id: 찍은 단계 } }. 표는 data.meta ─────
+  // metaData: 강화를 반영한 data를 새로 만들어 돌려줘요(원본은 그대로). 봇은 campaign(opts.meta), 화면은 D 대신 이걸 쓰면 돼요
+  function metaData(data, state) { var M = data.meta, S = state && state.nodes; if (!M || !S) return data;
+    var cp = function (o) { if (!o) return o; var r = {}; for (var q in o) r[q] = o[q]; return r; }, d = cp(data), HB = {};
+    d.player = cp(data.player); d.shop = cp(data.shop); d.campaign = cp(data.campaign); d.life = cp(data.life); d.recruit = cp(data.recruit); if (d.recruit) d.recruit.reroll = cp(data.recruit.reroll);
+    M.lines.forEach(function (L) { L.nodes.forEach(function (N) { var n = Math.min(S[N.id] || 0, N.cost.length); if (!n) return;
+      if (N.key && d.player[N.key]) d.player[N.key] = d.player[N.key].map(function (v) { var w = v + N.add * n; return N.cap != null ? Math.max(v, Math.min(w, N.cap)) : w; });
+      else if (N.shift && d.player[N.shift]) { var row = d.player[N.shift]; d.player[N.shift] = row.map(function (v, i) { return row[Math.min(i + n, row.length - 1)]; }); } // 등급 확률 = 레벨 표를 n칸 앞당김
+      else if (N.path) { var ks = N.path.split('.'), o = d; for (var i = 0; i < ks.length - 1; i++) o = o[ks[i]]; var last = ks[ks.length - 1], v0 = o[last]; o[last] = Array.isArray(v0) ? v0.map(function (x) { return x + N.add * n; }) : (v0 || 0) + N.add * n; }
+      else if (N.hero) { var J = HB[L.job] || (HB[L.job] = {}); J[N.hero] = (J[N.hero] || 0) + N.add * n; } }); });
+    d.heroBoost = HB; return d; }
+  function metaLine(data, id) { return ((data.meta || {}).lines || []).filter(function (L) { return L.id === id; })[0] || null; }
+  // 다음에 찍을 칸: 줄 안에서 앞 칸을 다 찍어야 다음 칸. 없으면 null(줄 끝)
+  function metaNext(data, state, lineId) { var L = metaLine(data, lineId), S = (state && state.nodes) || {}; if (!L) return null;
+    for (var i = 0; i < L.nodes.length; i++) { var N = L.nodes[i], n = S[N.id] || 0; if (n < N.cost.length) return { node: N, step: n + 1, cost: N.cost[n] }; } return null; }
+  function metaBuy(data, state, lineId) { var nx = metaNext(data, state, lineId); if (!nx || (state.medals || 0) < nx.cost) return false; state.medals -= nx.cost; (state.nodes || (state.nodes = {}))[nx.node.id] = nx.step; return true; } // state를 바꿔요
+  function metaExp(data, state) { var S = (state && state.nodes) || {}, e = 0; for (var k in S) e += S[k] || 0; return e; } // 한 단계 = 경험치 1
+  function metaLevel(data, state) { return 1 + Math.floor(metaExp(data, state) / (((data.meta || {}).totalLv || {}).per || 5)); }
+  function metaMedals(data, cleared, firstClear) { var M = (data.meta || {}).medal || {}, m = 0; for (var i = 0; i < (cleared || 0); i++) m += (M.clear || 0) + (isBoss(data, i) ? M.boss || 0 : 0); return m + (firstClear ? M.firstClear || 0 : 0); } // 판 끝 훈장(제약 배율은 제약이 생기면 곱함)
   function campaign(data, opts) {
-    opts = opts || {};
-    var C = data.campaign, R = data.recruit, levels = {}, owned = {}, gold = 0, time = 0, stage = 0, best = 0, tries = 0, total = stageCount(data), maxT = (opts.maxHours || 48) * 3600;
+    opts = opts || {}; if (opts.meta) data = metaData(data, opts.meta); // 2026-11-27 영구 강화
+    var C = data.campaign, R = data.recruit, levels = {}, owned = {}, gold = C.startGold || 0, time = 0, stage = 0, best = 0, tries = 0, total = stageCount(data), maxT = (opts.maxHours || 48) * 3600;
     var units = [];
     function startHero() { var id = R.startHero; if (campfireAtStart(data)) { var ids = rollCampfire(data, rnd, 1); id = ids.splice(lootPick(data, ids, 1, rnd), 1)[0]; events.campfire.seen++; for (var sp = 1; sp < (data.events.campfire.startPicks || 1) && ids.length; sp++) { var x2 = ids.splice(lootPick(data, ids, 1, rnd), 1)[0]; newUnit(units, x2, 1); levels[x2] = data.startLevel; } } newUnit(units, id, 1); levels[id] = data.startLevel;
       startExtras(data, rnd, [id]).forEach(function (x) { newUnit(units, x, 1); levels[x] = data.startLevel; }); }
@@ -900,7 +920,7 @@
     // 체력이 0이 되면 판 전체를 처음(1-1)으로: 영웅·스킬·골드·마나스톤·경험치를 모두 잃어요
     function resetRun() { runs.push({ best: best, time: time - runStart }); runStart = time;
       units.length = 0; levels = {}; startHero();
-      skills.length = 0; pads = {}; gold = 0; mana = 0; xp = 0; plv = 1; stage = 0; best = 0; tries = 0; streak = 0; bellPaidN = 0; life = LF.max; stood = false; lastHp = 0; shop = rollShop(data, rnd, 1, skills); shopH = rollShopHeroes(data, rnd, 1, 0); }
+      skills.length = 0; pads = {}; gold = C.startGold || 0; mana = 0; xp = 0; plv = 1; stage = 0; best = 0; tries = 0; streak = 0; bellPaidN = 0; life = LF.max; stood = false; lastHp = 0; shop = rollShop(data, rnd, 1, skills); shopH = rollShopHeroes(data, rnd, 1, 0); }
     var lastHp = 0, bells = { rung: 0, lost: 0 }, fails = [], bellPaidN = 0; // bellPaidN: 이 판에서 골드를 이미 받은 종 횟수 // fails[n] = 스테이지 n에서 진 횟수
     var potions = []; // 2026-11-26 봇: 들고 있는 물약 id(최대 player.potion, 레벨별). 다음 일반 전투에 모두 마셔요
     var events = { goblin: { seen: 0, caught: 0, missed: 0 }, merchant: { seen: 0, bought: 0 }, merc: { seen: 0, hired: 0 }, campfire: { seen: 0 }, chest: { seen: 0, tiers: 0, gold: 0 } };
@@ -1064,7 +1084,7 @@
     return out;
   }
 
-  var api = { battle: battle, createBattle: createBattle, chapterData: chapterData, potionById: potionById, potionSellPrice: potionSellPrice, rollPotions: rollPotions, stageTeam: stageTeam, heroLevel: heroLevel, levelPickRoll: levelPickRoll, levelPickKind: levelPickKind, skillUp: skillUp, startExtras: startExtras, bellFx: bellFx, stageLevel: stageLevel, stageName: stageName, stageCount: stageCount, autoFormation: autoFormation,
+  var api = { battle: battle, createBattle: createBattle, chapterData: chapterData, potionById: potionById, metaData: metaData, metaNext: metaNext, metaBuy: metaBuy, metaExp: metaExp, metaLevel: metaLevel, metaMedals: metaMedals, potionSellPrice: potionSellPrice, rollPotions: rollPotions, stageTeam: stageTeam, heroLevel: heroLevel, levelPickRoll: levelPickRoll, levelPickKind: levelPickKind, skillUp: skillUp, startExtras: startExtras, bellFx: bellFx, stageLevel: stageLevel, stageName: stageName, stageCount: stageCount, autoFormation: autoFormation,
     campaign: campaign, compare: compare, lossDamage: lossDamage, lossGold: lossGold, dmgFrac: dmgFrac, levelCost: levelCost, heroById: heroById, makeRng: makeRng,
     costCap: costCap, starMul: starMul, gradeMul: gradeMul, heroGrade: heroGrade, pickHeroByGrade: pickHeroByGrade, effectLevels: effectLevels, relicPowerMul: relicPowerMul, passiveValue: passiveValue, power: power, newUnit: newUnit, canMerge: canMerge, mergeUnits: mergeUnits, autoMerge: autoMerge, gainUnit: gainUnit,
     skillById: skillById, heroSellPrice: heroSellPrice, relicTargets: relicTargets, heroBonus: heroBonus, isBoss: isBoss, critChance: critChance, lootPool: lootPool, lootPick: lootPick, chestGrade: chestGrade, chestTiers: chestTiers, mobLoot: mobLoot, grollCost: grollCost, grollSpins: grollSpins, rollGroll: rollGroll, oddEvenBet: oddEvenBet, oddEvenResult: oddEvenResult, padTeam: padTeam, lootParse: lootParse, lootRerollPrice: lootRerollPrice, rerollMax: rerollMax, rollEvent: rollEvent, rollDais: rollDais, rollDaisCell: rollDaisCell, daisRerolls: daisRerolls, eventRerolls: eventRerolls, rollCampfire: rollCampfire, campfireAtStart: campfireAtStart, stageReward: stageReward, bellMax: bellMax, bellGold: bellGold, rollMerchant: rollMerchant, isEventStage: isEventStage, unitSkills: unitSkills, canTranscend: canTranscend, transcend: transcend, unitBattleSpec: unitBattleSpec, unitPower: unitPower, skillPool: skillPool, merchantPrice: merchantPrice, merchantOff: merchantOff, merchantNoBattle: merchantNoBattle, chestReward: chestReward, rollScroll: rollScroll, mercPrice: mercPrice, skillPrice: skillPrice, skillManaPrice: skillManaPrice, skillBuyPrice: skillBuyPrice, skillGradeNow: skillGradeNow, skillMaxLevel: skillMaxLevel, refreshPrice: refreshPrice, rollShop: rollShop, rollShopHeroes: rollShopHeroes, canTake: canTake, takeSkill: takeSkill, playerLevel: playerLevel, perk: perk, skillSellPrice: skillSellPrice, sellSkill: sellSkill };

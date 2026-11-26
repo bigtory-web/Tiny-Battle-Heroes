@@ -540,6 +540,55 @@ var IDLE_DATA = {
     shopGrade:  [[70, 25, 5, 0], [65, 28, 7, 0], [55, 30, 13, 2], [50, 32, 15, 3], [42, 33, 19, 6],
                  [36, 34, 22, 8], [30, 34, 25, 11], [25, 33, 28, 14], [20, 32, 30, 18], [15, 30, 33, 22]]
   },
+  // ───── 영구 강화(2026-11-27 뼈대, 숫자는 모두 임시. 사용자: "일단 임의로하라니까?") ─────
+  // 기획: 영구강화_기획안.md 4번. 줄(lines)마다 칸(nodes)이 순서대로 있고, 앞 칸을 다 찍어야 다음 칸을 찍어요. 어느 줄을 찍을지는 자유
+  // 한 단계 찍을 때마다 토탈 경험치 +1. 토탈 레벨 = 경험치 ÷ totalLv.per (+1). 혜택 = 영웅 해금(unlock: 토탈 레벨 → 영웅 id 목록, 아직 비어 있음)
+  // 칸 종류: key = player 레벨 표 줄에 add씩 더함(cap을 안 넘게) · shift = 레벨 표를 단계만큼 앞당김(등급 확률) · path = 그 값에 add씩 더함 · hero = 직업(job, 'all'은 팀 전체) 능력치 + add
+  // cost[i] = i+1단계 비용(훈장). E.metaData(data, state)가 강화를 반영한 data를 돌려줘요(봇·화면 둘 다 이걸 씀)
+  meta: {
+    medal: { clear: 1, boss: 2, firstClear: 10 }, // 판이 끝날 때 받는 훈장: 판 클리어마다 clear, 보스 판(5·10) +boss, 장 첫 클리어 +firstClear (기획안 3번 초안)
+    totalLv: { per: 5, unlock: {} },
+    lines: [
+      { id: 'bag', name: '백팩', nodes: [
+        { id: 'bag', name: '백팩 칸', key: 'bag', add: 1, cap: 7, cost: [6, 12] },
+        { id: 'relic', name: '유물 칸', key: 'skillSlots', add: 1, cap: 10, cost: [8, 16] },
+        { id: 'potion', name: '물약 칸', key: 'potion', add: 1, cap: 3, cost: [6, 12] } ] },
+      { id: 'shop', name: '상점', nodes: [
+        { id: 'shopSlot', name: '상점 칸', key: 'shopSlots', add: 1, cap: 6, cost: [8, 16] },
+        { id: 'shopReset', name: '상점 리셋', path: 'shop.refreshMax', add: 1, cost: [6, 12] },
+        { id: 'merchSlot', name: '상인 상품 수', key: 'merchantSlots', add: 1, cap: 6, cost: [6, 12] },
+        { id: 'merchHero', name: '상인 영웅 수', key: 'merchantHeroes', add: 1, cap: 2, cost: [10] },
+        { id: 'merchOff', name: '상인 할인', key: 'merchantOff', add: 5, cap: 60, cost: [6, 12] },
+        { id: 'shopGrade', name: '상점 등급 확률', shift: 'shopGrade', cost: [8, 16] } ] },
+      { id: 'event', name: '이벤트', nodes: [
+        { id: 'startGold', name: '시작 골드', path: 'campaign.startGold', add: 50, cost: [4, 8, 12] },
+        { id: 'life', name: '시작 하트', path: 'life.max', add: 2, cost: [4, 8, 12] },
+        { id: 'clearGold', name: '클리어 골드', key: 'clearGold', add: 10, cost: [5, 10, 15] },
+        { id: 'lootReset', name: '전투 룰렛 리셋', path: 'recruit.reroll.max', add: 1, cost: [8] },
+        { id: 'campfire', name: '모닥불 영웅 수', key: 'campfire', add: 1, cap: 6, cost: [6, 12] },
+        { id: 'eventReset', name: '모닥불·요정 리셋', key: 'eventReroll', add: 1, cost: [6, 12] },
+        { id: 'daisReset', name: '양탄자 리셋', key: 'daisReroll', add: 1, cost: [6, 12] },
+        { id: 'groll', name: '돈고블린 룰렛', key: 'grollSpins', add: 1, cost: [6, 12] },
+        { id: 'mimic', name: '미믹 수', key: 'mimicCount', add: 1, cap: 4, cost: [8] },
+        { id: 'chest', name: '보물상자 등급', key: 'chestGrade', add: 1, cap: 3, cost: [10] },
+        { id: 'lootGrade', name: '전리품 등급 확률', shift: 'lootWeight', cost: [8, 16] } ] },
+      // 영웅 줄: 직업마다 어울리는 능력치만(사용자 "2로하자"). 직업별 능력치는 기획 제안표(사용자 확인 전) 그대로 임시. atk·hp·def = +비율, crit = +확률
+      { id: 'h_guardian', name: '기사', job: 'guardian', nodes: [
+        { id: 'g_hp', name: '기사 체력', hero: 'hp', add: 0.05, cost: [5, 10, 15] }, { id: 'g_def', name: '기사 방어력', hero: 'def', add: 0.05, cost: [5, 10, 15] } ] },
+      { id: 'h_warrior', name: '전사', job: 'warrior', nodes: [
+        { id: 'w_atk', name: '전사 공격력', hero: 'atk', add: 0.05, cost: [5, 10, 15] }, { id: 'w_hp', name: '전사 체력', hero: 'hp', add: 0.05, cost: [5, 10, 15] } ] },
+      { id: 'h_assassin', name: '암살자', job: 'assassin', nodes: [
+        { id: 'a_atk', name: '암살자 공격력', hero: 'atk', add: 0.05, cost: [5, 10, 15] }, { id: 'a_crit', name: '암살자 치명타', hero: 'crit', add: 0.02, cost: [5, 10, 15] } ] },
+      { id: 'h_archer', name: '궁수', job: 'archer', nodes: [
+        { id: 'r_atk', name: '궁수 공격력', hero: 'atk', add: 0.05, cost: [5, 10, 15] }, { id: 'r_crit', name: '궁수 치명타', hero: 'crit', add: 0.02, cost: [5, 10, 15] } ] },
+      { id: 'h_mage', name: '마법사', job: 'mage', nodes: [
+        { id: 'm_atk', name: '마법사 공격력', hero: 'atk', add: 0.05, cost: [5, 10, 15] }, { id: 'm_hp', name: '마법사 체력', hero: 'hp', add: 0.05, cost: [5, 10, 15] } ] },
+      { id: 'h_bard', name: '서포터', job: 'bard', nodes: [
+        { id: 'b_hp', name: '서포터 체력', hero: 'hp', add: 0.05, cost: [5, 10, 15] }, { id: 'b_def', name: '서포터 방어력', hero: 'def', add: 0.05, cost: [5, 10, 15] } ] },
+      { id: 'h_all', name: '팀 전체', job: 'all', nodes: [
+        { id: 't_hp', name: '팀 체력', hero: 'hp', add: 0.03, cost: [8, 16, 24] }, { id: 't_atk', name: '팀 공격력', hero: 'atk', add: 0.03, cost: [8, 16, 24] } ] }
+    ]
+  },
   // 등급 테두리 색: 코스트 1·2·3 (캐릭터 그림 외곽선)
   // 영웅 등급: 영웅마다 정해진 희귀도(heroes[].grade 1~5). 캐릭터 외곽선 색으로 보여요. 합성으로는 안 바뀌어요(합성은 성급 ★)
   // 어떤 등급의 영웅이 적·용병·상인으로 나올지는 플레이어 레벨에 따른 확률(player.heroGrade)로 정해져요
