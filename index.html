@@ -2683,6 +2683,8 @@ img.rimg{image-rendering:auto!important}
 #roul .rbox.still,#roul .rbox.still .ring,#roul .rbox.still .rgrade,#roul .rbox.still .rstage .rpic{animation:none!important}
 #roul .rbox.still.reveal:not(.spin) .rstage .rpic:not(.loot){animation:rpblink .8s steps(1) infinite!important}
 #roul .rbox.still .rgrade{opacity:1}
+/* 용병 팝업도 열 때 튀어 오름 없음 */
+#evWin .rbox.reveal:not(.spin) .rstage .rpic:not(.loot){animation:rpblink .8s steps(1) infinite!important}
 </style>
 </head>
 <body>
@@ -3377,6 +3379,18 @@ img.rimg{image-rendering:auto!important}
     if (gr === 3){ var r = $('roul'); r.classList.remove('flash'); void r.offsetWidth; r.classList.add('flash'); }
   }
   /* 도는 빛줄기 대신 단상 주변 도트 별 반짝임, 색 = 결과 등급색 (2026-11-26 사용자). 등급이 높을수록 많이·자주 */
+  /* 용병·모닥불 팝업 배경 = 도트: 1칸 4px, 색을 계단으로 끊고 경계는 4x4 디더링 (2026-11-26 사용자 "도트느낌이 안나") */
+  (function(){ var BY = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+    function url(bands, lc, cy, rx, ry, amt){ var W = 120, H = 50, c = document.createElement('canvas'); c.width = W; c.height = H; var g = c.getContext('2d');
+      for (var y = 0; y < H; y++) for (var x = 0; x < W; x++){ var b = (BY[(y % 4) * 4 + x % 4] + .5) / 16, base = bands[0][1];
+        for (var k = 1; k < bands.length; k++) if (y + (b - .5) * 4 >= bands[k][0] * H) base = bands[k][1];
+        var d = Math.sqrt(Math.pow((x + .5 - W / 2) / rx, 2) + Math.pow((y + .5 - cy) / ry, 2)), lv = Math.floor(Math.max(0, 1 - d) * 4 + (b - .5) * .7 + .5), a = Math.max(0, Math.min(4, lv)) * amt;
+        g.fillStyle = 'rgb(' + [0, 1, 2].map(function(i){ return Math.round(base[i] + (lc[i] - base[i]) * a); }).join(',') + ')'; g.fillRect(x, y, 1, 1); }
+      return 'url(' + c.toDataURL() + ') 50% 100%/480px 200px no-repeat '; }
+    var s = document.createElement('style');
+    s.textContent = '#evWin .rbox .rstage{background:' + url([[0, [27, 33, 48]], [.3, [31, 35, 50]], [.55, [43, 37, 48]], [.72, [58, 44, 36]]], [255, 214, 140], 20, 40, 32, .09) + '#1b2130!important;image-rendering:pixelated}' +
+      '#roul .rbox.camp .rstage{background:' + url([[0, [15, 18, 36]], [.25, [20, 20, 37]], [.45, [29, 22, 38]], [.7, [36, 24, 31]], [.85, [42, 26, 24]]], [255, 140, 40], 50, 56, 32, .14) + '#0f1224!important;image-rendering:pixelated}';
+    document.body.appendChild(s); })();
   function starFx(stage, tier, col){ if (!stage) return; var el = stage.querySelector(':scope > .rstars'); if (!el){ el = document.createElement('i'); el.className = 'rstars'; stage.appendChild(el); }
     el.style.setProperty('--sc', col || '#fff'); if (el.firstChild) return; var n = 23, o = ''; /* 개수·빈도는 등급과 상관없이 같고 색만 다름. 결과 그림 왼쪽·위·오른쪽 반원, 단상 위로는 안 내려감 (2026-11-26 사용자) */
     for (var i = 0; i < n; i++){ var a = (i + Math.random() * .7) / n * Math.PI, f = Math.random(), x = 50 + Math.cos(a) * (32 + f * 16), y = 94 - Math.sin(a) * (80 + f * 10), sz = Math.random() < .45 ? 3 : 2, du = (1.6 + Math.random() * 1.4).toFixed(2), dl = (-Math.random() * 3).toFixed(2); o += '<s class="s' + sz + '" style="left:' + x.toFixed(1) + '%;top:' + y.toFixed(1) + '%;animation-duration:' + du + 's;animation-delay:' + dl + 's"></s>'; }
@@ -4721,7 +4735,7 @@ img.rimg{image-rendering:auto!important}
     box.innerHTML = '<div class="rbox reveal rl' + lootTier('h:' + id) + '" style="--gcol:' + col + ';--el:' + col + '"><button class="spX" type="button" data-evleave="1" title="닫기">✕</button><div class="rt">떠돌이 용병</div>' +
       '<div class="rstage"><div class="rpic"></div><div class="rtags" style="--tg:' + col + '">' + tagHtml(h2) + '</div>' +
       (h2.ult ? '<div class="rsk" style="--rg:' + col + '" data-tipt="' + q(ultName(h2)) + '" data-tiptx="' + q(ultDescFull(h2, h2.ult, 1)) + '">' + ultIcon(h2, 28) + '</div>' : '') + '<div class="rname">' + h2.name + '</div></div>' +
-      '<div class="mercline"><span><i class="mshake"></i><b>합류를 원해요!</b><i class="mswords"></i></span></div><div class="rbtns"><button class="go" type="button" data-evmerc="1"' + (S.gold >= o.price ? '' : ' disabled') + '>영입(' + g(o.price) + ')</button><button class="go again" type="button" data-evleave="1">거절</button></div></div>';
+      '<div class="mercline"><span><i class="mshake"></i><b>합류를 원해요!</b></span></div><div class="rbtns"><button class="go" type="button" data-evmerc="1"' + (S.gold >= o.price ? '' : ' disabled') + '>영입(' + g(o.price) + ')</button><button class="go again" type="button" data-evleave="1">거절</button></div></div>';
     var pic = box.querySelector('.rpic');
     if (IMGS[id]){ w.style.setProperty('--rpq', (66 * qR() / (sApp() * (window.devicePixelRatio || 1))).toFixed(2) + 'px'); OUTLN = qN(); pic.style.backgroundImage = 'url(' + outlinedURL(id, gc(id)) + ')'; pic.style.setProperty('--o1', 'url(' + outlinedURL(id, '#4fa3ff') + ')'); pic.style.setProperty('--o2', 'url(' + outlinedURL(id, '#ffffff') + ')'); /* 룰렛 결과처럼 외곽선 깜빡임에 필요 */ OUTLN = 0; pic.style.imageRendering = 'pixelated'; }
     else pic.innerHTML = AV[id];
