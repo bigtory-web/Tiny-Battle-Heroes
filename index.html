@@ -3041,9 +3041,8 @@ img.rimg{image-rendering:auto!important}
 #upWin .uptip > span{white-space:nowrap} /* 설명은 늘 한 줄: 상태가 달라도 팁 모양이 같게 (2026-11-27 사용자) */
 #upWin .upfx{position:absolute;width:4.5px;height:4.5px;margin:-2px 0 0 -2px;background:#fff;box-shadow:0 0 0 1.5px #17141d;pointer-events:none;z-index:5} #upWin .upfx.y{background:#ffd34d}
 /* 강화 = 화면 전체 */ #upWin{z-index:900;background:#120e20} #upWin .upbox{width:100%;height:100%;gap:0;padding:0;box-shadow:none;background:#120e20}
-#upWin .uphead{height:64px;flex:none;justify-content:space-between;padding:0 16px;background:#241c38;box-shadow:inset 0 -3px 0 #8a7652}
-#upWin .upback{width:44px;height:44px;border:0;border-radius:0;cursor:pointer;font:400 20px var(--display);color:#f3e6c4;background:#3b3546;box-shadow:inset 0 0 0 2px #17141d,inset 0 -4px 0 -1px #221d2a}
-#upWin .uptitle{position:absolute;left:50%;transform:translateX(-50%);font:400 28px var(--display);color:#ffe9a8;text-shadow:0 3px 0 #17141d}
+#upWin .uphead{height:64px;flex:none;justify-content:flex-end;gap:16px;padding:0 64px 0 16px;background:#241c38;box-shadow:inset 0 -3px 0 #8a7652}
+#upWin .uphead .popx{top:14px!important;right:16px!important} #upWin .uptitle{position:absolute;left:50%;transform:translateX(-50%);font:400 28px var(--display);color:#ffe9a8;text-shadow:0 3px 0 #17141d}
 #upWin .upmedals{display:flex;align-items:center;gap:6px;min-width:80px;justify-content:flex-end;font:400 22px var(--display);color:#f3e6c4} #upWin .upmedals .medic{width:18px;height:18px}
 #upWin .upweb{box-shadow:none}
 #upWin .upfoot{flex:none;display:flex;align-items:center;gap:8px;height:48px;padding:0 16px;background:#241c38;box-shadow:inset 0 3px 0 #17141d} #upWin .uphint{margin-left:auto;font:400 13px var(--display);color:#bdb2d6}
@@ -5613,7 +5612,7 @@ img.rimg{image-rendering:auto!important}
     var W = 10 * CW, H = 8 * CH2;
     var cx = (X0 + .5) * CW, cy = (Y0 + .5) * CH2; var web = '<div class="upmap" style="width:' + W + 'px;height:' + H + 'px;background-image:url(' + upBg(W, H, cx, cy) + ')"><svg width="' + W + '" height="' + H + '">' + lines.replace(/<path data-to="([^"]*)" d="([^"]*)"[^>]*>/g, '<path data-to="$1" d="$2" class="ol"/>') + lines + '</svg>' + nodes + '</div>';
     /* 전체 화면 (2026-11-27 사용자: "화면 전체로"): 뒤로 가기 · 제목 · 훈장 / 망 / 치트 · 조작 안내. 토탈 레벨은 뺌 */
-    o.innerHTML = '<div class="upbox"><div class="uphead"><button type="button" class="upback" data-upx="1" title="뒤로">◀</button><b class="uptitle">영구 강화</b><span class="upmedals"><i class="medic"></i>' + up.medals + '</span></div><div class="upweb">' + web + '</div><div class="upfoot"><button type="button" class="upcheat" data-upcheat="1">훈장 +50 (시험)</button><button type="button" class="upcheat" data-upall="1">모두 찍기</button><button type="button" class="upcheat" data-upreset="1">리셋</button><span class="uphint">누르기: 강화 · 끌기: 이동</span></div><div class="uptip" hidden></div></div>';
+    o.innerHTML = '<div class="upbox"><div class="uphead"><b class="uptitle">영구 강화</b><span class="upmedals"><i class="medic"></i>' + up.medals + '</span><button type="button" class="spX popx" data-upx="1" title="닫기">✕</button></div><div class="upweb">' + web + '</div><div class="upfoot"><button type="button" class="upcheat" data-upcheat="1">훈장 +50 (시험)</button><button type="button" class="upcheat" data-upall="1">모두 찍기</button><button type="button" class="upcheat" data-upreset="1">리셋</button><span class="uphint">누르기: 강화 · 끌기: 이동</span></div><div class="uptip" hidden></div></div>';
     var s2 = o.querySelector('.upweb'); if (keep){ s2.scrollLeft = keep[0]; s2.scrollTop = keep[1]; } else { s2.scrollLeft = (X0 + .5) * CW - s2.clientWidth / 2; s2.scrollTop = (Y0 + .5) * CH2 - s2.clientHeight / 2; } } /* 처음 열면 가운데 칸이 가운데 */
   $('upBtn').addEventListener('click', function(){ var o = $('upWin'); if (o && !o.hidden){ o.hidden = true; return; } upOpen(); });
   $('resetBtn').addEventListener('click', function(){ var m = S.modules, ui0 = S.ui; upRun(); D = runData(CH); S = fresh(); S.modules = m; if (ui0) S.ui = ui0; S.skills = []; restock(); save(); location.reload(); }); /* 새로 읽어야 새 판에 강화가 적용돼요 */
