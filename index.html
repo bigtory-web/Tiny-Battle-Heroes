@@ -2951,8 +2951,9 @@ img.rimg{image-rendering:auto!important}
 #trWin .trslot .trglow{display:none} /* 영웅 뒤 둥근 후광 전부 없앰 */
 #trWin .trslot .trplus{bottom:calc(38px + 40 * var(--P));z-index:3} /* + = 단상 위로 영웅 키 절반쯤 (2026-11-26 사용자) */
 #trWin .trslot .trtag{top:28px} /* 딱지는 위 테두리에서 떼어 단상 위 공간에 (2026-11-26 사용자) */
-#trWin .trslot.next .trplus{animation:trblink .8s steps(1) infinite}
-@keyframes trblink{50%{opacity:.15}}
+#trWin .trslot.next .trplus{animation:trblink 1.8s ease-in-out infinite}
+@keyframes trblink{50%{opacity:.55}}
+#trWin .trinfo{animation:popc2 .4s cubic-bezier(.3,1.5,.5,1)} /* 상세 창도 팝업과 같은 순간·같은 연출로 (2026-11-26 사용자) */
 #trWin .trslot > .rped{filter:sepia(1) saturate(3.2) drop-shadow(0 0 4px var(--tc))}
 #trWin .trslot.sM > .rped{filter:sepia(1) saturate(3.2) hue-rotate(170deg) drop-shadow(0 0 4px var(--tc))}
 #trWin .trstage{overflow:hidden}
