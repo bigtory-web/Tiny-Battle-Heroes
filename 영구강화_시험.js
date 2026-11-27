@@ -7,7 +7,7 @@ assert.strictEqual(D.player.bag[0],5,"원본 그대로"); assert.strictEqual(M.p
 assert.strictEqual(M.player.skillSlots[0],6); assert.strictEqual(M.player.potion[0],2,"물약 칸 최대 2");
 assert.deepStrictEqual(M.player.shopGrade[0],[55,25,10,10],"2026-11-27 상점도 기준 표(Lv1 85/15/0/0) + 등급별 +10%, 일반에서 뺌");
 assert.strictEqual(M.shop.refreshMax,D.shop.refreshMax+1,"리셋 +1까지만"); assert.strictEqual(M.campaign.startGold,150); assert.strictEqual(M.life.max,16);
-assert.deepStrictEqual(M.recruit.reroll.max,[2]); assert.strictEqual(D.recruit.reroll.max[0],1);
+assert.deepStrictEqual(M.recruit.reroll.max,[1]); assert.strictEqual(D.recruit.reroll.max[0],0,"리셋 기본 0");
 assert.strictEqual(M.player.clearGold[0],150);
 assert.ok(Math.abs(M.heroBoost.guardian.hp-0.10)>=0 && Math.abs(M.heroBoost.guardian.hp-0.15)<1e-9);
 // 자유형 망: 가운데(모닥불)부터, 앞 칸을 찍어야 열림
@@ -55,9 +55,9 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
   assert.deepStrictEqual(a, [1, 0], "안 찍으면 Lv1 파랑 1·왕관 0 그대로"); assert.ok(c[0] > 1.1 && c[1] > 0.1 && c[1] < 0.3, "파랑 늘고 왕관 약 20%");
   console.log("ok · 미믹 확률", JSON.stringify(a), "→", JSON.stringify(c.map(x => +x.toFixed(2)))); }
 // 모닥불·요정 리셋 나눔: 요정 리셋 칸은 요정에만
-{ const M = E.metaData(D, { nodes: { fairyReset: 1 } }); assert.strictEqual(E.eventRerolls(M, 1), 1); assert.strictEqual(E.eventRerolls(M, 1, "fairy"), 2); console.log("ok · 모닥불·요정 리셋 나눔"); }
+{ const M = E.metaData(D, { nodes: { fairyReset: 1 } }); assert.strictEqual(E.eventRerolls(M, 1), 0); assert.strictEqual(E.eventRerolls(M, 1, "fairy"), 1); console.log("ok · 모닥불·요정 리셋 나눔"); }
 // 강화 설명 "기존" 값: 레벨 1 값
-{ const b = id => E.metaBase(D, E.metaNode(D, id)); assert.strictEqual(b("eventReset"), 1); assert.strictEqual(b("life"), 10); assert.strictEqual(b("startGold"), 0); assert.strictEqual(b("lootReset"), 1); assert.strictEqual(b("g_hp"), null);
+{ const b = id => E.metaBase(D, E.metaNode(D, id)); assert.strictEqual(b("eventReset"), 0, "리셋 기본 0"); assert.strictEqual(b("life"), 10); assert.strictEqual(b("startGold"), 0); assert.strictEqual(b("lootReset"), 0); assert.strictEqual(b("g_hp"), null);
   console.log("ok · 기존 값", ["eventReset", "life", "startGold", "mimic", "bag"].map(i => E.metaNode(D, i).name + " " + b(i) + E.metaNode(D, i).unit).join(", ")); }
 // 2026-11-27 레벨업 → 영구 강화: 하트 없음, 영웅 레벨 칸, 영웅·돈고블린·상인 영웅 등급 앞당김(영구 강화로 모드는 Lv1 고정 + 칸), 적 등급은 그대로
 { assert.strictEqual(D.life.perLevel, 0, "레벨업 하트 없음");
@@ -129,5 +129,5 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
 { const st = { medals: 5, nodes: { heroLv: 3, t_hp: 1 } }; assert.strictEqual(E.metaRefund(D, st), 60); assert.strictEqual(st.medals, 65); assert.ok(!('heroLv' in st.nodes) && st.nodes.t_hp === 1);
   assert.strictEqual(E.metaRefund(D, st), 0, "두 번째는 0"); const s2 = { medals: 0, nodes: { heroLv: 1 } }; assert.strictEqual(E.metaRefund(D, s2), 10); console.log("ok · 뺀 노드 훈장 돌려주기"); }
 // 리셋 +1까지만, 레벨업 증가 없음(2026-11-27)
-{ assert.deepStrictEqual(D.player.eventReroll, Array(10).fill(1)); const st = { medals: 0, nodes: { shopReset: 2, eventReset: 1, daisReset: 2 } }; assert.strictEqual(E.metaRefund(D, st), 24); assert.deepStrictEqual(st.nodes, { shopReset: 1, eventReset: 1, daisReset: 1 }); assert.strictEqual(E.metaRefund(D, st), 0);
-  const M = E.metaData(D, { nodes: { eventReset: 1, fairyReset: 1, daisReset: 1 } }); assert.strictEqual(E.eventRerolls(M, 10), 2); assert.strictEqual(E.eventRerolls(M, 10, "fairy"), 2); console.log("ok · 리셋 +1까지만"); }
+{ assert.deepStrictEqual(D.player.eventReroll, Array(10).fill(0)); const st = { medals: 0, nodes: { shopReset: 2, eventReset: 1, daisReset: 2 } }; assert.strictEqual(E.metaRefund(D, st), 24); assert.deepStrictEqual(st.nodes, { shopReset: 1, eventReset: 1, daisReset: 1 }); assert.strictEqual(E.metaRefund(D, st), 0);
+  const M = E.metaData(D, { nodes: { eventReset: 1, fairyReset: 1, daisReset: 1 } }); assert.strictEqual(E.eventRerolls(M, 10), 1); assert.strictEqual(E.eventRerolls(M, 10, "fairy"), 1); console.log("ok · 리셋 +1까지만"); }
