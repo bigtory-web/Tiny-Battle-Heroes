@@ -1,0 +1,14 @@
+Look at img/codex/redo_anim/sprout_x8.png : a pixel art game character (a 64x64 sprite shown 8 times larger on white).
+Draw a sprite sheet of ATTACK frames of exactly this character and save it as img/codex/redo_anim/sprout_atk_src.png (if the size differs a little, save it anyway).
+
+Layout: ONE row of 4 equal cells, wide image (2048x512), the character in each cell drawn at the same size and same pixel size as the reference, feet at the same height in every cell. No borders, grid lines, text or numbers. Flat solid #FF00FF magenta background.
+
+The 4 frames, in order:
+1. get ready: lift the open book a little higher, to chin height.
+2. cast: push the open book forward to the right with both hands, pages facing forward.
+3. hold: same forward pose, a page flipped up above the book, body leaning forward 1 pixel.
+4. return: bringing the book back toward the reference pose.
+
+Rules (most important): same face, same eyes (same shape and position on the head, never closed), same hair, sprout, clothes, colors and book as the reference in all 4 frames. Same height, head size and body width. Feet do not move. Facing right. Only the colors of the reference, thick dark 1-pixel outline, hard square pixels, no anti-aliasing. No motion trails, flashes, sparks, projectiles or effects: the character only.
+When the book moves forward, the chest that shows behind it must be a PLAIN SIMPLE green tunic (two flat green tones) with the small green cape: no white or cream collar, scarf or patch there, no busy brown details. Cream color appears only on the book pages.
+Python is not installed on this computer: do not use python. Use PowerShell Copy-Item to copy the generated file. Do not modify or create any other file.
