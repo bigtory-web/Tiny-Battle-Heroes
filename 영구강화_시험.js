@@ -133,3 +133,6 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
   const M = E.metaData(D, { nodes: { eventReset: 1, fairyReset: 1, daisReset: 1 } }); assert.strictEqual(E.eventRerolls(M, 10), 1); assert.strictEqual(E.eventRerolls(M, 10, "fairy"), 1); console.log("ok · 리셋 +1까지만"); }
 // 방랑상인 리셋: 기본 0, 업그레이드 +1(2026-11-27)
 { const M = E.metaData(D, { nodes: { merchReset: 1 } }); assert.deepStrictEqual(D.events.merchant.reroll.max, [0]); assert.deepStrictEqual(M.events.merchant.reroll.max, [1]); assert.strictEqual(E.metaBase(D, E.metaNode(D, 'merchReset')), 0); console.log("ok · 상인 리셋"); }
+// 늪지·수정 상인 리셋, 수정 상인 수정 수(2026-11-27)
+{ const M = E.metaData(D, { mode: 'meta', nodes: { swampReset: 1, crystalReset: 1, crystalSlot: 2 } }); assert.deepStrictEqual(D.events.swampShop.reroll.max, [0]); assert.deepStrictEqual(M.events.swampShop.reroll.max, [1]); assert.deepStrictEqual(M.events.crystalShop.reroll.max, [1]);
+  assert.strictEqual(E.rollCrystals(M, () => 0.5, 1).length, 6, "수정 수 4 + 2"); assert.strictEqual(E.rollCrystals(E.metaData(D, { mode: 'meta', nodes: {} }), () => 0.5, 1).length, 4); console.log("ok · 상인 리셋·수정 수"); }

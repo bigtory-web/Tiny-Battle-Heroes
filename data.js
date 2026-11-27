@@ -458,7 +458,8 @@ var IDLE_DATA = {
     goblin:   { goldMul: 2.5, flee: 10, speed: 90 },
     // merchant 방랑상인(2026-11-18 바뀜): 전투 없는 이벤트 스테이지예요(번호는 직전 그대로). 들르면 특별 상점만 열리고, 나가면 다음 스테이지로 가요
     //   battle: false = 전투 없음. 진열 = 희귀 이상 스킬 skills개 + 영웅 heroes명. 값은 원래 값(스킬은 상점 값·재화 그대로, 영웅은 heroPrice 식) × discount, 최소 minPrice
-    swampShop: { count: 4 }, // 2026-11-26 늪지 상인: 물약 count개를 팔아요(겹치지 않게). 2026-11-27부터는 player.swampSlots(레벨별)가 있으면 그걸 씀. 들 수 있는 개수는 player.potion(레벨별)
+    swampShop: { count: 4, reroll: { cost: 50, max: [0] } /* 2026-11-27 리셋: 기본 0, 업그레이드 늪지 상인 리셋으로 +1, 값은 방랑상인과 같게 임시 (사용자: "물약상인 리셋도 1회 추가", "기본 0 + 업그레이드") */ },
+    crystalShop: { reroll: { cost: 50, max: [0] } }, // 2026-11-27 수정 상인 리셋(늪지 상인과 같게) // 2026-11-26 늪지 상인: 물약 count개를 팔아요(겹치지 않게). 2026-11-27부터는 player.swampSlots(레벨별)가 있으면 그걸 씀. 들 수 있는 개수는 player.potion(레벨별)
     merchant: { battle: false, skills: 2, minGrade: 3, discount: 0.5, minPrice: 1, heroes: 1, heroPrice: 110, offMin: 0.5, offMinAdd: 0 /* 최저 할인 더하기(%p, 영구 강화 상인 최저 할인) */, offStep: 5, reroll: { cost: 50, max: [0] /* 2026-11-27 기본 0, 업그레이드 상인 리셋으로 +1 (사용자: "0 + 업그레이드 노드") */ } }, // 2026-11-26: 상품마다 할인율 다름(최대 할인율×offMin ~ 최대, 5% 단위, 1개는 최대). reroll: 방랑상점 다시 돌리기 비용·횟수(플레이어 레벨별 표, 지금 모든 레벨 1번)
     // chest 보물상자(2026-11-18 새로): 그 판에는 보물상자 1마리만 나와요. 공격도 이동도 안 하고 단단하기만 해요. dur초가 지나면 사라져요
     //   입힌 피해 비율(최대 체력 대비)이 tiers의 at을 넘을 때마다 그 칸 보상을 더해 받아요(누적). gold는 그 스테이지 클리어 보상 × 값, mana는 마나스톤 개수, scroll은 스킬 두루마리 개수
@@ -550,6 +551,7 @@ var IDLE_DATA = {
     mimicBlue: [1, 1, 1, 1, 2, 2, 2, 2, 2, 2], // 2026-11-26: 그중 파랑 미믹 수. 나머지는 갈색(왕관은 Lv7부터 1마리, 갈색 자리를 씀)
     grollSpins: [1, 1, 1, 2, 2, 2, 3, 3, 3, 3], // 2026-11-26: 돈고블린 룰렛을 한 판에 돌릴 수 있는 횟수(Lv4·Lv7에 +1)
     merchantSlots:  [3, 3, 4, 4, 5, 5, 6, 6, 6, 6], // 2026-11-26: 방랑상인 상품 수(유물+영웅). 일반 상점 칸 수와 같게 (사용자: "방랑상점도 레벨에 의해 상품 개수 늘어나도록")
+    crystalSlots:   [4, 4, 4, 4, 5, 5, 6, 6, 6, 6], // 2026-11-27 수정 상인이 파는 수정 수(예전엔 swampSlots를 같이 씀, 사용자: "수정상인 물약 수랑 리셋 버튼도 추가해줘")
     swampSlots:     [4, 4, 4, 4, 5, 5, 6, 6, 6, 6], // 2026-11-27: 늪지 상인이 파는 물약 수. 4개에서 Lv5·Lv7에 1개씩(방랑상인 칸이 열리는 레벨에 맞춤, 임시). 사용자: "늪지 상점도 레벨 제한으로 슬롯 2개 있어. 일단은."
     merchantHeroes: [1, 1, 1, 1, 2, 2, 2, 2, 2, 2], // 2026-11-26: 그중 영웅 수. 나머지는 유물 (events.merchant.skills·heroes 대신 씀)
     campfire:   [3, 3, 4, 4, 5, 5, 6, 6, 6, 6], // 2026-11-23: 모닥불 영웅 수. 3명에서 Lv3·5·7에 1명씩 6명까지. 자리는 둘레 1·3·5번 먼저, 그다음 2·4·6번 // 2026-11-23: 상점 칸 2행×3열 6칸 중 열린 칸. 3칸에서 시작해 Lv3·Lv5·Lv7에 1칸씩 (잠긴 칸에 "LvN" 글자)
@@ -587,6 +589,9 @@ var IDLE_DATA = {
         { id: 'shopSlot', req: ['start'], name: '상점 칸', unit: '칸', key: 'shopSlots', add: 1, cap: 6, cost: [8, 16] },
         { id: 'shopReset', req: ['shopSlot'], name: '상점 리셋', unit: '회', path: 'shop.refreshMax', add: 1, cost: [6] /* 2026-11-27 리셋은 +1까지만 */ },
         { id: 'merchSlot', req: ['shopSlot'], name: '상인 상품 수', unit: '개', key: 'merchantSlots', add: 1, cap: 6, cost: [6, 12] },
+        { id: 'crystalSlot', req: ['merchSlot'], name: '수정 상인 수정 수', unit: '개', key: 'crystalSlots', add: 1, cap: 6, cost: [6, 12] }, // 2026-11-27 늪지 상인 물약 수와 같은 꼴
+        { id: 'crystalReset', req: ['crystalSlot'], name: '수정 상인 리셋', unit: '회', path: 'events.crystalShop.reroll.max', add: 1, cost: [6] },
+        { id: 'swampReset', req: ['swampSlot'], name: '늪지 상인 리셋', unit: '회', path: 'events.swampShop.reroll.max', add: 1, cost: [6] },
         { id: 'swampSlot', req: ['merchSlot'], name: '늪지 상인 물약 수', unit: '개', key: 'swampSlots', add: 1, cap: 6, cost: [6, 12] }, // 2026-11-27 (사용자: "말했지 내가? 플레이어레벨 그거 해당하는거 이미.")
         { id: 'merchHero', req: ['merchSlot'], name: '상인 영웅 수', unit: '명', key: 'merchantHeroes', add: 1, cap: 2, cost: [10] },
         { id: 'mg2', req: ['merchHero'], name: '상인 영웅 고급 확률', unit: '%', gradeUp: { table: 'merchantHeroGrade', grade: 2 }, add: 2, cost: [4, 8, 12, 16, 20] }, // 2026-11-27 등급별 확률 +2%씩 5단계, 더한 %는 낮은 등급부터 뺌 (사용자: "2%씩으로 해. 5개까지. 각 등급별로 구분하고", "낮은 등급에서부터 빼야겠지"). 예전 +단계 칸(merchHeroGrade) 대신. 비용 임시

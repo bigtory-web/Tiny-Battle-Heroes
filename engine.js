@@ -567,7 +567,7 @@
   function rollPotions(data, rnd, plv) { var SS = data.player && data.player.swampSlots, L = ((data.potions || {}).list || []).map(function (p) { return p.id; }), n = Math.min(L.length, SS ? SS[Math.max(0, Math.min((plv || 1) - 1, SS.length - 1))] : ((data.events || {}).swampShop || {}).count || 4), /* 2026-11-27: 파는 수는 레벨별(player.swampSlots) */ out = [];
     while (out.length < n) out.push(L.splice(Math.floor(rnd() * L.length), 1)[0]); return out; }
   // 2026-11-27 수정 상인: 수정 n개(겹치지 않게). 파는 수는 늪지 상인과 같은 player.swampSlots(레벨별)
-  function rollCrystals(data, rnd, plv) { var SS = data.player && data.player.swampSlots, L = ((data.crystals || {}).list || []).map(function (c) { return c.id; }), n = Math.min(L.length, SS ? SS[Math.max(0, Math.min((plv || 1) - 1, SS.length - 1))] : 4), out = [];
+  function rollCrystals(data, rnd, plv) { var SS = data.player && (data.player.crystalSlots || data.player.swampSlots), /* 2026-11-27 수정 수는 crystalSlots */ L = ((data.crystals || {}).list || []).map(function (c) { return c.id; }), n = Math.min(L.length, SS ? SS[Math.max(0, Math.min((plv || 1) - 1, SS.length - 1))] : 4), out = [];
     while (out.length < n) out.push(L.splice(Math.floor(rnd() * L.length), 1)[0]); return out; }
   function crystalSellPrice(data, id) { var c = crystalById(data, id); return c ? Math.round(c.price * ((data.crystals || {}).sellRate || 0.5)) : 0; } // 끼운 수정 판매 = 반값
   function rollEvent(data, n, rnd, plv, opts) {
