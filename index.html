@@ -3175,6 +3175,8 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
 #mimicPop .mmc.g2 b{background-image:url(img/p/mimic_g2_open.png)!important}
 #mimicPop .mmc.king b{left:0;right:0;top:0;background-image:url(img/p/mimic_king_open.png)!important}
 #mimicPop .mmc.open b{animation:mmlid .45s steps(1) forwards}
+/* 못 잡은 미믹: 폴짝 뛰어 옆으로 달아남. 하나도 못 잡으면 바람 한 줄과 먼지, "휑~" */ #mimicPop .mmrow{overflow:hidden;position:relative} #mimicPop .mmc.run{animation:mmrun .55s ease-in forwards} @keyframes mmrun{0%{transform:none;opacity:1}18%{transform:translate(-6px,-12px)}34%{transform:translate(6px,0)}100%{transform:translate(460px,-6px);opacity:0}}
+#mimicPop .mmwind{position:absolute;inset:0;pointer-events:none} #mimicPop .mmwind i{position:absolute;left:-90px;width:80px;height:3px;background:#d9d6e2;box-shadow:0 0 0 1px #17141d;animation:mmgust 1.1s linear both} #mimicPop .mmwind i:nth-of-type(1){top:44%} #mimicPop .mmwind i:nth-of-type(2){top:58%;width:56px;animation-delay:.18s} #mimicPop .mmwind i:nth-of-type(3){top:70%;width:40px;animation-delay:.32s} #mimicPop .mmwind b{position:absolute;bottom:34px;width:6px;height:6px;background:#b59c7a;box-shadow:0 0 0 1px #17141d;animation:mmdust 1.3s ease-out both} #mimicPop .mmwind b:nth-of-type(1){left:30%} #mimicPop .mmwind b:nth-of-type(2){left:42%;animation-delay:.15s} #mimicPop .mmwind b:nth-of-type(3){left:55%;animation-delay:.3s} #mimicPop .mmwind b:nth-of-type(4){left:66%;animation-delay:.45s} #mimicPop .mmwind em{position:absolute;left:0;right:0;top:34%;text-align:center;font:400 26px var(--display);font-style:normal;color:#fff;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 2px #17141d;animation:fadeup .4s .2s both} @keyframes mmgust{to{transform:translateX(560px)}} @keyframes mmdust{0%{opacity:0;transform:translate(0,6px)}30%{opacity:1}100%{opacity:0;transform:translate(60px,-16px)}}
 @keyframes mmlid{0%{background-position:0 0}25%{background-position:33.333% 0}55%{background-position:66.667% 0}100%{background-position:100% 0}}
 </style>
 </head>
@@ -5261,16 +5263,19 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   /* 미믹 결과 (2026-11-26 사용자): 잡은 미믹이 하나씩 놓여 열리고, 다 열리면 보상이 한꺼번에. 도망간 미믹은 놓지 않음. 받기 하나(X 없음) */
   var mimicT = [];
   function showMimicPop(){ var P = S.mimicPend, o = $('mimicPop'); if (!P || !o) return; mimicT.forEach(clearTimeout); mimicT = [];
-    var row = o.querySelector('.mmrow'), loot = o.querySelector('.mmloot'), btn = $('mmGet'), n = P.m.length;
-    row.innerHTML = n ? P.m.map(function(id){ return '<i class="mmc' + (id === 'mimicKing' ? ' king' : id === 'mimic:g2' ? ' g2' : '') + '"><b></b></i>'; }).join('') : '<span class="mmnone">미믹이 모두 도망쳤어요.</span>';
+    var row = o.querySelector('.mmrow'), loot = o.querySelector('.mmloot'), btn = $('mmGet'), n = P.m.length, miss = P.miss || [], all = P.m.concat(miss);
+    row.innerHTML = all.map(function(id){ return '<i class="mmc' + (id === 'mimicKing' ? ' king' : id === 'mimic:g2' ? ' g2' : '') + '"><b></b></i>'; }).join('');
     loot.innerHTML = ''; btn.disabled = true; o.hidden = false;
-    /* 2026-11-27 사용자: "폭죽은 나중이고. 잡은 순으로 하나씩 배치하고 한번에 입 여는 이미지 나오고 뒤에 폭죽. 열 때 맞춰서 보상 자르륵" */
-    var cells = [].slice.call(row.querySelectorAll('.mmc')), at = function(ms, fn){ mimicT.push(setTimeout(fn, ms)); }, tOpen = n ? 200 + n * 300 + 250 : 0, tLoot = n ? tOpen + 250 /* 뚜껑이 활짝 열리는 때 */ : 200, m = P.loot.length;
+    /* 2026-11-27 사용자: "전투한 미믹들 다 하나씩 나와. 못 잡은 미믹은 도망가. 잡은 것만 나와서 입 벌리고 보상" · "폭죽은 나중" · 하나도 못 잡으면 "휑~" */
+    var cells = [].slice.call(row.querySelectorAll('.mmc')), got = cells.slice(0, n), run = cells.slice(n), at = function(ms, fn){ mimicT.push(setTimeout(fn, ms)); }, m = P.loot.length;
+    var tIn = 200 + all.length * 300, tRun = tIn + 250, tAfter = run.length ? tRun + run.length * 120 + 550 : tIn, tOpen = tAfter + 100, tLoot = tOpen + 250 /* 뚜껑이 활짝 열리는 때 */;
     cells.forEach(function(c, i){ at(200 + i * 300, function(){ c.classList.add('in'); }); });
-    at(tOpen, function(){ cells.forEach(function(c){ c.classList.add('open'); }); });
+    run.forEach(function(c, i){ at(tRun + i * 120, function(){ c.classList.add('run'); }); });
+    if (!n){ at(tAfter, function(){ row.insertAdjacentHTML('beforeend', '<span class="mmwind"><i></i><i></i><i></i><b></b><b></b><b></b><b></b><em>휑~</em></span>'); }); at(tAfter + 500, function(){ loot.innerHTML = '<span class="mmnone">미믹이 모두 도망갔습니다.</span>'; btn.disabled = false; }); return; }
+    at(tOpen, function(){ got.forEach(function(c){ c.classList.add('open'); }); });
     at(tLoot, function(){ loot.innerHTML = P.loot.map(function(k, i){ var p = LP(k), tip = p.type === 's' ? ' data-tipsk="' + p.id + '" data-tiplv="1"' : ''; return '<span class="mlt" style="animation-delay:' + (i * .09) + 's"' + tip + '>' + lootIcon(k) + (p.amt ? '<em data-to="' + p.amt + '">0</em>' : '') + '</span>'; }).join('');
       [].forEach.call(loot.querySelectorAll('em[data-to]'), function(e){ var to = +e.dataset.to; for (var q = 1; q <= 10; q++) (function(q){ at(q * 55, function(){ e.textContent = Math.round(to * q / 10).toLocaleString(); }); })(q); }); });
-    at(tLoot + Math.max(m * 90 + 250, 600), function(){ btn.disabled = false; if (n) fwFx(row); /* 폭죽은 맨 마지막 */ }); }
+    at(tLoot + Math.max(m * 90 + 250, 600), function(){ btn.disabled = false; fwFx(row); /* 폭죽은 맨 마지막 */ }); }
   $('mmGet').addEventListener('click', function(){ var P = S.mimicPend; if (!P) return; var g0 = S.gold; S.mimicPend = null; P.loot.forEach(grantLoot); save(); $('mimicPop').hidden = true; hideTip(); evGo(); if (S.gold > g0) goldCount(g0, S.gold); });
   function grantLoot(k){ var p = LP(k); if (p.type === 'g') S.gold += p.amt; else if (p.type === 'm') S.mana = (S.mana || 0) + p.amt; else if (p.type === 's'){ if (E.canTake(D, S.skills, p.id, 999)){ E.takeSkill(D, S.skills, p.id); skKey = ''; } } else if (p.type === 'p') autoPad(p.id); }
   function synHl(d, side){ document.querySelectorAll('#field .synhl').forEach(function(e){ e.classList.remove('synhl'); }); if (!d || !d.per || d.only || bt) return; var y = synInfo(d, side); if (!y) return;
@@ -5475,8 +5480,8 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     var r = bt.finish(), st = E.stageTeam(D, curStage, curEv, curBell, curPlv), html = '', reward = 0, gain = ''; if (S.runStats){ S.runStats.battles++; if (r.win) S.runStats.wins++; S.runStats.kills += r.units.filter(function(x){ return x.side === 'E' && !x.alive && !x.escaped; }).length; bt.A.forEach(function(u){ var s = u.stats; if (!s || !E.heroById(D, u.id)) return; var t = S.runStats.by[u.id] || (S.runStats.by[u.id] = { dealt: 0, taken: 0, healed: 0, ults: 0 }); for (var k in t) t[k] += s[k] || 0; }); /* MVP 집계: 합성으로 사라진 영웅도 남음 */ }
     save(); // 경험치는 처치할 때마다 이미 더했어요
     var chestDone = !!(curEv && curEv.kind === 'chest' && E.chestReward), advanced = false;
-    if (curEv && curEv.kind === 'mimic' && E.mobLoot){ var ml = [].concat.apply([], E.mobLoot(st, r.units) || []).filter(Boolean), died = bt.log.filter(function(e){ return e.kind === 'die'; }).map(function(e){ return e.uid; }), mk = bt.E.filter(function(x){ return !x.alive && !x.escaped; }).sort(function(a, b){ return died.indexOf(a.uid) - died.indexOf(b.uid); }).map(function(x){ return x.id === 'mimic' && x.slot % 2 ? 'mimic:g2' : x.id; }); /* 잡은 순서대로, 색은 전장에서 본 그대로 */
-      if (curStage === S.stage) S.mimicPend = { m: mk, loot: ml };
+    if (curEv && curEv.kind === 'mimic' && E.mobLoot){ var ml = [].concat.apply([], E.mobLoot(st, r.units) || []).filter(Boolean), died = bt.log.filter(function(e){ return e.kind === 'die'; }).map(function(e){ return e.uid; }), mk = bt.E.filter(function(x){ return !x.alive && !x.escaped; }).sort(function(a, b){ return died.indexOf(a.uid) - died.indexOf(b.uid); }).map(function(x){ return x.id === 'mimic' && x.slot % 2 ? 'mimic:g2' : x.id; }), miss = bt.E.filter(function(x){ return x.alive || x.escaped; }).map(function(x){ return x.id === 'mimic' && x.slot % 2 ? 'mimic:g2' : x.id; }); /* 잡은 순서대로 + 못 잡은 것, 색은 전장에서 본 그대로 */
+      if (curStage === S.stage) S.mimicPend = { m: mk, miss: miss, loot: ml };
       S.adv = { up: false }; S.bellGold = 0; save();
       setTimeout(function(){ closeBattle(); if (S.mimicPend){ scrollPend = true; renderAll(); showMimicPop(); } else evGo(); }, skipNow ? 0 : 650); return; }
     if (curEv && curEv.kind === 'mobs' && E.mobLoot){ var mp = [].concat.apply([], E.mobLoot(st, r.units) || []).filter(Boolean), g0m = S.gold;
