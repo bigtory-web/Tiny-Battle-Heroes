@@ -41,10 +41,6 @@ description: 그림을 새로 만들거나 고치기 전에 가장 먼저 쓴다
 
 모델이 갑자기 "not supported"면 잠시 뒤 다시 해 보고, 그래도 안 되면 사용자에게 알린다.
 
-## 픽셀랩
-
-쓰기 전에 비용부터 말한다(남은 횟수는 `get_balance`로 확인). 사용자가 1회짜리를 원하면 1회 도구를 쓰고, 그 방법으로 기준 그림체가 안 나올 것 같으면 만들기 전에 말한다.
-
 ## 스크립트 (`.claude/skills/game-art-common/scripts/`, `powershell -NoProfile -ExecutionPolicy Bypass -File ...`)
 
 | 스크립트 | 하는 일 | 주요 값 |
