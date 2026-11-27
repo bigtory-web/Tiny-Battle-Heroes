@@ -1126,7 +1126,7 @@
         if (!anyRoom) { stuck = true; break; } // 스킬도 다 찼고 레벨업도 없으면 더 강해질 방법이 없어요
         var need;
         if (takeable.length) need = Math.min.apply(null, takeable) - gold;
-        else { var rp = refreshPrice(data, rerolls); if (gold >= rp && rerolls < (data.shop.refreshMax || Infinity)) { gold -= rp; spent += rp; rerolls++; shop = rollShop(data, rnd, plv, skills, units.map(function (x) { return x.id; })); continue; } need = rp - gold; }
+        else { var rp = refreshPrice(data, rerolls); if (gold >= rp && rerolls < (data.shop.refreshMax != null ? data.shop.refreshMax : Infinity) /* 2026-11-27 0이면 리셋 없음(예전엔 0이 무제한이 됨) */) { gold -= rp; spent += rp; rerolls++; shop = rollShop(data, rnd, plv, skills, units.map(function (x) { return x.id; })); continue; } need = rp - gold; }
         var wait = Math.max(60, Math.ceil(need / perMin) * 60);
         gold += perMin * wait / 60; time += wait; idleTime += wait;
       }
