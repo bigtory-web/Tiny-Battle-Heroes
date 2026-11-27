@@ -278,6 +278,12 @@
       T.forEach(function (x) { var v = P.amount, k = P.kind; if (k === 'swamp') { x.swampV = (x.swampV || 0) + v; if (P.every) x.swampE = P.every; } else if (k === 'lineGuard') x.lineDR = (x.lineDR || 0) + v; else if (k === 'lineThorns') x.lineTh = (x.lineTh || 0) + v; else if (k === 'lineEnergy') x.energy = Math.min(B.energyMax, x.energy + v);
         else if (k === 'lineCare') x.lineCare = (x.lineCare || 0) + v; else if (k === 'lineHaste') x.interval /= 1 + v; else if (k === 'lineHide') x.stealth = Math.max(x.stealth || 0, v); else if (k === 'lineAtk') x.atk *= 1 + v; });
       potionLog.push({ id: P.id, uids: T.map(function (x) { return x.uid; }), slots: T.map(function (x) { return x.slot; }) }); });
+    // ───── 2026-11-27 수정 칸(2장 수정 동굴): opts.crystal = { cells: [마이너스 칸, 플러스 칸], ids: 슬롯에 박힌 수정 id }. 슬롯이 비면 효과 없음. 수정마다 마이너스 칸 영웅은 minus, 플러스 칸 영웅은 plus(비율)
+    //   플러스는 마이너스 칸에 영웅이 있을 때만, 그 영웅이 죽으면 꺼져요(사용자: "마이너스에있어야 플러스가 활성화야", "죽으면 끝나야지")
+    var CRY = null; (function () { var OC = opts.crystal; if (!OC || !OC.cells) return; var cL = (OC.ids || []).map(function (id) { return crystalById(data, id); }).filter(Boolean); if (!cL.length) return;
+      var on = function (sl) { return A.filter(function (x) { return x.slot === sl && !x.h.mob; })[0]; }, mU = on(OC.cells[0]), pU = on(OC.cells[1]);
+      var app = function (u, key, sign) { cL.forEach(function (c) { var f = 1 + (c[key] || 0); if (sign < 0) f = 1 / f; if (c.stat === 'hp') { u.maxHp *= f; u.hp *= f; } else if (c.stat === 'atk') u.atk *= f; }); }; // shortcut: 체력·공격력만, 수정 목록이 정해지면 능력치 더함
+      if (mU) app(mU, 'minus', 1); if (mU && pU) { app(pU, 'plus', 1); CRY = { m: mU, p: pU, on: true, app: app }; } })();
     // ───── 연계 스킬(def.trigger): 쿨타임 없이, 조건(tag)에 맞는 아군에게 그 일이 생길 때마다 공격력이 쌓여요(최대 max번, 그 전투 동안) ─────
     // trigger: 'attack'(평타) | 'burn'(화상 피해) | 'haste'(숲 가속) | 'heal'(빛 회복) | 'chill'(얼음 둔화) | 'stun'(어둠 기절). to: 'self'(일으킨 영웅) | 'tag'(조건 맞는 아군 모두)
     function trig(kind, u) { for (var i = 0; i < allSkills.length; i++) { var sk = allSkills[i], d = sk.def; if (d.trigger !== kind || sk.side !== u.side) continue;
@@ -378,6 +384,7 @@
     function step() {
       if (result) return;
       t += B.dt;
+      if (CRY && CRY.on && !CRY.m.alive) { CRY.on = false; if (CRY.p.alive) CRY.app(CRY.p, 'plus', -1); if (rec) log.push({ t: t, kind: 'crystalOff', uid: CRY.p.uid }); } // 마이너스 칸 영웅이 죽으면 플러스 끝(체력은 비율 그대로 줄어요)
       var all = A.concat(E); shSrc = null;
       for (var si = 0; si < allSkills.length; si++) { var sk = allSkills[si]; if (sk.def.trigger) continue; sk.timer -= B.dt; if (sk.timer <= 0) { sk.timer += sk.def.cd; relicRun(sk); } }
       if (!alive(E).length) result = 'win'; else if (!alive(A).length) result = 'lose';
@@ -481,7 +488,7 @@
       relics: allSkills.map(function (sk) { return { side: sk.side, id: sk.def.id, dealt: Math.round(sk.stats.dealt), healed: Math.round(sk.stats.healed), shield: Math.round(sk.stats.shield), casts: sk.stats.casts }; }), status: status,
       log: rec ? log : null };
     }
-    var self = { A: A, E: E, skills: skills, enemySkills: enemySkills, status: status, potions: potionLog, /* 2026-11-26: 마신 물약이 걸린 영웅(화면 표시용) */ step: step, finish: finish, get time() { return t; }, get result() { return result; }, log: log };
+    var self = { A: A, E: E, skills: skills, enemySkills: enemySkills, status: status, potions: potionLog, /* 2026-11-26: 마신 물약이 걸린 영웅(화면 표시용) */ get crystal() { return CRY ? { m: CRY.m.uid, p: CRY.p.uid, on: CRY.on } : null; }, /* 2026-11-27 수정 칸이 걸린 영웅(화면 표시용) */ step: step, finish: finish, get time() { return t; }, get result() { return result; }, log: log };
     return self;
   }
   function battle(data, ally, enemy, opts) {
@@ -500,7 +507,7 @@
     var d = {}; for (var k in data) d[k] = data[k]; var cp = function (o) { var r = {}; for (var q in o) r[q] = o[q]; return r; };
     if (def.featured && data.recruit && data.recruit.pool && data.recruit.pool.length) { d.recruit = cp(data.recruit); d.recruit.pool = data.recruit.pool.concat(def.featured.filter(function (id) { return data.recruit.pool.indexOf(id) < 0; })); } // 2026-11-27 특별 출현 영웅은 그 챕터의 영웅 풀에 더해져요
     if ((c || 1) <= 1) { d.campaign = cp(C); d.campaign.chapterDef = def; return d; } // 1장: 특별 출현만
-    d.campaign = cp(C); d.campaign.chapters = 1; d.campaign.chapterNo = c; d.campaign.chapterDef = def; d.campaign.swamp = def.swamp || null;
+    d.campaign = cp(C); d.campaign.chapters = 1; d.campaign.chapterNo = c; d.campaign.chapterDef = def; d.campaign.swamp = def.swamp || null; d.campaign.crystal = def.crystal || null;
     if (def.lvPlus) d.campaign.enemyLv = C.enemyLv.slice(0, C.perChapter).map(function (x) { return x + def.lvPlus; });
     if (def.bellTiers && data.bell) { d.bell = cp(data.bell); d.bell.tiers = def.bellTiers; }
     if (def.groups && data.events) { d.events = cp(data.events); d.events.groups = def.groups; }
@@ -508,6 +515,7 @@
   // 2026-11-27 장 고르기 화면용 장 정보(사용자: "이 화면에서 난이도뿐만 아니라 분노랑 맵 특징 같은 내용도 필요하지 않을까?"). 글은 데이터에서 만들어요
   //   { no, name, bg, lvPlus, feats: [{ name, desc }], bell: [{ tier, name, desc }], events: [{ name, desc, note }] }
   function chapterInfo(data, c) { var C = data.campaign, def = (C.chapterDefs || [])[(c || 1) - 1] || {}, BF = (data.bell && data.bell.fx) || {}, INF = (data.events && data.events.info) || {}, out = { no: c || 1, name: def.name || '', story: def.story || '', bg: def.bg || '', lvPlus: def.lvPlus || 0, foeIcon: (def.foeIcon || 'img/p/ui_foe') + '1.png', rageName: (def.foeName || '') + ' 분노', /* 2026-11-27 분노 이름 = 챕터 상징 캐릭터 + 분노 */ feats: [], bell: [], events: [] }; /* 2026-11-27: 화면이 아이콘으로 보여 주게 icon·story를 같이 넘겨요 */
+    if (def.crystal) out.feats.push({ name: '수정 칸', icon: '', desc: '우리 쪽 칸 2곳이 마이너스 칸·플러스 칸이다. 효과는 수정 슬롯에 박힌 수정이 정한다. 플러스 칸은 마이너스 칸 영웅이 살아 있을 때만 켜진다.' }); // icon: 그림 나오면 UI가 넣음
     if (def.swamp) out.feats.push({ name: '늪지대', icon: 'img/p/swamp_cell.png', desc: '적 쪽 칸 ' + (def.swamp.cells || 0) + '곳이 늪지대다. 해당 영웅은 ' + (def.swamp.every || 1) + '초마다 공격력 ' + Math.round((def.swamp.amount != null ? def.swamp.amount : def.swamp.perSec || 0) * 100) + '%씩 오른다.' });
     /* 2026-11-27: 적 레벨 +N은 특징에 안 보여요(사용자: "적레벨+1은 하지마"). 값은 out.lvPlus에 그대로 */
     (def.bellTiers || (data.bell && data.bell.tiers) || []).forEach(function (T, i) { T.forEach(function (k) { var F = BF[k] || {}; out.bell.push({ tier: i + 1, name: F.name || k, desc: F.desc || '', icon: F.icon || '', tierIcon: (def.foeIcon || 'img/p/ui_foe') + (i + 1) + '.png' }); }); });
@@ -540,6 +548,9 @@
   // opts.battleOnly: 이벤트 스테이지는 빼고 굴려요 (이벤트 스테이지를 들른 뒤 그 스테이지 전투, 또는 다시 도전할 때)
   // 2026-11-26 물약(늪지 상인): 겹치지 않게 count개 id
   function potionSellPrice(data, id) { var P = potionById(data, id); return P ? Math.round(P.price * ((data.potions || {}).sellRate || 0.5)) : 0; } // 2026-11-27: 물약 판매 값 = 산 값의 절반
+  function crystalById(data, id) { return ((data.crystals || {}).list || []).filter(function (c) { return c.id === id; })[0] || null; }
+  // 2026-11-27 챕터 시작 때 수정 슬롯: 1번 칸에 start 중 하나(하나면 고정, 여럿이면 무작위), 나머지는 빈 칸(null). 수정 챕터가 아니면 null
+  function crystalStart(data, rnd) { var CC = data.campaign && data.campaign.crystal; if (!CC) return null; var S = []; for (var i = 0; i < (CC.slots || 0); i++) S.push(null); var st = CC.start || []; if (st.length && S.length) S[0] = st[Math.floor((rnd || Math.random)() * st.length)]; return S; }
   function potionById(data, id) { return ((data.potions || {}).list || []).filter(function (p) { return p.id === id; })[0] || null; }
   function rollPotions(data, rnd, plv) { var SS = data.player && data.player.swampSlots, L = ((data.potions || {}).list || []).map(function (p) { return p.id; }), n = Math.min(L.length, SS ? SS[Math.max(0, Math.min((plv || 1) - 1, SS.length - 1))] : ((data.events || {}).swampShop || {}).count || 4), /* 2026-11-27: 파는 수는 레벨별(player.swampSlots) */ out = [];
     while (out.length < n) out.push(L.splice(Math.floor(rnd() * L.length), 1)[0]); return out; }
@@ -713,9 +724,11 @@
     var SW = C.swamp, swamp = []; if (SW && team.length) { var rndW = makeRng(n * 977 + 71 + plv * 7919), occ = team.map(function (u) { return u.slot; }), nW = (SW.cells || 0) + (bhas('swamp') ? bv('swamp') : 0);
       for (var wi = occ.length - 1; wi > 0; wi--) { var wj = Math.floor(rndW() * (wi + 1)), wt = occ[wi]; occ[wi] = occ[wj]; occ[wj] = wt; }
       swamp = occ.slice(0, nW); team.forEach(function (u) { if (swamp.indexOf(u.slot) >= 0) { u.swamp = SW.amount != null ? SW.amount : SW.perSec; u.swampE = SW.every || 0; } }); }
+    // 2026-11-27 수정 칸(2장): 우리 쪽 9칸 중 무작위 2칸 = [마이너스, 플러스]. 판에 들어올 때 정해져요
+    var CC = C.crystal, crystal = null; if (CC) { var rndC = makeRng(n * 977 + 83 + plv * 7919), cs = data.battle.arena.pos.map(function (_, i) { return i; }); for (var ci = cs.length - 1; ci > 0; ci--) { var cj = Math.floor(rndC() * (ci + 1)), ct = cs[ci]; cs[ci] = cs[cj]; cs[cj] = ct; } crystal = cs.slice(0, 2); }
     if (ev && ev.kind === 'goblin') team.push({ id: 'goblin', level: lv, slot: 4, mul: m, mob: true });
     if (ev && ev.kind === 'merc') { var mu = team.filter(function (u) { return u.id === ev.id; })[0]; if (mu) mu.merc = true; } /* 2026-11-27 그 적이 합류 영웅(못 찾으면 표시 없음) */
-    return { n: n, name: stageName(data, n), level: lv, boss: boss, wall: C.walls.indexOf(n) >= 0, team: team, skills: eskills, event: ev || null, bell: bell, bellFx: bfx, curse: bhas('curse') ? bv('curse') : 0, swamp: swamp };
+    return { n: n, name: stageName(data, n), level: lv, boss: boss, wall: C.walls.indexOf(n) >= 0, team: team, skills: eskills, event: ev || null, bell: bell, bellFx: bfx, curse: bhas('curse') ? bv('curse') : 0, swamp: swamp, crystal: crystal };
   }
   // 영웅 덤(2026-11-18): 이 영웅을 얻으면 같이 받는 보상. null | { type: 's', id }(유물) | { type: 'g'|'m', amt }. 등급이 낮을수록 잘 붙어요
   function heroBonus(data, id, n, rnd, plv) { var B = data.heroBonus; if (!B || rnd() >= (B.chance[heroGrade(data, id)] || 0)) return null;
@@ -962,8 +975,9 @@
     // 체력이 0이 되면 판 전체를 처음(1-1)으로: 영웅·스킬·골드·마나스톤·경험치를 모두 잃어요
     function resetRun() { runs.push({ best: best, time: time - runStart }); runStart = time;
       units.length = 0; levels = {}; startHero();
-      skills.length = 0; pads = {}; gold = C.startGold || 0; mana = 0; xp = 0; plv = 1; stage = 0; best = 0; tries = 0; streak = 0; bellPaidN = 0; life = LF.max; stood = false; lastHp = 0; shop = rollShop(data, rnd, 1, skills); shopH = rollShopHeroes(data, rnd, 1, 0); }
+      skills.length = 0; pads = {}; gold = C.startGold || 0; mana = 0; xp = 0; plv = 1; stage = 0; best = 0; tries = 0; streak = 0; bellPaidN = 0; life = LF.max; stood = false; lastHp = 0; crys = crystalStart(data, rnd) || []; shop = rollShop(data, rnd, 1, skills); shopH = rollShopHeroes(data, rnd, 1, 0); }
     var lastHp = 0, bells = { rung: 0, lost: 0 }, fails = [], bellPaidN = 0; // bellPaidN: 이 판에서 골드를 이미 받은 종 횟수 // fails[n] = 스테이지 n에서 진 횟수
+    var crys = crystalStart(data, rnd) || []; // 2026-11-27 봇: 수정 슬롯(수정 상인 전엔 시작 수정만)
     var potions = []; // 2026-11-26 봇: 들고 있는 물약 id(최대 player.potion, 레벨별). 다음 일반 전투에 모두 마셔요
     var events = { goblin: { seen: 0, caught: 0, missed: 0 }, merchant: { seen: 0, bought: 0 }, merc: { seen: 0, hired: 0 }, campfire: { seen: 0 }, chest: { seen: 0, tiers: 0, gold: 0 } };
     startHero(); // 첫 영웅 (모닥불이면 3명 중 룰렛으로 1명)
@@ -1033,7 +1047,7 @@
       if (ev && ev.kind === 'fairy') { if (ev.ids.length) { var fid = ev.ids[lootPick(data, ev.ids, plv, rnd, stage)]; if (canTake(data, skills, fid, data.player ? perk(data, plv).skillSlots : 0)) takeSkill(data, skills, fid); } continue; } // 요정: 룰렛으로 유물 1개
       if (ev && ev.kind === 'campfire') { var ci = lootPick(data, ev.ids, plv, rnd, stage); gainHero(ev.ids[ci], team); giveBonus(ev.bonus && ev.bonus[ci]); continue; } // 모닥불: 싸우지 않고 1명 얻고, 같은 스테이지 전투로 가요
       var plvAt = plv; // 클리어 골드·전리품은 화면처럼 전투 시작 때 레벨로 (2026-11-24)
-      var res = battle(data, padTeam(team, pads), st.team, { seed: seed + attempts * 31, modules: opts.modules, skills: skills, enemySkills: st.skills, curse: st.curse, potions: potions.map(function (id) { return { id: id }; }) }); if (potions.length) { events.potionDrunk = (events.potionDrunk || 0) + potions.length; potions = []; } // 물약은 마신 전투가 끝나면 사라져요
+      var res = battle(data, padTeam(team, pads), st.team, { seed: seed + attempts * 31, modules: opts.modules, skills: skills, enemySkills: st.skills, curse: st.curse, potions: potions.map(function (id) { return { id: id }; }), crystal: st.crystal ? { cells: st.crystal, ids: crys.filter(Boolean) } : null }); if (potions.length) { events.potionDrunk = (events.potionDrunk || 0) + potions.length; potions = []; } // 물약은 마신 전투가 끝나면 사라져요
       attempts++; tries++; time += res.time; battleTime += res.time;
       if (data.player) { var gx = data.player.xpPerKill * res.units.filter(function (x) { return x.side === 'E' && !x.alive && !x.escaped; }).length; if (!res.win) gx = Math.max(gx, data.player.xpLoseMin || 0); xp += gx; var plv0 = plv; plv = playerLevel(data, xp).level; if (LF && LF.perLevel) life += (plv - plv0) * LF.perLevel;
         for (var lp = plv0; lp < plv && data.player.levelPick; lp++) { var LK = levelPickKind(data, lp + 1, units, skills); // 레벨마다 하나만, 번갈아
@@ -1126,7 +1140,7 @@
     return out;
   }
 
-  var api = { battle: battle, createBattle: createBattle, chapterData: chapterData, potionById: potionById, difficultyData: difficultyData, chapterInfo: chapterInfo, metaData: metaData, metaNext: metaNext, metaBuy: metaBuy, metaStatus: metaStatus, metaNode: metaNode, metaBase: metaBase, metaMedals: metaMedals, potionSellPrice: potionSellPrice, rollPotions: rollPotions, stageTeam: stageTeam, heroLevel: heroLevel, levelPickRoll: levelPickRoll, levelPickKind: levelPickKind, skillUp: skillUp, startExtras: startExtras, bellFx: bellFx, stageLevel: stageLevel, stageName: stageName, stageCount: stageCount, autoFormation: autoFormation,
+  var api = { battle: battle, createBattle: createBattle, chapterData: chapterData, potionById: potionById, crystalById: crystalById, crystalStart: crystalStart, difficultyData: difficultyData, chapterInfo: chapterInfo, metaData: metaData, metaNext: metaNext, metaBuy: metaBuy, metaStatus: metaStatus, metaNode: metaNode, metaBase: metaBase, metaMedals: metaMedals, potionSellPrice: potionSellPrice, rollPotions: rollPotions, stageTeam: stageTeam, heroLevel: heroLevel, levelPickRoll: levelPickRoll, levelPickKind: levelPickKind, skillUp: skillUp, startExtras: startExtras, bellFx: bellFx, stageLevel: stageLevel, stageName: stageName, stageCount: stageCount, autoFormation: autoFormation,
     campaign: campaign, compare: compare, lossDamage: lossDamage, lossGold: lossGold, dmgFrac: dmgFrac, levelCost: levelCost, heroById: heroById, makeRng: makeRng,
     costCap: costCap, starMul: starMul, gradeMul: gradeMul, heroGrade: heroGrade, pickHeroByGrade: pickHeroByGrade, effectLevels: effectLevels, relicPowerMul: relicPowerMul, passiveValue: passiveValue, power: power, newUnit: newUnit, canMerge: canMerge, mergeUnits: mergeUnits, autoMerge: autoMerge, gainUnit: gainUnit,
     skillById: skillById, gradeRow: gradeRow, gradeLvOf: gradeLvOf, heroSellPrice: heroSellPrice, relicTargets: relicTargets, heroBonus: heroBonus, isBoss: isBoss, critChance: critChance, lootPool: lootPool, lootPick: lootPick, chestGrade: chestGrade, chestTiers: chestTiers, mobLoot: mobLoot, grollCost: grollCost, grollSpins: grollSpins, rollGroll: rollGroll, oddEvenBet: oddEvenBet, oddEvenResult: oddEvenResult, padTeam: padTeam, lootParse: lootParse, lootRerollPrice: lootRerollPrice, rerollMax: rerollMax, rollEvent: rollEvent, rollDais: rollDais, rollDaisCell: rollDaisCell, daisRerolls: daisRerolls, eventRerolls: eventRerolls, rollCampfire: rollCampfire, campfireAtStart: campfireAtStart, stageReward: stageReward, bellMax: bellMax, bellGold: bellGold, rollMerchant: rollMerchant, isEventStage: isEventStage, unitSkills: unitSkills, canTranscend: canTranscend, transcend: transcend, unitBattleSpec: unitBattleSpec, unitPower: unitPower, skillPool: skillPool, merchantPrice: merchantPrice, merchantOff: merchantOff, merchantNoBattle: merchantNoBattle, chestReward: chestReward, rollScroll: rollScroll, mercPrice: mercPrice, skillPrice: skillPrice, skillManaPrice: skillManaPrice, skillBuyPrice: skillBuyPrice, skillGradeNow: skillGradeNow, skillMaxLevel: skillMaxLevel, refreshPrice: refreshPrice, rollShop: rollShop, rollShopHeroes: rollShopHeroes, canTake: canTake, takeSkill: takeSkill, playerLevel: playerLevel, perk: perk, skillSellPrice: skillSellPrice, sellSkill: sellSkill };

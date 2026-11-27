@@ -28,19 +28,19 @@ console.log("ok · 훈장 합",D.meta.lines.reduce((a,L)=>a+L.nodes.reduce((b,N)
 const MM=E.metaData(D,{mode:"meta"}); assert.ok(MM.player.bag.every(v=>v===D.player.bag[0])); assert.ok(MM.player.clearGold.every(v=>v===D.player.clearGold[0])); assert.ok(MM.player.mimicBlue.every(v=>v===D.player.mimicBlue[0]));
 assert.deepStrictEqual(MM.player.field,D.player.field); assert.deepStrictEqual(MM.player.heroGrade,D.player.heroGrade,"모드와 상관없이 기준 표 그대로"); assert.deepStrictEqual(MM.player.enemyGrade,D.player.heroGrade,"적·상점도 기준 표"); assert.deepStrictEqual(MM.player.shopGrade,D.player.heroGrade);
 const MF=E.metaData(D,{mode:"meta",nodes:full.nodes}); assert.ok(MF.player.bag.every(v=>v===7)); assert.strictEqual(E.metaData(D,{mode:"level"}),D,"레벨 모드 + 강화 없음 = 원본");
-let cm=0; for(let s=1;s<=5;s++){ cm+=E.campaign(D,{seed:s,meta:{mode:"meta"}}).cleared; E.campaign(E.chapterData(D,2),{seed:s,meta:{mode:"meta",nodes:full.nodes}}); }
+let cm=0; for(let s=1;s<=5;s++){ cm+=E.campaign(D,{seed:s,meta:{mode:"meta"}}).cleared; E.campaign(E.chapterData(D,2),{seed:s,meta:{mode:"meta",nodes:full.nodes}}); E.campaign(E.chapterData(D,3),{seed:s,meta:{mode:"meta",nodes:full.nodes}}); }
 console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",cm);
 // 제약(난이도): 쉬움 = 원본, 보통·어려움 = 적 레벨·등급·유물·훈장 배율, 장 정보 유지
-{ const N=E.difficultyData(D,"normal"),H=E.difficultyData(D,"hard"),C2=E.chapterData(D,2);
+{ const N=E.difficultyData(D,"normal"),H=E.difficultyData(D,"hard"),C2=E.chapterData(D,3);
   assert.strictEqual(E.difficultyData(D,"easy"),D); assert.strictEqual(N.campaign.enemyLv[3],D.campaign.enemyLv[3]+1); assert.strictEqual(H.campaign.enemySkills.table[0].from,0);
   assert.strictEqual(E.metaMedals(H,10,false),E.metaMedals(D,10,false)*2); assert.ok(E.difficultyData(C2,"hard").campaign.swamp,"장 정보 유지");
   const MH=E.metaData(H,{nodes:{bag:1}}); assert.strictEqual(MH.campaign.diff.id,"hard","강화와 같이 써도 제약 유지");
   console.log("ok · 제약"); }
 // 장 정보(장 고르기 화면)
-{ const I1=E.chapterInfo(D,1), I2=E.chapterInfo(D,2); assert.strictEqual(I1.bell.length,3); assert.strictEqual(I1.feats.length,0);
+{ const I1=E.chapterInfo(D,1), I2=E.chapterInfo(D,3); assert.strictEqual(I1.bell.length,3); assert.strictEqual(I1.feats.length,0);
   assert.ok(I2.feats[0].desc.includes("5초마다 공격력 1%")); assert.strictEqual(I2.bell[2].name,"늪지대"); assert.ok(I2.events[0].note.includes("70%")); console.log("ok · 장 정보"); }
 // 챕터 특별 출현: 등급별 1명, 그 챕터 영웅 풀에 더해지고 같은 등급 안에서 더 잘 나옴
-{ const I=E.chapterInfo(D,2), C2=E.chapterData(D,2); assert.deepStrictEqual(I.featured.map(f=>f.grade),[1,2,3,4]);
+{ const I=E.chapterInfo(D,3), C2=E.chapterData(D,3); assert.deepStrictEqual(I.featured.map(f=>f.grade),[1,2,3,4]);
   assert.ok(I.featured.every(f=>C2.recruit.pool.includes(f.id)),"풀에 더해짐"); assert.ok(!D.recruit.pool.includes("mudgolem"),"원본 풀 그대로");
   let f=0; for(let lv=1;lv<=10;lv++) for(let st=0;st<10;st++) E.stageTeam(C2,st,null,0,lv).team.forEach(u=>{ if(I.featured.some(x=>x.id===u.id)) f++; }); assert.ok(f>0,"특별 출현 영웅이 적으로 나옴");
   console.log("ok · 특별 출현", I.featured.map(f=>f.name).join(",")); }
@@ -87,3 +87,14 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
 { const H = D.player.heroGrade; assert.deepStrictEqual(E.gradeRow(D, 'heroGrade', 9, 1), H[6], "1-10 = 7번째 줄, 레벨 1이어도"); assert.deepStrictEqual(E.gradeRow(D, 'heroGrade', 9, 3), H[6]);
   assert.deepStrictEqual(E.gradeRow(D, 'heroGrade', null, 3), H[2], "스테이지 없으면 레벨 줄"); assert.deepStrictEqual(E.gradeRow(D, 'lootWeight', 9, 1), D.player.lootWeight[6], "전리품은 자기 무게, 줄만 스테이지");
   console.log("ok · 등급 줄 = 스테이지"); }
+// 수정 칸(2026-11-27, 2장 수정 동굴): 마이너스 칸 체력 -50%, 플러스 칸 +25%. 플러스는 마이너스 칸 영웅이 살아 있을 때만, 슬롯이 비면 효과 없음
+{ const C2 = E.chapterData(D, 2), C3 = E.chapterData(D, 3); assert.ok(C2.campaign.crystal && !C2.campaign.swamp, "2장 = 수정 동굴"); assert.ok(C3.campaign.swamp && !C3.campaign.crystal, "3장 = 늪지대");
+  assert.deepStrictEqual(E.crystalStart(C2), ['hp', null], "1번 슬롯 체력 수정 고정"); assert.strictEqual(E.crystalStart(D), null);
+  const st = E.stageTeam(C2, 0, null, 0, 1); assert.ok(st.crystal && st.crystal.length === 2 && st.crystal[0] !== st.crystal[1], "칸 한 쌍"); assert.strictEqual(E.stageTeam(D, 0, null, 0, 1).crystal, null);
+  const id = D.heroes[0].id, cells = [0, 6], foe = [{ id: id, slot: 0, level: 1 }];
+  const hp = o => { const b = E.createBattle(C2, [{ id: id, slot: 0, level: 1 }, { id: id, slot: 6, level: 1 }], foe, { seed: 3, crystal: o }); return [b, b.A[0].maxHp, b.A[1].maxHp]; };
+  const [, b0, b1] = hp(null), [bt, m, p] = hp({ cells: cells, ids: ['hp'] });
+  assert.ok(Math.abs(m - b0 * 0.5) < 1e-9 && Math.abs(p - b1 * 1.25) < 1e-9, "-50% / +25%"); assert.deepStrictEqual(hp({ cells: cells, ids: [] }).slice(1), [b0, b1], "빈 슬롯 = 효과 없음");
+  const one = E.createBattle(C2, [{ id: id, slot: 6, level: 1 }], foe, { seed: 3, crystal: { cells: cells, ids: ['hp'] } }); assert.strictEqual(one.A[0].maxHp, b1, "마이너스 칸 비면 플러스 꺼짐");
+  bt.A[0].alive = false; bt.step(); assert.ok(Math.abs(bt.A[1].maxHp - b1) < 1e-9 && !bt.crystal.on, "마이너스 영웅이 죽으면 플러스 끝");
+  console.log("ok · 수정 칸"); }
