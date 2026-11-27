@@ -2895,7 +2895,7 @@ img.rimg{image-rendering:auto!important}
 /* 돈고블린 전구 */
 #roul .rstage > .rbulbs{display:none}
 #roul .rbox.groll .rstage > .rbulbs{display:block;position:absolute;inset:3.5px;z-index:6;pointer-events:none} /* 전구 자리 = 테두리 선 위 (2026-11-27 사용자: "테두리 안에 원 박히듯이" → "테두리는 두껍게말고") */
-#roul .rbulbs s{position:absolute;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%; /* 모양만 둥근 전구, 배치·개수는 예전 그대로, 테두리 안쪽 (2026-11-26 사용자) */text-decoration:none;background:#ffe27a;box-shadow:0 0 0 1px #17141d,0 0 4px 1px rgba(255,210,80,.6)}
+#roul .rbulbs s{position:absolute;width:4px;height:4px;margin:-2px 0 0 -2px;/* 5px → 4px (2026-11-28 사용자: "원 크기 좀더 줄여줄래?") */border-radius:50%; /* 모양만 둥근 전구, 배치·개수는 예전 그대로, 테두리 안쪽 (2026-11-26 사용자) */text-decoration:none;background:#ffe27a;box-shadow:0 0 0 1px #17141d,0 0 4px 1px rgba(255,210,80,.6)}
 #roul .rbox.groll.spin .rbulbs s{animation:bulbrun .48s steps(1) infinite;animation-delay:var(--d)}
 #roul .rbox.groll.reveal:not(.still):not(.spin) .rbulbs s{animation:bulbflash .6s steps(1),bulbon 1.4s steps(1) .6s infinite}
 #roul .rbox.groll:not(.spin) .rbulbs s{animation:bulbon 1.4s steps(1) infinite}
