@@ -1,0 +1,12 @@
+Look at:
+- img/codex/cavecell/template.png : two empty hexagon floor tiles (flat top and bottom, points left and right) on magenta. Keep both hexagons at exactly the same positions and size.
+- img/p/bg_cave.png : the crystal cave background they lie on (pixel art, thin dark navy outlines).
+
+Paint the two hexagons as special FLOOR TILES seen from slightly above, in VERY CHUNKY low-resolution pixel art: each tile is only about 47 x 31 pixels, so one art pixel is a 20 x 20 block in this image. Use big simple shapes, 4 tones, a thick dark outline around each hexagon. Save as img/codex/cavecell/raw.png (same size as the template).
+
+LEFT tile = "DRAIN" tile (it sucks strength out of whoever stands on it): dark stone sunk toward a dark hole in the middle, a bold spiral of green energy being pulled INTO the center, a few short broken crystals on the rim leaning inward, dim and heavy mood.
+RIGHT tile = "EMPOWER" tile (it receives that strength and shines): bright glowing green crystal floor with a clear radiating star/rune pattern going OUTWARD from the center, taller sharp green crystals standing on the left and right rim, a few white sparkle pixels, bright mood.
+
+Both: green and teal crystal colors with grey-slate stone (no red, no purple, no blue crystals). A character stands in the middle of the tile, so keep the middle readable. Crystals may stick up a little above the hexagon, nothing else goes outside it. No plus or minus signs, no text.
+Plain solid #FF00FF magenta everywhere else, no shadow or glow on the magenta, no anti-aliasing.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
