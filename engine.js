@@ -899,17 +899,23 @@
   // metaData: 강화를 반영한 data를 새로 만들어 돌려줘요(원본은 그대로). 봇은 campaign(opts.meta), 화면은 D 대신 이걸 쓰면 돼요
   // state.mode === 'meta'(도구 "영구 강화로"): 영구 강화로 옮긴 레벨 표 줄(칸의 key + flatAlso)은 레벨로 안 오르고 Lv1 값에 고정. 등장 확률·출전 인원은 그대로 레벨로 (2026-11-27 사용자: "레벨에 대한 효과는.. 없이")
   function metaData(data, state) { var M = data.meta, S = (state && state.nodes) || (state && state.mode === 'meta' ? {} : null); if (!M || !S) return data;
-    var cp = function (o) { if (!o) return o; var r = {}; for (var q in o) r[q] = o[q]; return r; }, d = cp(data), HB = {};
+    var cp = function (o) { if (!o) return o; var r = {}; for (var q in o) r[q] = o[q]; return r; }, d = cp(data), HB = {}, GU = {};
     d.player = cp(data.player); d.shop = cp(data.shop); d.campaign = cp(data.campaign); d.life = cp(data.life); d.recruit = cp(data.recruit); if (d.recruit) d.recruit.reroll = cp(data.recruit.reroll);
     var flat = []; if (state.mode === 'meta') { flat = (M.flatAlso || []).slice(); M.lines.forEach(function (L) { L.nodes.forEach(function (N) { if (N.key) flat.push(N.key); }); }); flat.forEach(function (k) { var r = d.player[k]; if (r) d.player[k] = r.map(function () { return r[0]; }); }); }
     M.lines.forEach(function (L) { L.nodes.forEach(function (N) { var n = Math.min(S[N.id] || 0, N.cost.length); if (!n) return;
       if (N.key && d.player[N.key]) d.player[N.key] = d.player[N.key].map(function (v) { var w = v + N.add * n; return N.cap != null ? Math.max(v, Math.min(w, N.cap)) : w; });
       else if (N.shift && d.player[N.shift]) { var row = data.player[N.shift], fx = flat.indexOf(N.shift) >= 0; d.player[N.shift] = row.map(function (v, i) { return row[Math.min((fx ? 0 : i) + n, row.length - 1)]; }); } /* 2026-11-27 고정된 표면 Lv1 줄에서 n칸 앞 */ // 등급 확률 = 레벨 표를 n칸 앞당김
       else if (N.path) { var ks = N.path.split('.'), o = d; for (var i = 0; i < ks.length - 1; i++) o = o[ks[i]] = cp(o[ks[i]]); /* 지나는 객체는 복사(원본 data를 안 바꾸게) */ var last = ks[ks.length - 1], v0 = o[last]; o[last] = Array.isArray(v0) ? v0.map(function (x) { return x + N.add * n; }) : (v0 || 0) + N.add * n; }
+      else if (N.gradeUp) { var GA = GU[N.gradeUp.table] || (GU[N.gradeUp.table] = {}); GA[N.gradeUp.grade] = (GA[N.gradeUp.grade] || 0) + N.add * n; }
       else if (N.hero) { var J = HB[L.job] || (HB[L.job] = {}); J[N.hero] = (J[N.hero] || 0) + N.add * n; } }); });
+    for (var gt in GU) if (d.player[gt]) d.player[gt] = d.player[gt].map(function (row) { return gradeAdd(row, GU[gt]); });
     d.heroBoost = HB; return d; }
+  // 등급별 확률 +%p (2026-11-27): row 앞 4칸 = [일반, 고급, 희귀, 전설] 가중치(전리품 표는 5번째 골드 칸이 있어 그대로 둠). 높은 등급부터 더하고, 더한 만큼 낮은 등급부터 뺌(0 밑으로는 안 감, 뺄 게 없으면 그만큼만 더함). 가중치 합은 그대로
+  function gradeAdd(row, add) { var tot = 0, k; for (k = 0; k < 4; k++) tot += row[k] || 0; if (!tot) return row; var p = []; for (k = 0; k < 4; k++) p[k] = (row[k] || 0) / tot * 100;
+    for (var g = 4; g >= 2; g--) { var want = add[g] || 0; for (var lo = 0; lo < g - 1 && want > 0; lo++) { var take = Math.min(p[lo], want); p[lo] -= take; p[g - 1] += take; want -= take; } }
+    var out = row.slice(); for (k = 0; k < 4; k++) out[k] = Math.round(p[k] * tot) / 100; return out; }
   // 강화 설명의 "기존" 값 = 레벨 1(판 시작) 값, 원본 data 기준. key 칸은 player 표 [0], path 칸은 그 값(배열이면 [0]). 능력치·확률 앞당김 칸은 null (2026-11-27 사용자: "레벨 1 값으로")
-  function metaBase(data, N) { if (!N || N.hero || N.shift) return null; if (N.key) { var t = data.player && data.player[N.key]; return Array.isArray(t) ? t[0] : null; }
+  function metaBase(data, N) { if (!N || N.hero || N.shift || N.gradeUp) return null; if (N.key) { var t = data.player && data.player[N.key]; return Array.isArray(t) ? t[0] : null; }
     var v = N.path ? N.path.split('.').reduce(function (o, k) { return o == null ? o : o[k]; }, data) : null; v = Array.isArray(v) ? v[0] : v; return v == null ? 0 : v; }
   function metaNode(data, id) { var r = null; ((data.meta || {}).lines || []).forEach(function (L) { L.nodes.forEach(function (N) { if (N.id === id) r = N; }); }); return r; }
   // 자유형 망(2026-11-27): req가 없거나(가운데) req 중 하나라도 1단계 이상 찍었으면 찍을 수 있어요

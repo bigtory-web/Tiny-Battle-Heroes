@@ -5,7 +5,7 @@ const full={medals:0,nodes:{}}; D.meta.lines.forEach(L=>L.nodes.forEach(N=>full.
 const M=E.metaData(D,full);
 assert.strictEqual(D.player.bag[0],5,"원본 그대로"); assert.strictEqual(M.player.bag[0],7); assert.strictEqual(M.player.bag[9],7,"cap");
 assert.strictEqual(M.player.skillSlots[0],6); assert.strictEqual(M.player.potion[0],3);
-assert.deepStrictEqual(M.player.shopGrade[0],D.player.shopGrade[2],"앞당김 2칸");
+assert.deepStrictEqual(M.player.shopGrade[0],[40,35,15,10],"2026-11-27 등급별 +10%(2%×5), 일반에서 뺌");
 assert.strictEqual(M.shop.refreshMax,D.shop.refreshMax+2); assert.strictEqual(M.campaign.startGold,150); assert.strictEqual(M.life.max,16);
 assert.deepStrictEqual(M.recruit.reroll.max,[2]); assert.strictEqual(D.recruit.reroll.max[0],1);
 assert.strictEqual(M.player.clearGold[0],150);
@@ -62,12 +62,13 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
 // 2026-11-27 레벨업 → 영구 강화: 하트 없음, 영웅 레벨 칸, 영웅·돈고블린·상인 영웅 등급 앞당김(영구 강화로 모드는 Lv1 고정 + 칸), 적 등급은 그대로
 { assert.strictEqual(D.life.perLevel, 0, "레벨업 하트 없음");
   assert.strictEqual(E.heroLevel(E.metaData(D, { nodes: { heroLv: 2 } }), 3), 5, "영웅 레벨 +2");
-  const F = E.metaData(D, { mode: 'meta', nodes: {} }), F1 = E.metaData(D, { mode: 'meta', nodes: { heroGrade: 1, grollGrade: 2, merchHeroGrade: 1 } });
+  const F = E.metaData(D, { mode: 'meta', nodes: {} }), F1 = E.metaData(D, { mode: 'meta', nodes: { hg4: 1, gg3: 2, mg2: 1 } });
   assert.deepStrictEqual(F.player.heroGrade, D.player.heroGrade, "영구 강화로 모드도 등급은 레벨업 메인");
-  assert.deepStrictEqual(F1.player.heroGrade[0], D.player.heroGrade[1], "칸 1 → 한 줄 위");
-  assert.deepStrictEqual(F1.player.grollGrade[2], D.player.grollGrade[4], "룰렛 칸 2 → 두 줄 위");
-  assert.deepStrictEqual(F1.player.merchantHeroGrade[7], D.player.merchantHeroGrade[8]);
+  assert.deepStrictEqual(F1.player.heroGrade[0], [83, 15, 0, 2], "영웅 전설 +2%: 일반에서");
+  assert.deepStrictEqual(F1.player.grollGrade[0], [66, 25, 9, 0], "룰렛 희귀 +4%");
+  assert.deepStrictEqual(E.metaData(D, { nodes: { hg4: 5 } }).player.heroGrade[9], [0, 24, 42, 34], "일반이 모자라면 다음 낮은 등급에서");
+  assert.deepStrictEqual(E.metaData(D, { nodes: { lg4: 5 } }).player.lootWeight[0][4], D.player.lootWeight[0][4], "전리품 골드 칸은 그대로");
   assert.strictEqual(E.grollCost(E.metaData(D, { nodes: { grollCost: 2 } }), 3, 1), Math.round(E.grollCost(D, 3, 1) * 0.8), "돈고블린 비용 20% 감소");
   assert.deepStrictEqual(F1.player.enemyGrade, D.player.enemyGrade, "적 등급은 레벨 그대로");
-  assert.deepStrictEqual(E.metaData(D, { nodes: { heroGrade: 1 } }).player.heroGrade[0], D.player.heroGrade[1], "레벨로 모드: 한 칸 앞당김");
-  console.log("ok · 레벨업 → 영구 강화(하트·영웅 레벨·등급 +단계·돈고블린 비용)"); }
+
+  console.log("ok · 레벨업 → 영구 강화(하트·영웅 레벨·등급별 %·돈고블린 비용)"); }

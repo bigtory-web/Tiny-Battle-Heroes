@@ -573,10 +573,14 @@ var IDLE_DATA = {
         { id: 'merchSlot', req: ['shopSlot'], name: '상인 상품 수', unit: '개', key: 'merchantSlots', add: 1, cap: 6, cost: [6, 12] },
         { id: 'swampSlot', req: ['merchSlot'], name: '늪지 상인 물약 수', unit: '개', key: 'swampSlots', add: 1, cap: 6, cost: [6, 12] }, // 2026-11-27 (사용자: "말했지 내가? 플레이어레벨 그거 해당하는거 이미.")
         { id: 'merchHero', req: ['merchSlot'], name: '상인 영웅 수', unit: '명', key: 'merchantHeroes', add: 1, cap: 2, cost: [10] },
-        { id: 'merchHeroGrade', req: ['merchHero'], name: '상인 영웅 등급 확률', unit: '단계', shift: 'merchantHeroGrade', cost: [8, 16] }, // 2026-11-27 비용 임시
+        { id: 'mg2', req: ['merchHero'], name: '상인 영웅 고급 확률', unit: '%', gradeUp: { table: 'merchantHeroGrade', grade: 2 }, add: 2, cost: [4, 8, 12, 16, 20] }, // 2026-11-27 등급별 확률 +2%씩 5단계, 더한 %는 낮은 등급부터 뺌 (사용자: "2%씩으로 해. 5개까지. 각 등급별로 구분하고", "낮은 등급에서부터 빼야겠지"). 예전 +단계 칸(merchHeroGrade) 대신. 비용 임시
+        { id: 'mg3', req: ['mg2'], name: '상인 영웅 희귀 확률', unit: '%', gradeUp: { table: 'merchantHeroGrade', grade: 3 }, add: 2, cost: [4, 8, 12, 16, 20] },
+        { id: 'mg4', req: ['mg3'], name: '상인 영웅 전설 확률', unit: '%', gradeUp: { table: 'merchantHeroGrade', grade: 4 }, add: 2, cost: [4, 8, 12, 16, 20] },
         { id: 'merchOff', req: ['merchSlot'], name: '상인 최대 할인', unit: '%', key: 'merchantOff', add: 5, cap: 60, cost: [6, 12] },
         { id: 'merchOffMin', req: ['merchOff'], name: '상인 최저 할인', unit: '%', path: 'events.merchant.offMinAdd', add: 5, cost: [6, 12] }, // 2026-11-27 할인은 최대·최저 둘 (사용자: "최대와 최저야. 하나더", "격차는 5%정도씩"). 비용은 최대 할인과 같게 임시
-        { id: 'shopGrade', req: ['shopReset'], name: '상점 등급 확률', unit: '단계', shift: 'shopGrade', cost: [8, 16] } ] },
+        { id: 'sg2', req: ['shopReset'], name: '상점 고급 확률', unit: '%', gradeUp: { table: 'shopGrade', grade: 2 }, add: 2, cost: [4, 8, 12, 16, 20] }, // 2026-11-27 등급별 확률 +2%씩 5단계, 더한 %는 낮은 등급부터 뺌 (사용자: "2%씩으로 해. 5개까지. 각 등급별로 구분하고", "낮은 등급에서부터 빼야겠지"). 예전 +단계 칸(shopGrade) 대신. 비용 임시
+        { id: 'sg3', req: ['sg2'], name: '상점 희귀 확률', unit: '%', gradeUp: { table: 'shopGrade', grade: 3 }, add: 2, cost: [4, 8, 12, 16, 20] },
+        { id: 'sg4', req: ['sg3'], name: '상점 전설 확률', unit: '%', gradeUp: { table: 'shopGrade', grade: 4 }, add: 2, cost: [4, 8, 12, 16, 20] } ] },
       { id: 'event', name: '이벤트', nodes: [
         { id: 'startGold', req: ['start'], name: '시작 골드', unit: 'G', path: 'campaign.startGold', add: 50, cost: [4, 8, 12] },
         { id: 'life', req: ['startGold'], name: '시작 하트', unit: '개', path: 'life.max', add: 2, cost: [4, 8, 12] },
@@ -586,14 +590,20 @@ var IDLE_DATA = {
         { id: 'eventReset', req: ['campfire'], name: '모닥불 리셋', unit: '회', key: 'eventReroll', add: 1, cost: [6, 12] },
         { id: 'fairyReset', req: ['eventReset'], name: '요정 리셋', unit: '회', key: 'fairyReroll', add: 1, cost: [6, 12] }, // 2026-11-27 모닥불·요정 리셋을 나눔. 비용은 모닥불 리셋과 같게 임시
         { id: 'daisReset', req: ['eventReset'], name: '양탄자 리셋', unit: '회', key: 'daisReroll', add: 1, cost: [6, 12] },
-        { id: 'heroGrade', req: ['campfire'], name: '영웅 등급 확률', unit: '단계', shift: 'heroGrade', cost: [8, 16] }, // 2026-11-27 모닥불·영입·상점 영웅 등급(적은 enemyGrade라 안 바뀜). 비용 임시
-        { id: 'grollGrade', req: ['groll'], name: '돈고블린 룰렛 등급 확률', unit: '단계', shift: 'grollGrade', cost: [8, 16] }, // 2026-11-27 비용 임시
+        { id: 'hg2', req: ['campfire'], name: '영웅 고급 확률', unit: '%', gradeUp: { table: 'heroGrade', grade: 2 }, add: 2, cost: [4, 8, 12, 16, 20] }, // 2026-11-27 등급별 확률 +2%씩 5단계, 더한 %는 낮은 등급부터 뺌 (사용자: "2%씩으로 해. 5개까지. 각 등급별로 구분하고", "낮은 등급에서부터 빼야겠지"). 예전 +단계 칸(heroGrade) 대신. 비용 임시
+        { id: 'hg3', req: ['hg2'], name: '영웅 희귀 확률', unit: '%', gradeUp: { table: 'heroGrade', grade: 3 }, add: 2, cost: [4, 8, 12, 16, 20] },
+        { id: 'hg4', req: ['hg3'], name: '영웅 전설 확률', unit: '%', gradeUp: { table: 'heroGrade', grade: 4 }, add: 2, cost: [4, 8, 12, 16, 20] },
+        { id: 'gg2', req: ['groll'], name: '돈고블린 룰렛 고급 확률', unit: '%', gradeUp: { table: 'grollGrade', grade: 2 }, add: 2, cost: [4, 8, 12, 16, 20] }, // 2026-11-27 등급별 확률 +2%씩 5단계, 더한 %는 낮은 등급부터 뺌 (사용자: "2%씩으로 해. 5개까지. 각 등급별로 구분하고", "낮은 등급에서부터 빼야겠지"). 예전 +단계 칸(grollGrade) 대신. 비용 임시
+        { id: 'gg3', req: ['gg2'], name: '돈고블린 룰렛 희귀 확률', unit: '%', gradeUp: { table: 'grollGrade', grade: 3 }, add: 2, cost: [4, 8, 12, 16, 20] },
+        { id: 'gg4', req: ['gg3'], name: '돈고블린 룰렛 전설 확률', unit: '%', gradeUp: { table: 'grollGrade', grade: 4 }, add: 2, cost: [4, 8, 12, 16, 20] },
         { id: 'grollCost', req: ['groll'], name: '돈고블린 룰렛 비용 감소', unit: '%', path: 'events.groll.costCut', add: 10, cost: [8, 16] }, // 2026-11-27 (사용자: "감소도 추가하고"). 숫자·비용 임시
         { id: 'groll', req: ['campfire'], name: '돈고블린 룰렛', unit: '회', key: 'grollSpins', add: 1, cost: [6, 12] },
         { id: 'mimic', req: ['campfire'], name: '미믹 수', unit: '마리', key: 'mimicCount', add: 1, cap: 4, cost: [8] },
         { id: 'mBlueUp', req: ['mimic'], name: '파랑 미믹 확률', unit: '%', path: 'events.mimic.blueUp', add: 10, cost: [8, 16] }, // 2026-11-27 보물상자 등급(꺼진 보물상자 판) 칸 대신. 갈색 미믹마다 이 %로 파랑(2등급)이 됨 (사용자: "갈파왕 123등급", "파랑 확률 업")
         { id: 'mKingUp', req: ['mBlueUp'], name: '왕관 미믹 확률', unit: '%', path: 'events.mimic.kingUp', add: 10, cost: [10, 20] }, // 왕관(3등급)이 아직 안 나오는 판에서 이 %로 1마리가 왕관이 됨 (사용자: "보스 등장 확률 업"). 숫자·비용 임시
-        { id: 'lootGrade', req: ['lootReset'], name: '전리품 등급 확률', unit: '단계', shift: 'lootWeight', cost: [8, 16] } ] },
+        { id: 'lg2', req: ['lootReset'], name: '전리품 고급 확률', unit: '%', gradeUp: { table: 'lootWeight', grade: 2 }, add: 2, cost: [4, 8, 12, 16, 20] }, // 2026-11-27 등급별 확률 +2%씩 5단계, 더한 %는 낮은 등급부터 뺌 (사용자: "2%씩으로 해. 5개까지. 각 등급별로 구분하고", "낮은 등급에서부터 빼야겠지"). 예전 +단계 칸(lootGrade) 대신. 비용 임시
+        { id: 'lg3', req: ['lg2'], name: '전리품 희귀 확률', unit: '%', gradeUp: { table: 'lootWeight', grade: 3 }, add: 2, cost: [4, 8, 12, 16, 20] },
+        { id: 'lg4', req: ['lg3'], name: '전리품 전설 확률', unit: '%', gradeUp: { table: 'lootWeight', grade: 4 }, add: 2, cost: [4, 8, 12, 16, 20] } ] },
       // 영웅 줄: 직업마다 어울리는 능력치만(사용자 "2로하자"). 직업별 능력치는 기획 제안표(사용자 확인 전) 그대로 임시. atk·hp·def = +비율, crit = +확률
       { id: 'h_guardian', name: '기사', job: 'guardian', nodes: [
         { id: 'g_hp', req: ['t_hp'], name: '기사 체력', hero: 'hp', add: 0.05, cost: [5, 10, 15] }, { id: 'g_def', req: ['g_hp'], name: '기사 방어력', hero: 'def', add: 0.05, cost: [5, 10, 15] } ] },
