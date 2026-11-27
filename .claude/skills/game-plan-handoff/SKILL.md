@@ -1,5 +1,5 @@
 ---
-name: handoff
+name: game-plan-handoff
 description: 화면·그림 요청을 받았거나 다른 세션의 보고를 사용자에게 전할 때 쓴다.
 ---
 

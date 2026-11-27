@@ -1,5 +1,5 @@
 ---
-name: day-wrap
+name: game-plan-daywrap
 description: 사용자가 하루 마무리, 압축(compact), clear를 말할 때 쓴다.
 ---
 
