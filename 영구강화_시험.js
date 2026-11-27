@@ -4,7 +4,7 @@ const assert=require("assert");const D=require((process.argv[2]||".")+"/data.js"
 const full={medals:0,nodes:{}}; D.meta.lines.forEach(L=>L.nodes.forEach(N=>full.nodes[N.id]=N.cost.length));
 const M=E.metaData(D,full);
 assert.strictEqual(D.player.bag[0],5,"원본 그대로"); assert.strictEqual(M.player.bag[0],7); assert.strictEqual(M.player.bag[9],7,"cap");
-assert.strictEqual(M.player.skillSlots[0],6); assert.strictEqual(M.player.potion[0],3);
+assert.strictEqual(M.player.skillSlots[0],6); assert.strictEqual(M.player.potion[0],2,"물약 칸 최대 2");
 assert.deepStrictEqual(M.player.shopGrade[0],[55,25,10,10],"2026-11-27 상점도 기준 표(Lv1 85/15/0/0) + 등급별 +10%, 일반에서 뺌");
 assert.strictEqual(M.shop.refreshMax,D.shop.refreshMax+2); assert.strictEqual(M.campaign.startGold,150); assert.strictEqual(M.life.max,16);
 assert.deepStrictEqual(M.recruit.reroll.max,[2]); assert.strictEqual(D.recruit.reroll.max[0],1);

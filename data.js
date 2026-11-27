@@ -559,7 +559,7 @@ var IDLE_DATA = {
     // lootWeight 2026-11-24: 전투 룰렛·모닥불 칸 가중치 [일반, 고급, 희귀, 전설, 골드]. 유물 칸은 유물 등급 열, 마나스톤은 골드 열
     lootWeight: [[10, 5, 2, 1, 10], [10, 5, 2, 1, 10], [10, 5.5, 2.5, 1, 10], [10, 5.5, 2.5, 1.2, 10], [10, 6, 3, 1.5, 10],
                  [10, 6, 3.5, 1.8, 10], [10, 6.5, 4, 2, 10], [10, 6.5, 4, 2.3, 10], [10, 7, 4.5, 2.6, 10], [10, 7, 5, 3, 10]],
-    potion:     [1, 1, 2, 2, 2, 3, 3, 3, 3, 3], // 2026-11-26: 물약 칸(들 수 있는 물약 수). Lv3·Lv6에 1칸씩 (사용자: "여러개팔고 레벨로 제한"). 예전 모든 레벨 2칸
+    potion:     [1, 1, 2, 2, 2, 2, 2, 2, 2, 2], /* 2026-11-27 최대 2칸(사용자: "물약 슬롯 2개로 하고. 수정도 2개로만 할게. 겹친다 유물하고.", 화면 유물 줄과 겹침). 예전 Lv6부터 3칸 */ // 2026-11-26: 물약 칸(들 수 있는 물약 수). Lv3·Lv6에 1칸씩 (사용자: "여러개팔고 레벨로 제한"). 예전 모든 레벨 2칸
     bag:        [5, 5, 6, 6, 6, 7, 7, 7, 7, 7], // 2026-11-26: 백팩 최대 7칸(사용자: "7칸으로할꺼야"). Lv3·Lv6에 1칸씩. 예전 [5,5,6,6,6,7,7,7,8,8] (Lv9에 8칸)
     // heroGrade: 적·용병·상인으로 나오는 영웅 등급 확률 가중치 [일반, 고급, 희귀, 전설] (레벨 1~10)
     gradeFrom: { merchantHeroGrade: { base: 'heroGrade', shift: 2 }, mercGrade: { base: 'heroGrade', shift: 0 }, enemyGrade: { base: 'heroGrade', shift: 0 }, shopGrade: { base: 'heroGrade', shift: 0 }, grollGrade: { base: 'heroGrade', shift: 0 } }, /* 2026-11-27 적·상점 유물·돈고블린도 기준 표로(각색 없음, 예전 상점 Lv1 희귀 5% → 0%). 전리품(lootWeight)만 자기 무게 그대로, 줄만 스테이지 */ // 2026-11-27 기준 표: 상인 영웅·합류 영웅은 영웅 등급 표(heroGrade = 모닥불·영입·상점 영웅)를 직접 읽고 줄만 옮김(shift). 기준 표를 고치면 같이 바뀜. 업그레이드 +%는 표마다 따로 (사용자: "기준표 … 내가 그거 하라는 말 아니였나?")
@@ -580,7 +580,7 @@ var IDLE_DATA = {
       { id: 'bag', name: '백팩', nodes: [
         { id: 'bag', req: ['start'], name: '백팩 칸', unit: '칸', key: 'bag', add: 1, cap: 7, cost: [6, 12] },
         { id: 'relic', req: ['bag'], name: '유물 칸', unit: '칸', key: 'skillSlots', add: 1, cap: 10, cost: [8, 16] },
-        { id: 'potion', req: ['bag'], name: '물약 칸', unit: '칸', key: 'potion', add: 1, cap: 3, cost: [6, 12] } ] },
+        { id: 'potion', req: ['bag'], name: '물약 칸', unit: '칸', key: 'potion', add: 1, cap: 2 /* 2026-11-27 최대 2칸 */, cost: [6, 12] } ] },
       { id: 'shop', name: '상점', nodes: [
         { id: 'shopSlot', req: ['start'], name: '상점 칸', unit: '칸', key: 'shopSlots', add: 1, cap: 6, cost: [8, 16] },
         { id: 'shopReset', req: ['shopSlot'], name: '상점 리셋', unit: '회', path: 'shop.refreshMax', add: 1, cost: [6, 12] },
