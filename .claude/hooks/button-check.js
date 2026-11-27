@@ -5,7 +5,7 @@
 // 쓰는 곳: .claude/settings.json PostToolUse(Edit|Write|MultiEdit). 사람이 직접 돌릴 땐: node .claude/hooks/button-check.js --self-test
 const fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
 const ROOT = path.resolve(__dirname, '..', '..');
-const EXCEPT = /\.upn|\.trslot|#shopBuy|\.spRe|data-f|버튼 효과는 이것 하나|열려 있음|\.tdais|단상|#z#z|^\s*button:not\(:disabled\):active\{translate/; // #z#z…·마지막 항목 = 공통 줄 자체 // 화면규칙.md 25줄 예외(강화 칸·초월 단상·빨간 값 버튼·열림 표시)와 도감 필터 칩
+const EXCEPT = /\.upn|\.trslot|#shopBuy|\.spRe|data-f|버튼 효과는 이것 하나|열려 있음|\.tdais|단상|#z#z|^\s*button:not\(:disabled\):active\{translate|\.filters|trreg|#bellBtn/; // #z#z…·translate = 공통 줄 자체. .filters = 도감 필터 칩, trreg = 초월 등록 버튼 색, #bellBtn = 누를 때 자리 지키기 (2026-11-27 UI 확인) // 화면규칙.md 25줄 예외(강화 칸·초월 단상·빨간 값 버튼·열림 표시)와 도감 필터 칩
 const BTN = /(^|[\s,>+~(])button\b|\.btn\b|Btn\b|\bbtn[A-Z-]/;
 const FX = /:(hover|active|disabled)\b[^{]*\{[^}]*(filter|transform|translate|background|box-shadow|opacity|brightness)/;
 const RADIUS = /border-radius\s*:\s*(?!0(px)?\s*[;!}])[^;}]+/;
