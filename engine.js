@@ -630,7 +630,7 @@
     for (var j = 0; j < nH; j++) { var hid = pickHeroByGrade(data, rnd, (plv || 1) + 2, gotH); gotH.push(hid);
       out.push({ type: 'h', id: hid, base: Math.round(M.heroPrice * heroGrade(data, hid) * Math.pow(data.shop.priceGrowth, n)), cur: 'gold' }); } // 상인은 레벨 +2 확률로 조금 더 좋은 영웅
     // 2026-11-26: 상품마다 할인율이 달라요(최대 = 레벨 할인율). offMin×최대 ~ 최대 사이 offStep 단위, 한 개는 꼭 최대 ("UP TO 50%")
-    var mx = merchantOff(data, plv), st = M.offStep || 5, lo = Math.ceil(mx * (M.offMin != null ? M.offMin : 0.5) / st) * st, top = out.length ? Math.floor(rnd() * out.length) : -1;
+    var mx = merchantOff(data, plv), st = M.offStep || 5, lo = Math.min(mx, Math.ceil(mx * (M.offMin != null ? M.offMin : 0.5) / st) * st + (M.offMinAdd || 0)), top = out.length ? Math.floor(rnd() * out.length) : -1;
     out.forEach(function (it, k) { var o = k === top ? mx : Math.min(mx, lo + st * Math.floor(rnd() * (Math.floor((mx - lo) / st) + 1))), p = it.base > 0 ? Math.max(M.minPrice || 1, Math.round(it.base * (1 - o / 100))) : 0;
       it.off = o; it.price = p; it.gold = it.cur === 'gold' ? p : 0; it.mana = it.cur === 'mana' ? p : 0; });
     return out; }

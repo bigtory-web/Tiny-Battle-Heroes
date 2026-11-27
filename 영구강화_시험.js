@@ -44,3 +44,7 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
   assert.ok(I.featured.every(f=>C2.recruit.pool.includes(f.id)),"풀에 더해짐"); assert.ok(!D.recruit.pool.includes("mudgolem"),"원본 풀 그대로");
   let f=0; for(let lv=1;lv<=10;lv++) for(let st=0;st<10;st++) E.stageTeam(C2,st,null,0,lv).team.forEach(u=>{ if(I.featured.some(x=>x.id===u.id)) f++; }); assert.ok(f>0,"특별 출현 영웅이 적으로 나옴");
   console.log("ok · 특별 출현", I.featured.map(f=>f.name).join(",")); }
+// 상인 최저 할인: 찍을수록 상품 할인율의 아래 끝이 5%씩 오름(최대 할인을 넘지 않음)
+{ const minOff = st => { let m = 100; for (let s = 1; s < 60; s++) { let x = s; const r = () => (x = (x * 9301 + 49297) % 233280) / 233280; E.rollMerchant(E.metaData(D, st), 3, r, 5).forEach(it => { m = Math.min(m, it.off); }); } return m; };
+  const a = minOff({ nodes: {} }), b = minOff({ nodes: { merchOffMin: 2 } }); assert.strictEqual(b - a, 10, "최저 +5% 두 번");
+  console.log("ok · 상인 최저 할인", a + "% → " + b + "%"); }
