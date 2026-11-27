@@ -1,0 +1,10 @@
+체력 (확정)
+바위 def
+생명 care
+힘 atk
+바람 aspd
+그림자 crit
+번개 energy
+발걸음 move
+거울 reach
+아래 줄: 수정 슬롯 크기

@@ -1,0 +1,11 @@
+Look at:
+- img/p/ui_swampshop.png : our 24x24 icon of the frog merchant (face only, front view). Same style and framing.
+- img/codex/moleshop/mole.png : our crystal merchant mole (the character to show).
+
+Make ONE 24x24 pixel-art icon: the MOLE MERCHANT'S FACE, front view, symmetrical: dark grey-brown mole head, big pink nose, pale muzzle, small round golden spectacles, yellow miner helmet with a glowing lamp in the middle. Thick dark brown outline, 3 flat tones.
+
+The whole drawing must be at most 22 art pixels wide and 22 art pixels tall, drawn with large crisp square pixels (each art pixel about 44 real pixels in a 1024x1024 image).
+
+Save as img/codex/moleshop/icon_src.png (if the size differs a little from 1024x1024, save it anyway).
+No anti-aliasing, no gradients, no shadow, flat solid #FF00FF magenta background, no text.
+Python is not installed on this computer: do not use python. Use PowerShell Copy-Item to copy the generated file. Do not modify or create any other file.
