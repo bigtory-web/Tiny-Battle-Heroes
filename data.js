@@ -148,7 +148,7 @@ var IDLE_DATA = {
       ult: { kind: 'buff', win: { kind: 'pierceChance', v: 1, t: 5 }, desc: '5초 동안 평타가 대상 뒤 적 1명까지 함께 맞힌다.' }, passive: { kind: 'pierceChance', v: 0.2 } },
     { id: 'candle', name: '칸델라', alias: '견습 마법사', sex: 'f', race: 'human', job: 'mage', ultName: '불똥', role: 'mage', el: 'fire', range: 'long', shot: 'fire', cost: 1, grade: 1, hp: 920, atk: 150, def: 50, interval: 1.5,
       ult: { kind: 'aoe', mul: 0.6, burnAll: 4, desc: '적 전체에게 약한 피해를 주고 모두 화상을 입힌다.' }, passive: { kind: 'burnHit', v: 1 } },
-    { id: 'batling', name: '녹스', alias: '꼬마박쥐', sex: 'm', race: 'demon', job: 'warrior', ultName: '물어뜯기', role: 'warrior', el: 'dark', range: 'melee', cost: 1, grade: 1, hp: 1063, atk: 110, def: 85, interval: 1.1,
+    { id: 'batling', name: '녹스', alias: '꼬마박쥐', sex: 'm', race: 'demon', job: 'assassin', ultName: '물어뜯기', role: 'warrior', el: 'dark', range: 'melee', cost: 1, grade: 1, hp: 1063, atk: 110, def: 85, interval: 1.1,
       ult: { trig: { kind: 'hits', n: 3 }, kind: 'multi', hits: 3, mul: 1.15, win: { kind: 'ultDrain', v: 0.2 }, desc: '3번째 공격마다 3번 물어뜯고, 준 피해의 20%를 회복한다.' }, passive: { kind: 'lifesteal', v: 0.15 } },
     { id: 'frog', name: '리비', alias: '개구리주술사', sex: 'f', race: 'beast', job: 'mage', ultName: '물벼락', role: 'mage', el: 'water', range: 'long', shot: 'orb', cost: 1, grade: 1, hp: 880, atk: 140, def: 50, interval: 1.5,
       ult: { kind: 'aoe', mul: 0.5, slow: 0.3, slowDur: 3, energyPerSlow: 10, desc: '적 전체를 느리게 하고, 느려진 적 1명마다 자신의 에너지가 10씩 찬다.' }, passive: { kind: 'energyStart', v: 25 } },
