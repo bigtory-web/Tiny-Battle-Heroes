@@ -5902,7 +5902,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     if (!shopSel || battleOn()) return;
     if (shopSel.t === 'merch'){ var wo = merchOffer(), mi = shopSel.i, it = wo && wo.stock[mi]; if (!it || wo.bought.indexOf(mi) >= 0) return; var payM = it.cur === 'mana'; if ((payM ? (S.mana || 0) : S.gold) < it.price) return;
       if (it.type === 'c'){ var ei = (S.crystals || []).indexOf(null); if (ei < 0) return; S.gold -= it.price; S.crystals[ei] = it.id; wo.bought.push(mi); if (S.event) S.event.crystalBought = true; if (S.runStats) S.runStats.bought++; save(); renderAll(); return; }
-      if (it.type === 'p'){ if ((S.potions || []).length >= potHold()) return; S.gold -= it.price; (S.potions || (S.potions = [])).push(it.id); if (S.event) S.event.potBought = true; if (S.runStats) S.runStats.bought++; save(); renderAll(); return; }
+      if (it.type === 'p'){ if ((S.potions || []).length >= potHold()) return; S.gold -= it.price; (S.potions || (S.potions = [])).push(it.id); wo.bought.push(mi); /* 물건 하나당 한 번만 (2026-11-27 사용자) */ if (S.event) S.event.potBought = true; if (S.runStats) S.runStats.bought++; save(); renderAll(); return; }
       if (it.type === 's'){ if (!E.canTake(D, S.skills, it.id, PK().skillSlots)) return; E.takeSkill(D, S.skills, it.id); skKey = ''; }
       else recruitFrom(it.id); // 산 것은 HUD·백팩에 바로 보여서 구매 알림은 없어요
       if (payM) S.mana = (S.mana || 0) - it.price; else S.gold -= it.price; wo.bought.push(mi); if (S.runStats) S.runStats.bought++; save(); renderAll(); return; }
