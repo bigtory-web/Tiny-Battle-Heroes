@@ -90,7 +90,7 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
 // 수정 칸(2026-11-27, 2장 수정 동굴): 마이너스 칸 체력 -50%, 플러스 칸 +25%. 플러스는 마이너스 칸 영웅이 살아 있을 때만, 슬롯이 비면 효과 없음
 { const C2 = E.chapterData(D, 2), C3 = E.chapterData(D, 3); assert.ok(C2.campaign.crystal && !C2.campaign.swamp, "2장 = 수정 동굴"); assert.ok(C3.campaign.swamp && !C3.campaign.crystal, "3장 = 늪지대");
   assert.deepStrictEqual(E.crystalStart(C2), ['hp', null], "1번 슬롯 체력 수정 고정"); assert.strictEqual(E.crystalStart(D), null);
-  const st = E.stageTeam(C2, 0, null, 0, 1); assert.ok(st.crystal && st.crystal.length === 2 && st.crystal[0] !== st.crystal[1], "칸 한 쌍"); assert.strictEqual(E.stageTeam(D, 0, null, 0, 1).crystal, null);
+  const cc = E.crystalCells(C2, () => 0.42); assert.ok(cc && cc.length === 2 && cc[0] !== cc[1], "칸 한 쌍(챕터 시작 때)"); assert.strictEqual(E.crystalCells(D), null); assert.strictEqual(E.stageTeam(C2, 0, null, 0, 1).crystal, undefined, "판마다 안 뽑음");
   const id = D.heroes[0].id, cells = [0, 6], foe = [{ id: id, slot: 0, level: 1 }];
   const hp = o => { const b = E.createBattle(C2, [{ id: id, slot: 0, level: 1 }, { id: id, slot: 6, level: 1 }], foe, { seed: 3, crystal: o }); return [b, b.A[0].maxHp, b.A[1].maxHp]; };
   const [, b0, b1] = hp(null), [bt, m, p] = hp({ cells: cells, ids: ['hp'] });
