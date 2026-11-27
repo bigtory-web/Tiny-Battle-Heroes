@@ -1,0 +1,15 @@
+Look at img/codex/redo_anim/thunderbird_x8.png : a pixel art game character (a 64x64 sprite shown 8 times larger on white).
+Draw a sprite sheet of ATTACK frames of exactly this character and save it as img/codex/redo_anim/thunderbird_atk_src.png (if the size differs a little, save it anyway).
+
+Layout: ONE row of 4 equal cells, wide image (2048x512), the character in each cell drawn at the same size and same pixel size as the reference, feet at the same height in every cell. No borders, grid lines, text or numbers. Flat solid #FF00FF magenta background.
+
+The 4 frames, in order:
+1. get ready: lift the thunder staff higher, orb above the head.
+2. cast: tip the staff forward to the right, orb slightly above chest height, both the hand and the navy shaft clearly visible.
+3. hold: the same stretched pose, body leaning forward 1 pixel, wings slightly lifted behind.
+4. return: bringing the staff back toward the reference pose.
+
+Rules (most important): same face, same eyes (same shape and position on the head, never closed), same hair, feather crest, wings, headband, clothes, colors and staff as the reference in all 4 frames. Same height, head size and body width. Feet do not move. Facing right. Only the colors of the reference, thick dark 1-pixel outline, hard square pixels, no anti-aliasing. No motion trails, flashes, sparks, projectiles or effects: the character only.
+The staff shaft must never cross the face or neck. Arms stay SHORT and small like the reference: covered by a rounded white feathered sleeve with dark outline and a tiny hand at the end that grips the navy staff shaft. The navy shaft with gold bands must be clearly visible in the hand and between hand and orb. Never draw a long thick flat rectangle arm or a bare square block.
+In frames 2 and 3 the staff is held diagonally, orb up and to the right in front of the chest, not a horizontal tube.
+Python is not installed on this computer: do not use python. Use PowerShell Copy-Item to copy the generated file. Do not modify or create any other file.

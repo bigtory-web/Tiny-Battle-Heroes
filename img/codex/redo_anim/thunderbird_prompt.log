@@ -1,0 +1,1984 @@
+OpenAI Codex v0.171.0-alpha.13.2
+--------
+workdir: C:\Users\Home\Downloads\방치형RPG_테스트베드
+model: gpt-6.2-sol
+provider: openai
+approval: never
+sandbox: workspace-write [workdir, /tmp, $TMPDIR]
+reasoning effort: medium
+reasoning summaries: none
+session id: 01a21c8e-f072-7582-8d49-6fcdc06bbe3f
+--------
+user
+Look at img/codex/redo_anim/thunderbird_x8.png : a pixel art game character (a 64x64 sprite shown 8 times larger on white).
+Draw a sprite sheet of ATTACK frames of exactly this character and save it as img/codex/redo_anim/thunderbird_atk_src.png (if the size differs a little, save it anyway).
+
+Layout: ONE row of 4 equal cells, wide image (2048x512), the character in each cell drawn at the same size and same pixel size as the reference, feet at the same height in every cell. No borders, grid lines, text or numbers. Flat solid #FF00FF magenta background.
+
+The 4 frames, in order:
+1. get ready: lift the thunder staff higher, orb above the head.
+2. cast: tip the staff forward to the right, orb slightly above chest height, both the hand and the navy shaft clearly visible.
+3. hold: the same stretched pose, body leaning forward 1 pixel, wings slightly lifted behind.
+4. return: bringing the staff back toward the reference pose.
+
+Rules (most important): same face, same eyes (same shape and position on the head, never closed), same hair, feather crest, wings, headband, clothes, colors and staff as the reference in all 4 frames. Same height, head size and body width. Feet do not move. Facing right. Only the colors of the reference, thick dark 1-pixel outline, hard square pixels, no anti-aliasing. No motion trails, flashes, sparks, projectiles or effects: the character only.
+The staff shaft must never cross the face or neck. Arms stay SHORT and small like the reference: covered by a rounded white feathered sleeve with dark outline and a tiny hand at the end that grips the navy staff shaft. The navy shaft with gold bands must be clearly visible in the hand and between hand and orb. Never draw a long thick flat rectangle arm or a bare square block.
+In frames 2 and 3 the staff is held diagonally, orb up and to the right in front of the chest, not a horizontal tube.
+Python is not installed on this computer: do not use python. Use PowerShell Copy-Item to copy the generated file. Do not modify or create any other file.
+
+codex
+I’ll inspect the reference and use the imagegen skill to create the four attack poses, then verify the saved sprite sheet.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -LiteralPath 'C:/Users/Home/.codex/skills/.system/imagegen/SKILL.md'" in C:\Users\Home\Downloads\방치형RPG_테스트베드
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "rg --files -g AGENTS.md -g thunderbird_x8.png -g thunderbird_atk_src.png -g '"'!node_modules'"'" in C:\Users\Home\Downloads\방치형RPG_테스트베드
+ succeeded in 130ms:
+---
+name: "imagegen"
+description: "Generate or edit raster images when the task benefits from AI-created bitmap visuals such as photos, illustrations, textures, sprites, mockups, or transparent-background cutouts. Use when Codex should create a brand-new image, transform an existing image, or derive visual variants from references, and the output should be a bitmap asset rather than repo-native code or vector. Do not use when the task is better handled by editing existing SVG/vector/code-native assets, extending an established icon or logo system, or building the visual directly in HTML/CSS/canvas."
+---
+
+# Image Generation Skill
+
+Generates or edits images for the current project (for example website assets, game assets, UI mockups, product mockups, wireframes, logo design, photorealistic images, or infographics).
+
+## Top-level modes and rules
+
+This skill has exactly two top-level modes:
+
+- **Default built-in tool mode (preferred):** built-in `image_gen` tool for image generation, editing, and transparent-image requests. Does not require `OPENAI_API_KEY`.
+- **Fallback CLI mode:** `scripts/image_gen.py` CLI. Use when the user explicitly asks for or confirms the CLI/API/model path. Requires `OPENAI_API_KEY`.
+
+Within CLI fallback, the CLI exposes three subcommands:
+
+- `generate`
+- `edit`
+- `generate-batch`
+
+Rules:
+- Use the built-in `image_gen` tool by default for normal image generation and editing requests.
+- Do not switch to CLI fallback for ordinary quality, size, or file-path control.
+- For transparent images, ask built-in `image_gen` for a transparent background and preserve the generated alpha.
+- Never silently switch from built-in `image_gen` or CLI `gpt-image-2` to CLI `gpt-image-1.5`; ask the user first unless they explicitly requested `gpt-image-1.5`.
+- The word `batch` by itself does not mean CLI fallback. If the user asks for many assets or says to batch-generate assets without explicitly asking for CLI/API/model controls, stay on the built-in path and issue one built-in call per requested asset or variant.
+- If the built-in tool fails or is unavailable, tell the user the CLI fallback exists and that it requires `OPENAI_API_KEY`. Proceed only if the user explicitly asks for that fallback.
+- If the user explicitly asks for CLI mode, use the bundled `scripts/image_gen.py` workflow. Do not create one-off SDK runners.
+- Never modify `scripts/image_gen.py`. If something is missing, ask the user before doing anything else.
+
+Built-in save-path policy:
+- In built-in tool mode, Codex saves generated images under `$CODEX_HOME/*` by default.
+- Do not describe or rely on OS temp as the default built-in destination.
+- Do not describe or rely on a destination-path argument (if any) on the built-in `image_gen` tool. If a specific location is needed, generate first and then move or copy the selected output from `$CODEX_HOME/generated_images/...`.
+- Save-path precedence in built-in mode:
+  1. If the user names a destination, move or copy the selected output there.
+  2. If the image is meant for the current project, move or copy the final selected image into the workspace before finishing.
+  3. If the image is only for preview or brainstorming, render it inline; the underlying file can remain at the default `$CODEX_HOME/*` path.
+- Never leave a project-referenced asset only at the default `$CODEX_HOME/*` path.
+- Do not overwrite an existing asset unless the user explicitly asked for replacement; otherwise create a sibling versioned filename such as `hero-v2.png` or `item-icon-edited.png`.
+
+Shared prompt guidance for both modes lives in `references/prompting.md` and `references/sample-prompts.md`.
+
+Fallback-only docs/resources for CLI mode:
+- `references/cli.md`
+- `references/image-api.md`
+- `references/codex-network.md`
+- `scripts/image_gen.py`
+
+## When to use
+- Generate a new image (concept art, product shot, cover, website hero)
+- Generate a new image using one or more reference images for style, composition, or mood
+- Edit an existing image (inpainting, lighting or weather transformations, background replacement, object removal, compositing, transparent background)
+- Produce many assets or variants for one task
+
+## When not to use
+- Extending or matching an existing SVG/vector icon set, logo system, or illustration library inside the repo
+- Creating simple shapes, diagrams, wireframes, or icons that are better produced directly in SVG, HTML/CSS, or canvas
+- Making a small project-local asset edit when the source file already exists in an editable native format
+- Any task where the user clearly wants deterministic code-native output instead of a generated bitmap
+
+## Decision tree
+
+Think about two separate questions:
+
+1. **Intent:** is this a new image or an edit of an existing image?
+2. **Execution strategy:** is this one asset or many assets/variants?
+
+Intent:
+- If the user wants to modify an existing image while preserving parts of it, treat the request as **edit**.
+- If the user provides images only as references for style, composition, mood, or subject guidance, treat the request as **generate**.
+- If the user provides no images, treat the request as **generate**.
+
+Built-in edit semantics:
+- Built-in edit mode is for images already visible in the conversation context, such as attached images or images generated earlier in the thread.
+- If the user wants to edit a local image file with the built-in tool, first load it with built-in `view_image` tool so the image is visible in the conversation context, then proceed with the built-in edit flow.
+- Do not promise arbitrary filesystem-path editing through the built-in tool.
+- If a local file still needs direct file-path control, masks, or other explicit CLI-only parameters, use the explicit CLI fallback only when the user asks for it.
+- For edits, preserve invariants aggressively and save non-destructively by default.
+
+Execution strategy:
+- In the built-in default path, produce many assets or variants by issuing one `image_gen` call per requested asset or variant.
+- In the CLI fallback path, use the CLI `generate-batch` subcommand only when the user explicitly chose CLI mode and needs many prompts/assets.
+- For many distinct assets, do not use `n` as a substitute for separate prompts. `n` is for variants of one prompt; distinct assets need distinct built-in calls or distinct CLI `generate-batch` jobs.
+
+Assume the user wants a new image unless they clearly ask to change an existing one.
+
+## Workflow
+1. Decide the top-level mode: built-in by default, including transparent-output requests; fallback CLI only if explicitly requested or confirmed.
+2. Decide the intent: `generate` or `edit`.
+3. Decide whether the output is preview-only or meant to be consumed by the current project.
+4. Decide the execution strategy: single asset vs repeated built-in calls vs CLI `generate-batch`.
+5. Collect inputs up front: prompt(s), exact text (verbatim), constraints/avoid list, and any input images.
+6. For every input image, label its role explicitly:
+   - reference image
+   - edit target
+   - supporting insert/style/compositing input
+7. If the edit target is only on the local filesystem and you are staying on the built-in path, inspect it with `view_image` first so the image is available in conversation context.
+8. If the user asked for a photo, illustration, sprite, product image, banner, or other explicitly raster-style asset, use `image_gen` rather than substituting SVG/HTML/CSS placeholders. If the request is for an icon, logo, or UI graphic that should match existing repo-native SVG/vector/code assets, prefer editing those directly instead.
+9. Augment the prompt based on specificity:
+   - If the user's prompt is already specific and detailed, normalize it into a clear spec without adding creative requirements.
+   - If the user's prompt is generic, add tasteful augmentation only when it materially improves output quality.
+10. Use the built-in `image_gen` tool by default.
+11. For transparent-output requests, ask built-in `image_gen` for a transparent background and preserve the generated alpha channel.
+12. Inspect outputs and validate: subject, style, composition, text accuracy, and invariants/avoid items.
+13. Iterate with a single targeted change, then re-check.
+14. For preview-only work, render the image inline; the underlying file may remain at the default `$CODEX_HOME/generated_images/...` path.
+15. For project-bound work, move or copy the selected artifact into the workspace and update any consuming code or references. Never leave a project-referenced asset only at the default `$CODEX_HOME/generated_images/...` path.
+16. For batches or multi-asset requests, persist every requested deliverable final in the workspace unless the user explicitly asked to keep outputs preview-only. Discarded variants do not need to be kept unless requested.
+17. If the user explicitly chooses or confirms the CLI fallback, then use the fallback-only docs for model, quality, size, `input_fidelity`, masks, output format, output paths, and network setup.
+18. Always report the final saved path(s) for any workspace-bound asset(s), plus the final prompt or prompt set and whether the built-in tool or fallback CLI mode was used.
+
+## Transparent image requests
+
+Ask built-in `image_gen` for a genuinely transparent background and preserve its alpha.
+
+## Prompt augmentation
+
+Reformat user prompts into a structured, production-oriented spec. Make the user's goal clearer and more actionable, but do not blindly add detail.
+
+Treat this as prompt-shaping guidance, not a closed schema. Use only the lines that help, and add a short extra labeled line when it materially improves clarity.
+
+### Specificity policy
+
+Use the user's prompt specificity to decide how much augmentation is appropriate:
+
+- If the prompt is already specific and detailed, preserve that specificity and only normalize/structure it.
+- If the prompt is generic, you may add tasteful augmentation when it will materially improve the result.
+
+Allowed augmentations:
+- composition or framing hints
+- polish level or intended-use hints
+- practical layout guidance
+- reasonable scene concreteness that supports the stated request
+
+Not allowed augmentations:
+- extra characters or objects that are not implied by the request
+- brand names, slogans, palettes, or narrative beats that are not implied
+- arbitrary side-specific placement unless the surrounding layout supports it
+
+## Use-case taxonomy (exact slugs)
+
+Classify each request into one of these buckets and keep the slug consistent across prompts and references.
+
+Generate:
+- photorealistic-natural ??candid/editorial lifestyle scenes with real texture and natural lighting.
+- product-mockup ??product/packaging shots, catalog imagery, merch concepts.
+- ui-mockup ??app/web interface mockups and wireframes; specify the desired fidelity.
+- infographic-diagram ??diagrams/infographics with structured layout and text.
+- scientific-educational ??classroom explainers, scientific diagrams, and learning visuals with required labels and accuracy constraints.
+- ads-marketing ??campaign concepts and ad creatives with audience, brand position, scene, and exact tagline/copy.
+- productivity-visual ??slide, chart, workflow, and data-heavy business visuals.
+- logo-brand ??logo/mark exploration, vector-friendly.
+- illustration-story ??comics, children?셲 book art, narrative scenes.
+- stylized-concept ??style-driven concept art, 3D/stylized renders.
+- historical-scene ??period-accurate/world-knowledge scenes.
+
+Edit:
+- text-localization ??translate/replace in-image text, preserve layout.
+- identity-preserve ??try-on, person-in-scene; lock face/body/pose.
+- precise-object-edit ??remove/replace a specific element (including interior swaps).
+- lighting-weather ??time-of-day/season/atmosphere changes only.
+- background-extraction ??transparent background / clean cutout. Ask built-in `image_gen` for actual transparency.
+- style-transfer ??apply reference style while changing subject/scene.
+- compositing ??multi-image insert/merge with matched lighting/perspective.
+- sketch-to-render ??drawing/line art to photoreal render.
+
+## Shared prompt schema
+
+Use the following labeled spec as shared prompt scaffolding for both top-level modes:
+
+```text
+Use case: <taxonomy slug>
+Asset type: <where the asset will be used>
+Primary request: <user's main prompt>
+Input images: <Image 1: role; Image 2: role> (optional)
+Scene/backdrop: <environment>
+Subject: <main subject>
+Style/medium: <photo/illustration/3D/etc>
+Composition/framing: <wide/close/top-down; placement>
+Lighting/mood: <lighting + mood>
+Color palette: <palette notes>
+Materials/textures: <surface details>
+Text (verbatim): "<exact text>"
+Constraints: <must keep/must avoid>
+Avoid: <negative constraints>
+```
+
+Notes:
+- `Asset type` and `Input images` are prompt scaffolding, not dedicated CLI flags.
+- `Scene/backdrop` refers to the visual setting. It is not the same as the fallback CLI `background` parameter, which controls output transparency behavior.
+- Fallback-only execution notes such as `Quality:`, `Input fidelity:`, masks, output format, and output paths belong in the CLI path only. Do not treat them as built-in `image_gen` tool arguments.
+
+Augmentation rules:
+- Keep it short.
+- Add only the details needed to improve the prompt materially.
+- For edits, explicitly list invariants (`change only X; keep Y unchanged`).
+- If any critical detail is missing and blocks success, ask a question; otherwise proceed.
+
+## Examples
+
+### Generation example (hero image)
+```text
+Use case: product-mockup
+Asset type: landing page hero
+Primary request: a minimal hero image of a ceramic coffee mug
+Style/medium: clean product photography
+Composition/framing: wide composition with usable negative space for page copy if needed
+Lighting/mood: soft studio lighting
+Constraints: no logos, no text, no watermark
+```
+
+### Edit example (invariants)
+```text
+Use case: precise-object-edit
+Asset type: product photo background replacement
+Primary request: replace only the background with a warm sunset gradient
+Constraints: change only the background; keep the product and its edges unchanged; no text; no watermark
+```
+
+## Prompting best practices
+- Structure prompt as scene/backdrop -> subject -> details -> constraints.
+- Include intended use (ad, UI mock, infographic) to set the mode and polish level.
+- Use camera/composition language for photorealism.
+- Only use SVG/vector stand-ins when the user explicitly asked for vector output or a non-image placeholder.
+- Quote exact text and specify typography + placement.
+- For tricky words, spell them letter-by-letter and require verbatim rendering.
+- For multi-image inputs, reference images by index and describe how they should be used.
+- For edits, repeat invariants every iteration to reduce drift.
+- Iterate with single-change follow-ups.
+- If the prompt is generic, add only the extra detail that will materially help.
+- If the prompt is already detailed, normalize it instead of expanding it.
+- For CLI fallback only, see `references/cli.md` and `references/image-api.md` for model, `quality`, `input_fidelity`, masks, output format, and output-path guidance.
+- For transparent images, ask built-in `image_gen` for actual transparency and preserve its alpha.
+
+More principles shared by both modes: `references/prompting.md`.
+Copy/paste specs shared by both modes: `references/sample-prompts.md`.
+
+## Guidance by asset type
+Asset-type templates (website assets, game assets, wireframes, logo) are consolidated in `references/sample-prompts.md`.
+
+## gpt-image-2 guidance for CLI fallback
+
+The fallback CLI defaults to `gpt-image-2`.
+
+- Use `gpt-image-2` for new CLI/API workflows unless the user confirms a different model.
+- CLI `gpt-image-2` does not support `background=transparent`; ask before using `gpt-image-1.5` unless the user explicitly requested that model.
+- `gpt-image-2` always uses high fidelity for image inputs; do not set `input_fidelity` with this model.
+- `gpt-image-2` supports `quality` values `low`, `medium`, `high`, and `auto`.
+- Use `quality low` for fast drafts, thumbnails, and quick iterations. Use `medium`, `high`, or `auto` for final assets, dense text, diagrams, identity-sensitive edits, or high-resolution outputs.
+- Square images are typically fastest to generate. Use `1024x1024` for fast square drafts.
+- If the user asks for 4K-style output, use `3840x2160` for landscape or `2160x3840` for portrait.
+- `gpt-image-2` size may be `auto` or `WIDTHxHEIGHT` if all constraints hold: max edge `<= 3840px`, both edges multiples of `16px`, long-to-short ratio `<= 3:1`, total pixels between `655,360` and `8,294,400`.
+
+Popular `gpt-image-2` sizes:
+- `1024x1024` square
+- `1536x1024` landscape
+- `1024x1536` portrait
+- `2048x2048` 2K square
+- `2048x1152` 2K landscape
+- `3840x2160` 4K landscape
+- `2160x3840` 4K portrait
+- `auto`
+
+## Fallback CLI mode only
+
+### Temp and output conventions
+These conventions apply only to the CLI fallback. They do not describe built-in `image_gen` output behavior.
+- Use `tmp/imagegen/` for intermediate files (for example JSONL batches); delete them when done.
+- Write final artifacts under `output/imagegen/`.
+- Use `--out` or `--out-dir` to control output paths; keep filenames stable and descriptive.
+
+### Dependencies
+Prefer `uv` for dependency management in this repo.
+
+Required Python package:
+```bash
+uv pip install openai
+```
+
+Optional for image inspection and downscaling:
+```bash
+uv pip install pillow
+```
+
+Portability note:
+- If you are using the installed skill outside this repo, install dependencies into that environment with its package manager.
+- In uv-managed environments, `uv pip install ...` remains the preferred path.
+
+### Environment
+- `OPENAI_API_KEY` must be set for live API calls.
+- Do not ask the user for `OPENAI_API_KEY` when using the built-in `image_gen` tool.
+- Never ask the user to paste the full key in chat. Ask them to set it locally and confirm when ready.
+
+If the key is missing, give the user these steps:
+1. Create an API key in the OpenAI platform UI: https://platform.openai.com/api-keys
+2. Set `OPENAI_API_KEY` as an environment variable in their system.
+3. Offer to guide them through setting the environment variable for their OS/shell if needed.
+
+If installation is not possible in this environment, tell the user which dependency is missing and how to install it into their active environment.
+
+### Script-mode notes
+- CLI commands + examples: `references/cli.md`
+- API parameter quick reference: `references/image-api.md`
+- Network approvals / sandbox settings for CLI mode: `references/codex-network.md`
+
+## Reference map
+- `references/prompting.md`: shared prompting principles for both modes.
+- `references/sample-prompts.md`: shared copy/paste prompt recipes for both modes.
+- `references/cli.md`: fallback-only CLI usage via `scripts/image_gen.py`.
+- `references/image-api.md`: fallback-only API/CLI parameter reference.
+- `references/codex-network.md`: fallback-only network/sandbox troubleshooting for CLI mode.
+- `scripts/image_gen.py`: fallback-only CLI implementation. Use only when the user explicitly chooses or confirms CLI mode.
+
+ exited 1 in 169ms:
+rg : 'rg' 용어가 cmdlet, 함수, 스크립트 파일 또는 실행할 수 있는 프로그램 이름으로 인식되지 않습니다. 이름이 정확한지 확인하고 경로가 포함된 경우 경로가 올바른지 검증한 다음 다시 시도하십시오.
+위치 줄:2 문자:1
++ rg --files -g AGENTS.md -g thunderbird_x8.png -g thunderbird_atk_src. ...
++ ~~
+    + CategoryInfo          : ObjectNotFound: (rg:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command '$paths = @('"'AGENTS.md','img/AGENTS.md','img/codex/AGENTS.md','img/codex/redo_anim/AGENTS.md'); foreach ("'$path in $paths) {if (Test-Path -LiteralPath $path) {Get-Content -LiteralPath $path}}; Get-ChildItem -LiteralPath '"'img/codex/redo_anim' -Filter '*thunderbird*' | Select-Object Name,Length" in C:\Users\Home\Downloads\방치형RPG_테스트베드
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command 'Add-Type -AssemblyName System.Drawing
+$bitmap = [System.Drawing.Bitmap]::new((Resolve-Path -LiteralPath '"'img/codex/redo_anim/thunderbird_x8.png').Path)
+"'$palette = [ordered]@{}
+for ($y=0;$y -lt 64;$y++) {
+  $row = [System.Text.StringBuilder]::new()
+  for ($x=0;$x -lt 64;$x++) {
+    $hex = '"'{0:X8}' -f "'$bitmap.GetPixel($x*8+4,$y*8+4).ToArgb()
+    if (!$palette.Contains($hex)) { $palette[$hex] = '"' .ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+"'!@#%&*'"'["'$palette.Count] }
+    [void]$row.Append($palette[$hex])
+  }
+  if ($row.ToString().Trim().Length -gt 0) { '"'{0:D2} {1}' -f "'$y,$row.ToString() }
+}
+$palette.GetEnumerator() | ForEach-Object { '"'{0} {1}' -f "'$_.Value,$_.Key }
+$bitmap.Dispose()' in C:\Users\Home\Downloads\방치형RPG_테스트베드
+ succeeded in 156ms:
+
+Name                       Length
+----                       ------
+thunderbird_atk_src_v1.png  33572
+thunderbird_prompt.log      22981
+thunderbird_prompt.txt       2036
+thunderbird_still.png        3823
+thunderbird_x8.png          17435
+
+
+
+ succeeded in 255ms:
+15                       .ABCD                                     
+16                       EFGHIJK                                   
+17                  LMNOPNQRSTUGVPQ                                
+18                 WXIYZZZabcHdefghi                               
+19               NjkTlmnopqrstfuvwwvx                              
+20              MyzJx0d12fv34567hhf8a                              
+21                   .9+!@#8rr%&*                             
+22                Offfsu                             
+23              Gff33f                             
+24             IYHvff3hvQ             Q              
+25            Yd#5#f#r544                           
+26           &f5&JMN                     
+27           QzpvhubzuhhOQ                   
+28                 Pdhrf&fff4w33K                
+29                HYfzgfgsf33#v  .Q             
+30               Ovf8884                
+31               Q zzr4r##O B              
+32                      Qufr8hrfhh             
+33                    usf#h4fffu           
+34                    6shufv#wf#rwu           
+35                   fufufQ           
+36                   u#!M           
+37                   fssviW           
+38                husu%5.            
+39                Zvhs6              
+40                Vh               
+41                 Qcs%               
+42                  ybhrf               
+43                  bhFgv                
+44                 Jr#&&p&kppc                
+45                uuFQGz&Qb                 
+46               gh4a#cQb                  
+47              hcGZfh                  
+48              Qsus4zOfu&.                  
+49             .h##rhQs&.                  
+50             brQr                  
+51             KQ4UGh8.s.                  
+52              &hu6                  
+53              bsv4bc                   
+54              5%s                   
+55              Wust*f4h35                    
+56                #s8f83                    
+57                KQb4uggrva                    
+58                 b v                    
+60                      NX.  YW                     
+61                     ZO     ZTb                     
+62                     O     OOQOd                     
+63                                    BK                       
+  FFFFFFFF
+. FF481A12
+A FF4B1913
+B FF4A1913
+C FF4A1812
+D FF4D1911
+E FF431910
+F FFFABE46
+G FFFABE43
+H FFFBC045
+I FFFABF43
+J FF4A1910
+K FF491A13
+L FF471A13
+M FF481811
+N FF491912
+O FF471811
+P FF4A1912
+Q FF471911
+R FFFBC042
+S FFFBC144
+T FFFBC044
+U FFFABD43
+V FF471913
+W FF4A1A13
+X FFFBBE43
+Y FFFBBF44
+Z FFFBBF43
+a FF4A1B11
+b FF471A11
+c FF491B12
+d FFFBBF45
+e FFFABF44
+f FFF9E9CC
+g FFFAE9CB
+h FFF9E9CB
+i FF4A1C13
+j FFEEAA32
+k FFFABF41
+l FFFBC145
+m FFFCC046
+n FFFBC146
+o FFFBC147
+p FFFABE44
+q FFFCBE45
+r FFF9EACD
+s FFF9E8CA
+t FF4C1B13
+u FFF8E8CA
+v FFF9E9CA
+w FFFAEACB
+x FF481A13
+y FF481810
+z FF461810
+0 FFFAC044
+1 FFFBC046
+2 FFECC8A4
+3 FFFAEACC
+4 FFF9E9CD
+5 FFF8E8CB
+6 FF4B1B11
+7 FFF2D5B5
+8 FFFAEACD
+9 FFE5A030
++ FFEAC8A9
+! FFECCAAA
+@ FFEBC8A8
+# FFF8E9CB
+% FFF9E7C8
+& FF491A11
+* FFE9C5A3
+ FFF8E8C9
+ FFEAC9A8
+ FFF8E9C9
+ FF4A1A11
+ FF471910
+ FF471812
+ FF4A1911
+ FF471711
+ FF451810
+ FF461910
+ FF481A11
+ FF471A10
+ FFE8C6A6
+ FFE9C6A4
+ FFE8C6A5
+ FF4A1C12
+ FFF6DAB9
+ FFEBC7A6
+ FF491810
+ FF4B1B12
+ FF491A12
+ FFFABE42
+ FFFABF42
+ FFFCBF45
+ FFF9EACA
+ FF4A1B12
+ FF4C1B12
+ FFECC9A8
+ FFF3CDAE
+ FFF8E7C9
+ FFE9C6A6
+ FF4C1C12
+ FFE9C6A5
+ FFF9E8C9
+ FF471710
+ FF4C1A12
+ FFFABD40
+ FFFAC045
+ FFF9EACC
+ FFD6A487
+ FF552013
+ FFE6C4A5
+ FFE8C3A2
+ FFCF997C
+ FFF8E9CD
+ FF481612
+ FF4D1C13
+ FFE6A12C
+ FFE7A22C
+ FFFBBE44
+ FFE9C4A3
+ FF4D1E12
+ FFD19D80
+ FFCF9A7E
+ FF481910
+ FFE7C5A5
+ FF4A1A12
+ FF591E1C
+ FF1E8B83
+ FF4B1C12
+ FF481B13
+ FFE6A22A
+ FFE7A32C
+ FFE5A02B
+ FFB66513
+ FF451910
+ FFECC9A9
+ FFF1D1B1
+ FFF1D2B1
+ FF4B1A11
+ FFE9C7A7
+ FFE7C4A4
+ FFCE987C
+ FF461911
+ FF491911
+ FF461912
+ FF289388
+ FF0BF1FD
+ FF461A12
+ FF471912
+ FFFBBE45
+ FFF2D2B1
+ FFCB957A
+ FF4B1A10
+ FFF8E7C8
+ FF481911
+ FF4F1914
+ FF17F2FD
+ FF481C12
+ FF381408
+ FF4B1A12
+ FFF9BE44
+ FFEDC8AB
+ FFFAE8CA
+ FFF9EACB
+ FFF4D6B7
+ FFF5D5B7
+ FF471A12
+ FFDAAA8B
+ FFDBAA8B
+ FFFAEACE
+ FF1AF3FE
+ FF19F1FE
+ FF1BD4E1
+ FF421B11
+ FF481B12
+ FFE6A02E
+ FFFABD42
+ FFFAE8CB
+ FF471810
+ FF491910
+ FFE0B090
+ FFF9E8CC
+ FFFAE9CC
+ FFEACAA8
+ FFF4D7B7
+ FF4C1B11
+ FF12F4FE
+ FF15F4FE
+ FFE6A02B
+ FFE59F2C
+ FFE59E2C
+ FFE49F2E
+ FFE29D2B
+ FFE8C5A4
+ FFD39F80
+ FFFAEBCD
+ FFD8A98A
+ FFF9E8CB
+ FFF8E9CC
+ FFE8C1A0
+ FFF8E9CA
+ FF491A10
+ FF4C1814
+ FF3B2115
+ FF10F6FE
+ FF4D1816
+ FF441810
+ FF481912
+ FFE8C5A5
+ FFD3A081
+ FFD19E80
+ FFD19E81
+ FFFAE8C9
+ FFD19B7E
+ FFFAEBCE
+ FFF1CCAE
+ FF521818
+ FF14F1FC
+ FF451911
+ FF4F1B18
+ FFEAC7A6
+ FFD19E7F
+ FFD29F82
+ FFF8EACB
+ FFE5BB9D
+ FF522310
+ FF481B11
+ FF20ECFC
+ FF24EFFB
+ FF23F5FB
+ FF441912
+ FF58191C
+ FF4D1B12
+ FFF9E8C7
+ FFD3A083
+ FFF9E8C8
+ FFFAE9CD
+ FFDEAE8F
+ FFD6A486
+ FF4C1D12
+ FF481A10
+ FF0ECDE9
+ FFC3FAFD
+ FF2AEFFD
+ FF27EFFD
+ FF04C3E4
+ FF4C1C14
+ FFEFCCA9
+ FFD6A484
+ FFF4D7B8
+ FFD7A889
+ FFF7DFBF
+ FF5F2F08
+ FFF4D6B8
+ FFC58E71
+ FF491B11
+ FFF8C437
+ FF87420F
+ FF04BBDD
+ FF2EEEFE
+ FF2CEFFE
+ FF2AF0FE
+ FF04C1E6
+ FF551F11
+ FFF9C334
+ FF441911
+ FFE6BF9B
+ FFF8E6C7
+ FF864B03
+ FFFAE8CD
+ FFF7E8C9
+ FFBA701D
+ FF532211
+ FF673506
+ FFFFD54F
+ FFA76706
+ FFF8E8C7
+ FFF9E9C8
+ FFC48857
+ FF4B1D12
+ FFA55F02
+ FF4C1C10
+ FF4F1E0E
+ FFF8C032
+ FF432013
+ FF02B6DA
+ FF02BDDD
+ FF02BBDB
+ FF3B1C17
+ FFFAC230
+ FF531F10
+ FF451811
+ FFC17115
+ FFC06F16
+ FFF8E8C8
+ FF9D5B06
+ FFFACD4B
+ FFA56504
+ FFC07C05
+ FFD29007
+ FFF1B612
+ FFF5BC1A
+ FFF1B615
+ FFFCCD3D
+ FF07DEF4
+ FFF9CC48
+ FFF2B717
+ FFEFB412
+ FFEEB10F
+ FFC68104
+ FF3F1E06
+ FF4F1F11
+ FFFAC533
+ FFFBC434
+ FFFBBF32
+ FF48271E
+ FF075F76
+ FF482119
+ FFFBC233
+ FFFBC433
+ FFF9C12F
+ FF491710
+ FFF0D1B3
+ FFEECEAE
+ FFEBA215
+ FF582200
+ FFF9E8CE
+ FFD29E83
+ FFFAD2AB
+ FFFAD1A9
+ FF582A0C
+ FFFCD156
+ FF572A05
+ FF471B11
+ FF491C13
+ FF53230F
+ FF01BFDA
+ FF734403
+ FFC88310
+ FFFBC134
+ FFF8C132
+ FFFBC333
+ FFF9BF2F
+ FFFAC233
+ FFCC8810
+ FF451614
+ FF481812
+ FF4B1813
+ FFD29F81
+ FF5F3006
+ FF03E8FD
+ FF6E3705
+ FFE8C2A3
+ FFF3D2AD
+ FFF0CFA9
+ FFF0CDA6
+ FFF9CFA7
+ FF522213
+ FFF9D1A7
+ FFF9CEA2
+ FFCFA064
+ FF906647
+ FF4D1D12
+ FFDB9614
+ FFD69214
+ FFC77F0F
+ FF451A13
+ FFE7A22E
+ FFF9BD41
+ FFF7E2C5
+ FFD09B7E
+ FF4D230E
+ FFE0AC6C
+ FF7E4120
+ FFD6A282
+ FF461C12
+ FFF9D1A9
+ FFFBD3AA
+ FFFAD4AC
+ FF4E1502
+ FFFDF8EF
+ FFFCECCF
+ FFFBEACB
+ FFD59D74
+ FFC27D16
+ FFCF8110
+ FF4F1916
+ FFBD6C14
+ FFE49E2A
+ FFF9BE40
+ FFFBC043
+ FFD09B7F
+ FFFBEBD0
+ FFDFB47A
+ FF54250A
+ FFF9D2AA
+ FFAA5D02
+ FFFBEBBF
+ FFF2B13A
+ FF4F2311
+ FFECC9A7
+ FF4D1E13
+ FF263357
+ FF3F1B14
+ FF471813
+ FFE3D1B3
+ FFF8B92C
+ FFFAECCF
+ FF451C0B
+ FF4E1D13
+ FFFBD2AA
+ FFFAD2AA
+ FFF9D2AB
+ FFE49D07
+ FF4A1D12
+ FFF7C033
+ FFFAE7C2
+ FF4F1F13
+ FFFAC337
+ FFDD9514
+ FFF9E9C9
+ FFD29F80
+ FFFAE7C7
+ FF5A2B08
+ FF924F04
+ FFF9EACE
+ FFFAD3AB
+ FFF9D1AB
+ FFFAD3AA
+ FF481A0F
+ FFFAE6C3
+ FF4A1D13
+ FF2C232F
+ FF501C12
+ FF4A1A15
+ FFEDCFB0
+ FF501D11
+ FFD09B7C
+ FFFCBE42
+ FFFAD081
+ FFFABE49
+ FFFAD0A6
+ FFF9D0A7
+ FFF9D2A9
+ FFF9D1A6
+ FFFABC43
+ FFF4D0AE
+ FFF9BE47
+ FF491B13
+ FF461B14
+ FF283A74
+ FF4B1B13
+ FF451711
+ FF461811
+ FFFACF74
+ FFF9BC40
+ FFE6A12F
+ FFFCBF46
+ FFF9CFA6
+ FFFAD1A8
+ FFFAD2A9
+ FFFAD3A9
+ FFF9D0A5
+ FFDE9729
+ FF212643
+ FF451A12
+ FF461613
+ FFECCAAB
+ FFE7C4A3
+ FFEEC8A6
+ FFDD962A
+ FF4A1A10
+ FF4B1B10
+ FFF9BD43
+ FF44180F
+ FFF9BA40
+ FFE39D2C
+ FF4C1B0F
+ FF25376E
+ FF4F1E14
+ FFD78D24
+ FFFBBE46
+ FFFABF45
+ FFFABD41
+ FFE4BC9C
+ FFE7C3A3
+ FFF6CFAC
+ FFDAA98C
+ FFEAC9A9
+ FF4B1A13
+ FF471914
+ FFE29C16
+ FFFAC844
+ FFCB8413
+ FFF1CBAB
+ FFF8E5C8
+ FFB86914
+ FFF9BA3E
+ FFE8C6A7
+ FF4D1D13
+ FFF8BD43
+ FFEBA430
+ FF4D1B11
+ FFF9E7C7
+ FFE59D2E
+ FF471B13
+ FF1F2849
+ FF491C12
+ FF501C16
+ FFD39C80
+ FFE8C6A8
+ FF47180F
+ FFFABB42
+ FFF9E7CA
+ FFF0CCAE
+ FFDBA98A
+ FFF6B33B
+ FFC06F1B
+ FFC3731D
+ FFF3D3B2
+ FFF7E7CA
+ FFF9BB43
+ FF461A11
+ FF4F1C15
+ FF29376B
+ FFD29C7F
+ FFFAE9CA
+ FFE7C2A3
+ FFE8C7A7
+ FFB16215
+ FFAF6116
+ FFF9EBCC
+ FFFABC42
+ FF461B11
+ FF592414
+ FFD39F81
+ FFEBC9A9
+ FFD4A184
+ FFD19A7E
+ FFF9BB44
+ FFFABC40
+ FFFABC41
+ FFF8EACC
+ FFF8CDA2
+ FFEDCBAC
+ FFE8C4A4
+ FFD7A588
+ FFFCC042
+ FFFCBE41
+ FFD38A27
+ FFE9C5A4
+ FFE9C5A6
+ FF4C1D14
+ FF4D1D11
+ FF4A1C10
+ FFF8E8CC
+ FFF8CEA5
+ FFFAD1A7
+ FFFAD0A5
+ FFE7C6A6
+ FF602515
+ FFBB6B15
+ FFBA6912
+ FF451A11
+ FF491B10
+ FFF3BC54
+ FF1F294E
+ FF451A0F
+ FFF5D8B8
+ FFE7C4A2
+ FFF8CEA4
+ FFFAD0A7
+ FFF8EACD
+ FFFAE9C9
+ FFE7C6A7
+ FF8E481D
+ FFE9C7A8
+ FFF8E7CB
+ FFF8E6C5
+ FF202B58
+ FF26376E
+ FF27366D
+ FF26366B
+ FFF0CBAD
+ FFF8E6C8
+ FF2A386E
+ FF293B6F
+ FFE39A1B
+ FF29386E
+ FFF6E2C4
+ FFE6C5A3
+ FF4F1E13
+ FF934B1C
+ FFFACFA7
+ FF29376A
+ FF212C53
+ FFEECCAB
+ FF28386E
+ FF2A3A6F
+ FFDF991B
+ FFE19919
+ FFE29A1A
+ FFDD961A
+ FF293970
+ FF1F2747
+ FF293972
+ FF471B12
+ FF4E1814
+ FFEBC8A7
+ FFF9D0A6
+ FFFBD2A9
+ FFFACFA5
+ FF4C1E13
+ FFF8E7CA
+ FFFAEACA
+ FF29376F
+ FF2B3A70
+ FFDE991B
+ FF2A3A72
+ FF27366B
+ FF2A3A70
+ FFE6C3A2
+ FFF9D3AA
+ FFFAD2A8
+ FF4C1C11
+ FFF3CFAE
+ FF2B3A6F
+ FF2B376D
+ FFDF991D
+ FF28386F
+ FF28386D
+ FFF3B731
+ FF28253D
+ FF461A10
+ FF4A1810
+ FF45190F
+ FF2A386C
+ FF29376C
+ FF2A376C
+ FF2C3A6F
+ FF283970
+ FF28366A
+ FFF4B72F
+ FFF2B329
+ FF28366D
+ FF27366C
+ FF28376E
+ FF29376E
+ FF293870
+ FF29376D
+ FF28366C
+ FF28376D
+ FF2A396F
+ FFFAEBCB
+ FF29396F
+ FF27346B
+ FF4A1A14
+ FF202642
+ FFB76614
+ FFE7A12F
+ FF2C2332
+ FF29356D
+ FF2A366B
+ FF2A376E
+ FF28376C
+ FF29356B
+ FF28346A
+ FFCB7D1B
+ FF293770
+ FFE49F2D
+ FFBC6B17
+ FF461A13
+ FFE49E2C
+ FFFCBF43
+ FF461813
+ FFFBBD40
+ FFFBBE42
+ FFF9BC41
+ FFF9BC43
+ FFF9BF46
+ FF4A1B13
+ FF441811
+ FF451812
+ FF491913
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command 'Add-Type -AssemblyName System.Drawing
+$base = (Resolve-Path -LiteralPath '"'img/codex/redo_anim').Path
+"'$files = @('"'thunderbird_x8.png','thunderbird_atk_src_v1.png')
+foreach ("'$file in $files) {
+  $b = [System.Drawing.Bitmap]::new((Join-Path $base $file))
+  for ($frame=0;$frame -lt $b.Width/512;$frame++) {
+    "$file frame $frame"
+    '"'   ' + (-join (0..63 | ForEach-Object { [int][Math]::Floor("'$_/10) }))
+    '"'   ' + (-join (0..63 | ForEach-Object { "'$_ % 10 }))
+    for ($y=15;$y -lt 64;$y++) {
+      $line = for ($x=0;$x -lt 64;$x++) {
+        $p=$b.GetPixel(($frame*64+$x)*8+4,$y*8+4)
+        if (($p.R -eq 255 -and $p.B -eq 255) -or ($p.R -gt 250 -and $p.G -gt 250 -and $p.B -gt 250)) {'"' '}
+        elseif ("'$p.B -gt 155 -and $p.R -lt 100) {'"'C'}
+        elseif ("'$p.B -gt $p.R+10) {'"'N'}
+        elseif ("'$p.R -lt 100) {'"'#'}
+        elseif ("'$p.R -gt 210 -and $p.G -gt 218) {'"'w'}
+        elseif ("'$p.R -gt 210 -and $p.B -gt 115) {'"'s'}
+        elseif ("'$p.R -gt 210 -and $p.G -gt 140) {'"'G'}
+        else {'o'}
+      }
+      '{0:D2} {1}' -f "'$y,(-join $line)
+    }
+  }
+  $b.Dispose()
+}' in C:\Users\Home\Downloads\방치형RPG_테스트베드
+ succeeded in 273ms:
+thunderbird_x8.png frame 0
+   0000000000111111111122222222223333333333444444444455555555556666
+   0123456789012345678901234567890123456789012345678901234567890123
+15                       #####                                     
+16                       #GGGG##                                   
+17                  #######GGGGG###                                
+18                 #GGGGGG###GGGwww#                               
+19               #GGGGGGGGGww#wwwwww#                              
+20              #####GGGswwwww#swwww#                              
+21                   #Gssswwwww#swsw##                             
+22                ########sswwws#ssww#                             
+23              ##GGGGwwww##sswws#sww#                             
+24             #GGGGGwwwwwwwws#sso#w##             ##              
+25            #GGGGGwwwwwwwwwws#oo#s#             #N#              
+26           #GGGo#sss#####wwwss#o########       #NC#              
+27           #########GGswwws##o###wwwww####     #C##              
+28                 ##GGswwwwwss##wwwsswwwwww#   #CCC##             
+29                #GGGGwww####wwwwswwwwwwssww#  ###CC#             
+30               #GGGGG####ssswwwswwwwwwwwsww#   ##C##             
+31               ###### ##wwsswoowwwwowwwwwsww# ##C##              
+32                      #wwsooowwwwwwowwwwwsww###CCC##             
+33                    ##wwwsswwwwwwwsswwwwwsw###CNCCC###           
+34                    #swwswwwwswwwwsw#wwwsow#GoCCCCC#G#           
+35                   #swwwwwwwowwwwo#oGowwo#o##G#CCC#G##           
+36                   #oo#wwwsoGoooGGGGCGGGGo##GGG#N#GGG#           
+37                   ###wwwsswG#wwoss#G#####Co#oGGGGGo##           
+38                ###wwwwwwow#Cowsssss#ss###oo###GGo###            
+39                #GGGwwwwoww#Gos####ssss##wwwws#oo##              
+40                #oGGGGGowwwws##sw##ssssoowwG#s#N##               
+41                 ######wwssGw##swoossssGGw#Gw##GG#               
+42                  ###wwwwow#ow#swGGssssss#www#####               
+43                  #s#wwwwoGGwsGsssssssss#GwsG##N#                
+44                 ####swws##GGGGG#ssssss##GGGG#N##                
+45                #sww#sswGG####GG########GGG###N#                 
+46               #wwwww#GGGG#wws###ss##ssw### #GGo                 
+47              ##wwwsww#oGGG#wwwsww#GG#wwwG# #N##                 
+48              #wwwoswws####GwwswwwsGoowswG###N#                  
+49             #wwwoowws###ssoo#wwwww##wwG#######                  
+50             #ss#swwss#swwwsoG#GGw#w#sGG#ww#ss#                  
+51             ###swwss##GGwwww##GGo#ss###ww#sss#                  
+52              #swws#w#oo###w##s###wwGwN#ss#sss#                  
+53              #wwsosww#NNNN##swNNwwGwwwN#w####                   
+54              #ss#owws#sssNNswwNNwGGGGwNN##N##                   
+55              ####wws#ssss#swwwNNwwwGwwNN##N#                    
+56                #sss##sss#swwwwNNwwGwwwNN#GN#                    
+57                ##s######wwwNNNNwwwwwwwNN#GG#                    
+58                 ### #NNNNNNNN#NNNwwwwNN##N##                    
+59                      ###oG#####NNNNNNN#o#N#                     
+60                      ###GGo##  #######GG###                     
+61                     #GGGGGGG#     #GGGGGGG#                     
+62                     #####G###     #####G###                     
+63                         ###           ###                       
+thunderbird_atk_src_v1.png frame 0
+   0000000000111111111122222222223333333333444444444455555555556666
+   0123456789012345678901234567890123456789012345678901234567890123
+15                       #####                  #oGGGGGo##         
+16                       #GGGG##                 ##GGo###          
+17                  #######GGGGG###               #oo##            
+18                 #GGGGGG###GGGwww#               #sG#            
+19               #GGGGGGGGGww#wwwwww#              #sG#            
+20              #####GGGswwwww#swwww#              #NN#            
+21                   #Gssswwwww#swsw##             #NN#            
+22                ########sswwws#ssww#             #NN#            
+23              ##GGGGwwww##sswws#sww#             #NN#            
+24             #GGGGGwwwwwwwws#sso#w##             #NN#            
+25            #GGGGGwwwwwwwwwws#oo#s#              #NN#            
+26           #GGGo#sss#####wwwss#o########         #sG#            
+27           #########GGswwws##o###wwwww####       #sG#            
+28                 ##GGswwwwwss##wwwsswwwwww#      #NN#            
+29                #GGGGwww####wwwwswwwwwwssww#     #NN#            
+30               #GGGGG####ssswwwswwwwwwwwsww#   ######            
+31               ###### ##wwsswoowwwwowwwwwsww#  ######            
+32                      #wwsooowwwwwwowwwwwsww#  #ssss#            
+33                    ##wwwsswwwwwwwsswwwwwsw#   #ssss#            
+34                    #swwswwwwswwwwsw#wwwsow#   #ssss#            
+35                   #swwwwwwwowwwwo#oGowwo#o#   #ssss#            
+36                   #oo#wwwsoGoooGGGGCGGGGo##   ######            
+37                   ###wwwsswG#wwoss#G#####Co  ##GGG##            
+38                ###wwwwwwow#Cowsssss#ss###oo# ##GGG#             
+39                #GGGwwwwoww#Gos####ssss##wwwws##GGG              
+40                #oGGGGGowwwws##sw##ssssoowwG#s##GGw              
+41                 ######wwssGw##swoossssGGw#Gw###ww#              
+42                  ###wwwwow#ow#swGGssssss#www###ww#              
+43                  #s#wwwwoGGwsGsssssssss#Gw####www#              
+44                 ####swws##GGGGG#ssssss##GG#wwwww##              
+45                #sww#sswGG####GG########GG#wwwwsw#               
+46               #wwwww#GGGG#wws###ss##ssw##wwwwss##               
+47              ##wwwsww#oGGG#wwwsww#GG#ww#wwwwsss#                
+48              #wwwoswws####GwwswwwsGoowsw#wssss#                 
+49             #wwwoowws###ssoo#wwwww##wwG##wsss#                  
+50             #ss#swwss#swwwsoG#GGw#w#sGG######                   
+51             ###swwss##GGwwww##GGo#ss###ww#                      
+52              #swws#w#oo###w##s###wwGwN#ss#                      
+53              #wwsosww#NNNN##swNNwwGwwwN#w#                      
+54              #ss#owws#sssNNswwNNwGGGGwNN#                       
+55              ####wws#ssss#swwwNNwwwGwwNN#                       
+56                #sss##sss#swwwwNNwwGwwwNN#                       
+57                ##s######wwwNNNNwwwwwwwNN#                       
+58                 ### #NNNNNNNN#NNNwwwwNN##                       
+59                      ###oG#####NNNNNNN#o#N#                     
+60                      ###GGo##  #######GG###                     
+61                     #GGGGGGG#     #GGGGGGG#                     
+62                     #####G###     #####G###                     
+63                         ###           ###                       
+thunderbird_atk_src_v1.png frame 1
+   0000000000111111111122222222223333333333444444444455555555556666
+   0123456789012345678901234567890123456789012345678901234567890123
+15                       #####                                     
+16                       #GGGG##                                   
+17                  #######GGGGG###                                
+18                 #GGGGGG###GGGwww#                               
+19               #GGGGGGGGGww#wwwwww#                              
+20              #####GGGswwwww#swwww#                              
+21                   #Gssswwwww#swsw##                             
+22                ########sswwws#ssww#                             
+23              ##GGGGwwww##sswws#sww#                             
+24             #GGGGGwwwwwwwws#sso#w##                             
+25            #GGGGGwwwwwwwwwws#oo#s#                              
+26           #GGGo#sss#####wwwss#o########                         
+27           #########GGswwws##o###wwwww####                       
+28                 ##GGswwwwwss##wwwsswwwwww#                      
+29                #GGGGwww####wwwwswwwwwwssww#                     
+30               #GGGGG####ssswwwswwwwwwwwsww#                     
+31               ###### ##wwsswoowwwwowwwwwsww#                    
+32                      #wwsooowwwwwwowwwwwsww#                    
+33                    ##wwwsswwwwwwwsswwwwwsw#                     
+34                    #swwswwwwswwwwsw#wwwsow#                     
+35                   #swwwwwwwowwwwo#oGowwo#o#                     
+36                   #oo#wwwsoGoooGGGGCGGGGo##                     
+37                   ###wwwsswG#wwoss#G#####Co                     
+38                ###wwwwwwow#Cowsssss#ss###oo#                    
+39                #GGGwwwwoww#Gos####ssss##wwwws                   
+40                #oGGGGGowwwws##sw##ssssoowwG#s                   
+41                 ######wwssGw##swoossssGGw#Gw#                   
+42                  ###wwwwow#ow#swGGssssss#www#                   
+43                  #s#wwwwoGGwsGsssssssss#GwsG#    #G#G#          
+44                 ####swws##GGGGG#ssssss##GGGG#   #oGGo##         
+45                #sww#sswGG####GG########GGG# #####GG#CC## ##     
+46               #wwwww#GGGG#wws###ss###########ss#GG#CCNC###C##   
+47              ##wwwsww#oGGG#wwwsww#G##wwwww#sssss#GNCCCCC##CCN#  
+48              #wwwoswws####Gwwswww#wwwwwwww#sssss#G#CCCC#CCC#CN# 
+49             #wwwoowws###ssoo#wwww#ssswwwww#sssss#GG#CC###C##### 
+50             #ss#swwss#swwwsoG#GGw#ssssswww#sssss#oGG### ###     
+51             ###swwss##GGwwww##GGo#################G#G#          
+52              #swws#w#oo###w##s###wwGwN#ss#       #####          
+53              #wwsosww#NNNN##swNNwwGwwwN#w#                      
+54              #ss#owws#sssNNswwNNwGGGGwNN#                       
+55              ####wws#ssss#swwwNNwwwGwwNN#                       
+56                #sss##sss#swwwwNNwwGwwwNN#                       
+57                ##s######wwwNNNNwwwwwwwNN#                       
+58                 ### #NNNNNNNN#NNNwwwwNN##                       
+59                      ###oG#####NNNNNNN#o#N#                     
+60                      ###GGo##  #######GG###                     
+61                     #GGGGGGG#     #GGGGGGG#                     
+62                     #####G###     #####G###                     
+63                         ###           ###                       
+thunderbird_atk_src_v1.png frame 2
+   0000000000111111111122222222223333333333444444444455555555556666
+   0123456789012345678901234567890123456789012345678901234567890123
+15                        #####                                    
+16                        #GGGG##                                  
+17                   #######GGGGG###                               
+18                  #GGGGGG###GGGwww#                              
+19                #GGGGGGGGGww#wwwwww#                             
+20               #####GGGswwwww#swwww#                             
+21                    #Gssswwwww#swsw##                            
+22                 ########sswwws#ssww#                            
+23               ##GGGGwwww##sswws#sww#                            
+24              #GGGGGwwwwwwwws#sso#w##                            
+25             #GGGGGwwwwwwwwwws#oo#s#                             
+26            #GGGo#sss#####wwwss#o########                        
+27            #########GGswwws##o###wwwww####                      
+28                  ##GGswwwwwss##wwwsswwwwww#                     
+29                 #GGGGwww####wwwwswwwwwwssww#                    
+30                #GGGGG####ssswwwswwwwwwwwsww#                    
+31                ###### ##wwsswoowwwwowwwwwsww#                   
+32                       #wwsooowwwwwwowwwwwsww#                   
+33                     ##wwwsswwwwwwwsswwwwwsw#                    
+34                     #swwswwwwswwwwsw#wwwsow#                    
+35                    #swwwwwwwowwwwo#oGowwo#o#                    
+36                    #oo#wwwsoGoooGGGGCGGGGo##                    
+37                    ###wwwsswG#wwoss#G#####Co                    
+38                 ###wwwwwwow#Cowsssss#ss###oo#                   
+39                 #GGGwwwwoww#Gos####ssss##wwwws                  
+40                 #oGGGGGowwwws##sw##ssssoowwG#s                  
+41                  ######wwssGw##swoossssGGw#Gw#                  
+42                 ####ssswwow#ow#swGGssssss#www#                  
+43                #sww#sssswoGGwsGsssssssss#GwsG#    #G#G#         
+44               #wwwww#GGGs##GGGGG#ssssss##GGGG#   #oGGo##        
+45              ##wwwsww#oooG####GG########GGG# #####GG#CC## ##    
+46              #wwwoswws###G#wws###ss###########ss#GG#CCNC###C##  
+47             #wwwoowws#w#GGG#wwwsww#N##wwwww#sssss#GNCCCCC##CCN# 
+48             #ss#swwss#w####Gwwswww#wwwwwwww#sssss#G#CCCC#CCC#CN#
+49             ###swwss##w##ssoo#wwww#ssswwwww#sssss#GG#CC###C#####
+50              #swws#w#ooowwwsoG#GGw#ssssswww#sssss#oGG### ###    
+51              #wwsosww###wwww##GGo##################G#G#         
+52              #ss#owwsss###w##s###wwGwN#ss#        #####         
+53              ####wws###NNN##swNNwwGwwwN#w#                      
+54                #sss###sssNNswwNNwGGGGwNN#                       
+55                ##s####sss#swwwNNwwwGwwNN#                       
+56                 #####sss#swwwwNNwwGwwwNN#                       
+57                     ####wwwNNNNwwwwwwwNN#                       
+58                     #NNNNNNNN#NNNwwwwNN##                       
+59                      ###oG#####NNNNNNN#o#N#                     
+60                      ###GGo##  #######GG###                     
+61                     #GGGGGGG#     #GGGGGGG#                     
+62                     #####G###     #####G###                     
+63                         ###           ###                       
+thunderbird_atk_src_v1.png frame 3
+   0000000000111111111122222222223333333333444444444455555555556666
+   0123456789012345678901234567890123456789012345678901234567890123
+15                       #####                                     
+16                       #GGGG##                                   
+17                  #######GGGGG###                                
+18                 #GGGGGG###GGGwww#                               
+19               #GGGGGGGGGww#wwwwww#                              
+20              #####GGGswwwww#swwww#                              
+21                   #Gssswwwww#swsw##                             
+22                ########sswwws#ssww#                             
+23              ##GGGGwwww##sswws#sww#                             
+24             #GGGGGwwwwwwwws#sso#w##                             
+25            #GGGGGwwwwwwwwwws#oo#s#                    ##        
+26           #GGGo#sss#####wwwss#o########             ##N#        
+27           #########GGswwws##o###wwwww####          #CC#         
+28                 ##GGswwwwwss##wwwsswwwwww#        #CC##         
+29                #GGGGwww####wwwwswwwwwwssww#      ###CC#         
+30               #GGGGG####ssswwwswwwwwwwwsww#       ##CC#         
+31               ###### ##wwsswoowwwwowwwwwsww#    ###CC##         
+32                      #wwsooowwwwwwowwwwwsww#  ##CCCC##          
+33                    ##wwwsswwwwwwwsswwwwwsw#   GoCNCC##          
+34                    #swwswwwwswwwwsw#wwwsow#  ##GCCCCC#          
+35                   #swwwwwwwowwwwo#oGowwo#o#  GGGCCCCC###        
+36                   #oo#wwwsoGoooGGGGCGGGGo##  #oG#N##G##         
+37                   ###wwwsswG#wwoss#G#####Co  ###GGGGGG#         
+38                ###wwwwwwow#Cowsssss#ss###oo#  #oGo#o###         
+39                #GGGwwwwoww#Gos####ssss##wwwws  #o#####          
+40                #oGGGGGowwwws##sw##ssssoowwG#s ##sG#             
+41                 ######wwssGw##swoossssGGw#Gw# #sG#              
+42                  ###wwwwow#ow#swGGssssss#www# #NN#              
+43                  #s#wwwwoGGwsGsssssssss#GwsG##NNN#              
+44                 ####swws##GGGGG#ssssss##GGGG##NN#               
+45                #sww#sswGG####GG########GGG# #####               
+46               #wwwww#GGGG#wws###ss##ssw#####sss##               
+47              ##wwwsww#oGGG#wwwsww#GG#www####ssss#               
+48              #wwwoswws####GwwswwwsGoow#wwwwsssss#               
+49             #wwwoowws###ssoo#wwwww##wwG#wwwwssss#               
+50             #ss#swwss#swwwsoG#GGw#w#sGG#wwwwsss#                
+51             ###swwss##GGwwww##GGo#ss####wsssw###                
+52              #swws#w#oo###w##s###wwGwN###sss###                 
+53              #wwsosww#NNNN##swNNwwGwwwN#w#####                  
+54              #ss#owws#sssNNswwNNwGGGGwNN##ssG#                  
+55              ####wws#ssss#swwwNNwwwGwwNN##NN#                   
+56                #sss##sss#swwwwNNwwGwwwNN##NN#                   
+57                ##s######wwwNNNNwwwwwwwNN#sG##                   
+58                 ### #NNNNNNNN#NNNwwwwNN##NN#                    
+59                      ###oG#####NNNNNNN#o#N#                     
+60                      ###GGo##  #######GG###                     
+61                     #GGGGGGG#     #GGGGGGG#                     
+62                     #####G###     #####G###                     
+63                         ###           ###                       
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command 'Add-Type -AssemblyName System.Drawing
+$b=[System.Drawing.Bitmap]::new((Resolve-Path '"'img/codex/redo_anim/thunderbird_atk_src_v1.png').Path)
+foreach("'$f in (0..3)){
+ "frame $f"
+ '"'   3333333333444444444455555555556666'
+ '   0123456789012345678901234567890123'
+ for("'$y=0; $y -lt 64; $y++){
+  if (($y -lt 33 -and $f -ne 0) -or ($y -gt 18 -and $y -lt 33)){continue}
+  $s = for($x=30;$x -lt 64;$x++){
+   $p=$b.GetPixel(($f*64+$x)*8+4,$y*8+4)
+   if($p.R -eq 255 -and $p.B -eq 255){'"' '}
+   elseif ("'$p.B -gt 155 -and $p.R -lt 100) {'"'C'}
+   elseif ("'$p.B -gt $p.R+10) {'"'N'}
+   elseif ("'$p.R -lt 100) {'"'#'}
+   elseif ("'$p.R -gt 210 -and $p.G -gt 218) {'"'w'}
+   elseif ("'$p.R -gt 210 -and $p.B -gt 115) {'"'s'}
+   elseif ("'$p.R -gt 210 -and $p.G -gt 140) {'"'G'}
+   else {'o'}
+  }
+  '{0:00} {1}' -f "'$y,(-join $s)
+ }
+}
+$b.Dispose()' in C:\Users\Home\Downloads\방치형RPG_테스트베드
+ succeeded in 206ms:
+frame 0
+   3333333333444444444455555555556666
+   0123456789012345678901234567890123
+00                                   
+01                                   
+02                     ##            
+03                    #N#            
+04                   #NC#            
+05                   #C##            
+06                  #CCC##           
+07                  ###CC#           
+08                   ##C##           
+09                  ##C##            
+10                 ##CCC##           
+11                ##CNCCC###         
+12                GoCCCCC#G#         
+13                #G#CCC#G##         
+14                GGG#N#GGG#         
+15                #oGGGGGo##         
+16                 ##GGo###          
+17 ##               #oo##            
+18 ww#               #sG#            
+33 wwwsswwwwwsw#   #ssss#            
+34 wwwsw#wwwsow#   #ssss#            
+35 wwo#oGowwo#o#   #ssss#            
+36 oGGGGCGGGGo##   ######            
+37 woss#G#####Co  ##GGG##            
+38 sssss#ss###oo# ##GGG#             
+39 ####ssss##wwwws##GGG              
+40 sw##ssssoowwG#s##GGw              
+41 swoossssGGw#Gw###ww#              
+42 swGGssssss#www###ww#              
+43 sssssssss#Gw####www#              
+44 G#ssssss##GG#wwwww##              
+45 G########GG#wwwwsw#               
+46 ##ss##ssw##wwwwss##               
+47 sww#GG#ww#wwwwsss#                
+48 wwwsGoowsw#wssss#                 
+49 wwww##wwG##wsss#                  
+50 GGw#w#sGG######                   
+51 GGo#ss###ww#                      
+52 ###wwGwN#ss#                      
+53 NNwwGwwwN#w#                      
+54 NNwGGGGwNN#                       
+55 NNwwwGwwNN#                       
+56 NNwwGwwwNN#                       
+57 NwwwwwwwNN#                       
+58 NNNwwwwNN##                       
+59 #NNNNNNN#o#N#                     
+60  #######GG###                     
+61     #GGGGGGG#                     
+62     #####G###                     
+63         ###                       
+frame 1
+   3333333333444444444455555555556666
+   0123456789012345678901234567890123
+33 wwwsswwwwwsw#                     
+34 wwwsw#wwwsow#                     
+35 wwo#oGowwo#o#                     
+36 oGGGGCGGGGo##                     
+37 woss#G#####Co                     
+38 sssss#ss###oo#                    
+39 ####ssss##wwwws                   
+40 sw##ssssoowwG#s                   
+41 swoossssGGw#Gw#                   
+42 swGGssssss#www#                   
+43 sssssssss#GwsG#    #G#G#          
+44 G#ssssss##GGGG#   #oGGo##         
+45 G########GGG# #####GG#CC## ##     
+46 ##ss###########ss#GG#CCNC###C##   
+47 sww#G##wwwww#sssss#GNCCCCC##CCN#  
+48 www#wwwwwwww#sssss#G#CCCC#CCC#CN# 
+49 www#ssswwwww#sssss#GG#CC###C##### 
+50 GGw#ssssswww#sssss#oGG### ###     
+51 GGo#################G#G#          
+52 ###wwGwN#ss#       #####          
+53 NNwwGwwwN#w#                      
+54 NNwGGGGwNN#                       
+55 NNwwwGwwNN#                       
+56 NNwwGwwwNN#                       
+57 NwwwwwwwNN#                       
+58 NNNwwwwNN##                       
+59 #NNNNNNN#o#N#                     
+60  #######GG###                     
+61     #GGGGGGG#                     
+62     #####G###                     
+63         ###                       
+frame 2
+   3333333333444444444455555555556666
+   0123456789012345678901234567890123
+33 wwwwsswwwwwsw#                    
+34 wwwwsw#wwwsow#                    
+35 wwwo#oGowwo#o#                    
+36 ooGGGGCGGGGo##                    
+37 wwoss#G#####Co                    
+38 wsssss#ss###oo#                   
+39 s####ssss##wwwws                  
+40 #sw##ssssoowwG#s                  
+41 #swoossssGGw#Gw#                  
+42 #swGGssssss#www#                  
+43 Gsssssssss#GwsG#    #G#G#         
+44 GG#ssssss##GGGG#   #oGGo##        
+45 GG########GGG# #####GG#CC## ##    
+46 ###ss###########ss#GG#CCNC###C##  
+47 wsww#N##wwwww#sssss#GNCCCCC##CCN# 
+48 swww#wwwwwwww#sssss#G#CCCC#CCC#CN#
+49 wwww#ssswwwww#sssss#GG#CC###C#####
+50 #GGw#ssssswww#sssss#oGG### ###    
+51 GGo##################G#G#         
+52 ###wwGwN#ss#        #####         
+53 NNwwGwwwN#w#                      
+54 NNwGGGGwNN#                       
+55 NNwwwGwwNN#                       
+56 NNwwGwwwNN#                       
+57 NwwwwwwwNN#                       
+58 NNNwwwwNN##                       
+59 #NNNNNNN#o#N#                     
+60  #######GG###                     
+61     #GGGGGGG#                     
+62     #####G###                     
+63         ###                       
+frame 3
+   3333333333444444444455555555556666
+   0123456789012345678901234567890123
+33 wwwsswwwwwsw#   GoCNCC##          
+34 wwwsw#wwwsow#  ##GCCCCC#          
+35 wwo#oGowwo#o#  GGGCCCCC###        
+36 oGGGGCGGGGo##  #oG#N##G##         
+37 woss#G#####Co  ###GGGGGG#         
+38 sssss#ss###oo#  #oGo#o###         
+39 ####ssss##wwwws  #o#####          
+40 sw##ssssoowwG#s ##sG#             
+41 swoossssGGw#Gw# #sG#              
+42 swGGssssss#www# #NN#              
+43 sssssssss#GwsG##NNN#              
+44 G#ssssss##GGGG##NN#               
+45 G########GGG# #####               
+46 ##ss##ssw#####sss##               
+47 sww#GG#www####ssss#               
+48 wwwsGoow#wwwwsssss#               
+49 wwww##wwG#wwwwssss#               
+50 GGw#w#sGG#wwwwsss#                
+51 GGo#ss####wsssw###                
+52 ###wwGwN###sss###                 
+53 NNwwGwwwN#w#####                  
+54 NNwGGGGwNN##ssG#                  
+55 NNwwwGwwNN##NN#                   
+56 NNwwGwwwNN##NN#                   
+57 NwwwwwwwNN#sG##                   
+58 NNNwwwwNN##NN#                    
+59 #NNNNNNN#o#N#                     
+60  #######GG###                     
+61     #GGGGGGG#                     
+62     #####G###                     
+63         ###                       
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command 'Add-Type -AssemblyName System.Drawing
+$b=[System.Drawing.Bitmap]::new((Resolve-Path '"'img/codex/redo_anim/thunderbird_atk_src_v1.png').Path)
+"'$d=[System.Drawing.Bitmap]::new((Resolve-Path '"'img/codex/redo_anim/thunderbird_x8.png').Path)
+for("'$y=36; $y -lt 64;$y++){
+ $s=foreach($f in (-1..3)){
+  $bm=$b; $x0=$f*64
+  if($f -eq -1){$bm=$d;$x0=0}
+  $p=for($x=35;$x -le 53;$x++){
+   $p=$bm.GetPixel(($x0+$x)*8+4,$y*8+4)
+   if(($p.R -eq 255 -and $p.B -eq 255) -or ($p.R -gt 250 -and $p.G -gt 250 -and $p.B -gt 250)){'"'.'}
+   elseif ("'$p.B -gt 155 -and $p.R -lt 100) {'"'C'}
+   elseif ("'$p.B -gt $p.R+10) {'"'N'}
+   elseif ("'$p.R -lt 100) {'"'#'}
+   elseif ("'$p.R -gt 210 -and $p.G -gt 218) {'"'w'}
+   elseif ("'$p.R -gt 210 -and $p.B -gt 115) {'"'s'}
+   elseif ("'$p.R -gt 210 -and $p.G -gt 140) {'"'G'}
+   else {'o'}
+  }
+  (-join "'$p)
+ }
+ '"'{0:D2} {1}' -f "'$y, ($s -join '"' | ')
+}
+'   5678901234567890123'" in C:\Users\Home\Downloads\방치형RPG_테스트베드
+ succeeded in 197ms:
+36 CGGGGo##GGG#N#GGG#. | CGGGGo##...######.. | CGGGGo##........... | GCGGGGo##.......... | CGGGGo##..#oG#N##G#
+37 G#####Co#oGGGGGo##. | G#####Co..##GGG##.. | G#####Co........... | #G#####Co.......... | G#####Co..###GGGGGG
+38 #ss###oo###GGo###.. | #ss###oo#.##GGG#... | #ss###oo#.......... | s#ss###oo#......... | #ss###oo#..#oGo#o##
+39 sss##wwwws#oo##.... | sss##wwwws##GGG.... | sss##wwwws......... | ssss##wwwws........ | sss##wwwws..#o#####
+40 sssoowwG#s#N##..... | sssoowwG#s##GGw.... | sssoowwG#s......... | ssssoowwG#s........ | sssoowwG#s.##sG#...
+41 sssGGw#Gw##GG#..... | sssGGw#Gw###ww#.... | sssGGw#Gw#......... | ssssGGw#Gw#........ | sssGGw#Gw#.#sG#....
+42 sssss#www#####..... | sssss#www###ww#.... | sssss#www#......... | ssssss#www#........ | sssss#www#.#NN#....
+43 ssss#GwsG##N#...... | ssss#Gw####www#.... | ssss#GwsG#....#G#G# | sssss#GwsG#....#G#G | ssss#GwsG##NNN#....
+44 sss##GGGG#N##...... | sss##GG#wwwww##.... | sss##GGGG#...#oGGo# | ssss##GGGG#...#oGGo | sss##GGGG##NN#.....
+45 ####GGG###N#....... | ####GG#wwwwsw#..... | ####GGG#.#####GG#CC | #####GGG#.#####GG#C | ####GGG#.#####.....
+46 #ssw###.#GGo....... | #ssw##wwwwss##..... | ##########ss#GG#CCN | ###########ss#GG#CC | #ssw#####sss##.....
+47 G#wwwG#.#N##....... | G#ww#wwwwsss#...... | ##wwwww#sssss#GNCCC | N##wwwww#sssss#GNCC | G#www####ssss#.....
+48 oowswG###N#........ | oowsw#wssss#....... | wwwwwww#sssss#G#CCC | wwwwwwww#sssss#G#CC | oow#wwwwsssss#.....
+49 #wwG#######........ | #wwG##wsss#........ | sswwwww#sssss#GG#CC | ssswwwww#sssss#GG#C | #wwG#wwwwssss#.....
+50 #sGG#ww#ss#........ | #sGG######......... | sssswww#sssss#oGG## | ssssswww#sssss#oGG# | #sGG#wwwwsss#......
+51 s###ww#sss#........ | s###ww#............ | ###############G#G# | ################G#G | s####wsssw###......
+52 GwN#ss#sss#........ | GwN#ss#............ | GwN#ss#.......##### | GwN#ss#........#### | GwN###sss###.......
+53 wwwN#w####......... | wwwN#w#............ | wwwN#w#............ | wwwN#w#............ | wwwN#w#####........
+54 GGwNN##N##......... | GGwNN#............. | GGwNN#............. | GGwNN#............. | GGwNN##ssG#........
+55 GwwNN##N#.......... | GwwNN#............. | GwwNN#............. | GwwNN#............. | GwwNN##NN#.........
+56 wwwNN#GN#.......... | wwwNN#............. | wwwNN#............. | wwwNN#............. | wwwNN##NN#.........
+57 wwwNN#GG#.......... | wwwNN#............. | wwwNN#............. | wwwNN#............. | wwwNN#sG##.........
+58 wwNN##N##.......... | wwNN##............. | wwNN##............. | wwNN##............. | wwNN##NN#..........
+59 NNN#o#N#........... | NNN#o#N#........... | NNN#o#N#........... | NNN#o#N#........... | NNN#o#N#...........
+60 ###GG###........... | ###GG###........... | ###GG###........... | ###GG###........... | ###GG###...........
+61 GGGGGGG#........... | GGGGGGG#........... | GGGGGGG#........... | GGGGGGG#........... | GGGGGGG#...........
+62 ####G###........... | ####G###........... | ####G###........... | ####G###........... | ####G###...........
+63 ...###............. | ...###............. | ...###............. | ...###............. | ...###.............
+   5678901234567890123
+
+codex
+The generated draft captures the staff poses, but it changes some facial pixels and softens the grid. I’ll use the draft for the poses and the original sprite pixels for the character details.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command '$ErrorActionPreference = '"'Stop'
+Add-Type -AssemblyName System.Drawing
+"'$folder = (Resolve-Path -LiteralPath '"'img/codex/redo_anim').Path
+"'$reference = [Drawing.Bitmap]::new((Join-Path $folder '"'thunderbird_x8.png'))
+"'$previous = [Drawing.Bitmap]::new((Join-Path $folder '"'thunderbird_atk_src_v1.png'))
+"'$generated = '"'C:\\Users\\Home\\.codex\\generated_images\\01a21c8e-f072-7582-8d49-6fcdc06bbe3f\\exec-4bfa2e5e-e132-429b-88bd-6ec5e2d2b878.png'
+"'$destination = Join-Path $folder '"'thunderbird_atk_src.png'
+"'$magenta = [Drawing.Color]::Magenta
+$outline = [Drawing.Color]::FromArgb(255,71,25,17)
+$navy = [Drawing.Color]::FromArgb(255,40,55,110)
+$navyShade = [Drawing.Color]::FromArgb(255,33,44,83)
+$gold = [Drawing.Color]::FromArgb(255,250,190,68)
+$oldGold = [Drawing.Color]::FromArgb(255,229,160,43)
+$ink = @{
+  '"'#' = "'$outline
+  '"'w' = [Drawing.Color]::FromArgb(255,249,233,204)
+  's' = [Drawing.Color]::FromArgb(255,232,198,166)
+  'o' = [Drawing.Color]::FromArgb(255,209,158,128)
+  'h' = [Drawing.Color]::FromArgb(255,250,210,170)
+}
+# The masks retain the full head and remove the original staff and front arm.
+"'$rightEdge = @{
+  33=42; 34=42; 35=42; 36=42; 37=43; 38=43; 39=45; 40=45; 41=44; 42=44; 43=44
+  44=44; 45=43; 46=41; 47=41; 48=42; 49=42; 50=40; 51=41; 52=41; 53=41
+}
+# Copy the original staff head from the isolated raised pose at its native scale.
+$staffHead = [Drawing.Color[,]]::new(15,16)
+for ($y=0; $y -lt 16; $y++) {
+  for ($x=0; $x -lt 15; $x++) {
+    $p = $previous.GetPixel((42+$x)*8+4,(2+$y)*8+4)
+    if ($p.R -eq 255 -and $p.B -eq 255) { $p=$magenta }
+    $staffHead[$x,$y]=$p
+  }
+}
+$poses = @(
+  @{ jointX=48; jointY=24; endX=49; endY=53; angle=-3; bands=@(2,10,24); armX=39; armY=41; arm=@('"'.......##','......#hh#','.....#whh#','....#wws#','..##wwws#','.#wwwws#','#wwwss#','#ssso#','.####') }
+  @{ jointX=54; jointY=42; endX=41; endY=55; angle=30; bands=@(2,12); armX=39; armY=46; arm=@('.....##','..###hh#','.#wwwhh#','#wwwws#','#swwws#','.#sso#','..###') }
+  @{ jointX=55; jointY=42; endX=42; endY=55; angle=30; bands=@(2,12); armX=40; armY=46; arm=@('.....##','..###hh#','.#wwwhh#','#wwwws#','#swwws#','.#sso#','..###') }
+  @{ jointX=50; jointY=38; endX=43; endY=59; angle=15; bands=@(2,6,17); armX=38; armY=47; arm=@('..##','#www##','#wwwws#h#','.#wwwwshh#','..#sssoh#','...#####') }
+)
+"'$sheet = [Drawing.Bitmap]::new(2048,512,[Drawing.Imaging.PixelFormat]::Format24bppRgb)
+$canvas = [Drawing.Graphics]::FromImage($sheet)
+$canvas.Clear($magenta)
+$brushes = @{}
+function Draw-NativePixel($x,$y,$color) {
+  $argb = $color.ToArgb()
+  if ($argb -eq $magenta.ToArgb() -or $x -lt 0 -or $x -gt 63 -or $y -lt 0 -or $y -gt 63) { return }
+  if (!$brushes.ContainsKey($argb)) { $brushes[$argb] = [Drawing.SolidBrush]::new($color) }
+  $canvas.FillRectangle($brushes[$argb],($frame*64+$x)*8,$y*8,8,8)
+}
+for ($frame=0; $frame -lt 4; $frame++) {
+  $pose = $poses[$frame]
+  # A stepped dark outline follows the shaft, with a navy core and two gold tones.
+  $shaft = @{}
+  for ($y=$pose.jointY; $y -le $pose.endY; $y++) {
+    $distance=$y-$pose.jointY
+    $t=$distance/($pose.endY-$pose.jointY)
+    $x=[int][Math]::Floor($pose.jointX+($pose.endX-$pose.jointX)*$t+0.5)
+    $shaft[$y]=$x
+    Draw-NativePixel ($x-1) $y $outline
+    Draw-NativePixel ($x+1) $y $outline
+    Draw-NativePixel $x ($y-1) $outline
+    Draw-NativePixel $x ($y+1) $outline
+  }
+  for ($y=$pose.jointY; $y -le $pose.endY; $y++) {
+    $distance=$y-$pose.jointY
+    $color=$navy
+    if ($distance % 5 -eq 4) { $color=$navyShade }
+    foreach ($band in $pose.bands) {
+      if ($distance -eq $band) { $color=$gold }
+      if ($distance -eq ($band+1) -and ($frame -eq 0 -or $frame -eq 3)) { $color=$oldGold }
+    }
+    Draw-NativePixel $shaft[$y] $y $color
+  }
+  # Rotate the original gold cup and cyan crystal without introducing new colors.
+  $angle=$pose.angle*[Math]::PI/180
+  $cos=[Math]::Cos($angle)
+  $sin=[Math]::Sin($angle)
+  for ($dy=-18; $dy -le 3; $dy++) {
+    for ($dx=-10; $dx -le 12; $dx++) {
+      $ox=[int][Math]::Floor(7+$cos*$dx+$sin*$dy+0.5)
+      $oy=[int][Math]::Floor(15-$sin*$dx+$cos*$dy+0.5)
+      if ($ox -in (0..14) -and $oy -in (0..15)) {
+        Draw-NativePixel ($pose.jointX+$dx) ($pose.jointY+$dy) $staffHead[$ox,$oy]
+      }
+    }
+  }
+  for ($y=15; $y -lt 64; $y++) {
+    $limit=63
+    if ($rightEdge.ContainsKey($y)) { $limit=$rightEdge[$y] }
+    for ($x=0; $x -le $limit; $x++) {
+      $offset=0
+      if ($frame -eq 2 -and ($y -lt 46 -or ($y -lt 49 -and $x -gt 33))) { $offset=1 }
+      if ($frame -eq 2 -and $y -ge 42 -and $y -le 58 -and $x -le 22) { continue }
+      if ($y -ge 54) {
+        $p=$previous.GetPixel($x*8+4,$y*8+4)
+        if ($p.R -eq 255 -and $p.B -eq 255) { continue }
+      } else {
+        $p=$reference.GetPixel($x*8+4,$y*8+4)
+        if ($p.R -gt 250 -and $p.G -gt 250 -and $p.B -gt 250) { continue }
+      }
+      if (($y -eq 39 -or $y -eq 40) -and $x -eq 45) { $p=$outline }
+      if (($y -eq 43 -or $y -eq 44) -and $x -eq 44) { $p=$outline }
+      if ($y -eq 45 -and $x -eq 43) { $p=$outline }
+      if ($y -eq 50 -and $x -eq 40) { $p=$outline }
+      Draw-NativePixel ($x+$offset) $y $p
+    }
+    if ($frame -eq 2 -and $y -ge 42 -and $y -le 58) {
+      for ($x=0; $x -le 23; $x++) {
+        $p=$previous.GetPixel((128+$x)*8+4,$y*8+4)
+        if ($p.R -eq 255 -and $p.B -eq 255) { continue }
+        Draw-NativePixel $x $y $p
+      }
+    }
+  }
+  for ($row=0; $row -lt $pose.arm.Count; $row++) {
+    for ($column=0; $column -lt $pose.arm[$row].Length; $column++) {
+      $symbol=[string]$pose.arm[$row][$column]
+      if ($ink.ContainsKey($symbol)) {
+        Draw-NativePixel ($pose.armX+$column) ($pose.armY+$row) $ink[$symbol]
+      }
+    }
+  }
+}
+$canvas.Dispose()
+foreach ($brush in $brushes.Values) { $brush.Dispose() }
+$reference.Dispose()
+$previous.Dispose()
+Copy-Item -LiteralPath $generated -Destination $destination
+$sheet.Save($destination,[Drawing.Imaging.ImageFormat]::Png)
+$sheet.Dispose()
+Get-Item -LiteralPath $destination | Select-Object Name,Length' in C:\Users\Home\Downloads\방치형RPG_테스트베드
+ succeeded in 791ms:
+
+Name                    Length
+----                    ------
+thunderbird_atk_src.png  36000
+
+
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command '$ErrorActionPreference = '"'Stop'
+Add-Type -AssemblyName System.Drawing
+"'$folder = (Resolve-Path -LiteralPath '"'img/codex/redo_anim').Path
+"'$reference = [Drawing.Bitmap]::new((Join-Path $folder '"'thunderbird_x8.png'))
+"'$previous = [Drawing.Bitmap]::new((Join-Path $folder '"'thunderbird_atk_src_v1.png'))
+"'$generated = '"'C:\\Users\\Home\\.codex\\generated_images\\01a21c8e-f072-7582-8d49-6fcdc06bbe3f\\exec-4bfa2e5e-e132-429b-88bd-6ec5e2d2b878.png'
+"'$destination = Join-Path $folder '"'thunderbird_atk_src.png'
+"'$magenta = [Drawing.Color]::Magenta
+$outline = [Drawing.Color]::FromArgb(255,71,25,17)
+$navy = [Drawing.Color]::FromArgb(255,40,55,110)
+$navyShade = [Drawing.Color]::FromArgb(255,33,44,83)
+$gold = [Drawing.Color]::FromArgb(255,250,190,68)
+$oldGold = [Drawing.Color]::FromArgb(255,229,160,43)
+$ink = @{
+  '"'#' = "'$outline
+  '"'w' = [Drawing.Color]::FromArgb(255,249,233,204)
+  's' = [Drawing.Color]::FromArgb(255,232,198,166)
+  'o' = [Drawing.Color]::FromArgb(255,209,158,128)
+  'h' = [Drawing.Color]::FromArgb(255,250,210,170)
+}
+# The masks retain the full head and remove the original staff and front arm.
+"'$rightEdge = @{
+  33=42; 34=42; 35=42; 36=42; 37=43; 38=43; 39=45; 40=45; 41=44; 42=44; 43=44
+  44=44; 45=43; 46=41; 47=41; 48=42; 49=42; 50=40; 51=41; 52=41; 53=41
+}
+# Copy the original staff head from the isolated raised pose at its native scale.
+$staffHead = [Drawing.Color[,]]::new(15,16)
+for ($y=0; $y -lt 16; $y++) {
+  for ($x=0; $x -lt 15; $x++) {
+    $p = $previous.GetPixel((42+$x)*8+4,(2+$y)*8+4)
+    if ($p.R -eq 255 -and $p.B -eq 255) { $p=$magenta }
+    $staffHead[$x,$y]=$p
+  }
+}
+$poses = @(
+  @{ jointX=48; jointY=24; endX=49; endY=53; angle=-3; bands=@(2,10,24); armX=39; armY=41; arm=@('"'.......##','......#hh#','.....#whh#','....#wws#','..##wwws#','.#wwwws#','#wwwss#','#ssso#','.####') }
+  @{ jointX=54; jointY=42; endX=41; endY=55; angle=30; bands=@(2,12); armX=39; armY=46; arm=@('.....###','..###whh#','.#wwwwhh##','#wwwws#h#','#swwws##','.#sso#','..###') }
+  @{ jointX=55; jointY=42; endX=42; endY=55; angle=30; bands=@(2,12); armX=40; armY=46; arm=@('.....###','..###whh#','.#wwwwhh##','#wwwws#h#','#swwws##','.#sso#','..###') }
+  @{ jointX=50; jointY=38; endX=43; endY=59; angle=15; bands=@(2,6,17); armX=38; armY=47; arm=@('..##','#www##','#wwwws#h#','.#wwwwshh#','..#sssoh#','...#####') }
+)
+"'$sheet = [Drawing.Bitmap]::new(2048,512,[Drawing.Imaging.PixelFormat]::Format24bppRgb)
+$canvas = [Drawing.Graphics]::FromImage($sheet)
+$canvas.Clear($magenta)
+$brushes = @{}
+function Draw-NativePixel($x,$y,$color) {
+  $argb = $color.ToArgb()
+  if ($argb -eq $magenta.ToArgb() -or $x -lt 0 -or $x -gt 63 -or $y -lt 0 -or $y -gt 63) { return }
+  if (!$brushes.ContainsKey($argb)) { $brushes[$argb] = [Drawing.SolidBrush]::new($color) }
+  $canvas.FillRectangle($brushes[$argb],($frame*64+$x)*8,$y*8,8,8)
+}
+for ($frame=0; $frame -lt 4; $frame++) {
+  $pose = $poses[$frame]
+  # A stepped dark outline follows the shaft, with a navy core and two gold tones.
+  $shaft = @{}
+  for ($y=$pose.jointY; $y -le $pose.endY; $y++) {
+    $distance=$y-$pose.jointY
+    $t=$distance/($pose.endY-$pose.jointY)
+    $x=[int][Math]::Floor($pose.jointX+($pose.endX-$pose.jointX)*$t+0.5)
+    $shaft[$y]=$x
+    Draw-NativePixel ($x-1) $y $outline
+    Draw-NativePixel ($x+1) $y $outline
+    Draw-NativePixel $x ($y-1) $outline
+    Draw-NativePixel $x ($y+1) $outline
+  }
+  for ($y=$pose.jointY; $y -le $pose.endY; $y++) {
+    $distance=$y-$pose.jointY
+    $color=$navy
+    if ($distance % 5 -eq 4) { $color=$navyShade }
+    foreach ($band in $pose.bands) {
+      if ($distance -eq $band) { $color=$gold }
+      if ($distance -eq ($band+1) -and ($frame -eq 0 -or $frame -eq 3)) { $color=$oldGold }
+    }
+    Draw-NativePixel $shaft[$y] $y $color
+  }
+  # Rotate the original gold cup and cyan crystal without introducing new colors.
+  $angle=$pose.angle*[Math]::PI/180
+  $cos=[Math]::Cos($angle)
+  $sin=[Math]::Sin($angle)
+  for ($dy=-18; $dy -le 3; $dy++) {
+    for ($dx=-10; $dx -le 12; $dx++) {
+      $ox=[int][Math]::Floor(7+$cos*$dx+$sin*$dy+0.5)
+      $oy=[int][Math]::Floor(15-$sin*$dx+$cos*$dy+0.5)
+      if ($ox -in (0..14) -and $oy -in (0..15)) {
+        Draw-NativePixel ($pose.jointX+$dx) ($pose.jointY+$dy) $staffHead[$ox,$oy]
+      }
+    }
+  }
+  for ($y=15; $y -lt 64; $y++) {
+    $limit=63
+    if ($y -le 32) { $limit=43 }
+    if ($rightEdge.ContainsKey($y)) { $limit=$rightEdge[$y] }
+    for ($x=0; $x -le $limit; $x++) {
+      $offset=0
+      if ($frame -eq 2 -and ($y -lt 46 -or ($y -lt 49 -and $x -gt 32))) { $offset=1 }
+      if ($frame -eq 2 -and $y -ge 42 -and $y -le 58 -and $x -le 22) { continue }
+      if ($y -ge 54) {
+        $p=$previous.GetPixel($x*8+4,$y*8+4)
+        if ($p.R -eq 255 -and $p.B -eq 255) { continue }
+      } else {
+        $p=$reference.GetPixel($x*8+4,$y*8+4)
+        if ($p.R -gt 250 -and $p.G -gt 250 -and $p.B -gt 250) { continue }
+      }
+      if (($y -eq 39 -or $y -eq 40) -and $x -eq 45) { $p=$outline }
+      if (($y -eq 43 -or $y -eq 44) -and $x -eq 44) { $p=$outline }
+      if ($y -eq 45 -and $x -eq 43) { $p=$outline }
+      if ($y -eq 50 -and $x -eq 40) { $p=$outline }
+      if ($frame -eq 2 -and $y -ge 46 -and $y -le 48 -and $x -eq 32) { Draw-NativePixel 33 $y $p }
+      Draw-NativePixel ($x+$offset) $y $p
+    }
+    if ($frame -eq 2 -and $y -ge 42 -and $y -le 58) {
+      for ($x=0; $x -le 23; $x++) {
+        $p=$previous.GetPixel((128+$x)*8+4,$y*8+4)
+        if ($p.R -eq 255 -and $p.B -eq 255) { continue }
+        Draw-NativePixel $x $y $p
+      }
+    }
+  }
+  for ($row=0; $row -lt $pose.arm.Count; $row++) {
+    for ($column=0; $column -lt $pose.arm[$row].Length; $column++) {
+      $symbol=[string]$pose.arm[$row][$column]
+      if ($ink.ContainsKey($symbol)) {
+        Draw-NativePixel ($pose.armX+$column) ($pose.armY+$row) $ink[$symbol]
+      }
+    }
+  }
+}
+$canvas.Dispose()
+foreach ($brush in $brushes.Values) { $brush.Dispose() }
+$reference.Dispose()
+$previous.Dispose()
+Copy-Item -LiteralPath $generated -Destination $destination
+$sheet.Save($destination,[Drawing.Imaging.ImageFormat]::Png)
+$sheet.Dispose()
+Get-Item -LiteralPath $destination | Select-Object Name,Length' in C:\Users\Home\Downloads\방치형RPG_테스트베드
+ succeeded in 811ms:
+
+Name                    Length
+----                    ------
+thunderbird_atk_src.png  35649
+
+
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command '$ErrorActionPreference='"'Stop'
+Add-Type -AssemblyName System.Drawing
+"'$folder=(Resolve-Path -LiteralPath '"'img/codex/redo_anim').Path
+"'$reference=[Drawing.Bitmap]::new((Join-Path $folder '"'thunderbird_x8.png'))
+"'$sheet=[Drawing.Bitmap]::new((Join-Path $folder '"'thunderbird_atk_src.png'))
+"'$palette=[Collections.Generic.HashSet[int]]::new()
+for($y=0;$y -lt 64;$y++){for($x=0;$x -lt 64;$x++){[void]$palette.Add($reference.GetPixel($x*8+4,$y*8+4).ToArgb())}}
+$magenta=[Drawing.Color]::Magenta.ToArgb()
+[void]$palette.Add($magenta)
+$extra=[Collections.Generic.HashSet[int]]::new()
+$badTiles=0
+$badFace=0
+$badFeet=0
+for($frame=0;$frame -lt 4;$frame++){
+ $shift=[int]($frame -eq 2)
+ for($y=0;$y -lt 64;$y++){
+  for($x=0;$x -lt 64;$x++){
+   $cellX=($frame*64+$x)*8
+   $cellY=$y*8
+   $color=$sheet.GetPixel($cellX,$cellY).ToArgb()
+   if(!$palette.Contains($color)){[void]$extra.Add($color)}
+   for($dy=0;$dy -lt 8;$dy++){for($dx=0;$dx -lt 8;$dx++){
+    if($sheet.GetPixel($cellX+$dx,$cellY+$dy).ToArgb() -ne $color){$badTiles++}
+   }}
+   if($y -ge 61){$expected=$reference.GetPixel($x*8+4,$y*8+4).ToArgb();if($expected -eq -1){$expected=$magenta};if($color -ne $expected){$badFeet++}}
+   if($y -ge 36 -and $y -le 44 -and $x -ge 26 -and $x -le 40){
+    if($sheet.GetPixel($cellX+$shift*8,$cellY).ToArgb() -ne $reference.GetPixel($x*8+4,$y*8+4).ToArgb()){$badFace++}
+   }
+  }
+ }
+}
+'"'{0}x{1}, off-grid pixels: {2}, differing face pixels: {3}, differing foot pixels: {4}, extra colors: {5}' -f "'$sheet.Width,$sheet.Height,$badTiles,$badFace,$badFeet,$extra.Count
+$extra | ForEach-Object {'"'{0:X8}' -f "'$_}
+$reference.Dispose()
+$sheet.Dispose()' in C:\Users\Home\Downloads\방치형RPG_테스트베드
+ succeeded in 1874ms:
+2048x512, off-grid pixels: 0, differing face pixels: 0, differing foot pixels: 0, extra colors: 0
+
+codex
+Saved [thunderbird_atk_src.png](<C:/Users/Home/Downloads/방치형RPG_테스트베드/img/codex/redo_anim/thunderbird_atk_src.png>) as one 2048×512 row of four frames: ready, cast, hold, and return.
+
+I used ImageGen to draft the poses and rebuilt the sheet on the reference’s pixel grid. I verified the solid `#FF00FF` background, original sprite colors, matching face pixels, and identical foot placement.
+tokens used
+81,283
+Saved [thunderbird_atk_src.png](<C:/Users/Home/Downloads/방치형RPG_테스트베드/img/codex/redo_anim/thunderbird_atk_src.png>) as one 2048×512 row of four frames: ready, cast, hold, and return.
+
+I used ImageGen to draft the poses and rebuilt the sheet on the reference’s pixel grid. I verified the solid `#FF00FF` background, original sprite colors, matching face pixels, and identical foot placement.
