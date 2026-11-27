@@ -4578,7 +4578,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     var swFP = foePos(st.team), swQ = (st.swamp || []).map(function(sl){ return swFP[sl]; }).filter(Boolean);
     bt = E.createBattle(D, teamSpec().map(padSpec), foeTeamAt(st.team), { potions: potSpec(), crystal: cryOpt(st), seed: (Math.random() * 1e9) | 0, modules: S.modules, record: true, skills: S.skills, enemySkills: st.skills });
     bt._swamp = swQ; bt._cry = st.crystal || null; bt._plain = {}; try { var pb = E.createBattle(D, teamSpec().map(padSpec), foeTeamAt(st.team), { seed: 1, modules: S.modules, record: false, skills: S.skills, enemySkills: st.skills }); pb.A.concat(pb.E).forEach(function(u){ bt._plain[u.side + u.slot] = pb.stats(u.uid); }); } catch (e) {} bt._pot = {}; (bt.potions || []).forEach(function(p){ var P = E.potionById(D, p.id); (p.uids || []).forEach(function(id){ if (P) (bt._pot[id] || (bt._pot[id] = [])).push(potPic(P.id)); }); }); setTimeout(potBar, 0); bt.E.forEach(function(u){ if (MOBSZ[u.h.mob]) tpw.E[u.slot] = mobPw(u); }); // 몹 전투력은 능력치로
-    logI = 0; acc = 0; fxs = []; shots = []; combos = {}; seqHit = {}; ultAt = {}; arrows = []; uxs = []; UC = {}; bolts = []; skArrowSrc = null; pops = []; knocks = {}; hitStop = {}; blinks = {}; dashes = {}; skDmg = { A: 0, E: 0 }; if (HAS_FX) FX.clear(); banners = []; ultPops = []; graves = {}; lunges = {}; flash = 0; done = false;
+    logI = 0; acc = 0; fxs = []; shots = []; combos = {}; seqHit = {}; ultAt = {}; arrows = []; uxs = []; UC = {}; bolts = []; skArrowSrc = null; pops = []; knocks = {}; hitStop = {}; blinks = {}; dashes = {}; lineN = {}; skDmg = { A: 0, E: 0 }; if (HAS_FX) FX.clear(); banners = []; ultPops = []; graves = {}; lunges = {}; flash = 0; done = false;
     $('res').hidden = true; $('field').style.visibility = 'hidden'; cv.hidden = false; $('skipBtn').disabled = false;
     $('tab-camp').classList.add('busy'); $('fightBtn').disabled = true; dpsLast = null; DPSW = {}; document.querySelectorAll('.dps .dpsb').forEach(function(b){ b.innerHTML = ''; }); /* 새 전투: DPS 기록 새로 */ $('fightBtn').classList.add('busyhide'); /* 전투 중에는 숨김 */ $('spdBtn').disabled = false;
     cancelAnimationFrame(raf); last = performance.now(); raf = requestAnimationFrame(loop);
@@ -4724,6 +4724,45 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     beam: function(o, k){ var w = Math.max(2, 9 * (1 - k)); uxLine(o.x, o.y, o.x2, o.y, w, o.c); },
     zig: function(o, k){ var n = 5, px = o.x, py = o.y - 18; for (var i = 1; i <= n; i++){ var tx = o.x + (o.x2 - o.x) * i / n, ty = o.y - 18 + (o.y2 - o.y) * i / n + (i === n ? 0 : (i % 2 ? -9 : 9)); uxLine(px, py, tx, ty, 2.5, i % 2 ? '#fff3b0' : o.c); px = tx; py = ty; } }
   };
+  /* ───── 유물 이펙트 35종 (2026-11-27 사용자: "유물들 보면 유물 효과들 이펙트가 없거든. 만들어줘. 돌풍이면 바람에 휙 날린다던가"). o.y = 발밑 ───── */
+  function uxShield(x, y, r, c, w){ ctx.strokeStyle = c; ctx.lineWidth = w || 2; ctx.shadowColor = c; ctx.shadowBlur = 6; ctx.beginPath(); ctx.moveTo(x - r, y - r); ctx.lineTo(x + r, y - r); ctx.lineTo(x + r, y); ctx.quadraticCurveTo(x + r, y + r * .8, x, y + r * 1.25); ctx.quadraticCurveTo(x - r, y + r * .8, x - r, y); ctx.closePath(); ctx.stroke(); ctx.shadowBlur = 0; }
+  function uxRing(x, y, rx, c, a, w){ ctx.strokeStyle = 'rgba(' + uxRgb(c) + ',' + a + ')'; ctx.lineWidth = w || 2.5; ctx.shadowColor = c; ctx.shadowBlur = 6; ctx.beginPath(); ctx.ellipse(x, y, rx, rx * .38, 0, 0, 6.29); ctx.stroke(); ctx.shadowBlur = 0; }
+  Object.assign(UXF, {
+    uarrow: function(o, k){ var y = o.y - 56 - k * 16; uxGlow(o.x, y, 16, o.c, .55 * (1 - k)); ctx.fillStyle = o.c; ctx.shadowColor = o.c; ctx.shadowBlur = 8; ctx.beginPath(); ctx.moveTo(o.x, y - 11); ctx.lineTo(o.x + 10, y); ctx.lineTo(o.x + 4, y); ctx.lineTo(o.x + 4, y + 10); ctx.lineTo(o.x - 4, y + 10); ctx.lineTo(o.x - 4, y); ctx.lineTo(o.x - 10, y); ctx.closePath(); ctx.fill(); ctx.shadowBlur = 0; },
+    drops: function(o, k){ for (var i = 0; i < 6; i++){ var p = (k * 1.4 + i * .17) % 1, x = o.x - 20 + i * 8, y = o.y - 76 + p * 66; uxLine(x, y, x - 1, y + 6, 2.5, i % 3 ? '#8ff0a0' : '#c8f08a'); } uxRing(o.x, o.y - 2, 12 + k * 10, '#8ff0a0', .8 * (1 - k)); },
+    dome: function(o, k){ var g = Math.min(1, k * 3), r = 30 * g, a = k < .6 ? 1 : (1 - k) / .4; uxGlow(o.x, o.y - 24, r * 1.2, '#6fb8ff', .3 * a); ctx.strokeStyle = 'rgba(170,220,255,' + a + ')'; ctx.lineWidth = 2.5; ctx.shadowColor = '#6fb8ff'; ctx.shadowBlur = 10; ctx.beginPath(); ctx.arc(o.x, o.y - 22, r, 0, 6.29); ctx.stroke(); ctx.shadowBlur = 0; uxLine(o.x - r * .55, o.y - 22 - r * .5, o.x - r * .2, o.y - 22 - r * .75, 2, '#cfeaff'); },
+    meteor: function(o, k){ if (k < .6){ var p = k / .6, x = o.x + 90 * (1 - p), y = o.y - 20 - 190 * (1 - p); uxLine(x + 34, y - 70, x, y, 7, '#ff8a2a'); uxGlow(x, y, 18, '#ffb347', .9); uxDot(x, y, 7, '#fff0a8', 1); } else { var q = (k - .6) / .4; uxGlow(o.x, o.y - 18, 20 + q * 34, '#ff7a2a', .85 * (1 - q)); uxRing(o.x, o.y - 2, 14 + q * 34, '#ffb347', 1 - q, 3); for (var i = 0; i < 8; i++){ var an = i * .785, d = 8 + q * 34; uxDot(o.x + Math.cos(an) * d, o.y - 18 + Math.sin(an) * d * .6, 3.5 * (1 - q) + .5, '#ffd34d', 1 - q); } } },
+    blade: function(o, k){ var g = Math.min(1, k * 3.5), s = 24 * g; uxGlow(o.x, o.y - 20, 26, '#c01830', .5 * (1 - k)); uxLine(o.x + s, o.y - 20 - s * 1.4, o.x - s, o.y - 20 + s * 1.1, 6 * (1 - k) + 1.5, '#ff2a44'); },
+    gale: function(o, k){ ctx.lineCap = 'round'; for (var i = 0; i < (o.n || 12); i++){ var x = o.x + o.dir * (k * 1.25 * W - ((i * 53) % 170)), y = o.y + ((i * 37) % 150) - 75; ctx.strokeStyle = 'rgba(' + uxRgb(i % 3 ? o.c : '#ffffff') + ',.85)'; ctx.lineWidth = i % 4 ? 2 : 3.5; ctx.beginPath(); ctx.moveTo(x - o.dir * 46, y); ctx.quadraticCurveTo(x - o.dir * 18, y - 7, x, y); ctx.quadraticCurveTo(x + o.dir * 8, y + 5, x - o.dir * 2, y + 8); ctx.stroke(); if (o.flake && i % 2 === 0) uxDot(x - o.dir * 20, y + 8, 2.6, '#ffffff', .9); } },
+    beat: function(o, k){ for (var i = 0; i < 2; i++){ var p = k * 1.6 - i * .35; if (p > 0 && p < 1) uxRing(o.x, o.y - 2, 8 + p * 30, o.c, 1 - p, 3); } },
+    snipe: function(o, k){ var y = o.y - 20, r = k < .55 ? 30 - 30 * k : 13.5; if (k < .75){ uxRing(o.x, y, r, '#ff5a4a', 1); ctx.beginPath(); ctx.arc(o.x, y, r, 0, 6.29); ctx.strokeStyle = '#ff7a6a'; ctx.stroke(); uxLine(o.x - r - 7, y, o.x - 4, y, 2, '#ff7a6a'); uxLine(o.x + 4, y, o.x + r + 7, y, 2, '#ff7a6a'); uxLine(o.x, y - r - 7, o.x, y - 4, 2, '#ff7a6a'); uxLine(o.x, y + 4, o.x, y + r + 7, 2, '#ff7a6a'); } if (k > .6){ var q = (k - .6) / .4; uxLine(o.x - o.dir * 140 * (1 - q), y - 30 * (1 - q), o.x, y, 3, '#fff3b0'); uxGlow(o.x, y, 8 + q * 20, '#ffffff', .9 * (1 - q)); } },
+    suck: function(o, k){ for (var i = 0; i < 5; i++){ var an = i * 1.256 + .4, d = 42 * (1 - k), x = o.x + Math.cos(an) * d, y = o.y - 26 + Math.sin(an) * d * .8; uxLine(x, y, x + Math.cos(an) * 9 + 3, y + Math.sin(an) * 9 - 3, 2, '#ffe14d'); } uxGlow(o.x, o.y - 26, 6 + k * 14, '#ffe14d', .7 * k); },
+    arrowrain: function(o, k){ for (var i = 0; i < 4; i++){ var p = Math.min(1, Math.max(0, k * 1.8 - i * .22)); if (p <= 0 || p >= 1) continue; var x = o.x - 18 + i * 12, y = o.y - 120 + p * 104; uxLine(x + 8, y - 16, x, y, 2, '#f0e0b0'); uxLine(x, y, x + 5, y - 3, 2, '#ffffff'); uxLine(x, y, x - 1, y - 6, 2, '#ffffff'); } },
+    /* 열 유물: 전투 시작 때 걸린 영웅에게 한 번 */
+    lsteel: function(o, k){ var a = 1 - k; uxShield(o.x, o.y - 30, 12 + k * 4, 'rgba(215,225,240,' + a + ')', 3); uxLine(o.x - 14 + k * 28, o.y - 44, o.x - 20 + k * 28, o.y - 16, 2, '#ffffff'); },
+    lthorn: function(o, k){ var a = 1 - k, r = 22 + k * 6; for (var i = 0; i < 10; i++){ var an = i * .628, x = o.x + Math.cos(an) * r, y = o.y - 24 + Math.sin(an) * r; uxLine(x, y, o.x + Math.cos(an) * (r + 9), o.y - 24 + Math.sin(an) * (r + 9), 3 * a + .5, '#8fd060'); } },
+    laura: function(o, k){ var a = 1 - k; uxGlow(o.x, o.y - 24, 34, o.c, .55 * a); for (var i = 0; i < 6; i++){ var p = (k * 1.3 + i * .16) % 1; uxLine(o.x - 17 + i * 7, o.y - 4 - p * 46, o.x - 17 + i * 7, o.y - 14 - p * 46, 2.5, o.c); } },
+    llink: function(o, k){ var a = 1 - k, g = Math.min(1, k * 3); [-7, 7].forEach(function(d){ ctx.strokeStyle = 'rgba(255,150,200,' + a + ')'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(o.x + d * g, o.y - 34, 9, 0, 6.29); ctx.stroke(); }); uxGlow(o.x, o.y - 34, 16, '#ff8fc4', .45 * a); },
+    lfeather: function(o, k){ for (var i = 0; i < 4; i++){ var p = Math.min(1, k * 1.2), x = o.x - 18 + i * 12 + Math.sin(k * 7 + i * 2) * 6, y = o.y - 62 + p * 44 + (i % 2) * 8; uxLine(x - 5, y + 3, x + 5, y - 3, 3 * (1 - k) + 1, '#f4ead0'); } },
+    lhide: function(o, k){ var a = 1 - k; for (var i = 0; i < 12; i++){ var an = i * .52 + k * 2, d = 10 + (i % 3) * 7 + k * 10; uxDot(o.x + Math.cos(an) * d, o.y - 26 + Math.sin(an) * d, 3 * a + .5, '#9a86c8', a * .8); } },
+    lphalanx: function(o, k){ var a = 1 - k, g = Math.min(1, k * 3); [-13, 13, 0].forEach(function(d){ uxShield(o.x + d * g, o.y - 30, 9, 'rgba(160,200,255,' + a + ')', 2); }); },
+    lstar: function(o, k){ var a = 1 - k; for (var i = 0; i < 5; i++){ var x = o.x - 20 + i * 10, y = o.y - 44 - ((i * 13) % 20) - k * 12, r = 5 * Math.sin(Math.PI * Math.min(1, k * 1.5 + (i % 2) * .2)); if (r > 0){ uxLine(x - r, y, x + r, y, 1.8, o.c); uxLine(x, y - r, x, y + r, 1.8, o.c); } } uxGlow(o.x, o.y - 40, 20, o.c, .3 * a); },
+    /* 연계 유물이 쌓일 때: 작고 가볍게 (한 판에 100번 넘게) · 다 쌓이면 한 번 크게 */
+    stk: function(o, k){ var a = 1 - k, x = o.x + o.dx, y = o.y - 40 - k * 18, r = o.big ? 7 : 3.5; ctx.fillStyle = 'rgba(' + uxRgb(o.c) + ',' + a + ')'; ctx.beginPath(); ctx.moveTo(x, y - r * 1.8); ctx.quadraticCurveTo(x + r * 1.2, y - r * .2, x, y + r); ctx.quadraticCurveTo(x - r * 1.2, y - r * .2, x, y - r * 1.8); ctx.fill(); if (o.big){ uxRing(o.x, o.y - 2, 10 + k * 26, o.c, a, 3); uxGlow(o.x, o.y - 24, 30, o.c, .5 * a); } }
+  });
+  var STKC = { fervor: '#ff6a4a', resolve: '#ffd34d', kindle: '#ff9a3a', pulse: '#7ee08a', rime: '#8fd8ff', grace: '#fff3b0', dread: '#c99bff' };
+  var LINEFX = { steelwall: ['lsteel'], spikemail: ['lthorn'], warhorn: ['laura', '#ffd34d'], linkring: ['llink'], hawknest: ['lfeather'], shadowcloak: ['lhide'], lonewolf: ['laura', '#ff4a3a'], phalanx: ['lphalanx'], starcrown: ['lstar', '#ffe9a8'], steppingstone: ['lstar', '#9fe8ff'] }, lineN = {};
+  function feet(u){ var p = posOf(u); return [p[0], p[1] + 26]; }
+  /* 쿨타임 유물이 터질 때 (맞는 적 연출은 relicHitFx) */
+  function relicFx(sd, side){ if (!bt) return; var mine = (side === 'E' ? bt.E : bt.A).filter(function(u){ return u.alive; }), foes = (side === 'E' ? bt.A : bt.E).filter(function(u){ return u.alive; }), dir = side === 'E' ? -1 : 1, each = function(L2, k, o, max){ L2.forEach(function(u, i){ var q = feet(u); uxAdd(k, q[0], q[1], Object.assign({}, o), max, i * .05); }); };
+    if (sd.kind === 'atkBuff') each(mine, 'uarrow', { c: sd.id === 'howl' ? '#ff8a2a' : sd.id === 'resonance' ? '#c99bff' : '#ff4a3a' }, .75);
+    else if (sd.kind === 'healPct') each(mine, 'drops', {}, .9);
+    else if (sd.kind === 'shieldPct') each(mine, 'dome', {}, .85);
+    else if (sd.kind === 'hasteAll') each(mine, 'beat', { c: sd.id === 'chorus' ? '#ff8fc4' : '#ffb347' }, .8);
+    else if (sd.kind === 'energyAll') each(mine, 'suck', {}, .6);
+    else if (sd.kind === 'slowAll') uxAdd('gale', dir > 0 ? W * .42 : W * .58, H * .62, { dir: dir, c: '#cfeaff', n: 16, flake: 1 }, .9);
+    else if (sd.kind === 'knockback') uxAdd('gale', dir > 0 ? 0 : W, H * .62, { dir: dir, c: '#bfeee0', n: 22 }, .65); }
+  function relicHitFx(id, u){ var k = id === 'meteor' ? 'meteor' : id === 'pact' ? 'blade' : id === 'snipe' ? 'snipe' : id === 'volley' ? 'arrowrain' : ''; if (!k || !u) return; var q = feet(u); uxAdd(k, q[0], q[1], { dir: u.side === 'E' ? 1 : -1 }, k === 'meteor' ? .75 : k === 'snipe' ? .7 : k === 'arrowrain' ? .65 : .45); }
   function drawUx(el){ uxs = uxs.filter(function(o){ if (o.wait > 0){ o.wait -= el; return true; } o.t += el; var k = o.t / o.max; if (k >= 1) return false; ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = k < .7 ? .9 : Math.max(0, (1 - k) / .3) * .9; (UXF[o.k] || function(){})(o, k); ctx.restore(); return true; }); }
   function ultCastFx(u, uk, ev){ if (!bt) return false; var al = function(L){ return L.filter(function(x){ return x.alive; }); }, foes = al(u.side === 'A' ? bt.E : bt.A), mates = al(u.side === 'A' ? bt.A : bt.E), c = ELC[u.el] || '#fff', fp = function(x){ var p = posOf(x); return [p[0], p[1] + 26]; }, me = fp(u), seed = Math.random() * 6;
     UC[u.uid] = { k: uk, t: ev.t, prev: null, poof: false };
@@ -4827,9 +4866,14 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     } else if (ev.kind === 'skill'){
       var sd = E.skillById(D, ev.id), sside = ev.side || 'A'; flashSkill(sside + ':' + ev.id);
       skArrowSrc = SK_ARROW[sd.kind] ? { t: ev.t, from: iconCanvasPos(sside + ':' + ev.id), c: skG(ev.id).col } : null;
-      if (SKFX[sd.kind]) fxTeam(SKFX[sd.kind], sside, { scale: SKFX[sd.kind] === 'heal' ? .9 : 1.1 }); else if (sd.kind === 'slowAll') fxTeam('frost', sside === 'A' ? 'E' : 'A', { scale: 1 });
+      relicFx(sd, sside);
       if (sd.kind === 'nuke') flash = .2;
+    } else if (ev.kind === 'relicLine'){
+      var lf = LINEFX[ev.id]; if (lf) (ev.uids || []).forEach(function(uid){ var u = unitByUid(uid); if (!u) return; var q = feet(u), n = lineN[uid] = (lineN[uid] || 0) + 1; uxAdd(lf[0], q[0], q[1], { c: lf[1] }, .9, (n - 1) * .35); }); /* 한 영웅에 여러 개면 차례로 */
+    } else if (ev.kind === 'relicStack'){
+      var su2 = unitByUid(ev.uid); if (su2){ var q2 = feet(su2), full = ev.n >= ev.max; if (full || uxs.length < 40) uxAdd('stk', q2[0], q2[1], { c: STKC[ev.id] || '#ffffff', dx: full ? 0 : Math.random() * 28 - 14, big: full }, full ? .7 : .4); }
     } else if (ev.kind === 'skillHit'){
+      if (ev.relic) relicHitFx(ev.relic, unitByUid(ev.to));
       var sb = unitByUid(ev.to), sp = posOf(sb); if (sb) hitStopOn(sb.uid, ev.thorns ? .06 : .09, ev.thorns ? .4 : .55); // 팀 스킬·가시: 약하게
       if (ev.thorns){ if (sb) dmgPop(sp[0], sp[1] - 30, { fx: 'dot', s: '가시 ' + ev.amt, c: '#9fe07a', max: .55, size: 11 }); return; }
       if (sb && skArrowSrc && skArrowSrc.from && skArrowSrc.t === ev.t){ var tp = posOf(sb); arrows.push({ from: skArrowSrc.from, to: [tp[0], tp[1] - 18], t: 0, c: skArrowSrc.c, dim: 'rgba(243,230,196,.75)' }); }
@@ -4999,7 +5043,6 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   var HAS_FX = typeof FX !== 'undefined'; if (HAS_FX) FX.preload();
   function fxAt(name, u, opts){ if (!HAS_FX || !u) return; var p = posOf(u); FX.play(name, p[0], p[1] + 26, opts || {}); } // 발밑 기준
   function fxTeam(name, side, opts){ if (!HAS_FX || !bt) return; (side === 'E' ? bt.E : bt.A).forEach(function(u){ if (u.alive) fxAt(name, u, opts); }); }
-  var SKFX = { healAll: 'heal', healPct: 'heal', shieldPct: 'shield', teamShield: 'shield', atkBuff: 'levelup', hasteAll: 'levelup', energyAll: 'levelup' };
   var knocks = {}; // uid → { dx, t } : 돌풍에 밀린 유닛을 0.15초 동안 휙 미끄러지게 그려요
   // 체력·에너지 막대: 전투와 편성 화면이 같이 써요
   // 성급 별: 9×9 점 그림(7×7 별 + 어두운 1점 테두리). 원본 1점 = 화면 정수 점, 정수 좌표에 최근접으로 찍음 (2026-11-26 사용자: "별아이콘이 선명도가 떨어져")
