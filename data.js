@@ -64,7 +64,7 @@ var IDLE_DATA = {
       lowest:  { name: '체력 비율 낮은 적' },
       random:  { name: '무작위' },
       lane:    { name: '마주 보는 자리 먼저' } } },
-    element:  { pick: 'normal', options: {
+    element:  { pick: 'none' /* 2026-11-27 상성 피해 없앰(사용자: "속성 그거는 피해 공식에서 제거해"). 예전 normal(×1.3/×0.75) */, options: {
       none:   { name: '상성 없음', adv: 1,   dis: 1 },
       normal: { name: '상성 보통', adv: 1.3, dis: 0.75 },
       strong: { name: '상성 강함', adv: 1.5, dis: 0.6 } } },
