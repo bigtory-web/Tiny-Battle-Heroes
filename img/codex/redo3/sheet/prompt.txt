@@ -1,0 +1,8 @@
+Two images are attached.
+Image 1 is the animation sprite sheet of a game character, enlarged 8 times (every 8x8 block is one sprite pixel): 4 columns x 2 rows of 64x64-sprite-pixel cells on magenta. Top row = 4 idle frames, bottom row = 4 attack frames, read left to right.
+Image 2 is the NEW design of the same character (one still frame, enlarged 8 times).
+Use both as reference images for your image generation tool. Generate ONE new sprite sheet and save it as img/codex/redo3/sheet/flame_src.png (save it even if the size differs slightly).
+The new sheet has exactly the same layout as image 1 (4 columns x 2 rows, 2:1 landscape), the same 8 poses in the same order, the same feet position and character size in every cell, but every frame is drawn in the design of image 2: the same hair, face, dark maroon robe, colors and outline as image 2.
+Idle frames: image 2 with only a tiny breathing movement. Attack frames: copy the arm and fireball motion of the bottom row of image 1.
+All 8 frames have the identical face: each eye is 1 white pixel column plus 2 iris pixel columns, both eyes the same width, 1 pixel thick eyebrows, the eye on the left side of the picture one pixel lower, no mouth.
+Very dark brown outline everywhere, hard square pixels at the same pixel size as the attached sprites, no anti-aliasing, flat solid pure magenta background FF00FF, no grid lines, no text, no numbers. Python is not installed on this computer: do not use python. Use PowerShell Copy-Item to copy the generated file. Do not modify or create any other file.

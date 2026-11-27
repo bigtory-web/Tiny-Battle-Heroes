@@ -1,0 +1,2 @@
+1. Posture: the head sticks forward like a turtle neck. Move the whole head 2 sprite pixels back (toward the left of the picture) so it sits straight above the body.
+2. The whip looks light because the loop is empty. Draw a HEAVY thick vine whip coiled tightly into one solid bundle: two or three windings pressed against each other with NO empty hole in the middle, held by a dark brown handle in her front hand, a few big thorns, the red flower bud on the free end.
