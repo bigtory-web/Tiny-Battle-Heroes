@@ -31,16 +31,17 @@ function Make($kind,$pal,$name){
   foreach($e in $extra){ $o[$e[0],$e[1]]=$e[2] }
   if($kind -eq 'p'){ foreach($s in @(@(15,3),@(31,27),@(6,19))){ foreach($d in @(@(0,0),@(1,0),@(-1,0),@(0,1),@(0,-1))){ $o[($s[0]+$d[0]),($s[1]+$d[1])]=$pal['W'] } } }
   Save $o $name }
-$lit = @{ W=(C '#eafff2'); L=(C '#8dffb4'); M=(C '#46d880'); D=(C '#1f8a52') }
-$dim = @{ W=(C '#6ff0a0'); L=(C '#2f8a5c'); M=(C '#1f6044'); D=(C '#123a30') }
+$lit = @{ W=(C '#e8f8ff'); L=(C '#7fd0ff'); M=(C '#2f93f2'); D=(C '#1c57b8') }   # plus = blue
+$dim = @{ W=(C '#ffd9d0'); L=(C '#ff7a66'); M=(C '#e0342c'); D=(C '#94181e') }   # minus = red (user)
 $offP = @{ W=(C '#c9cede'); L=(C '#98a0b8'); M=(C '#6d7690'); D=(C '#4a536c') }
 $offM = @{ W=(C '#98a0b8'); L=(C '#6d7690'); M=(C '#4a536c'); D=(C '#343c55') }
 Make 'p' $lit 'cry_cell_p'; Make 'p' $offP 'cry_cell_p_off'; Make 'm' $dim 'cry_cell_m'; Make 'm' $offM 'cry_cell_m_off'
-# preview on the cave floor: alone / on a carpet, minus and plus, then off
-$pad = Get-ChildItem img\p\pad_*.png | Select-Object -First 1
-$pv=New-Object System.Drawing.Bitmap 1200,560; $g=[System.Drawing.Graphics]::FromImage($pv); $g.InterpolationMode='NearestNeighbor'; $g.PixelOffsetMode='Half'
-$bg=New-Object System.Drawing.Bitmap ([IO.Path]::GetFullPath('img\p\bg_cave.png')); $g.DrawImage($bg,(New-Object System.Drawing.Rectangle 0,0,1200,560),(New-Object System.Drawing.Rectangle 60,250,300,140),[System.Drawing.GraphicsUnit]::Pixel)
-$padB=New-Object System.Drawing.Bitmap $pad.FullName
-$col=0; foreach($n in 'cry_cell_m','cry_cell_p','cry_cell_m_off','cry_cell_p_off'){ $im=New-Object System.Drawing.Bitmap ([IO.Path]::GetFullPath("img\codex\cavecorner\$n.png")); $x=20+$col*295
-  $g.DrawImage($im,$x,60,282,186); $g.DrawImage($padB,$x,320,282,186); $g.DrawImage($im,$x,320,282,186); $col++ }
-$pv.Save([IO.Path]::GetFullPath('img\codex\cavecorner\compare.png')); "carpet used: $($pad.Name)"
+# preview: columns minus / plus / off; rows = day floor, day floor + carpet, night floor + carpet
+$pad = New-Object System.Drawing.Bitmap ([IO.Path]::GetFullPath('img\p\pad_beast.png'))
+$pv=New-Object System.Drawing.Bitmap 1200,720; $g=[System.Drawing.Graphics]::FromImage($pv); $g.InterpolationMode='NearestNeighbor'; $g.PixelOffsetMode='Half'
+$r=0; foreach($bgn in 'bg_cave','bg_cave','bg_cave_night'){ $bg=New-Object System.Drawing.Bitmap ([IO.Path]::GetFullPath("img\p\$bgn.png"))
+  $g.DrawImage($bg,(New-Object System.Drawing.Rectangle 0,($r*240),1200,240),(New-Object System.Drawing.Rectangle 60,260,300,60),[System.Drawing.GraphicsUnit]::Pixel)
+  $col=0; foreach($n in 'cry_cell_m','cry_cell_p','cry_cell_m_off','cry_cell_p_off'){ $im=New-Object System.Drawing.Bitmap ([IO.Path]::GetFullPath("img\codex\cavecorner\$n.png")); $x=20+$col*295
+    if($r -gt 0){ $g.DrawImage($pad,$x,($r*240+27),282,186) }; $g.DrawImage($im,$x,($r*240+27),282,186); $col++ }
+  $r++ }
+$pv.Save([IO.Path]::GetFullPath('img\codex\cavecorner\compare.png'))
