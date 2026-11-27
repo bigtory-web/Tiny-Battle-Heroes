@@ -23,11 +23,18 @@ for (const j of JOBS) { const L = heroes.filter(h => h.job === j).map(h => ({ h,
 // 거울 전·이분 탐색 (기준표.js 55~65줄과 같은 방식)
 const allUp = (u, m) => { u.maxHp *= 1 + m; u.hp *= 1 + m; u.atk *= 1 + m; u.def *= 1 + m; };
 const teamFor = j => { const ids = ['guardian', 'warrior', 'archer', 'mage', j === 'assassin' ? 'assassin' : 'bard'].map(x => JOB[x].rep.id), slots = [0, 1, 3, 6, 4]; return ids.map((id, i) => ({ id, slot: slots[i], level: LV, star: 1 })); };
-function score(t, idx, fA, m) { let w = 0, n = 0; for (let s = 1; s <= SEEDS; s++) for (const sw of [0, 1]) {
-  const cp = x => x.map(y => ({ ...y })), o = { seed: s * 7 + 3, statsOnly: true }, b = E.createBattle(D, cp(t), cp(t), o);
+// 판 섞기(2026-11-28): 시드를 바꿔도 판이 거의 같아서, 상대를 조금씩 올리면 모든 판이 한 지점에서 한꺼번에 뒤집혀(절벽) 서로 다른 능력치가 같은 값으로 나왔어요.
+//   jitter = 팀은 그대로, 판마다 자리별로 체력·공격 ±10%를 양쪽에 똑같이 흔듦 · team = 판마다 잴 영웅 말고 나머지 4명을 각 직업의 무작위 영웅으로 · none = 예전 방식
+const MIX = ((process.argv.find(a => /^--mix=/.test(a)) || '--mix=jitter').split('=')[1]); if (!['jitter', 'team', 'none'].includes(MIX)) throw new Error('--mix는 jitter, team, none 중 하나');
+const rng = seed => () => { seed = (seed + 0x6D2B79F5) | 0; let x = Math.imul(seed ^ (seed >>> 15), 1 | seed); x = (x + Math.imul(x ^ (x >>> 7), 61 | x)) ^ x; return ((x ^ (x >>> 14)) >>> 0) / 4294967296; };
+const byJob = {}; heroes.forEach(h => { (byJob[h.job] = byJob[h.job] || []).push(h.id); });
+const teamOf = (t, idx, s) => { if (MIX !== 'team') return t; const r = rng(s * 131 + 7); return t.map((x, i) => i === idx ? x : { ...x, id: (L => L[Math.floor(r() * L.length)])(byJob[D.heroes.find(h => h.id === x.id).job]) }); };
+function score(t0, idx, fA, m) { let w = 0, n = 0; for (let s = 1; s <= SEEDS; s++) for (const sw of [0, 1]) {
+  const t = teamOf(t0, idx, s), cp = x => x.map(y => ({ ...y })), o = { seed: s * 7 + 3, statsOnly: true }, b = E.createBattle(D, cp(t), cp(t), o);
+  if (MIX === 'jitter') { const r = rng(s * 977 + 11); b.A.forEach((u, i) => { const fh = 0.9 + 0.2 * r(), fa = 0.9 + 0.2 * r(); [u, b.E[i]].forEach(v => { v.maxHp *= fh; v.hp *= fh; v.atk *= fa; }); }); }
   const X = sw ? b.E : b.A, Y = sw ? b.A : b.E, M0 = X.reduce((a, u) => a + u.maxHp, 0); if (fA) fA(X[idx]); allUp(Y[idx], m);
   while (!b.result && b.time < 90) b.step(); const left = S => S.reduce((a, u) => a + Math.max(0, u.alive ? u.hp : 0), 0); w += (left(X) - left(Y)) / M0; n++; } return 0.5 + w / n; }
-const ITER = 8, MLO = -0.6, MHI = 1.5;
+const ITER = 10, MLO = -0.6, MHI = 1.5;
 function lvEquiv(t, idx, fA) { const f = m => score(t, idx, fA, m); let lo = MLO, hi = MHI; if (f(hi) > 0.5) return Infinity; if (f(lo) < 0.5) return -Infinity;
   for (let i = 0; i < ITER; i++) { const m = (lo + hi) / 2; if (f(m) > 0.5) lo = m; else hi = m; } return GL * (lo + hi) / 2 / G; }
 // 재는 변화: [이름, 바꾸기, 이 변화가 능력치 몇 단위인가(직업 평균 기준), 1의 이름]
@@ -68,6 +75,7 @@ md += '- **1000점은 가상 기준이에요.** 직업마다 1레벨 1성 평균
 md += '- 직업끼리 1000점은 같은 힘이 아니에요(각자 자기 직업 기준). 직업 사이는 조합 대결로 따로 봐요.\n';
 md += '- 잰 방법: 표준 팀(수호·전사·궁수·마법 + 음유, 암살을 잴 땐 음유 대신 암살) 거울 전, 레벨 ' + LV + '. 직업 대표 영웅 한 명의 능력치를 올리고, 상대 같은 영웅의 레벨을 얼마나 올려야 비기는지(이분 탐색).\n';
 md += '- 측정 단계: **' + STAGE + '단계** (시드 ' + SEEDS + '개 × 양쪽 = 한 번 잴 때 ' + SEEDS * 2 + '판). 1단계는 방향만 보는 빠른 확인이에요.\n';
+md += '- 판 섞기: **' + { jitter: '팀 그대로, 판마다 자리별 체력·공격 ±10%(양쪽 같게)', team: '판마다 나머지 4명을 각 직업 무작위 영웅으로', none: '안 섞음(예전 방식, 절벽 문제 있음)' }[MIX] + '** (--mix=' + MIX + ')\n';
 md += '- 대표 영웅: ' + JOBS.map(j => JN[j] + ' ' + JOB[j].rep.name).join(', ') + '\n\n';
 md += '## 1. 직업별 가격표 (1의 가치, 점)\n\n| | ' + JOBS.map(j => JN[j]).join(' | ') + ' |\n|---|' + JOBS.map(() => '---').join('|') + '|\n';
 for (const s of ST) md += '| ' + s[4] + ' | ' + JOBS.map(j => BAD[j] ? '못 잼' : fmtP(j, s)).join(' | ') + ' |\n';
@@ -99,6 +107,6 @@ if (miss.length) md += '\n계산 vs 실측 평균 차이 ' + r2(avg(miss)) + '�
 
 const v = {}; JOBS.forEach(j => { if (BAD[j]) { (v['못 잰 직업'] = v['못 잰 직업'] || {})[JN[j]] = 1; return; } const o = {}; ST.forEach(s => { o[s[4]] = r3(P[j][s[0]] * P[j].scale * (s[0] === 'crit' ? 0.01 : 1)); }); v['가격 ' + JN[j]] = o; });
 v['영웅 1성'] = {}; ROWS.forEach(r => { v['영웅 1성'][r.name + '(' + r.job + ' ' + r.g + '등급)'] = r.v; });
-const sv = REC.save('능력치_가격', v, { 레벨: LV, 단계: STAGE, 시드: SEEDS, 탐색: ITER });
+const sv = REC.save('능력치_가격', v, { 레벨: LV, 단계: STAGE, 시드: SEEDS, 탐색: ITER, 섞기: MIX });
 md += REC.compareMd(sv.prev, sv.rec) + '\n기록: `밸런스/기록/' + sv.file + '`\n';
 fs.writeFileSync('밸런스/능력치_가격.md', md); process.stderr.write('\n' + r0((Date.now() - t0) / 1000) + '초\n'); console.log(md);
