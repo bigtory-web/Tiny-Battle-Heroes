@@ -559,7 +559,7 @@ var IDLE_DATA = {
     flatAlso: ['mimicBlue'], // "영구 강화로" 모드에서 칸 key 말고도 Lv1에 고정할 레벨 표 줄(미믹 수에 딸린 파랑 미믹 수)
     lines: [
       { id: 'start', name: '모닥불', nodes: [
-        { id: 'start', name: '시작 모닥불 +1', unit: '개', path: 'events.campfire.startPicks', add: 1, cost: [5] } ] }, // 가운데. req 없음 = 처음부터 찍을 수 있음
+        { id: 'start', name: '영웅 획득', unit: '명', /* 2026-11-27 이름 '시작 모닥불 +1' → '영웅 획득'(사용자: "시작 모닥불은 이상하다"). 시작 모닥불에서 고르는 영웅 수 */ path: 'events.campfire.startPicks', add: 1, cost: [5] } ] }, // 가운데. req 없음 = 처음부터 찍을 수 있음
       { id: 'bag', name: '백팩', nodes: [
         { id: 'bag', req: ['start'], name: '백팩 칸', unit: '칸', key: 'bag', add: 1, cap: 7, cost: [6, 12] },
         { id: 'relic', req: ['bag'], name: '유물 칸', unit: '칸', key: 'skillSlots', add: 1, cap: 10, cost: [8, 16] },
