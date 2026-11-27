@@ -3238,19 +3238,10 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   <!-- 도구 탭 -->
   <main class="page" id="tab-tool" hidden>
     <section class="card">
-      <h2>전투 요소 바꾸기 <small>다음 전투부터 적용</small></h2>
-      <div class="mods" id="mods"></div>
-    </section>
-    <section class="card">
       <h2>봇 캠페인</h2>
       <div class="muted">지금 요소 설정으로 봇이 1명으로 시작해 영입·합성하며 1-1부터 마지막 스테이지까지 진행해요. 판마다 영입 운이 달라서 결과가 달라져요.</div>
       <button class="ghost" id="simBtn" style="margin-top:8px">돌려 보기</button>
       <div id="simBox" class="muted" style="margin-top:8px"></div>
-    </section>
-    <section class="card">
-      <h2>성장 방식 <small>[챕터로] 새 판부터 적용</small></h2>
-      <div class="row" id="modeRow"></div>
-      <div class="muted" id="modeInfo"></div>
     </section>
     <section class="card">
       <h2>플레이어 레벨 <small>적 편성·상점·영웅 등장 확률·전장 칸이 이 레벨을 따라요</small></h2>
@@ -3258,17 +3249,8 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
       <div class="muted" id="plOdds" style="margin-top:6px"></div>
     </section>
     <section class="card">
-      <h2>글꼴 <small>비교해 보기</small></h2>
-      <div class="row" id="fontRow"></div>
-    </section>
-    <section class="card">
       <h2>구름 그림자 <small>전장 위로 천천히 흘러감</small></h2>
       <div class="row" id="cloudRow"></div>
-    </section>
-    <section class="card">
-      <h2>캐릭터 크기 <small>지금(자동) 크기 기준 ±%</small></h2>
-      <div class="row" id="ukRow"></div>
-      <div class="muted" id="ukInfo"></div>
     </section>
     <section class="card">
       <h2>도감 "상점으로" 버튼 <small>테스트용 · 출시 때 끄기</small></h2>
@@ -3331,10 +3313,10 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   function upSave(m){ try { localStorage.setItem(UPKEY, JSON.stringify(m)); } catch (e) {} }
   /* 뺀 업그레이드 노드에 쓴 훈장은 돌려줌 (2026-11-27 사용자: "돌려줘"). 리셋 때 또 주지 않게 쓴 훈장 기록에서도 뺌 */
   (function(){ var m = upLoad(), back = E.metaRefund ? E.metaRefund(IDLE_DATA, m) : 0; if (back > 0){ if (m.spent != null) m.spent = Math.max(0, m.spent - back); upSave(m); } })();
-  var RUNMETA = SAVED ? SAVED.meta || {} : upLoad().nodes, RUNMODE = (SAVED ? SAVED.metaMode : upLoad().mode) || 'level'; /* 'level' 레벨로 · 'meta' 영구 강화로 */
+  var RUNMETA = SAVED ? SAVED.meta || {} : upLoad().nodes, RUNMODE = 'meta'; /* 성장 방식은 업그레이드로 고정 (2026-11-27 사용자) */ /* 'level' 레벨로 · 'meta' 영구 강화로 */
   var RUNDIFF = (SAVED ? SAVED.diff : upLoad().diff) || 'easy'; /* 제약(난이도) */
   function runData(ch){ return E.metaData(E.difficultyData(E.chapterData(IDLE_DATA, ch), RUNDIFF), { nodes: RUNMETA, mode: RUNMODE }); }
-  function upRun(){ var u = upLoad(); RUNMETA = u.nodes; RUNMODE = u.mode || 'level'; RUNDIFF = u.diff || 'easy'; } /* 새 판: 지금 저장된 강화·방식 */
+  function upRun(){ var u = upLoad(); RUNMETA = u.nodes; RUNMODE = 'meta'; RUNDIFF = u.diff || 'easy'; } /* 새 판: 지금 저장된 강화·방식 */
   var D = runData(CH); /* 지금 판의 장(2026-11-26 2장). 장을 바꾸면 새 판 + 새로 읽기 */
   // 가로 무대 960x540을 창에 맞춰 확대·축소 (가운데 정렬)
   function fitBag(){ var a = document.querySelector('.arena'), c = document.querySelector('.bagcol'), b = c && c.querySelector('.bagin'); if (!a || !b) return;
@@ -3472,6 +3454,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   // 개체 grade(합성 단계) → star(성급, 최대 3). 등급(희귀도)은 이제 영웅마다 고정이에요
   S.units.forEach(function(u){ if (u.star == null) u.star = Math.max(1, Math.min(3, u.grade || 1)); delete u.grade; });
   if (!S.skills) S.skills = [];
+  S.modules = {}; S.metaMode = 'meta'; if (S.ui){ delete S.ui.unitPct; delete S.ui.font; } /* 도구에서 뺀 설정은 기본값으로 (2026-11-27 사용자) */
   if (S.xp == null) S.xp = 0;
   if (!S.crystals) S.crystals = E.crystalStart(D);
   if (!S.crystalCells && D.campaign.crystal){ S.crystalCells = E.crystalCells(D, Math.random); try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} } /* 예전 저장: 한 번 뽑아 고정 */
@@ -3550,7 +3533,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     if (!on){ shopSel = null; sellArm = null; merchShow = false; } else if (!$('hinfo').hidden){ $('hinfo').hidden = true; sel = null; if (typeof relSel !== 'undefined') relSel = null; document.querySelectorAll('.picked').forEach(function(x){ x.classList.remove('picked'); }); } /* 상점을 열면 상세 창 닫기 */ renderShop(); }
   function showTab(t){
     if (t === 'shop'){ if ($('tab-camp').hidden) showTab('camp'); $('tab-tool').hidden = true; setShop(!shopOpen()); return; }
-    if (t === 'tool'){ if (!$('tab-tool').hidden){ showTab('camp'); return; } if ($('tab-camp').hidden) showTab('camp'); setShop(false); hideInfo(); hideTip(); $('tab-tool').hidden = false; renderUk(); if ($('tab-tool').pickLast) $('tab-tool').pickLast(); return; } /* 도구 = 전장 위 팝업 (2026-11-27 사용자: "전체 화면식으로 하니까 별로야. 일부 팝업식으로") */
+    if (t === 'tool'){ if (!$('tab-tool').hidden){ showTab('camp'); return; } if ($('tab-camp').hidden) showTab('camp'); setShop(false); hideInfo(); hideTip(); $('tab-tool').hidden = false; if ($('tab-tool').pickLast) $('tab-tool').pickLast(); return; } /* 도구 = 전장 위 팝업 (2026-11-27 사용자: "전체 화면식으로 하니까 별로야. 일부 팝업식으로") */
     setShop(false);
     ['camp', 'hero', 'tool'].forEach(function(k){ $('tab-' + k).hidden = k !== t; });
     $('backBtn').hidden = t === 'camp'; if (t === 'camp') renderForm(); // 크기 등 바뀐 설정을 전장에 다시 맞춰요
@@ -3635,11 +3618,6 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
       box.innerHTML = '<div class="hinfo cdxh" style="--sg:' + g.col + '"><div class="hi-top"><span class="hi-av sk">' + skIcon(d) + '</span><div class="hi-tn"><b>' + d.name + '</b>' + cdBox(d) + '</div></div>' +
         '<div class="hi-ult"><div>' + skillDesc(d, myLv(d.id) || 1) + '</div></div>' + synLine(d) + '<div class="cdxst">' + (mine ? '보유 중' + (skMaxed(d.id) ? ' · 최고 등급' : ' · 또 얻으면 ' + upText(d.id)) : '상점이나 전리품에서 얻을 수 있어요') + '</div></div>'; }
   }
-  /* 캐릭터 크기 고르기(도구 탭, 2026-11-25 기획 요청): 지금(자동) 크기 기준 −30/−20/−10/현재/+10/+20/+30%. 정수배에 딱 맞으면 최근접(또렷), 아니면 정수배로 키운 뒤 부드럽게 줄임(살짝 흐림). S.ui.unitPct에 저장(처음부터에도 유지) */
-  function renderUk(){ var row = $('ukRow'); if (!row) return; var cs = devPerUnit(), dp = window.devicePixelRatio || 1, B = 79 * uScale(), r0 = qKauto(), cur = unitPct();
-    row.innerHTML = [-30, -20, -10, 0, 10, 20, 30].map(function(p){ var r = r0 * (1 + p / 100), sz = 64 * r / cs, near = Math.abs(r - Math.round(r)) < .02, pc = Math.round((sz / B - 1) * 100), ni = Math.abs(r - Math.round(r)) <= .12 && Math.round(r) >= 1;
-      return '<button class="ghost' + (cur === p ? ' on' : '') + '" data-up="' + p + '" type="button">' + (p === 0 ? '현재' : (p > 0 ? '+' : '−') + Math.abs(p) + '%') + '<i>' + Math.round(64 * r / dp) + 'px · 기본 ' + (pc > 0 ? '+' : '') + pc + '%</i><i class="' + (near ? 'ok' : 'bl') + '">' + (near ? '또렷 (' + Math.round(r) + '배)' : '살짝 흐림' + (ni ? ' · ' + Math.round(r) + '배 근처' : '')) + '</i></button>'; }).join('');
-    $('ukInfo').textContent = '현재(자동) = 정수배 ' + r0 + '배. 퍼센트는 현재 크기 기준, px는 지금 창에서 캐릭터 가로 화면 px, 기본 = 기본 크기(110%) 대비. 창 크기가 바뀌면 값도 바뀌어요.'; }
   /* 장 고르기 화면: 카드(장) → 난이도 → 입장 = 새 판. 깬 난이도마다 메달 (2026-11-27 사용자: "저 안에서 누르면 난이도 선택하고 입장") */
   /* 장 고르기: 왼쪽 = 큰 맵 그림 + 작은 장 아이콘, 오른쪽 = 난이도·요약·입장 / 장 특징·분노·새 이벤트 (2026-11-27 사용자) */
   var chPick = 1, chDiff = 'easy';
@@ -3673,11 +3651,6 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     if (!o){ o = document.createElement('div'); o.id = 'chWin'; document.querySelector('.app').appendChild(o); o.addEventListener('click', function(e){ var t = e.target.closest('button'); if (!t || t.disabled) return; var d = t.dataset;
         if (d.chx){ o.hidden = true; return; } chWhy = ''; if (d.chf != null) chFeat = +d.chf; if (d.chc){ if (chOk(+d.chc)){ if (chPick !== +d.chc) chFeat = 0; chPick = +d.chc; if (!diffOk(chPick, chDiff)) chDiff = 'easy'; } else chWhy = '챕터 ' + (+d.chc - 1) + (+d.chc === 3 ? '를' : '을') + ' 깨면 챕터 ' + d.chc + (+d.chc === 2 ? '가' : '이') + ' 열려요.'; } if (d.chd){ if (diffOk(chPick, d.chd)) chDiff = d.chd; else chWhy = '이 챕터의 ' + (d.chd === 'hard' ? 'NORMAL을 깨면 HARD가' : 'EASY를 깨면 NORMAL이') + ' 열려요.'; } if (d.chgo){ var up = upLoad(); up.diff = chDiff; upSave(up); try { sessionStorage.setItem('tb-welcome', '1'); } catch (e) {} newRun(chPick); return; } chRender(); }); }
     chPick = CH; chDiff = RUNDIFF; chFeat = 0; chWhy = ''; chNote(); o.hidden = false; chRender(); }
-  function renderMode(){ var m = upLoad().mode || 'level'; $('modeRow').innerHTML = [['level', '레벨로'], ['meta', '업그레이드로']].map(function(x){ return '<button class="ghost' + (m === x[0] ? ' on' : '') + '" data-mode="' + x[0] + '" type="button">' + x[1] + '</button>'; }).join(''); $('modeInfo').textContent = (m === 'meta' ? '업그레이드로: 칸·리셋·횟수는 Lv1에 고정, 강화로만 늘어요.' : '레벨로: 레벨이 오르면 같이 늘어요(+강화).') + (m !== RUNMODE ? ' 지금 판은 ' + (RUNMODE === 'meta' ? '업그레이드로' : '레벨로') + ' 진행 중이에요. [처음부터]를 누르면 바뀌어요.' : ''); }
-  $('modeRow').addEventListener('click', function(e){ var b = e.target.closest('[data-mode]'); if (!b) return; var u = upLoad(); u.mode = b.dataset.mode; upSave(u); renderMode(); });
-  setTimeout(renderMode, 0);
-  $('ukRow').addEventListener('click', function(e){ var b = e.target.closest('[data-up]'); if (!b) return; S.ui = S.ui || {}; var v = +b.dataset.up; delete S.ui.unitK; if (v) S.ui.unitPct = v; else delete S.ui.unitPct; save(); QC.t = -1e9; fitUnit(); renderAll(); renderUk(); });
-  setInterval(function(){ if (!$('tab-tool').hidden) renderUk(); }, 600);
   /* 흘러가는 구름 그림자(2026-11-26 사용자). 그림은 코드로 한 번 만들어 씀: 검정 + 투명도(검정 투명도 덮기 = 곱하기와 같은 결과).
      순서: 바닥 -> 캐릭터 -> 구름 그림자 -> 막대·별·글자·이펙트·UI. 편성과 전투가 같은 시계(Date.now)를 써서 튀지 않음. 낮 그대로, 해 질 녘에 옅어지고 밤에는 꺼짐 */
   var CLW = 1440, CLH = 400, CLT = null, CLD = null, CLSTR = { off: 0, weak: .2, mid: .3, strong: .42 };
@@ -3697,10 +3670,9 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     if (!lo){ lo = document.createElement('i'); lo.className = 'cloudsh low'; f.insertBefore(lo, f.querySelector(':scope > .unit')); } /* 땅 몫은 캐릭터 아래 층, 캐릭터 위에는 35%만 */
     var px = (-cloudOff() * f.clientWidth / 720).toFixed(2) + 'px'; lo.style.opacity = s * .65; el.style.opacity = s * .35; lo.style.backgroundPositionX = el.style.backgroundPositionX = px; }, 66);
   /* 게임 폰트: Galmuri(기본) / 기존, 도구 탭에서 비교 (2026-11-26 사용자) */
-  function fontId(){ return (S && S.ui && S.ui.font) === 'old' ? 'old' : 'galmuri'; }
+  function fontId(){ return 'galmuri'; }
   function CF(){ return fontId() === 'old' ? '"Black Han Sans", sans-serif' : '"GalmuriB", sans-serif'; }
-  function applyFont(){ document.documentElement.dataset.font = fontId(); var row = $('fontRow'); if (row) row.innerHTML = [['old', '기존 폰트'], ['galmuri', 'Galmuri']].map(function(a){ return '<button class="ghost' + (fontId() === a[0] ? ' on' : '') + '" data-gfont="' + a[0] + '" type="button">' + a[1] + '</button>'; }).join(''); }
-  $('fontRow').addEventListener('click', function(e){ var b = e.target.closest('[data-gfont]'); if (!b) return; S.ui = S.ui || {}; S.ui.font = b.dataset.gfont; save(); applyFont(); });
+  function applyFont(){ document.documentElement.dataset.font = 'galmuri'; } /* 글꼴은 Galmuri 고정 (2026-11-27) */
   setTimeout(applyFont, 0);
   function renderCloudBtns(){ var row = $('cloudRow'); if (!row) return; var cur = (S.ui && S.ui.cloud) || 'weak'; row.innerHTML = [['off', '끔'], ['weak', '약'], ['mid', '중'], ['strong', '강']].map(function(a){ return '<button class="ghost' + (cur === a[0] ? ' on' : '') + '" data-cloud="' + a[0] + '" type="button">' + a[1] + '</button>'; }).join(''); }
   $('cloudRow').addEventListener('click', function(e){ var b = e.target.closest('[data-cloud]'); if (!b) return; S.ui = S.ui || {}; S.ui.cloud = b.dataset.cloud; save(); renderCloudBtns(); });
@@ -3790,7 +3762,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   function sApp(){ var a = document.querySelector('.app'); return a ? a.getBoundingClientRect().width / 960 || 1 : 1; }
   function devPerUnit(){ if (bt && csB) return csB; var now = performance.now(); if (now - QC.t > 250){ var f = $('field'), w = f ? f.clientWidth : 0; QC.cs = w ? w * sApp() / 720 * (window.devicePixelRatio || 1) : (window.devicePixelRatio || 1); QC.t = now; } return QC.cs; }
   function qKauto(){ return STAGE_N * Math.max(1, Math.round(79 * uScale() * devPerUnit() / 64 / STAGE_N)); } /* 640×360 기준에서 정수배를 정하고 판 배수를 곱함: 창이 달라도 캐릭터:UI 비율이 같음 (화면 구조 2단계, 2026-11-26) */
-  function unitPct(){ var p = S && S.ui && S.ui.unitPct; return p >= -50 && p <= 50 ? p : 0; } /* 도구 탭에서 고른 자동 크기 대비 % (−30~+30, 0이면 정수배 그대로) */
+  function unitPct(){ return 0; } /* 크기 ±% 고르기는 뺌 (2026-11-27 사용자) */ /* 도구 탭에서 고른 자동 크기 대비 % (−30~+30, 0이면 정수배 그대로) */
   function qR(){ return unitPx(false) * devPerUnit() / 64; } /* 원본 1px이 장치 px 몇 개인지(소수 가능) */
   function qN(){ var r = qR(); return Math.abs(r - Math.round(r)) < .02 ? Math.max(1, Math.round(r)) : Math.max(2, Math.ceil(r) + 1); } /* 외곽선 그림을 키울 정수배: 정수 크기면 그 배율, 아니면 한 단계 위(부드럽게 줄임) */
   function qK(){ return qKauto(); } /* 큰 쪽으로(2026-11-25 사용자): r이 정수를 0.1 넘게 넘으면 한 단계 위 */
@@ -4390,7 +4362,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   (function(){ ['roul', 'chestPop', 'res', 'mobLoot', 'bagOver', 'evWin', 'mimicPop'].forEach(function(id){ if ($(id)) popAdd($(id), true); }); if ($('pendBox')) popAdd($('pendBox'), false); })();
   (function(){ var tp = $('tab-tool'); tp.insertAdjacentHTML('afterbegin', '<div class="toolhead"><b>도구</b><button type="button" class="spX popx" data-toolx="1" title="닫기">✕</button></div>'); popAdd(tp, false); tp.querySelector('[data-toolx]').addEventListener('click', function(){ showTab('camp'); });
     /* 2열: 왼쪽 항목 이름, 오른쪽 고른 항목의 내용만. 내용이 적은 것은 묶음 (2026-11-27 사용자). 숫자 = 원래 칸 순서 */
-    var cards = [].slice.call(tp.querySelectorAll(':scope > section.card')), G = [['전투 요소', [0]], ['봇 캠페인', [1]], ['성장·레벨', [2, 3]], ['이벤트', [8, 9, 10]], ['캐릭터 크기', [11, 6]], ['화면 설정', [4, 5]], ['테스트', [12, 7]]];
+    var cards = [].slice.call(tp.querySelectorAll(':scope > section.card')), G = [['봇 캠페인', [0]], ['이벤트', [4, 5, 6]], ['화면 설정', [7, 2]], ['테스트', [8, 3, 1]]];
     var body = document.createElement('div'); body.className = 'toolbody'; body.innerHTML = '<div class="toolnav">' + G.map(function(g, i){ return '<button type="button" data-tg="' + i + '">' + g[0] + '</button>'; }).join('') + '</div><div class="toolpane"></div>'; tp.appendChild(body); var pane = body.querySelector('.toolpane'); cards.forEach(function(c){ pane.appendChild(c); });
     var pick = function(i){ cards.forEach(function(c, n){ c.hidden = G[i][1].indexOf(n) < 0; }); G[i][1].forEach(function(n){ if (cards[n]) pane.appendChild(cards[n]); }); body.querySelectorAll('[data-tg]').forEach(function(b){ b.classList.toggle('sel', +b.dataset.tg === i); }); pane.scrollTop = 0; };
     /* 마지막에 보던 항목·스크롤을 저장(S.ui)해 다시 열 때 그 자리 (2026-11-27 사용자: "마지막 위치값 고정해 줘") */
@@ -5651,14 +5623,6 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     if (grOpen && !S.offer){ grollClose(); return; } if (S.offerMode === 'mobs' && S.mobPend){ takeMobLoot(); return; } if (S.pending) return; if (!S.offerDecided) decideOffer(false); exitOffer(); });
 
   // ───── 도구 탭 ─────
-  function renderMods(){
-    $('mods').innerHTML = Object.keys(D.modules).map(function(k){
-      var m = D.modules[k], cur = S.modules[k] || m.pick;
-      return '<span>' + ({ energy: '에너지', targeting: '공격 대상', element: '상성', synergy: '진영 시너지', healDecay: '회복 감소', startEnergy: '첫 에너지' }[k] || k) + '</span><select data-mod="' + k + '">' +
-        Object.keys(m.options).map(function(o){ return '<option value="' + o + '"' + (o === cur ? ' selected' : '') + '>' + m.options[o].name + (o === m.pick ? ' (기본)' : '') + '</option>'; }).join('') + '</select>';
-    }).join('');
-  }
-  $('mods').addEventListener('change', function(e){ var s = e.target.closest('select'); if (!s) return; S.modules[s.dataset.mod] = s.value; save(); });
   function setUnitScale(v){ S.ui = S.ui || {}; S.ui.unitScale = Math.max(.7, Math.min(1.5, Math.round(v * 10) / 10)); save(); renderUnitScale(); renderForm(); }
   function renderUnitScale(){ var v = uScale(); $('usVal').textContent = Math.round(v * 100) + '%'; $('usDown').disabled = v <= .7; $('usUp').disabled = v >= 1.5; }
   $('usDown').addEventListener('click', function(){ setUnitScale(uScale() - .1); });
@@ -6449,7 +6413,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
       if (n >= mx){ b.classList.remove('deny'); void b.offsetWidth; b.classList.add('deny'); toast('더 울릴 수 없어요'); return; }
       setBell(n + 1); if (n === 0) toast('종을 울렸어요! 이번 판은 되돌릴 수 없어요'); }); })();
   function renderAll(){ setTimeout(clearCheck, 400); renderXp(); renderEvent(); renderBell(); $('goldTag').textContent = g(S.gold); renderCampaign(); renderHeroes(); renderIdle(); renderForm(); renderShop(); renderPlvTool(); }
-  renderFilters(); renderAll(); renderMods();
+  renderFilters(); renderAll();
   /* 백팩 윗부분: 3px 계단으로 깎은 모서리 + 계단을 따라가는 가죽 띠·바느질 (2026-11-26 사용자: "픽셀느낌처럼 깍아야지") */
   setTimeout(function(){ var b = document.querySelector('.camp3 > .lbag .ubagbox'); if (!b || !b.offsetWidth || b.querySelector(':scope > .bagtop')) return;
     var w = b.offsetWidth, h = 19 /* 띠만 그림: 아래까지 칠하면 첫 칸 머리가 가려짐 */, INS = [15, 9, 6, 3, 3], c = document.createElement('canvas'), x = c.getContext('2d'); c.width = w; c.height = h; c.className = 'bagtop';
