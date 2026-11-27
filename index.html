@@ -5365,7 +5365,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     var cells = [].slice.call(row.querySelectorAll('.mmc')), got = cells.slice(0, n), at = function(ms, fn){ mimicT.push(setTimeout(fn, ms)); }, m = P.loot.length;
     var tIn = 200 + all.length * 300, tAfter = tIn + 200, tOpen = tAfter + 100, tLoot = tOpen + 250 /* 뚜껑이 활짝 열리는 때 */;
     cells.forEach(function(c, i){ at(200 + i * 300, function(){ c.classList.add('in'); }); });
-    if (!n){ at(tAfter + 200, function(){ loot.innerHTML = '<span class="mmnone">미믹이 모두 도망갔습니다.</span>'; btn.disabled = false; }); return; }
+    if (!n){ at(tAfter + 200, function(){ loot.innerHTML = '<span class="mmnone">잡은 미믹이 없습니다.</span>'; btn.disabled = false; }); return; }
     at(tOpen, function(){ got.forEach(function(c){ c.classList.add('open'); }); });
     at(tLoot, function(){ loot.innerHTML = P.loot.map(function(k, i){ var p = LP(k), tip = p.type === 's' ? ' data-tipsk="' + p.id + '" data-tiplv="1"' : ''; return '<span class="mlt" style="animation-delay:' + (i * .09) + 's"' + tip + '>' + lootIcon(k) + (p.amt ? '<em data-to="' + p.amt + '">0</em>' : '') + '</span>'; }).join('');
       [].forEach.call(loot.querySelectorAll('em[data-to]'), function(e){ var to = +e.dataset.to; for (var q = 1; q <= 10; q++) (function(q){ at(q * 55, function(){ e.textContent = Math.round(to * q / 10).toLocaleString(); }); })(q); }); });
