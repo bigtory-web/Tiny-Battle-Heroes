@@ -559,33 +559,33 @@ var IDLE_DATA = {
     flatAlso: ['mimicBlue'], // "영구 강화로" 모드에서 칸 key 말고도 Lv1에 고정할 레벨 표 줄(미믹 수에 딸린 파랑 미믹 수)
     lines: [
       { id: 'start', name: '모닥불', nodes: [
-        { id: 'start', name: '시작 모닥불 +1', path: 'events.campfire.startPicks', add: 1, cost: [5] } ] }, // 가운데. req 없음 = 처음부터 찍을 수 있음
+        { id: 'start', name: '시작 모닥불 +1', unit: '개', path: 'events.campfire.startPicks', add: 1, cost: [5] } ] }, // 가운데. req 없음 = 처음부터 찍을 수 있음
       { id: 'bag', name: '백팩', nodes: [
-        { id: 'bag', req: ['start'], name: '백팩 칸', key: 'bag', add: 1, cap: 7, cost: [6, 12] },
-        { id: 'relic', req: ['bag'], name: '유물 칸', key: 'skillSlots', add: 1, cap: 10, cost: [8, 16] },
-        { id: 'potion', req: ['bag'], name: '물약 칸', key: 'potion', add: 1, cap: 3, cost: [6, 12] } ] },
+        { id: 'bag', req: ['start'], name: '백팩 칸', unit: '칸', key: 'bag', add: 1, cap: 7, cost: [6, 12] },
+        { id: 'relic', req: ['bag'], name: '유물 칸', unit: '칸', key: 'skillSlots', add: 1, cap: 10, cost: [8, 16] },
+        { id: 'potion', req: ['bag'], name: '물약 칸', unit: '칸', key: 'potion', add: 1, cap: 3, cost: [6, 12] } ] },
       { id: 'shop', name: '상점', nodes: [
-        { id: 'shopSlot', req: ['start'], name: '상점 칸', key: 'shopSlots', add: 1, cap: 6, cost: [8, 16] },
-        { id: 'shopReset', req: ['shopSlot'], name: '상점 리셋', path: 'shop.refreshMax', add: 1, cost: [6, 12] },
-        { id: 'merchSlot', req: ['shopSlot'], name: '상인 상품 수', key: 'merchantSlots', add: 1, cap: 6, cost: [6, 12] },
-        { id: 'swampSlot', req: ['merchSlot'], name: '늪지 상인 물약 수', key: 'swampSlots', add: 1, cap: 6, cost: [6, 12] }, // 2026-11-27 (사용자: "말했지 내가? 플레이어레벨 그거 해당하는거 이미.")
-        { id: 'merchHero', req: ['merchSlot'], name: '상인 영웅 수', key: 'merchantHeroes', add: 1, cap: 2, cost: [10] },
-        { id: 'merchOff', req: ['merchSlot'], name: '상인 최대 할인', key: 'merchantOff', add: 5, cap: 60, cost: [6, 12] },
-        { id: 'merchOffMin', req: ['merchOff'], name: '상인 최저 할인', path: 'events.merchant.offMinAdd', add: 5, cost: [6, 12] }, // 2026-11-27 할인은 최대·최저 둘 (사용자: "최대와 최저야. 하나더", "격차는 5%정도씩"). 비용은 최대 할인과 같게 임시
+        { id: 'shopSlot', req: ['start'], name: '상점 칸', unit: '칸', key: 'shopSlots', add: 1, cap: 6, cost: [8, 16] },
+        { id: 'shopReset', req: ['shopSlot'], name: '상점 리셋', unit: '회', path: 'shop.refreshMax', add: 1, cost: [6, 12] },
+        { id: 'merchSlot', req: ['shopSlot'], name: '상인 상품 수', unit: '개', key: 'merchantSlots', add: 1, cap: 6, cost: [6, 12] },
+        { id: 'swampSlot', req: ['merchSlot'], name: '늪지 상인 물약 수', unit: '개', key: 'swampSlots', add: 1, cap: 6, cost: [6, 12] }, // 2026-11-27 (사용자: "말했지 내가? 플레이어레벨 그거 해당하는거 이미.")
+        { id: 'merchHero', req: ['merchSlot'], name: '상인 영웅 수', unit: '명', key: 'merchantHeroes', add: 1, cap: 2, cost: [10] },
+        { id: 'merchOff', req: ['merchSlot'], name: '상인 최대 할인', unit: '%', key: 'merchantOff', add: 5, cap: 60, cost: [6, 12] },
+        { id: 'merchOffMin', req: ['merchOff'], name: '상인 최저 할인', unit: '%', path: 'events.merchant.offMinAdd', add: 5, cost: [6, 12] }, // 2026-11-27 할인은 최대·최저 둘 (사용자: "최대와 최저야. 하나더", "격차는 5%정도씩"). 비용은 최대 할인과 같게 임시
         { id: 'shopGrade', req: ['shopReset'], name: '상점 등급 확률', shift: 'shopGrade', cost: [8, 16] } ] },
       { id: 'event', name: '이벤트', nodes: [
-        { id: 'startGold', req: ['start'], name: '시작 골드', path: 'campaign.startGold', add: 50, cost: [4, 8, 12] },
-        { id: 'life', req: ['startGold'], name: '시작 하트', path: 'life.max', add: 2, cost: [4, 8, 12] },
-        { id: 'clearGold', req: ['startGold'], name: '클리어 골드', key: 'clearGold', add: 10, cost: [5, 10, 15] },
-        { id: 'lootReset', req: ['clearGold'], name: '전투 룰렛 리셋', path: 'recruit.reroll.max', add: 1, cost: [8] },
-        { id: 'campfire', req: ['startGold'], name: '모닥불 영웅 수', key: 'campfire', add: 1, cap: 6, cost: [6, 12] },
-        { id: 'eventReset', req: ['campfire'], name: '모닥불 리셋', key: 'eventReroll', add: 1, cost: [6, 12] },
-        { id: 'fairyReset', req: ['eventReset'], name: '요정 리셋', key: 'fairyReroll', add: 1, cost: [6, 12] }, // 2026-11-27 모닥불·요정 리셋을 나눔. 비용은 모닥불 리셋과 같게 임시
-        { id: 'daisReset', req: ['eventReset'], name: '양탄자 리셋', key: 'daisReroll', add: 1, cost: [6, 12] },
-        { id: 'groll', req: ['campfire'], name: '돈고블린 룰렛', key: 'grollSpins', add: 1, cost: [6, 12] },
-        { id: 'mimic', req: ['campfire'], name: '미믹 수', key: 'mimicCount', add: 1, cap: 4, cost: [8] },
-        { id: 'mBlueUp', req: ['mimic'], name: '파랑 미믹 확률', path: 'events.mimic.blueUp', add: 10, cost: [8, 16] }, // 2026-11-27 보물상자 등급(꺼진 보물상자 판) 칸 대신. 갈색 미믹마다 이 %로 파랑(2등급)이 됨 (사용자: "갈파왕 123등급", "파랑 확률 업")
-        { id: 'mKingUp', req: ['mBlueUp'], name: '왕관 미믹 확률', path: 'events.mimic.kingUp', add: 10, cost: [10, 20] }, // 왕관(3등급)이 아직 안 나오는 판에서 이 %로 1마리가 왕관이 됨 (사용자: "보스 등장 확률 업"). 숫자·비용 임시
+        { id: 'startGold', req: ['start'], name: '시작 골드', unit: 'G', path: 'campaign.startGold', add: 50, cost: [4, 8, 12] },
+        { id: 'life', req: ['startGold'], name: '시작 하트', unit: '개', path: 'life.max', add: 2, cost: [4, 8, 12] },
+        { id: 'clearGold', req: ['startGold'], name: '클리어 골드', unit: 'G', key: 'clearGold', add: 10, cost: [5, 10, 15] },
+        { id: 'lootReset', req: ['clearGold'], name: '전투 룰렛 리셋', unit: '회', path: 'recruit.reroll.max', add: 1, cost: [8] },
+        { id: 'campfire', req: ['startGold'], name: '모닥불 영웅 수', unit: '명', key: 'campfire', add: 1, cap: 6, cost: [6, 12] },
+        { id: 'eventReset', req: ['campfire'], name: '모닥불 리셋', unit: '회', key: 'eventReroll', add: 1, cost: [6, 12] },
+        { id: 'fairyReset', req: ['eventReset'], name: '요정 리셋', unit: '회', key: 'fairyReroll', add: 1, cost: [6, 12] }, // 2026-11-27 모닥불·요정 리셋을 나눔. 비용은 모닥불 리셋과 같게 임시
+        { id: 'daisReset', req: ['eventReset'], name: '양탄자 리셋', unit: '회', key: 'daisReroll', add: 1, cost: [6, 12] },
+        { id: 'groll', req: ['campfire'], name: '돈고블린 룰렛', unit: '회', key: 'grollSpins', add: 1, cost: [6, 12] },
+        { id: 'mimic', req: ['campfire'], name: '미믹 수', unit: '마리', key: 'mimicCount', add: 1, cap: 4, cost: [8] },
+        { id: 'mBlueUp', req: ['mimic'], name: '파랑 미믹 확률', unit: '%', path: 'events.mimic.blueUp', add: 10, cost: [8, 16] }, // 2026-11-27 보물상자 등급(꺼진 보물상자 판) 칸 대신. 갈색 미믹마다 이 %로 파랑(2등급)이 됨 (사용자: "갈파왕 123등급", "파랑 확률 업")
+        { id: 'mKingUp', req: ['mBlueUp'], name: '왕관 미믹 확률', unit: '%', path: 'events.mimic.kingUp', add: 10, cost: [10, 20] }, // 왕관(3등급)이 아직 안 나오는 판에서 이 %로 1마리가 왕관이 됨 (사용자: "보스 등장 확률 업"). 숫자·비용 임시
         { id: 'lootGrade', req: ['lootReset'], name: '전리품 등급 확률', shift: 'lootWeight', cost: [8, 16] } ] },
       // 영웅 줄: 직업마다 어울리는 능력치만(사용자 "2로하자"). 직업별 능력치는 기획 제안표(사용자 확인 전) 그대로 임시. atk·hp·def = +비율, crit = +확률
       { id: 'h_guardian', name: '기사', job: 'guardian', nodes: [

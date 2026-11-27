@@ -56,3 +56,6 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
   console.log("ok · 미믹 확률", JSON.stringify(a), "→", JSON.stringify(c.map(x => +x.toFixed(2)))); }
 // 모닥불·요정 리셋 나눔: 요정 리셋 칸은 요정에만
 { const M = E.metaData(D, { nodes: { fairyReset: 1 } }); assert.strictEqual(E.eventRerolls(M, 1), 1); assert.strictEqual(E.eventRerolls(M, 1, "fairy"), 2); console.log("ok · 모닥불·요정 리셋 나눔"); }
+// 강화 설명 "기존" 값: 레벨 1 값
+{ const b = id => E.metaBase(D, E.metaNode(D, id)); assert.strictEqual(b("eventReset"), 1); assert.strictEqual(b("life"), 10); assert.strictEqual(b("startGold"), 0); assert.strictEqual(b("lootReset"), 1); assert.strictEqual(b("g_hp"), null);
+  console.log("ok · 기존 값", ["eventReset", "life", "startGold", "mimic", "bag"].map(i => E.metaNode(D, i).name + " " + b(i) + E.metaNode(D, i).unit).join(", ")); }
