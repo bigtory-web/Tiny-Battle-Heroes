@@ -6,7 +6,7 @@ const M=E.metaData(D,full);
 assert.strictEqual(D.player.bag[0],5,"원본 그대로"); assert.strictEqual(M.player.bag[0],7); assert.strictEqual(M.player.bag[9],7,"cap");
 assert.strictEqual(M.player.skillSlots[0],6); assert.strictEqual(M.player.potion[0],2,"물약 칸 최대 2");
 assert.deepStrictEqual(M.player.shopGrade[0],[55,25,10,10],"2026-11-27 상점도 기준 표(Lv1 85/15/0/0) + 등급별 +10%, 일반에서 뺌");
-assert.strictEqual(M.shop.refreshMax,D.shop.refreshMax+2); assert.strictEqual(M.campaign.startGold,150); assert.strictEqual(M.life.max,16);
+assert.strictEqual(M.shop.refreshMax,D.shop.refreshMax+1,"리셋 +1까지만"); assert.strictEqual(M.campaign.startGold,150); assert.strictEqual(M.life.max,16);
 assert.deepStrictEqual(M.recruit.reroll.max,[2]); assert.strictEqual(D.recruit.reroll.max[0],1);
 assert.strictEqual(M.player.clearGold[0],150);
 assert.ok(Math.abs(M.heroBoost.guardian.hp-0.10)>=0 && Math.abs(M.heroBoost.guardian.hp-0.15)<1e-9);
@@ -128,3 +128,6 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
 // 뺀 노드 훈장 돌려주기(2026-11-27)
 { const st = { medals: 5, nodes: { heroLv: 3, t_hp: 1 } }; assert.strictEqual(E.metaRefund(D, st), 60); assert.strictEqual(st.medals, 65); assert.ok(!('heroLv' in st.nodes) && st.nodes.t_hp === 1);
   assert.strictEqual(E.metaRefund(D, st), 0, "두 번째는 0"); const s2 = { medals: 0, nodes: { heroLv: 1 } }; assert.strictEqual(E.metaRefund(D, s2), 10); console.log("ok · 뺀 노드 훈장 돌려주기"); }
+// 리셋 +1까지만, 레벨업 증가 없음(2026-11-27)
+{ assert.deepStrictEqual(D.player.eventReroll, Array(10).fill(1)); const st = { medals: 0, nodes: { shopReset: 2, eventReset: 1, daisReset: 2 } }; assert.strictEqual(E.metaRefund(D, st), 24); assert.deepStrictEqual(st.nodes, { shopReset: 1, eventReset: 1, daisReset: 1 }); assert.strictEqual(E.metaRefund(D, st), 0);
+  const M = E.metaData(D, { nodes: { eventReset: 1, fairyReset: 1, daisReset: 1 } }); assert.strictEqual(E.eventRerolls(M, 10), 2); assert.strictEqual(E.eventRerolls(M, 10, "fairy"), 2); console.log("ok · 리셋 +1까지만"); }

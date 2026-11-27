@@ -962,7 +962,10 @@
     return !N.req || !N.req.length || N.req.some(function (q) { return (S[q] || 0) > 0; }) ? 'open' : 'locked'; }
   function metaNext(data, state, id) { var N = metaNode(data, id), n = ((state && state.nodes) || {})[id] || 0; return N && metaStatus(data, state, id) === 'open' ? { node: N, step: n + 1, cost: N.cost[n] } : null; }
   // 2026-11-27 뺀 노드에 쓴 훈장 돌려주기: data.meta.removed = { 노드 id: 단계별 비용 }. 저장에 그 노드가 있으면 쓴 만큼 훈장에 더하고 노드를 지워요. 돌려준 훈장 수를 돌려줘요(state를 바꿔요, 여러 번 불러도 한 번만 돌려줌)
-  function metaRefund(data, state) { var R = (data.meta && data.meta.removed) || {}, N = (state && state.nodes) || {}, got = 0; for (var id in R) { var n = N[id] || 0; for (var i = 0; i < n && i < R[id].length; i++) got += R[id][i]; delete N[id]; } if (got) state.medals = (state.medals || 0) + got; return got; }
+  function metaRefund(data, state) { var R = (data.meta && data.meta.removed) || {}, N = (state && state.nodes) || {}, got = 0; for (var id in R) { var n = N[id] || 0; for (var i = 0; i < n && i < R[id].length; i++) got += R[id][i]; delete N[id]; }
+    var T = (data.meta && data.meta.trimmed) || {}, now = {}; ((data.meta && data.meta.lines) || []).forEach(function (L) { L.nodes.forEach(function (x) { now[x.id] = x.cost.length; }); });
+    for (var t in T) { var k = now[t] || 0, m = N[t] || 0; for (var j = k; j < m && j < T[t].length; j++) got += T[t][j]; if (m > k) N[t] = k; } // 단계를 줄인 노드: 넘친 단계만 돌려줌
+    if (got) state.medals = (state.medals || 0) + got; return got; }
   function metaBuy(data, state, id) { var nx = metaNext(data, state, id); if (!nx || (state.medals || 0) < nx.cost) return false; state.medals -= nx.cost; (state.nodes || (state.nodes = {}))[id] = nx.step; return true; } // state를 바꿔요
   function metaMedals(data, cleared, firstClear) { var M = (data.meta || {}).medal || {}, m = 0; for (var i = 0; i < (cleared || 0); i++) m += (M.clear || 0) + (isBoss(data, i) ? M.boss || 0 : 0); return Math.round((m + (firstClear ? M.firstClear || 0 : 0)) * (((data.campaign || {}).diff || {}).medalMul || 1)); } // 판 끝 훈장(제약 배율은 제약이 생기면 곱함)
   function campaign(data, opts) {

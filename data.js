@@ -541,9 +541,9 @@ var IDLE_DATA = {
     levelPick: null, // 2026-11-22 꺼 봄. 켜려면 ['relic', 'skill']
     need:       [2, 3, 4, 5, 6, 7, 8, 9, 10],
     field:      [2, 3, 3, 4, 4, 5, 5, 5, 5, 5],
-    daisReroll: [1, 1, 1, 1, 2, 2, 2, 2, 3, 3], // 2026-11-26: 단상 리셋 횟수(값은 룰렛 리셋과 같음)
-    eventReroll: [1, 1, 1, 1, 2, 2, 2, 2, 3, 3], // 2026-11-27: 모닥불 리셋 횟수만(요정은 fairyReroll로 나눔, 사용자: "모닥불과 요정 리셋 구분해"). 2026-11-26: 모닥불·요정 룰렛 리셋 횟수
-    fairyReroll: [1, 1, 1, 1, 2, 2, 2, 2, 3, 3], // 2026-11-27: 요정 리셋 횟수(나누기 전 모닥불과 같은 값 그대로)(값은 룰렛 리셋과 같음. 사용자: "리셋넣어 플레이어레벨에맞춰서. 페어리도 동일.")
+    daisReroll: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], /* 2026-11-27 레벨업으로 늘던 것 뺌, 업그레이드로 +1까지만 (사용자: "리셋은 기존 값에 +1만 최대로 주자. 레벨업 있는 부분들 빼"). 예전 [1,1,1,1,2,2,2,2,3,3] */ // 2026-11-26: 단상 리셋 횟수(값은 룰렛 리셋과 같음)
+    eventReroll: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], /* 2026-11-27 레벨업으로 늘던 것 뺌, 업그레이드로 +1까지만 (사용자: "리셋은 기존 값에 +1만 최대로 주자. 레벨업 있는 부분들 빼"). 예전 [1,1,1,1,2,2,2,2,3,3] */ // 2026-11-27: 모닥불 리셋 횟수만(요정은 fairyReroll로 나눔, 사용자: "모닥불과 요정 리셋 구분해"). 2026-11-26: 모닥불·요정 룰렛 리셋 횟수
+    fairyReroll: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], /* 2026-11-27 레벨업으로 늘던 것 뺌, 업그레이드로 +1까지만 (사용자: "리셋은 기존 값에 +1만 최대로 주자. 레벨업 있는 부분들 빼"). 예전 [1,1,1,1,2,2,2,2,3,3] */ // 2026-11-27: 요정 리셋 횟수(나누기 전 모닥불과 같은 값 그대로)(값은 룰렛 리셋과 같음. 사용자: "리셋넣어 플레이어레벨에맞춰서. 페어리도 동일.")
     skillSlots: [4, 5, 5, 6, 6, 7, 8, 8, 9, 10], // 2026-11-22: 유물 칸이 레벨에 따라 열려요(4→10)
     shopSlots:  [3, 3, 4, 4, 5, 5, 6, 6, 6, 6],
     mimicCount: [3, 3, 3, 3, 4, 4, 4, 4, 4, 4], // 2026-11-26: 미믹 판 마리 수(Lv5부터 4마리)
@@ -572,7 +572,8 @@ var IDLE_DATA = {
   // 칸 종류: key = player 레벨 표 줄에 add씩 더함(cap을 안 넘게) · shift = 레벨 표를 단계만큼 앞당김(등급 확률) · path = 그 값에 add씩 더함 · hero = 직업(job, 'all'은 팀 전체) 능력치 + add
   // cost[i] = i+1단계 비용(훈장). E.metaData(data, state)가 강화를 반영한 data를 돌려줘요(봇·화면 둘 다 이걸 씀)
   meta: {
-    removed: { heroLv: [10, 20, 30] }, // 2026-11-27 뺀 노드와 그 단계별 비용. 저장에 남아 있으면 E.metaRefund가 훈장을 돌려줘요(사용자: "돌려줘", 기획결정기록 0-30)
+    removed: { heroLv: [10, 20, 30] },
+    trimmed: { shopReset: [6, 12], eventReset: [6, 12], fairyReset: [6, 12], daisReset: [6, 12] }, // 2026-11-27 단계를 줄인 노드의 예전 비용. 저장이 지금 단계 수보다 많이 찍혀 있으면 E.metaRefund가 넘친 단계 훈장을 돌려주고 단계를 줄여요 // 2026-11-27 뺀 노드와 그 단계별 비용. 저장에 남아 있으면 E.metaRefund가 훈장을 돌려줘요(사용자: "돌려줘", 기획결정기록 0-30)
     medal: { clear: 1, boss: 2, firstClear: 10 }, // 판이 끝날 때 받는 훈장: 판 클리어마다 clear, 보스 판(5·10) +boss, 장 첫 클리어 +firstClear (기획안 3번 초안)
     flatAlso: ['mimicBlue'], /* 2026-11-27: 영웅·상인 영웅·돈고블린 룰렛 등급을 잠깐 Lv1 고정에 넣었다가 뺌 — 등급 확률은 레벨업이 메인, 영구 강화(+단계)는 보조 (사용자: "레벨업으로 영웅 확률 업 맞아", "고블린도 그렇게 하자", "레벨업 메인으로, 영구 강화는 보조") */ // "영구 강화로" 모드에서 칸 key 말고도 Lv1에 고정할 레벨 표 줄(미믹 수에 딸린 파랑 미믹 수)
     lines: [
@@ -584,7 +585,7 @@ var IDLE_DATA = {
         { id: 'potion', req: ['bag'], name: '물약 칸', unit: '칸', key: 'potion', add: 1, cap: 2 /* 2026-11-27 최대 2칸 */, cost: [6, 12] } ] },
       { id: 'shop', name: '상점', nodes: [
         { id: 'shopSlot', req: ['start'], name: '상점 칸', unit: '칸', key: 'shopSlots', add: 1, cap: 6, cost: [8, 16] },
-        { id: 'shopReset', req: ['shopSlot'], name: '상점 리셋', unit: '회', path: 'shop.refreshMax', add: 1, cost: [6, 12] },
+        { id: 'shopReset', req: ['shopSlot'], name: '상점 리셋', unit: '회', path: 'shop.refreshMax', add: 1, cost: [6] /* 2026-11-27 리셋은 +1까지만 */ },
         { id: 'merchSlot', req: ['shopSlot'], name: '상인 상품 수', unit: '개', key: 'merchantSlots', add: 1, cap: 6, cost: [6, 12] },
         { id: 'swampSlot', req: ['merchSlot'], name: '늪지 상인 물약 수', unit: '개', key: 'swampSlots', add: 1, cap: 6, cost: [6, 12] }, // 2026-11-27 (사용자: "말했지 내가? 플레이어레벨 그거 해당하는거 이미.")
         { id: 'merchHero', req: ['merchSlot'], name: '상인 영웅 수', unit: '명', key: 'merchantHeroes', add: 1, cap: 2, cost: [10] },
@@ -602,9 +603,9 @@ var IDLE_DATA = {
         { id: 'clearGold', req: ['startGold'], name: '클리어 골드', unit: 'G', key: 'clearGold', add: 10, cost: [5, 10, 15] },
         { id: 'lootReset', req: ['clearGold'], name: '전투 룰렛 리셋', unit: '회', path: 'recruit.reroll.max', add: 1, cost: [8] },
         { id: 'campfire', req: ['startGold'], name: '모닥불 영웅 수', unit: '명', key: 'campfire', add: 1, cap: 6, cost: [6, 12] },
-        { id: 'eventReset', req: ['campfire'], name: '모닥불 리셋', unit: '회', key: 'eventReroll', add: 1, cost: [6, 12] },
-        { id: 'fairyReset', req: ['eventReset'], name: '요정 리셋', unit: '회', key: 'fairyReroll', add: 1, cost: [6, 12] }, // 2026-11-27 모닥불·요정 리셋을 나눔. 비용은 모닥불 리셋과 같게 임시
-        { id: 'daisReset', req: ['eventReset'], name: '양탄자 리셋', unit: '회', key: 'daisReroll', add: 1, cost: [6, 12] },
+        { id: 'eventReset', req: ['campfire'], name: '모닥불 리셋', unit: '회', key: 'eventReroll', add: 1, cost: [6] /* 2026-11-27 리셋은 +1까지만 */ },
+        { id: 'fairyReset', req: ['eventReset'], name: '요정 리셋', unit: '회', key: 'fairyReroll', add: 1, cost: [6] /* 2026-11-27 리셋은 +1까지만 */ }, // 2026-11-27 모닥불·요정 리셋을 나눔. 비용은 모닥불 리셋과 같게 임시
+        { id: 'daisReset', req: ['eventReset'], name: '양탄자 리셋', unit: '회', key: 'daisReroll', add: 1, cost: [6] /* 2026-11-27 리셋은 +1까지만 */ },
         { id: 'hg2', req: ['campfire'], name: '영웅 고급 확률', unit: '%', gradeUp: { table: 'heroGrade', grade: 2 }, add: 2, cost: [4, 8, 12, 16, 20] }, // 2026-11-27 등급별 확률 +2%씩 5단계, 더한 %는 낮은 등급부터 뺌 (사용자: "2%씩으로 해. 5개까지. 각 등급별로 구분하고", "낮은 등급에서부터 빼야겠지"). 예전 +단계 칸(heroGrade) 대신. 비용 임시
         { id: 'hg3', req: ['hg2'], name: '영웅 희귀 확률', unit: '%', gradeUp: { table: 'heroGrade', grade: 3 }, add: 2, cost: [4, 8, 12, 16, 20] },
         { id: 'hg4', req: ['hg3'], name: '영웅 전설 확률', unit: '%', gradeUp: { table: 'heroGrade', grade: 4 }, add: 2, cost: [4, 8, 12, 16, 20] },
