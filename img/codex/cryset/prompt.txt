@@ -1,0 +1,15 @@
+Look at:
+- img/p/ui_cry_hp.png : our current 24x24 health crystal icon. It is too plain and upright: it does not feel like a crystal.
+- img/codex/golemfoe/raw2.png : our crystal golem, for the faceted crystal look we like (hard angular facets, bright glints).
+- img/p/bg_cave.png : the crystal cave.
+
+Make ONE image with THREE different variants of a GREEN crystal item icon, side by side with wide empty magenta space between them, all the same size:
+1) one long crystal TILTED about 30 degrees to the upper right, sharp pointed tip, flat broken base.
+2) a tilted cluster: one big crystal leaning to the upper right with two smaller shards leaning other ways.
+3) one tilted double-pointed gem crystal (pointed at both ends), floating, with a small sparkle cross next to it.
+All must read as real cut crystal: clearly separated angular facets with hard diagonal edges, 4 flat tones (deep green, green, light mint, near white), one bright highlight streak along an edge, a couple of white glint pixels, light from the upper left, thick very dark outline.
+
+STRICT SIZE: each variant is at most 22 x 22 art pixels, drawn with large crisp square pixels (each art pixel about 20 real pixels).
+Save as img/codex/cryset/variants_src.png (if the size differs, save it anyway).
+No anti-aliasing, no gradients, no shadow, no glow, flat solid #FF00FF magenta background, no text, no numbers.
+Python is not installed on this computer: do not use python. Use PowerShell Copy-Item to copy the generated file. Do not modify or create any other file.

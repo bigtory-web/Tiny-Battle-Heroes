@@ -1,0 +1,12 @@
+Look at img/codex/cryset/ref_cave_crystal.png : THIS is exactly the kind of crystal to draw: a straight hexagonal prism with long PARALLEL STRAIGHT edges, a pointed tip made of flat triangular faces, and two or three long flat faces each in its own single tone (light face, mid face, dark face) separated by thin lines. Angular like quartz. Absolutely no curves, nothing leaf-like, no rounded outline.
+
+Make ONE image with THREE variants of a GREEN crystal item icon, side by side with wide empty magenta space between them, same size:
+1) one thick crystal leaning about 20 degrees to the right, pointed tip on top, flat base.
+2) the same big leaning crystal plus one small crystal leaning to the left at its base.
+3) one big leaning crystal with two small ones, one on each side (a small cluster like the reference).
+Each crystal is THICK (width about 40-45 percent of its length). Greens: dark #1f7a45, mid #3cc470, light #8dffb4, near white #eafff2. Light from the upper left, one white edge highlight and 2 glint pixels, thick very dark outline.
+
+STRICT SIZE: each variant is at most 22 x 22 art pixels, drawn with large crisp square pixels (each art pixel about 20 real pixels).
+Save as img/codex/cryset/variants_src.png (if the size differs, save it anyway).
+No anti-aliasing, no gradients, no shadow, no glow, flat solid #FF00FF magenta background, no text.
+Python is not installed on this computer: do not use python. Use PowerShell Copy-Item to copy the generated file. Do not modify or create any other file.
