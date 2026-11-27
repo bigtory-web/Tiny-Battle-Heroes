@@ -408,7 +408,7 @@
           var MM = data.events.mimic || {}; u.age = (u.age || 0) + B.dt; u.moving = false;
           if (t >= (MM.dur || 20)) { /* 전투 시간 기준(기절해도 흘러요) */ u.alive = false; u.escaped = true; if (rec) log.push({ t: t, kind: 'escape', uid: u.uid }); if (!alive(E).length) { result = 'win'; break; } continue; }
           if (u.stun > 0) continue; u.mt = (u.mt == null ? rand() * 0.5 : u.mt) + B.dt; /* 2026-11-26: 공속(interval)마다 평타(고정 피해 dmg, 사거리 안 가장 가까운 영웅), 평타로 에너지가 차면 방해 스킬(사용자: 공속을 쳐야지 스킬 생기자나) */
-          var mrc = u.blue ? (B.arena.reach[MM.blueRange || 'mid'] || u.reach) : u.reach; /* 사거리: 갈색 1칸(melee), 파랑 2칸(blueRange), 왕관 4칸(mobs range far) */
+          var mrc = u.blue ? ((typeof MM.blueRange === 'number' ? MM.blueRange : B.arena.reach[MM.blueRange || 'mid']) || u.reach) : u.reach; /* 사거리: 갈색 1칸(melee), 파랑 2칸(blueRange), 왕관 4칸(mobs range far) */
           if (u.mt >= u.interval) { u.mt -= u.interval; var MF = alive(foes(u)).filter(function (x) { return dist(u, x) <= mrc; }); if (MF.length) { var mt2 = MF.reduce(function (m, x) { return dist(u, x) < dist(u, m) ? x : m; }); /* 사거리 안에서 가장 가까운 영웅 */
             if (MM.dmg) { var mab = Math.min(mt2.shield || 0, MM.dmg); mt2.shield -= mab; mt2.hp -= MM.dmg - mab; u.stats.dealt += MM.dmg; mt2.stats.taken += MM.dmg; if (rec) log.push({ t: t, kind: 'hit', from: u.uid, to: mt2.uid, amt: MM.dmg, mm: u.blue || u.h.king ? 'spit' : 'bite' }); /* mm: 화면 연출(갈색 깨물기, 파랑·왕관 침 투사체) */ if (mt2.hp <= 0) die(mt2, u); }
             u.energy = Math.min(B.energyMax, u.energy + (EN.onAttack || 0));
