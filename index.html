@@ -4292,7 +4292,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   function ultDescFull(hh, U, k){ if (!U) return ''; if (U.desc) return U.desc; var e = elSkillText(hh.el, U.kind); return (ULTD[U.kind] ? ULTD[U.kind](U) : '') + (e ? ' ' + e : '') + ultLvNote(k); }
   function ultIconEl(hh){ return ultIcon(hh, 24); } /* 2026-11-25: 아이콘 오른쪽 아래 속성 색 네모(.eldot) 뺌 (사용자 요청) */
   function dropIc(k){ var p = LP(k), at = p.type === 's' ? ' data-tipsk="' + p.id + '" data-tiplv="1"' : p.type === 'p' ? padTipAttr(p.id) : ' title="' + lootName(k) + (p.type === 'g' ? ' ' + p.amt.toLocaleString() + 'G' : '') + '"'; return '<span class="mdrop ' + p.type + '" style="--el:' + lootColor(k) + '"' + at + '>' + lootIcon(k) + '</span>'; }
-  var RNG_NM = { melee: '1칸', mid: '2칸', long: '3칸', far: '4칸' };
+  var RNG_NM = { melee: '1칸', mid: '3칸', long: '4칸', far: '5칸' };
   // o: { lv, hp, maxHp, atk, def, interval, drops(전리품 키), dropHtml(도감용), dead }
   function mobInfoHtml(id, o){ var h = hero(id); o = o || {};
     var dd = o.dropHtml != null ? o.dropHtml : (o.drops || []).map(dropIc).join('');
@@ -4300,7 +4300,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     var face = mm ? '<span class="av pic pix" style="background-image:url(img/p/' + (mk === 'k' ? 'mimic_king' : mk === 'b' ? 'mimic_g2' : 'mimic') + '.png);--fs:112%;--fx:50%;--fy:50%"></span>' : av(id);
     if (mm && D.events && D.events.mimic) o.atk = D.events.mimic.dmg;
     return '<div class="hi-top"><span class="hi-av hic mobav" style="--hg:' + HG(id).col + '">' + face + '</span><div><b>' + (o.name || h.name) + (o.lv ? ' <em class="hlv">Lv ' + o.lv + '</em>' : '') + '</b>' + (o.dead ? '<div class="hi-tag"><span class="hi-dead">쓰러짐</span></div>' : '') + '<div class="hi-tags">' + tagHtml(h) + '</div></div></div>' +
-      '<div class="hi-st4"><span>체력<b>' + Math.round(o.hp).toLocaleString() + '</b></span><span>공격<b>' + Math.round(o.atk) + '</b></span><span>방어<b>' + Math.round(o.def) + '</b></span><span>공속<b>' + (+(1 / (o.interval || h.interval)).toFixed(2)) + '</b></span><span>사거리<b>' + (RNG_NM[mk === 'b' ? (D.events.mimic.blueRange || 'mid') : h.range] || '-') + '</b></span></div>' +
+      '<div class="hi-st4"><span>체력<b>' + Math.round(o.hp).toLocaleString() + '</b></span><span>공격<b>' + Math.round(o.atk) + '</b></span><span>방어<b>' + Math.round(o.def) + '</b></span><span>공속<b>' + (+(1 / (o.interval || h.interval)).toFixed(2)) + '</b></span><span>사거리<b>' + (mk === 'b' ? (RNG_NM[D.events.mimic.blueRange] || '2칸' /* 숫자(픽셀)면 2칸 */) : RNG_NM[h.range] || '-') + '</b></span></div>' +
       (ms ? skRow(skFrame(pasIcon(mk === 'k' ? 'shieldBreakStun' : mk === 'b' ? 'ultBlind' : 'hitSlow'), HG(id).col), ms.name, 1, ms.desc) : '') +
       (dd ? '<div class="hi-ult mlootrow' + (mm ? ' big' : '') + '"><b class="mlh">전리품</b><div class="mdrops">' + dd + '</div></div>' : ''); }
   function infoHtml(id, lv, st, mul, foe, noStar, unit){
