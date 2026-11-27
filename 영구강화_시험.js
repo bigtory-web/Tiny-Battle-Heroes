@@ -125,3 +125,6 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
 { assert.deepStrictEqual(E.crystalText(D, 'hp'), ['붉은 수정의 영웅은 체력이 50% 감소한다.', '푸른 수정의 영웅은 체력이 25% 증가한다.', '영웅이 살아 있을 때만 효과가 발동한다.']);
   assert.strictEqual(E.crystalText(D, 'move')[1], '푸른 수정의 영웅은 이동 속도가 25% 증가한다.'); assert.strictEqual(E.crystalText(D, 'reach')[0], '붉은 수정의 영웅은 사거리가 1칸 감소한다.'); assert.strictEqual(E.crystalText(D, 'hp', 0.25)[0], '붉은 수정의 영웅은 체력이 75% 감소한다.');
   console.log("ok · 수정 설명 글"); }
+// 뺀 노드 훈장 돌려주기(2026-11-27)
+{ const st = { medals: 5, nodes: { heroLv: 3, t_hp: 1 } }; assert.strictEqual(E.metaRefund(D, st), 60); assert.strictEqual(st.medals, 65); assert.ok(!('heroLv' in st.nodes) && st.nodes.t_hp === 1);
+  assert.strictEqual(E.metaRefund(D, st), 0, "두 번째는 0"); const s2 = { medals: 0, nodes: { heroLv: 1 } }; assert.strictEqual(E.metaRefund(D, s2), 10); console.log("ok · 뺀 노드 훈장 돌려주기"); }
