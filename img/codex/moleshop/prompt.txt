@@ -1,0 +1,12 @@
+Look at:
+- img/p/ev_swampshop.png : our swamp potion merchant (a frog), a small chibi pixel-art character used on the battlefield. THIS is the style reference.
+- img/codex/swampshop/ref_trader.png : our wandering merchant, same style.
+
+Draw a NEW character for the same game in exactly the same pixel-art style: same pixel size (about a 52x52 pixel-art sprite on a 64x64 grid), thick dark brown outline, muted warm colors, 3-tone shading, big head and small body, seen slightly from above, facing to the RIGHT.
+
+The character: a CRYSTAL CAVE MERCHANT MOLE. A real standing mole creature: plump dark grey-brown velvet mole with a pale muzzle, a big pink nose, tiny narrow eyes behind small round spectacles, big pale-pink digging claws. It wears a yellow-brown miner helmet with a glowing lamp on the front and a worn leather vest or apron. On its back a big wooden pack frame loaded with several raw crystals (blue, green, purple) that stick out above its shoulders, and in its front claw it holds up one green crystal to sell. Feet at the bottom.
+
+Generate ONE new image with your image generation tool and save it as img/codex/moleshop/mole_src.png (if the size differs a little from 1024x1024, save it anyway).
+Large crisp square pixels, no anti-aliasing, no gradients, no ground shadow, no glow outside the outline.
+[Format] Plain solid #FF00FF magenta background, no text, nothing else.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
