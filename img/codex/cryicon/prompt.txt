@@ -1,0 +1,9 @@
+Look at img/p/ui_swampcell.png and img/p/ui_swampfoe1.png (our 24x24 pixel-art icons: dark outline, 3 flat tones, saturated, chunky) and img/p/cry_cell_p.png (the green crystal floor tile of the crystal cave).
+
+Make ONE item icon: a GREEN HEALTH CRYSTAL. One big upright hexagonal crystal with a pointed top, two small crystals at its base (left and right), a few white glint pixels, light from the top-left, 3-4 flat green tones (dark #1f7a45, mid #5fe08c, light #d6ffe2). Thick very dark outline. Front view, centered. No heart shape, no letters, no base plate.
+
+The whole drawing must be at most 22 art pixels wide and 22 art pixels tall, drawn with large crisp square pixels (each art pixel about 42 real pixels in a 1024x1024 image).
+
+Generate ONE new image with your image generation tool and save it as img/codex/cryicon/raw.png (if the size differs a little from 1024x1024, save it anyway).
+No anti-aliasing, no gradients, no shadow, no glow, flat solid #FF00FF magenta background, no text.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

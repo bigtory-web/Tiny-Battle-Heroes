@@ -1,0 +1,9 @@
+Look at img/codex/golemfoe/ref.png : our existing 24x24 pixel-art enemy rage-button icons, enlarged (top row dragon stages 1-3, bottom row crocodile stages 1-3). Make ONE new icon in exactly the same style: same pixel size, dark brown 1px outline, 3-tone shading, front view, symmetrical, filling the grid the same way.
+
+The icon: a STONE GOLEM HEAD with CRYSTALS, STAGE 1 (the mildest of three): a heavy blocky boulder head made of 3-4 large slate-grey stone chunks with clear cracks between them, a thick overhanging stone brow, narrow angry glowing yellow eyes (like the other icons), a wide square stone jaw, ONE sharp blue crystal growing from the top of the head (the later stages will get more). It must read as a rock golem at a glance, not a robot and not a dragon.
+
+The whole drawing must be at most 22 art pixels wide and 22 art pixels tall, drawn with large crisp square pixels (each art pixel about 42 real pixels in a 1024x1024 image).
+
+Generate ONE new image with your image generation tool and save it as img/codex/golemfoe/raw.png (if the size differs a little from 1024x1024, save it anyway).
+No anti-aliasing, no gradients, no shadow, flat solid #FF00FF magenta background, no text.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
