@@ -54,3 +54,5 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
   const a = cnt({ nodes: {} }, 1), c = cnt({ nodes: { mBlueUp: 2, mKingUp: 2 } }, 1);
   assert.deepStrictEqual(a, [1, 0], "안 찍으면 Lv1 파랑 1·왕관 0 그대로"); assert.ok(c[0] > 1.1 && c[1] > 0.1 && c[1] < 0.3, "파랑 늘고 왕관 약 20%");
   console.log("ok · 미믹 확률", JSON.stringify(a), "→", JSON.stringify(c.map(x => +x.toFixed(2)))); }
+// 모닥불·요정 리셋 나눔: 요정 리셋 칸은 요정에만
+{ const M = E.metaData(D, { nodes: { fairyReset: 1 } }); assert.strictEqual(E.eventRerolls(M, 1), 1); assert.strictEqual(E.eventRerolls(M, 1, "fairy"), 2); console.log("ok · 모닥불·요정 리셋 나눔"); }

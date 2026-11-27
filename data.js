@@ -524,7 +524,8 @@ var IDLE_DATA = {
     need:       [2, 3, 4, 5, 6, 7, 8, 9, 10],
     field:      [2, 3, 3, 4, 4, 5, 5, 5, 5, 5],
     daisReroll: [1, 1, 1, 1, 2, 2, 2, 2, 3, 3], // 2026-11-26: 단상 리셋 횟수(값은 룰렛 리셋과 같음)
-    eventReroll: [1, 1, 1, 1, 2, 2, 2, 2, 3, 3], // 2026-11-26: 모닥불·요정 룰렛 리셋 횟수(값은 룰렛 리셋과 같음. 사용자: "리셋넣어 플레이어레벨에맞춰서. 페어리도 동일.")
+    eventReroll: [1, 1, 1, 1, 2, 2, 2, 2, 3, 3], // 2026-11-27: 모닥불 리셋 횟수만(요정은 fairyReroll로 나눔, 사용자: "모닥불과 요정 리셋 구분해"). 2026-11-26: 모닥불·요정 룰렛 리셋 횟수
+    fairyReroll: [1, 1, 1, 1, 2, 2, 2, 2, 3, 3], // 2026-11-27: 요정 리셋 횟수(나누기 전 모닥불과 같은 값 그대로)(값은 룰렛 리셋과 같음. 사용자: "리셋넣어 플레이어레벨에맞춰서. 페어리도 동일.")
     skillSlots: [4, 5, 5, 6, 6, 7, 8, 8, 9, 10], // 2026-11-22: 유물 칸이 레벨에 따라 열려요(4→10)
     shopSlots:  [3, 3, 4, 4, 5, 5, 6, 6, 6, 6],
     mimicCount: [3, 3, 3, 3, 4, 4, 4, 4, 4, 4], // 2026-11-26: 미믹 판 마리 수(Lv5부터 4마리)
@@ -578,7 +579,8 @@ var IDLE_DATA = {
         { id: 'clearGold', req: ['startGold'], name: '클리어 골드', key: 'clearGold', add: 10, cost: [5, 10, 15] },
         { id: 'lootReset', req: ['clearGold'], name: '전투 룰렛 리셋', path: 'recruit.reroll.max', add: 1, cost: [8] },
         { id: 'campfire', req: ['startGold'], name: '모닥불 영웅 수', key: 'campfire', add: 1, cap: 6, cost: [6, 12] },
-        { id: 'eventReset', req: ['campfire'], name: '모닥불·요정 리셋', key: 'eventReroll', add: 1, cost: [6, 12] },
+        { id: 'eventReset', req: ['campfire'], name: '모닥불 리셋', key: 'eventReroll', add: 1, cost: [6, 12] },
+        { id: 'fairyReset', req: ['eventReset'], name: '요정 리셋', key: 'fairyReroll', add: 1, cost: [6, 12] }, // 2026-11-27 모닥불·요정 리셋을 나눔. 비용은 모닥불 리셋과 같게 임시
         { id: 'daisReset', req: ['eventReset'], name: '양탄자 리셋', key: 'daisReroll', add: 1, cost: [6, 12] },
         { id: 'groll', req: ['campfire'], name: '돈고블린 룰렛', key: 'grollSpins', add: 1, cost: [6, 12] },
         { id: 'mimic', req: ['campfire'], name: '미믹 수', key: 'mimicCount', add: 1, cap: 4, cost: [8] },

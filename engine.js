@@ -596,7 +596,7 @@
     for (i = 0; i < n; i++) if (has.indexOf(i) < 0) pool.push(i);
     if (!pool.length) pool = has;
     return pool.length ? pool[Math.floor(rnd() * pool.length)] : 0; }
-  function eventRerolls(data, plv) { var P = data.player && data.player.eventReroll; return P ? P[Math.max(0, Math.min((plv || 1) - 1, P.length - 1))] : rerollMax(data, plv); } // 모닥불·요정 룰렛 리셋 횟수
+  function eventRerolls(data, plv, kind) { var P = data.player && ((kind === 'fairy' && data.player.fairyReroll) || data.player.eventReroll); /* 2026-11-27 kind 'fairy'면 요정 리셋(fairyReroll), 아니면 모닥불 */ return P ? P[Math.max(0, Math.min((plv || 1) - 1, P.length - 1))] : rerollMax(data, plv); } // 모닥불·요정 룰렛 리셋 횟수
   function daisRerolls(data, plv) { var P = data.player && data.player.daisReroll; return P ? P[Math.max(0, Math.min((plv || 1) - 1, P.length - 1))] : 0; }
   // 돈고블린 홀짝: 걸 골드(스테이지 n), 결과 판정. pick = 'odd' | 'even', roll = 1~6 같은 숫자
   // 돈고블린 룰렛(2026-11-26): 한 번 돌리는 값, 레벨별 횟수, 후보(골드 칸 = 낸 값 × goldWin)
