@@ -3429,7 +3429,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   var R = D.recruit, KEY = 'idle-testbed-v2', S;
   function runStats0(){ return { bought: 0, by: {}, heroes: 0, battles: 0, wins: 0, kills: 0, events: {}, lastTeam: [], startAt: Date.now(), playMs: 0 }; } /* 이번 판 기록 (모험 완료 팝업) */
   function fresh(){ var s = { chapter: CH, diff: RUNDIFF, meta: RUNMETA, metaMode: RUNMODE, runStats: runStats0(), gold: D.campaign.startGold || 0, stage: 0, units: [], levels: {}, team: [null, null, null, null, null], idleAt: Date.now(), modules: {}, pending: null, life: D.life ? D.life.max : 10, streak: 0, mana: 0, xp: 0, bell: 0, bellGold: 0 }; // 새 판: 체력·마나스톤·경험치도 처음 값
-    if (E.campfireAtStart && E.campfireAtStart(D) && E.rollCampfire){ s.event = { kind: 'campfire', ids: E.rollCampfire(D, Math.random, 1), start: true }; return s; } // 시작 모닥불: 1명을 얻고 1-1로
+    if (E.campfireAtStart && E.campfireAtStart(D) && E.rollCampfire){ s.event = { kind: 'campfire', ids: E.rollCampfire(D, Math.random, 1, 0), start: true }; return s; } // 시작 모닥불: 1명을 얻고 1-1로
     var u = E.newUnit(s.units, R.startHero, 1); s.levels[R.startHero] = D.startLevel; s.team[0] = u.uid; return s; }
   // 예전 저장(영웅 종류 기준) → 개체 기준: owned{id:{star}} → { id, grade: star }, spare → 1등급 개체, team의 id → 그 개체 uid
   function migrate(){
@@ -3571,8 +3571,8 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   function renderHeroes(){
     var html;
     if (cdxTab === 'lv'){ var PLD = D.player || {}, me = plv(), GC = D.gradeColor || {}, odds = function(w){ if (!w) return '-'; var s = w.reduce(function(a, b){ return a + b; }, 0) || 1; return w.map(function(v, i){ return '<i style="color:' + (GC[i + 1] || '#ccc') + '">' + Math.round(v * 100 / s) + '</i>'; }).join(''); };
-      html = '<table class="lvtab"><thead><tr><th>레벨</th><th>영웅 Lv</th><th>전장 칸</th><th>유물 칸</th><th>다음 경험치</th><th>영웅 등급</th><th>상점 등급</th></tr></thead><tbody>';
-      for (var L = 1; L <= plMax(); L++) html += '<tr' + (L === me ? ' class="me"' : '') + '><td>' + L + '</td><td>' + E.heroLevel(D, L) + '</td><td>' + ((PLD.field || [])[L - 1] || '-') + '</td><td>' + ((PLD.skillSlots || [])[L - 1] || '-') + '</td><td>' + ((PLD.need || [])[L - 1] || 'MAX') + '</td><td class="od">' + odds((PLD.heroGrade || [])[L - 1]) + '</td><td class="od">' + odds((PLD.shopGrade || [])[L - 1]) + '</td></tr>';
+      html = '<table class="lvtab"><thead><tr><th>레벨</th><th>영웅 Lv</th><th>전장 칸</th><th>유물 칸</th><th>다음 경험치</th></tr></thead><tbody>';
+      for (var L = 1; L <= plMax(); L++) html += '<tr' + (L === me ? ' class="me"' : '') + '><td>' + L + '</td><td>' + E.heroLevel(D, L) + '</td><td>' + ((PLD.field || [])[L - 1] || '-') + '</td><td>' + ((PLD.skillSlots || [])[L - 1] || '-') + '</td><td>' + ((PLD.need || [])[L - 1] || 'MAX') + '</td></tr>';
       html += '</tbody></table>';
     } else if (cdxTab === 'mob'){ var GI = HUDOK.gold ? '<img class="mni" src="img/p/hud_gold.png" alt="">' : '🪙', DI = { g: '<span class="mdk" title="골드">' + GI + '</span>', s: '<span class="mdk" title="유물">📜</span>', p: '<span class="mdk" title="진영 발판"><img class="padic2" src="' + padIc('forest') + '" alt=""></span>' }, WHERE = { goblin: 'goblin', chest: 'chest' };
       /* 몹 탭 = 미믹 3종만 (2026-11-26 사용자: "미믹 3종 외에 나머지 몹은 제거". 데이터는 그대로). 파랑 미믹은 갈색에서 만든 칸 */
@@ -4075,7 +4075,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   $('rAgain').addEventListener('click', function(){
     var p = againPrice(), left = leftPool(); if (!S.offer || S.offerDecided || S.pending || S.gold < p || !left.length || rerollLeft().n <= 0) return; if (S.offerMode === 'dais'){ daisDisarm(); S.event.tag = E.rollDais(D, Math.random, S.event.tag); S.event.dsRr = (S.event.dsRr || 0) + 1; }
     S.gold -= p; S.offerRerolls = (S.offerRerolls || 0) + 1; S.offerGone = (S.offerGone || []).concat([S.offer]);
-    S.offer = S.offerMode === 'dais' ? 'p:' + S.event.tag : left[E.lootPick(D, left, S.offerPlv || plv(), Math.random)]; if (S.offerMode === 'dais') S.offerGone = []; /* 양탄자는 뽑았던 것도 다시 나올 수 있음 (확률은 엔진 그대로) */ S.offerLast = ''; /* 첫 뽑기와 같은 레벨 가중치 (2026-11-24) */
+    S.offer = S.offerMode === 'dais' ? 'p:' + S.event.tag : left[E.lootPick(D, left, S.offerPlv || plv(), Math.random, S.offerPlv != null ? S.stage - 1 : S.stage)]; if (S.offerMode === 'dais') S.offerGone = []; /* 양탄자는 뽑았던 것도 다시 나올 수 있음 (확률은 엔진 그대로) */ S.offerLast = ''; /* 첫 뽑기와 같은 레벨 가중치 (2026-11-24) */
     save(); renderAll();
     var rb = $('roul').querySelector('.rbox'); rb.classList.remove('pop', 'toss'); void rb.offsetWidth; rb.classList.add('toss'); // 버린 카드가 날아가요
     setTimeout(function(){ rb.classList.remove('toss'); startRoulette(S.offerIds && S.offerIds.length ? S.offerIds : [S.offer], S.offer); }, 260);
@@ -5403,7 +5403,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
         (!cr.tier ? '<div class="evgain miss">상자가 사라졌어요</div>' : '');
     } else if (r.win){
       reward = E.stageReward ? E.stageReward(D, curStage, curBell, curEv, curPlv) : Math.round(D.campaign.reward.base * Math.pow(D.campaign.reward.growth, curStage));
-      if (curStage === S.stage){ var capBefore = cap(); S.gold += reward; advanced = true; if (curStage < E.stageCount(D) - 1){ offerIds = S.offerIds = E.lootPool(D, st, Math.random, curPlv); S.offerBonus = bonusMap(st.team); S.offer = offerIds[E.lootPick(D, offerIds, curPlv, Math.random)]; S.offerPlv = curPlv; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; gain = '<div id="gainBox"></div>'; } /* 최종 보스는 전리품 룰렛 없음 (2026-11-26 사용자) */ }
+      if (curStage === S.stage){ var capBefore = cap(); S.gold += reward; advanced = true; if (curStage < E.stageCount(D) - 1){ offerIds = S.offerIds = E.lootPool(D, st, Math.random, curPlv); S.offerBonus = bonusMap(st.team); S.offer = offerIds[E.lootPick(D, offerIds, curPlv, Math.random, curStage)]; S.offerPlv = curPlv; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; gain = '<div id="gainBox"></div>'; } /* 최종 보스는 전리품 룰렛 없음 (2026-11-26 사용자) */ }
       if (LIFE_ON){ S.streak = 0; if (st.boss && D.life.recoverOnBoss && S.life < D.life.max){ S.life = Math.max(S.life, D.life.max); setTimeout(function(){ toast('보스를 깼어요! 체력이 모두 찼어요'); }, 600); } }
       if (curEv && curEv.kind === 'goblin' && bt.E.some(function(u){ return u.h.mob === 'goblin' && !u.alive && !u.escaped; })){ var gb2 = Math.round(reward * D.events.goblin.goldMul); S.gold += gb2; gain += '<div class="evgain">' + (EVIMG.ev_goblin ? '<img class="evi" src="img/p/ev_goblin.png" alt="">' : '💰 ') + '돈고블린 +' + gb2.toLocaleString() + ' G</div>'; }
       else if (curEv && curEv.kind === 'goblin') gain += '<div class="evgain miss">💨 돈고블린이 도망쳤어요</div>';
@@ -5544,7 +5544,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   function setPlv(lv){ if (!D.player) return; lv = Math.max(1, Math.min(plMax(), lv)); var xp = 0; for (var i = 0; i < lv - 1; i++) xp += D.player.need[i]; S.xp = xp;
     var f = PK().field, on = 0; S.team = S.team.map(function(uid){ if (!uid) return null; on++; return on > f ? null : uid; }); // 칸이 줄면 뒤쪽부터 백팩으로
     save(); renderAll(); renderPlvTool(); }
-  function renderPlvTool(){ if (!$('plVal') || !D.player) return; var lv = plv(), w = D.player.heroGrade[Math.min(lv - 1, D.player.heroGrade.length - 1)] || [], tot = w.reduce(function(a, b){ return a + b; }, 0) || 1;
+  function renderPlvTool(){ if (!$('plVal') || !D.player) return; var lv = plv(), w = E.gradeRow(D, 'heroGrade', S.stage, lv) || [], tot = w.reduce(function(a, b){ return a + b; }, 0) || 1;
     $('plVal').textContent = 'Lv ' + lv; $('plDown').disabled = lv <= 1; $('plUp').disabled = lv >= plMax();
     $('plOdds').innerHTML = '영웅 등장 확률 · ' + w.map(function(v, i){ var gg = (D.heroGrades || {})[i + 1] || {}; return '<b style="color:' + (gg.color || '#fff') + '">' + (gg.name || i + 1) + ' ' + Math.round(v / tot * 100) + '%</b>'; }).join(' · ') + ' · 전장 ' + PK().field + '칸'; }
   function applyFE(){ if (D.events) D.events.forceEvery = (S.ui && S.ui.forceEvery) || 0; }
@@ -5713,7 +5713,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   function newHeroes(){ return E.rollShopHeroes ? E.rollShopHeroes(D, Math.random, plv(), S.stage || 0) : []; }
   function restock(){ S.shop = { stock: newStock(), rerolls: 0, sold: [], ng: lastNg, heroes: newHeroes(), hsold: [] }; } // 상점 두 줄을 새로 (판을 깼을 때만)
   function shopLockLv(i){ var A = D.player && D.player.shopSlots; if (!A) return null; for (var L = 1; L <= A.length; L++) if (A[L - 1] > i) return L; return null; }
-  function newStock(){ var st = E.rollShop(D, Math.random, plv(), S.skills || [], myIds()), ng = 0; while (ng < st.length && !(buyPrice(st[ng]).mana > 0)) ng++; lastNg = ng; return st; }
+  function newStock(){ var st = E.rollShop(D, Math.random, plv(), S.skills || [], myIds(), S.stage), ng = 0; while (ng < st.length && !(buyPrice(st[ng]).mana > 0)) ng++; lastNg = ng; return st; }
   var lastNg = null;
   function shopNg(){ if (S.shop.ng == null){ var ng = 0; if (lastNg != null) ng = lastNg; else { var st = S.shop.stock; while (ng < st.length && !(buyPrice(st[ng]).mana > 0)) ng++; } S.shop.ng = ng; } lastNg = null; return S.shop.ng; }
   var merchShow = false;
@@ -5779,7 +5779,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     $('shopInfo').hidden = false; // 상점 창 안 고정 칸
     if (!shopSel){ nm.textContent = '상품을 골라 보세요'; ds.innerHTML = merchOffer() ? '' : shopOdds(); bt2.hidden = true; return; }
     /* 제목 왼쪽 % = 지금 레벨의 상점 등급 확률 (2026-11-27 사용자: "누르면 좌측 정보에 표시") */
-    if (shopSel.t === 'odds'){ var w = PK().shopGrade || [], sum = w.reduce(function(a, b){ return a + b; }, 0) || 1, G = D.skills.grades || {}; nm.textContent = '상점 등급 확률'; ds.innerHTML = w.map(function(x, i){ var g = G[i + 1] || {}; return '<div class="oddrow" style="color:' + (g.color || '#fff') + '"><b>' + (g.name || '') + '</b><span>' + Math.round(100 * x / sum) + '%</span></div>'; }).join(''); bt2.hidden = true; return; }
+    if (shopSel.t === 'odds'){ var w = E.gradeRow(D, 'shopGrade', S.stage, plv()) || [], sum = w.reduce(function(a, b){ return a + b; }, 0) || 1, G = D.skills.grades || {}; nm.textContent = '상점 등급 확률'; ds.innerHTML = w.map(function(x, i){ var g = G[i + 1] || {}; return '<div class="oddrow" style="color:' + (g.color || '#fff') + '"><b>' + (g.name || '') + '</b><span>' + Math.round(100 * x / sum) + '%</span></div>'; }).join(''); bt2.hidden = true; return; }
     if (shopSel.t === 'merch'){ var wo = merchOffer(), it2 = wo && wo.stock[shopSel.i]; if (!it2){ shopSel = null; return renderShopInfo(); }
       var done2 = wo.bought.indexOf(shopSel.i) >= 0, mana2 = it2.cur === 'mana', ok2 = true, why2 = ''; bt2.classList.remove('sell', 'arm');
       if (it2.type === 'p'){ var Pi = E.potionById(D, it2.id); ok2 = (S.potions || []).length < potHold(); nm.innerHTML = Pi.name + ' <i class="puse">사용</i>'; ds.innerHTML = potDesc(Pi); }
@@ -5852,12 +5852,12 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
       lvFlashUntil = Date.now() + 2800; fxHold(900); setTimeout(function(){ var li = document.querySelector('#hud .lvit'); if (li && HAS_FX) FX.playOn(li, 'levelup', { size: 220, scale: .9, cy: 40, z: 950 }); }, 0); setTimeout(function(){ var it = document.querySelector('#hud .lvit'); if (it){ it.classList.remove('lvup'); void it.offsetWidth; it.classList.add('lvup'); } }, 0);
       var chip = function(img, emo, t){ return '<em>' + (HUDOK[img] ? '<img src="img/p/hud_' + img + '.png" alt="">' : emo) + t + '</em>'; };
       var pop = $('lvPop'); pop.innerHTML = '<i class="lvrays"></i><b class="lvban">LEVEL UP</b><span class="lvnum"><s>' + a + '</s><i>▶</i><u>' + b2 + '</u></span>' +
-        '<span class="lvchips">' + (pb.field > pa.field ? chip('team', '🧍', '전장 칸 +' + (pb.field - pa.field)) : '') + chip('shop', '🛒', '상점 등급↑') + '</span>'; pop.hidden = false; lvPopCenter(pop); pop.classList.remove('show'); void pop.offsetWidth; pop.classList.add('show');
+        '<span class="lvchips">' + (pb.field > pa.field ? chip('team', '🧍', '전장 칸 +' + (pb.field - pa.field)) : '') + '</span>'; pop.hidden = false; lvPopCenter(pop); pop.classList.remove('show'); void pop.offsetWidth; pop.classList.add('show');
       clearTimeout(gainXp.t); gainXp.t = setTimeout(function(){ pop.classList.add('out'); setTimeout(function(){ pop.hidden = true; pop.classList.remove('out'); }, 300); }, 2600); }
     if (!noSave) save(); renderXp(); if (typeof renderHud === 'function') renderHud(); }
-  function shopOdds(){ var w = PK().shopGrade; if (!w) return ''; var sum = w.reduce(function(a, b){ return a + b; }, 0) || 1, G = D.skills.grades || {};
+  function shopOdds(){ var w = E.gradeRow(D, 'shopGrade', S.stage, plv()); if (!w) return ''; var sum = w.reduce(function(a, b){ return a + b; }, 0) || 1, G = D.skills.grades || {};
     return '<div class="odds">상점 확률: ' + w.map(function(x, i){ return x ? '<span style="color:' + ((G[i + 1] || {}).color || '#fff') + '">' + ((G[i + 1] || {}).name || '') + ' ' + Math.round(100 * x / sum) + '%</span>' : ''; }).filter(Boolean).join(' · ') + '</div>' + heroOdds(); }
-  function heroOdds(){ var P = D.player; if (!P || !P.heroGrade) return ''; var w = P.heroGrade[Math.max(0, Math.min(plv() - 1, P.heroGrade.length - 1))], sum = w.reduce(function(a, b){ return a + b; }, 0) || 1;
+  function heroOdds(){ var w = E.gradeRow(D, 'heroGrade', S.stage, plv()); if (!w) return ''; var sum = w.reduce(function(a, b){ return a + b; }, 0) || 1;
     return '<div class="odds">영웅 등장 확률: ' + w.map(function(x, i){ var g = GR(i + 1); return x ? '<span style="color:' + g.col + '">' + g.name + ' ' + Math.round(100 * x / sum) + '%</span>' : ''; }).filter(Boolean).join(' · ') + '</div>'; }
   // ───── 모닥불 이벤트: 전투 없이 둘러앉은 3명 중 1명이 동료가 돼요 ─────
   function evStage(){ var ev = bt ? curEv : S.event; return !!(ev && E.isEventStage && E.isEventStage(D, ev.kind)) && S.stage < E.stageCount(D); }
@@ -5898,7 +5898,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   function fairyHtml(){ var fx = 506, fy = 184; return '<div class="unit cfh fairy" style="left:' + (100 * zx(fx) / W) + '%;top:' + (100 * (zy(fy) + OFF + FOOT) / H) + '%;z-index:' + fy + '"><div class="cfslot">' + campImg('ev_fairy', '🧚', 'fairyimg') + '</div></div>'; }
   function merchHtml(){ var fx = 506, fy = 184; return '<div class="unit cfh merchnpc" style="left:' + (100 * zx(fx) / W) + '%;top:' + (100 * (zy(fy) + OFF + FOOT) / H) + '%;z-index:' + fy + '"><div class="cfslot"><i class="mnimg" role="img" aria-label="방랑상인"></i></div></div>'; }
   function startFairy(){ if (!isFairy() || S.offer || S.pending) return;
-    offerIds = S.offerIds = S.event.ids.map(function(id){ return 's:' + id; }); S.offerBonus = {}; S.offer = offerIds[E.lootPick(D, offerIds, plv(), Math.random)]; S.offerPlv = null;
+    offerIds = S.offerIds = S.event.ids.map(function(id){ return 's:' + id; }); S.offerBonus = {}; S.offer = offerIds[E.lootPick(D, offerIds, plv(), Math.random, S.stage)]; S.offerPlv = null;
     S.offerMode = 'fairy'; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; save(); renderAll(); startRoulette(offerIds, S.offer); }
   function isOddEven(){ return !bt && !!S.event && S.event.kind === 'oddeven' && S.stage < E.stageCount(D); }
   var oeBusy = false;
@@ -5926,7 +5926,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   function grollSpin(){ if (!isGroll() || S.offer || S.pending) return; if ($('rSpin')) $('rSpin').hidden = true; var cost = E.grollCost(D, S.stage, plv()), n = grollUsed(); if (n >= E.grollSpins(D, plv()) || S.gold < cost) return;
     var c = grollPool(); if (!c || !c.length) return;
     
-    $('roul').querySelector('.rbox').classList.remove('gwait'); S.gold -= cost; S.grollN = { st: S.stage, n: n + 1 }; S.offer = c[E.lootPick(D, c, plv(), Math.random)]; offerIds = S.offerIds = c.slice(); S.offerPlv = null; S.offerMode = 'groll'; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; save(); oeCoins(document.querySelector('#hud .goldit'), document.querySelector('#field .oegob'), 4); renderAll(); startRoulette(offerIds, S.offer); }
+    $('roul').querySelector('.rbox').classList.remove('gwait'); S.gold -= cost; S.grollN = { st: S.stage, n: n + 1 }; S.offer = c[E.lootPick(D, c, plv(), Math.random, S.stage)]; offerIds = S.offerIds = c.slice(); S.offerPlv = null; S.offerMode = 'groll'; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; save(); oeCoins(document.querySelector('#hud .goldit'), document.querySelector('#field .oegob'), 4); renderAll(); startRoulette(offerIds, S.offer); }
   /* 단상 판 (2026-11-26 사용자): 칸도 종류도 룰렛. 불빛이 우리 칸을 돌다 멈춤 → 받기 또는 다시 돌리기(무료) */
   function isDais(){ return !bt && !!S.event && S.event.kind === 'dais' && !!E.rollDais && S.stage < E.stageCount(D); }
   function daisAt(k){ var q = k.split(','); return 'left:' + (100 * zx(q[0]) / W) + '%;top:' + (100 * (zy(+q[1]) + OFF + FOOT) / H) + '%'; }
@@ -6170,7 +6170,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     return fire + ids.map(function(id, i){ if ((S.event.got || []).indexOf(id) >= 0) return ''; var p = cfCell(i);
       return '<div class="unit cfh" data-cfp="' + i + '" data-hid="' + id + '" style="left:' + (100 * zx(p[0]) / W) + '%;top:' + (100 * (zy(p[1]) + OFF + FOOT) / H) + '%;z-index:' + p[1] + '"><div class="foe cfhero' + (p[2] ? ' fwd' : '') + '" style="--el:' + ELC[hero(id).el] + footCss(id) + '" title="' + hero(id).name + '">' + avO(id) + '</div>' + bnBubble((S.event.bonus || [])[i]) + '</div>'; }).join(''); } /* 모닥불 영웅도 전장 캐릭터(.foe + avO)와 같은 크기·외곽선·그림자·대기 애니 (2026-11-25) */
   function startCampfire(){ if (!isCamp() || S.offer || S.pending) return;
-    var got0 = S.event.got || [], ids = S.event.ids.filter(function(id){ return got0.indexOf(id) < 0; }); offerIds = S.offerIds = ids.map(function(id){ return 'h:' + id; }); S.offerBonus = {}; ids.forEach(function(id){ var b = (S.event.bonus || [])[S.event.ids.indexOf(id)]; if (b && !S.offerBonus[id]) S.offerBonus[id] = b; }); S.offer = offerIds[E.lootPick(D, offerIds, plv(), Math.random)];
+    var got0 = S.event.got || [], ids = S.event.ids.filter(function(id){ return got0.indexOf(id) < 0; }); offerIds = S.offerIds = ids.map(function(id){ return 'h:' + id; }); S.offerBonus = {}; ids.forEach(function(id){ var b = (S.event.bonus || [])[S.event.ids.indexOf(id)]; if (b && !S.offerBonus[id]) S.offerBonus[id] = b; }); S.offer = offerIds[E.lootPick(D, offerIds, plv(), Math.random, S.stage)];
     S.offerMode = 'camp'; S.offerRerolls = 0; S.offerGone = []; S.offerDecided = false; S.offerLast = ''; S.offerLog = []; save(); renderAll(); startRoulette(offerIds, S.offer); }
   // 받은 뒤: 시작 모닥불(1-1)도 판 중 모닥불도 다음 스테이지로 (골드·경험치 없음)
   function finishCamp(){ var ev = S.event, got = S.offerGot;
