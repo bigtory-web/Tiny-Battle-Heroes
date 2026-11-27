@@ -2924,7 +2924,7 @@ img.rimg{image-rendering:auto!important}
 /* 미믹 결과 팝업 */
 #mimicPop .rbox{width:400px!important;display:flex;flex-direction:column;align-items:center;gap:10px}
 #mimicPop .mmrow{display:flex;justify-content:center;align-items:flex-end;gap:8px;width:100%;height:104px;background:#17141d;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #5d5470;padding:0 8px 8px;box-sizing:border-box}
-#mimicPop .mmc{position:relative;width:66px;height:66px;opacity:0}
+#mimicPop .mmc{position:relative;width:80px;height:80px;opacity:0} /* 20% 크게 (2026-11-28 사용자: "20%는 키워야 할 것 같아") */
 #mimicPop .mmc b{position:absolute;inset:0;image-rendering:pixelated}
 #mimicPop .mmc.king::after{content:'';position:absolute;left:50%;top:-8px;width:28px;height:14px;margin-left:-14px;background:#ffd34d;clip-path:polygon(0 100%,0 0,25% 50%,50% 0,75% 50%,100% 0,100% 100%)}
 #mimicPop .mmc.in{opacity:1;animation:mmdrop .28s cubic-bezier(.3,1.6,.5,1)}
@@ -2933,6 +2933,7 @@ img.rimg{image-rendering:auto!important}
 @keyframes mmdrop{from{transform:translateY(-40px);opacity:0}}
 @keyframes mmopen{30%{transform:scale(1.15,.8)}60%{transform:scale(.9,1.2) translateY(-8px)}}
 @keyframes mmspark{to{transform:translateY(-14px);opacity:0}}
+/* 미믹 결과 칸 안쪽 장식 (2026-11-28 사용자: "테두리 데코주고") */ #mimicPop .mmdeco{position:absolute;inset:4px;pointer-events:none;z-index:3} #mimicPop .mmdeco i{position:absolute;width:32px;height:32px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='16' height='7' fill='%2317141d'/%3E%3Crect x='0' y='0' width='7' height='16' fill='%2317141d'/%3E%3Crect x='1' y='1' width='14' height='5' fill='%23b9801c'/%3E%3Crect x='1' y='1' width='5' height='14' fill='%23b9801c'/%3E%3Crect x='1' y='1' width='14' height='2' fill='%23ffe27a'/%3E%3Crect x='1' y='1' width='2' height='14' fill='%23ffe27a'/%3E%3Crect x='13' y='3' width='1' height='2' fill='%237a4f10'/%3E%3Crect x='3' y='13' width='2' height='1' fill='%237a4f10'/%3E%3Crect x='9' y='3' width='2' height='2' fill='%23ffe27a'/%3E%3Crect x='3' y='9' width='2' height='2' fill='%23ffe27a'/%3E%3Crect x='2' y='2' width='7' height='7' fill='%2317141d'/%3E%3Crect x='3' y='3' width='5' height='5' fill='%23c8303c'/%3E%3Crect x='4' y='4' width='2' height='2' fill='%23ff9a8a'/%3E%3C/svg%3E") 0 0/32px 32px no-repeat;image-rendering:pixelated} #mimicPop .mmdeco i:nth-child(1){left:0;top:0} #mimicPop .mmdeco i:nth-child(2){right:0;top:0;transform:scaleX(-1)} #mimicPop .mmdeco i:nth-child(3){left:0;bottom:0;transform:scaleY(-1)} #mimicPop .mmdeco i:nth-child(4){right:0;bottom:0;transform:scale(-1)} #mimicPop.mmstud .mmdeco i{display:none} #mimicPop.mmstud .mmdeco{background:repeating-linear-gradient(90deg,#ffe27a 0 4px,#b9801c 4px 6px,transparent 6px 14px) 2px 2px/calc(100% - 4px) 4px no-repeat,repeating-linear-gradient(90deg,#ffe27a 0 4px,#b9801c 4px 6px,transparent 6px 14px) 2px calc(100% - 2px)/calc(100% - 4px) 4px no-repeat,repeating-linear-gradient(180deg,#ffe27a 0 4px,#b9801c 4px 6px,transparent 6px 14px) 2px 2px/4px calc(100% - 4px) no-repeat,repeating-linear-gradient(180deg,#ffe27a 0 4px,#b9801c 4px 6px,transparent 6px 14px) calc(100% - 2px) 2px/4px calc(100% - 4px) no-repeat}
 #mimicPop .mmnone{align-self:center;font:400 14px var(--display);color:#c9c1d6}
 #mimicPop .mmloot{display:grid;grid-template-columns:repeat(3,56px);grid-auto-rows:56px;gap:8px;justify-content:center;min-height:56px}
 #mimicPop .mmloot .mlt{position:relative;display:flex;align-items:center;justify-content:center;background:#17141d;box-shadow:inset 0 0 0 2px #5d5470;animation:fadeup .25s both}
@@ -3095,7 +3096,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
 #skA .skc.empty,#skE .skc.empty,#skA i.skc.empty{background:#0b090f!important;box-shadow:inset 0 0 0 1px #2e2938,0 0 0 1px #17141d!important;opacity:.92!important}
 /* 미믹킹: 보라 52칸 */
 .foe > .mhop.king{width:calc(var(--u) * 52 / 64);background-image:url(img/p/mimic_king_hop.png)}
-#mimicPop .mmc.king{width:78px;height:78px}
+#mimicPop .mmc.king{width:94px;height:94px}
 #mimicPop .mmc.king::after{display:none}
 #mimicPop .mmrow{height:116px}
 /* 룰렛 팝업과 같은 틀: 400×347, 큰 칸 200, 간격 6 → 위 끝·가운데 높이 같음 (2026-11-26 사용자) */
@@ -3180,8 +3181,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
 #mimicPop .mmc.g2 b{background-image:url(img/p/mimic_g2_open.png)!important}
 #mimicPop .mmc.king b{left:0;right:0;top:0;background-image:url(img/p/mimic_king_open.png)!important}
 #mimicPop .mmc.open b{animation:mmlid .45s steps(1) forwards}
-/* 못 잡은 미믹: 폴짝 뛰어 옆으로 달아남. 하나도 못 잡으면 바람 한 줄과 먼지, "휑~" */ #mimicPop .mmrow{overflow:hidden;position:relative} #mimicPop .mmc.run{animation:mmrun .55s ease-in forwards} @keyframes mmrun{0%{transform:none;opacity:1}18%{transform:translate(-6px,-12px)}34%{transform:translate(6px,0)}100%{transform:translate(460px,-6px);opacity:0}}
-#mimicPop .mmwind{position:absolute;inset:0;pointer-events:none} #mimicPop .mmwind i{position:absolute;left:-90px;width:80px;height:3px;background:#d9d6e2;box-shadow:0 0 0 1px #17141d;animation:mmgust 1.1s linear both} #mimicPop .mmwind i:nth-of-type(1){top:44%} #mimicPop .mmwind i:nth-of-type(2){top:58%;width:56px;animation-delay:.18s} #mimicPop .mmwind i:nth-of-type(3){top:70%;width:40px;animation-delay:.32s} #mimicPop .mmwind b{position:absolute;bottom:34px;width:6px;height:6px;background:#b59c7a;box-shadow:0 0 0 1px #17141d;animation:mmdust 1.3s ease-out both} #mimicPop .mmwind b:nth-of-type(1){left:30%} #mimicPop .mmwind b:nth-of-type(2){left:42%;animation-delay:.15s} #mimicPop .mmwind b:nth-of-type(3){left:55%;animation-delay:.3s} #mimicPop .mmwind b:nth-of-type(4){left:66%;animation-delay:.45s} #mimicPop .mmwind em{position:absolute;left:0;right:0;top:34%;text-align:center;font:400 26px var(--display);font-style:normal;color:#fff;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 2px #17141d;animation:fadeup .4s .2s both} @keyframes mmgust{to{transform:translateX(560px)}} @keyframes mmdust{0%{opacity:0;transform:translate(0,6px)}30%{opacity:1}100%{opacity:0;transform:translate(60px,-16px)}}
+#mimicPop .mmrow{overflow:hidden;position:relative;gap:2px!important;padding-left:0!important;padding-right:0!important} #mimicPop .mmrow .mmc{flex:none} /* 4마리(왕관 포함)도 안 눌리게 */
 @keyframes mmlid{0%{background-position:0 0}25%{background-position:33.333% 0}55%{background-position:66.667% 0}100%{background-position:100% 0}}
 </style>
 </head>
@@ -5359,14 +5359,13 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   var mimicT = [];
   function showMimicPop(){ var P = S.mimicPend, o = $('mimicPop'); if (!P || !o) return; mimicT.forEach(clearTimeout); mimicT = [];
     var row = o.querySelector('.mmrow'), loot = o.querySelector('.mmloot'), btn = $('mmGet'), n = P.m.length, miss = P.miss || [], all = P.m.concat(miss);
-    row.innerHTML = all.map(function(id){ return '<i class="mmc' + (id === 'mimicKing' ? ' king' : id === 'mimic:g2' ? ' g2' : '') + '"><b></b></i>'; }).join('');
+    row.innerHTML = all.map(function(id){ return '<i class="mmc' + (id === 'mimicKing' ? ' king' : id === 'mimic:g2' ? ' g2' : '') + '"><b></b></i>'; }).join('') + '<span class="mmdeco"><i></i><i></i><i></i><i></i></span>';
     loot.innerHTML = ''; btn.disabled = true; o.hidden = false;
-    /* 2026-11-27 사용자: "전투한 미믹들 다 하나씩 나와. 못 잡은 미믹은 도망가. 잡은 것만 나와서 입 벌리고 보상" · "폭죽은 나중" · 하나도 못 잡으면 "휑~" */
-    var cells = [].slice.call(row.querySelectorAll('.mmc')), got = cells.slice(0, n), run = cells.slice(n), at = function(ms, fn){ mimicT.push(setTimeout(fn, ms)); }, m = P.loot.length;
-    var tIn = 200 + all.length * 300, tRun = tIn + 250, tAfter = run.length ? tRun + run.length * 120 + 550 : tIn, tOpen = tAfter + 100, tLoot = tOpen + 250 /* 뚜껑이 활짝 열리는 때 */;
+    /* 2026-11-27 사용자: "전투한 미믹들 다 하나씩 나와 … 잡은 것만 입 벌리고 보상" · "폭죽은 나중". 2026-11-28: 못 잡은 미믹은 달아나지 않고 닫힌 상자인 채로("사라지지말고 상자인채로 냅둬보자"). 예전 달아남·"휑~"은 뺌 */
+    var cells = [].slice.call(row.querySelectorAll('.mmc')), got = cells.slice(0, n), at = function(ms, fn){ mimicT.push(setTimeout(fn, ms)); }, m = P.loot.length;
+    var tIn = 200 + all.length * 300, tAfter = tIn + 200, tOpen = tAfter + 100, tLoot = tOpen + 250 /* 뚜껑이 활짝 열리는 때 */;
     cells.forEach(function(c, i){ at(200 + i * 300, function(){ c.classList.add('in'); }); });
-    run.forEach(function(c, i){ at(tRun + i * 120, function(){ c.classList.add('run'); }); });
-    if (!n){ at(tAfter, function(){ row.insertAdjacentHTML('beforeend', '<span class="mmwind"><i></i><i></i><i></i><b></b><b></b><b></b><b></b><em>휑~</em></span>'); }); at(tAfter + 500, function(){ loot.innerHTML = '<span class="mmnone">미믹이 모두 도망갔습니다.</span>'; btn.disabled = false; }); return; }
+    if (!n){ at(tAfter + 200, function(){ loot.innerHTML = '<span class="mmnone">미믹이 모두 도망갔습니다.</span>'; btn.disabled = false; }); return; }
     at(tOpen, function(){ got.forEach(function(c){ c.classList.add('open'); }); });
     at(tLoot, function(){ loot.innerHTML = P.loot.map(function(k, i){ var p = LP(k), tip = p.type === 's' ? ' data-tipsk="' + p.id + '" data-tiplv="1"' : ''; return '<span class="mlt" style="animation-delay:' + (i * .09) + 's"' + tip + '>' + lootIcon(k) + (p.amt ? '<em data-to="' + p.amt + '">0</em>' : '') + '</span>'; }).join('');
       [].forEach.call(loot.querySelectorAll('em[data-to]'), function(e){ var to = +e.dataset.to; for (var q = 1; q <= 10; q++) (function(q){ at(q * 55, function(){ e.textContent = Math.round(to * q / 10).toLocaleString(); }); })(q); }); });
