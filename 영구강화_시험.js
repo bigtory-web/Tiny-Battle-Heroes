@@ -138,3 +138,6 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
   assert.strictEqual(E.rollCrystals(M, () => 0.5, 1).length, 6, "수정 수 4 + 2"); assert.strictEqual(E.rollCrystals(E.metaData(D, { mode: 'meta', nodes: {} }), () => 0.5, 1).length, 4); console.log("ok · 상인 리셋·수정 수"); }
 // 밸런스 툴 힘 곡선(2026-11-27): 스테이지 10줄, 클리어율 0~1, 전투력 숫자
 { const c = E.powerCurve(E.chapterData(D, 2), { runs: 3, meta: { mode: 'meta', nodes: {} } }); assert.strictEqual(c.length, 10); assert.ok(c.every(r => r.clearRate >= 0 && r.clearRate <= 1 && r.foePow >= 0)); assert.ok(c[0].myPow > 0 && c[0].foePow > 0); console.log("ok · 힘 곡선", c.map(r => r.ratio).join(" ")); }
+// 능력치만 옵션(2026-11-27 밸런스 측정): 궁극기·패시브 안 씀
+{ const id = D.heroes.find(h => h.ult && h.passive).id, mk = o => { const b = E.createBattle(D, [{ id, slot: 0, level: 5, star: 3 }], [{ id: 'knight', slot: 0, level: 5, mul: { hp: 50, atk: 0 } }], Object.assign({ seed: 1 }, o)); while (!b.result && b.time < 40) b.step(); return b.A[0]; };
+  const on = mk({}), off = mk({ statsOnly: true }); assert.ok(on.stats.ults > 0 && off.stats.ults === 0 && !off.pas); console.log("ok · 능력치만 옵션"); }
