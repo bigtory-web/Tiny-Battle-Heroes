@@ -678,7 +678,7 @@
     // 적 영웅: 플레이어 레벨의 등급 확률(player.heroGrade)로 한 명씩 뽑아요. 같은 스테이지·레벨이면 늘 같은 적, 종으로 늘어난 적은 뒤에 붙어요
     var bfx = (ev && (ev.kind === 'mobs' || ev.kind === 'chest')) ? [] : bellFx(data, n, bell, plv), BFX = (data.bell && data.bell.fx) || {}, bv = function (k) { return (BFX[k] || {}).v || 0; }, bhas = function (k) { return bfx.indexOf(k) >= 0; };
     var baseCnt = cnt; if (bhas('more')) cnt += bv('more');
-    var picks = []; for (var pi = 0; pi < cnt; pi++) picks.push(pickHeroByGrade(data, rnd, plv + ((C.diff || {}).gradeShift || 0), picks, 'enemyGrade')); /* 2026-11-27 제약: 적 등급만 앞당김 */ if (n === 0 && C.firstEnemy && picks.length) picks[0] = C.firstEnemy; // 1-1 적 고정
+    var picks = []; for (var pi = 0; pi < cnt; pi++) picks.push(pickHeroByGrade(data, rnd, (C.enemyGradeLv ? fromTable(C.enemyGradeLv, n) : plv) + ((C.diff || {}).gradeShift || 0), picks, 'enemyGrade')); /* 2026-11-27 적 등급 = 스테이지 표(enemyGradeLv) */ /* 2026-11-27 제약: 적 등급만 앞당김 */ if (n === 0 && C.firstEnemy && picks.length) picks[0] = C.firstEnemy; // 1-1 적 고정
     if (bhas('elite')) { var topG = picks.reduce(function (g, id) { return Math.max(g, heroGrade(data, id)); }, 1), eg = Math.min(4, topG + 1), PL = data.heroes.filter(function (h) { return h.art !== false && (h.grade || 1) === eg && picks.indexOf(h.id) < 0; });
       if (PL.length) picks.push(PL[Math.floor(rnd() * PL.length)].id); }
     var em = C.heroLv === 'player' ? C.enemyMul : C.enemyMul * Math.min(1, C.earlyMul + n * C.earlyRamp); // 영웅 레벨 = 플레이어 레벨이면 숨은 초반 배율 없음 // 초반 적은 약하게 시작해서 점점 원래 세기로

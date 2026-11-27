@@ -240,6 +240,7 @@ var IDLE_DATA = {
     // 2026-11-22: 영웅 레벨 = 플레이어 레벨(+heroLvPlus). 적 레벨은 enemyLv 표 그대로(숨은 초반 배율 없음). 같은 영웅·같은 레벨이면 같은 능력치. 화면 레벨 표시는 E.heroLevel(D, plv)
     heroLv: 'player', heroLvPlus: 0, firstEnemy: 'frog', firstEnemyMul: 1, /* 2026-11-24: 0.5 → 1 (사용자: 같은 영웅인데 능력치가 달라 어색) */ // 1-1 적을 이 영웅으로 고정하고 체력·공격력 ×firstEnemyMul (시작 영웅 1명이 누구든 이기게: 0.7이면 뿔피리 30%) // 2026-11-22: 시작 영웅 2명으로 바꾸고 1레벨부터 시작(예전 +6)
     enemyLvSpread: 1, bossLvPlus: 4, // 적마다 레벨 ±spread(무작위), 보스는 +bossLvPlus 레벨 (이 값이 있으면 bossHp·bossAtk 배율은 안 써요)
+    enemyGradeLv: [1, 1, 2, 3, 4, 4, 5, 5, 6, 7], // 2026-11-27 적 영웅 등급은 스테이지로(예전 = 플레이어 레벨). 값 = player.enemyGrade의 몇 레벨 줄을 쓸지. 처음 값은 봇 60판에서 그 스테이지 전투 때 평균 플레이어 레벨(반올림). 표보다 긴 스테이지는 마지막 값 (사용자: "스테이지별 등급 확률", "봇 평균에서")
     enemyLv: [1, 1, 2, 3, 3, 4, 4, 5, 5, 6,  8, 9, 11, 13, 15, 16, 18, 19, 20, 24,  22, 23, 24, 25, 25, 26, 29, 26, 26, 29], // 스테이지 번호(0부터)마다 적 레벨. 2026-11-22: 1-1~1-10 = 안 지고 왔을 때 그 판 시작 플레이어 레벨(적 수 × 처치 경험치로 계산). 보스는 +bossLvPlus
     enemyMul: 1.0,            // 적 전체 능력치 배율
     earlyMul: 0.3, earlyRamp: 0.03, // 2026-11-21: 특성을 다시 꺼서 0.25 → 0.3으로 되돌림  // 초반 적 배율: earlyMul에서 시작해 스테이지마다 earlyRamp씩 올라 1이 돼요
@@ -572,10 +573,10 @@ var IDLE_DATA = {
         { id: 'merchSlot', req: ['shopSlot'], name: '상인 상품 수', unit: '개', key: 'merchantSlots', add: 1, cap: 6, cost: [6, 12] },
         { id: 'swampSlot', req: ['merchSlot'], name: '늪지 상인 물약 수', unit: '개', key: 'swampSlots', add: 1, cap: 6, cost: [6, 12] }, // 2026-11-27 (사용자: "말했지 내가? 플레이어레벨 그거 해당하는거 이미.")
         { id: 'merchHero', req: ['merchSlot'], name: '상인 영웅 수', unit: '명', key: 'merchantHeroes', add: 1, cap: 2, cost: [10] },
-        { id: 'merchHeroGrade', req: ['merchHero'], name: '상인 영웅 등급 확률', shift: 'merchantHeroGrade', cost: [8, 16] }, // 2026-11-27 비용 임시
+        { id: 'merchHeroGrade', req: ['merchHero'], name: '상인 영웅 등급 확률', unit: '단계', shift: 'merchantHeroGrade', cost: [8, 16] }, // 2026-11-27 비용 임시
         { id: 'merchOff', req: ['merchSlot'], name: '상인 최대 할인', unit: '%', key: 'merchantOff', add: 5, cap: 60, cost: [6, 12] },
         { id: 'merchOffMin', req: ['merchOff'], name: '상인 최저 할인', unit: '%', path: 'events.merchant.offMinAdd', add: 5, cost: [6, 12] }, // 2026-11-27 할인은 최대·최저 둘 (사용자: "최대와 최저야. 하나더", "격차는 5%정도씩"). 비용은 최대 할인과 같게 임시
-        { id: 'shopGrade', req: ['shopReset'], name: '상점 등급 확률', shift: 'shopGrade', cost: [8, 16] } ] },
+        { id: 'shopGrade', req: ['shopReset'], name: '상점 등급 확률', unit: '단계', shift: 'shopGrade', cost: [8, 16] } ] },
       { id: 'event', name: '이벤트', nodes: [
         { id: 'startGold', req: ['start'], name: '시작 골드', unit: 'G', path: 'campaign.startGold', add: 50, cost: [4, 8, 12] },
         { id: 'life', req: ['startGold'], name: '시작 하트', unit: '개', path: 'life.max', add: 2, cost: [4, 8, 12] },
@@ -585,13 +586,13 @@ var IDLE_DATA = {
         { id: 'eventReset', req: ['campfire'], name: '모닥불 리셋', unit: '회', key: 'eventReroll', add: 1, cost: [6, 12] },
         { id: 'fairyReset', req: ['eventReset'], name: '요정 리셋', unit: '회', key: 'fairyReroll', add: 1, cost: [6, 12] }, // 2026-11-27 모닥불·요정 리셋을 나눔. 비용은 모닥불 리셋과 같게 임시
         { id: 'daisReset', req: ['eventReset'], name: '양탄자 리셋', unit: '회', key: 'daisReroll', add: 1, cost: [6, 12] },
-        { id: 'heroGrade', req: ['campfire'], name: '영웅 등급 확률', shift: 'heroGrade', cost: [8, 16] }, // 2026-11-27 모닥불·영입·상점 영웅 등급(적은 enemyGrade라 안 바뀜). 비용 임시
-        { id: 'grollGrade', req: ['groll'], name: '돈고블린 룰렛 등급 확률', shift: 'grollGrade', cost: [8, 16] }, // 2026-11-27 비용 임시
+        { id: 'heroGrade', req: ['campfire'], name: '영웅 등급 확률', unit: '단계', shift: 'heroGrade', cost: [8, 16] }, // 2026-11-27 모닥불·영입·상점 영웅 등급(적은 enemyGrade라 안 바뀜). 비용 임시
+        { id: 'grollGrade', req: ['groll'], name: '돈고블린 룰렛 등급 확률', unit: '단계', shift: 'grollGrade', cost: [8, 16] }, // 2026-11-27 비용 임시
         { id: 'groll', req: ['campfire'], name: '돈고블린 룰렛', unit: '회', key: 'grollSpins', add: 1, cost: [6, 12] },
         { id: 'mimic', req: ['campfire'], name: '미믹 수', unit: '마리', key: 'mimicCount', add: 1, cap: 4, cost: [8] },
         { id: 'mBlueUp', req: ['mimic'], name: '파랑 미믹 확률', unit: '%', path: 'events.mimic.blueUp', add: 10, cost: [8, 16] }, // 2026-11-27 보물상자 등급(꺼진 보물상자 판) 칸 대신. 갈색 미믹마다 이 %로 파랑(2등급)이 됨 (사용자: "갈파왕 123등급", "파랑 확률 업")
         { id: 'mKingUp', req: ['mBlueUp'], name: '왕관 미믹 확률', unit: '%', path: 'events.mimic.kingUp', add: 10, cost: [10, 20] }, // 왕관(3등급)이 아직 안 나오는 판에서 이 %로 1마리가 왕관이 됨 (사용자: "보스 등장 확률 업"). 숫자·비용 임시
-        { id: 'lootGrade', req: ['lootReset'], name: '전리품 등급 확률', shift: 'lootWeight', cost: [8, 16] } ] },
+        { id: 'lootGrade', req: ['lootReset'], name: '전리품 등급 확률', unit: '단계', shift: 'lootWeight', cost: [8, 16] } ] },
       // 영웅 줄: 직업마다 어울리는 능력치만(사용자 "2로하자"). 직업별 능력치는 기획 제안표(사용자 확인 전) 그대로 임시. atk·hp·def = +비율, crit = +확률
       { id: 'h_guardian', name: '기사', job: 'guardian', nodes: [
         { id: 'g_hp', req: ['t_hp'], name: '기사 체력', hero: 'hp', add: 0.05, cost: [5, 10, 15] }, { id: 'g_def', req: ['g_hp'], name: '기사 방어력', hero: 'def', add: 0.05, cost: [5, 10, 15] } ] },
