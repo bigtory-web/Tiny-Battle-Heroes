@@ -1535,6 +1535,7 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 @keyframes upring2{0%{width:20px;height:12px;opacity:1}100%{width:calc(190px * var(--sus));height:calc(80px * var(--sus));opacity:0}}
 .suburst{position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px;pointer-events:none;z-index:5;background:#fff3b0;
   box-shadow:0 -40px #ffd34d,28px -28px #fff3b0,40px 0 #ffd34d,28px 28px #fff3b0,0 40px #ffd34d,-28px 28px #fff3b0,-40px 0 #ffd34d,-28px -28px #fff3b0;animation:suburst .5s steps(5) both}
+/* 시안: 위에서 가는 줄기 → 발끝까지 닿으면 캐릭터를 덮게 옆으로 퍼짐 → 서서히 사라짐 */ .lvfx .supil{bottom:-2px;width:calc(118% * (1 + (var(--sus) - 1) * .5));margin-left:0;transform:translateX(-50%);z-index:6;background:linear-gradient(90deg,transparent 0 6%,var(--suc) 6% 20%,rgba(255,255,255,.82) 20% 32%,#fff 32% 68%,rgba(255,255,255,.82) 68% 80%,var(--suc) 80% 94%,transparent 94%);-webkit-mask-image:linear-gradient(to top,#000 0 45%,transparent);mask-image:linear-gradient(to top,#000 0 45%,transparent);animation:supil2 1s linear both} @keyframes supil2{0%{opacity:1;transform:translateX(-50%) scaleX(.1);clip-path:inset(0 0 100% 0);animation-timing-function:steps(5)}22%{opacity:1;transform:translateX(-50%) scaleX(.1);clip-path:inset(0);animation-timing-function:steps(4)}40%{opacity:.95;transform:translateX(-50%) scaleX(1);clip-path:inset(0);animation-timing-function:steps(6)}100%{opacity:0;transform:translateX(-50%) scaleX(1.08);clip-path:inset(0)}}
 @keyframes suburst{0%{transform:scale(.3);opacity:1}100%{transform:scale(2);opacity:0}}
 .fst b.suHide,.hst b.suHide{opacity:0}
 .fst b.suSlam,.hst b.suSlam{animation:suslam .28s cubic-bezier(.4,0,.6,1) both}
@@ -4187,7 +4188,10 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   function suFind(uid){ if (uid && uid.nodeType) return { el: uid, host: uid.closest('.unit') || uid }; /* 적(정예)은 요소를 바로 넘김 */ var el = document.querySelector('#field .slot.on[data-uid="' + uid + '"]') || document.querySelector('#roster .chip[data-uid="' + uid + '"]'); return el ? { el: el, host: el.closest('.unit') || el } : null; }
   function fxHold(ms){ fxUntil = Math.max(fxUntil || 0, Date.now() + ms); } /* 행진 전에 기다릴 성장 연출 */
   var fxUntil = 0, holdT = 0;
-  function starUpFx(uid, ghost, gr){ if (!(uid && uid.nodeType)) fxHold(1000); setTimeout(function(){ starUpFx2(uid, ghost, gr); }, 0); } // 합성 뒤 다시 그리기가 끝난 다음에 시작
+  /* ───── 레벨업 빛줄기 시안 (2026-11-27 사용자: "빛줄기가 작게 내리 하면서 퍼지면서 사라지고 … 캐릭터를 다 안 가려"). 주소 뒤에 ?lvfx=1 일 때만. 켜면 전장 영웅에게 2.5초마다 되풀이해 보여 줌. 정해지면 기본으로 ───── */
+  var LVFX = /[?&]lvfx=1/.test(location.search);
+  if (LVFX){ document.documentElement.classList.add('lvfx'); setInterval(function(){ if (bt) return; [].forEach.call(document.querySelectorAll('#field .slot.on[data-uid]'), function(el){ starUpFx(+el.dataset.uid); }); }, 2500); }
+  function starUpFx(uid, ghost, gr){ if (!(uid && uid.nodeType)) fxHold(LVFX ? 1300 : 1000); setTimeout(function(){ starUpFx2(uid, ghost, gr); }, 0); } // 합성 뒤 다시 그리기가 끝난 다음에 시작
   function starUpFx2(uid, ghost, gr){ var f0 = suFind(uid); if (!f0) return; var el = f0.el;
     var u = uid && uid.nodeType ? null : U(uid), star = u ? u.star : (+(uid && uid.dataset && uid.dataset.sustar) || 2), host = f0.host, onField = !!el.closest('#field'), t0 = 0;
     host.style.setProperty('--suc', star >= 3 ? '#ffd34d' : '#8fd8ff'); host.style.setProperty('--sus', star >= 3 ? 1.35 : 1);
@@ -4203,7 +4207,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
       upWord(uid);
       var fd = onField ? $('field') : null; if (fd){ fd.classList.remove('shk1', 'shk2'); void fd.offsetWidth; fd.classList.add(star >= 3 ? 'shk2' : 'shk1'); setTimeout(function(){ fd.classList.remove('shk1', 'shk2'); }, 420); }
       st.forEach(function(b, i){ setTimeout(function(){ b.classList.remove('suHide'); b.classList.add('suSlam'); }, 120 + i * 110); }); // 별이 하나씩 박혀요
-      setTimeout(function(){ host.querySelectorAll('.supil,.suburst').forEach(function(x){ x.remove(); }); st.forEach(function(b){ b.classList.remove('suSlam', 'suHide'); }); host.classList.remove('suOn', 'suHit'); }, 640); }, t0 + 260); }
+      setTimeout(function(){ host.querySelectorAll('.supil,.suburst').forEach(function(x){ x.remove(); }); st.forEach(function(b){ b.classList.remove('suSlam', 'suHide'); }); host.classList.remove('suOn', 'suHit'); }, LVFX ? 1000 : 640); }, t0 + 260); }
   function mergeFx(uid){ fxHold(600); var el = document.querySelector('#field .slot.on[data-uid="' + uid + '"]') || document.querySelector('#roster .chip[data-uid="' + uid + '"]');
     if (el){ el.classList.remove('mergeFx'); void el.offsetWidth; el.classList.add('mergeFx'); } }
   // ───── 초월: 영웅 위에 다른 영웅을 놓으면 재료가 사라지고 그 스킬이 붙어요(새 스킬 또는 같은 스킬 하나 더) ─────
