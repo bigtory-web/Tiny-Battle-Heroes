@@ -24,9 +24,9 @@ assert.ok(Math.abs(b1.A[0].maxHp/b0.A[0].maxHp-1.24)<1e-9 && b1.E[0].maxHp===b0.
 // 봇
 let c0=0,c1=0; for(let s=1;s<=8;s++){ c0+=E.campaign(D,{seed:s}).cleared; c1+=E.campaign(D,{seed:s,meta:full}).cleared; const D2=E.chapterData(D,2); E.campaign(D2,{seed:s,meta:full}); }
 console.log("ok · 훈장 합",D.meta.lines.reduce((a,L)=>a+L.nodes.reduce((b,N)=>b+N.cost.reduce((x,y)=>x+y,0),0),0),"· 봇 클리어 판 합(8판) 강화 전",c0,"후",c1);
-// "영구 강화로" 모드: 옮긴 줄은 Lv1 값 고정, 등장 확률·출전 인원은 그대로
+// "영구 강화로" 모드: 옮긴 줄은 Lv1 값 고정, 출전 인원·상점 등급은 그대로(영웅 등급은 2026-11-27부터 고정)
 const MM=E.metaData(D,{mode:"meta"}); assert.ok(MM.player.bag.every(v=>v===D.player.bag[0])); assert.ok(MM.player.clearGold.every(v=>v===D.player.clearGold[0])); assert.ok(MM.player.mimicBlue.every(v=>v===D.player.mimicBlue[0]));
-assert.deepStrictEqual(MM.player.field,D.player.field); assert.deepStrictEqual(MM.player.heroGrade,D.player.heroGrade); assert.deepStrictEqual(MM.player.shopGrade,D.player.shopGrade);
+assert.deepStrictEqual(MM.player.field,D.player.field); assert.ok(MM.player.heroGrade.every(r=>JSON.stringify(r)===JSON.stringify(D.player.heroGrade[0])),"2026-11-27 영웅 등급도 영구 강화로(Lv1 고정)"); assert.deepStrictEqual(MM.player.enemyGrade,D.player.enemyGrade); assert.deepStrictEqual(MM.player.shopGrade,D.player.shopGrade);
 const MF=E.metaData(D,{mode:"meta",nodes:full.nodes}); assert.ok(MF.player.bag.every(v=>v===7)); assert.strictEqual(E.metaData(D,{mode:"level"}),D,"레벨 모드 + 강화 없음 = 원본");
 let cm=0; for(let s=1;s<=5;s++){ cm+=E.campaign(D,{seed:s,meta:{mode:"meta"}}).cleared; E.campaign(E.chapterData(D,2),{seed:s,meta:{mode:"meta",nodes:full.nodes}}); }
 console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",cm);
@@ -59,3 +59,14 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
 // 강화 설명 "기존" 값: 레벨 1 값
 { const b = id => E.metaBase(D, E.metaNode(D, id)); assert.strictEqual(b("eventReset"), 1); assert.strictEqual(b("life"), 10); assert.strictEqual(b("startGold"), 0); assert.strictEqual(b("lootReset"), 1); assert.strictEqual(b("g_hp"), null);
   console.log("ok · 기존 값", ["eventReset", "life", "startGold", "mimic", "bag"].map(i => E.metaNode(D, i).name + " " + b(i) + E.metaNode(D, i).unit).join(", ")); }
+// 2026-11-27 레벨업 → 영구 강화: 하트 없음, 영웅 레벨 칸, 영웅·돈고블린·상인 영웅 등급 앞당김(영구 강화로 모드는 Lv1 고정 + 칸), 적 등급은 그대로
+{ assert.strictEqual(D.life.perLevel, 0, "레벨업 하트 없음");
+  assert.strictEqual(E.heroLevel(E.metaData(D, { nodes: { heroLv: 2 } }), 3), 5, "영웅 레벨 +2");
+  const F = E.metaData(D, { mode: 'meta', nodes: {} }), F1 = E.metaData(D, { mode: 'meta', nodes: { heroGrade: 1, grollGrade: 2, merchHeroGrade: 1 } });
+  assert.deepStrictEqual(F.player.heroGrade[9], D.player.heroGrade[0], "영구 강화로: 영웅 등급 Lv1 고정");
+  assert.deepStrictEqual(F1.player.heroGrade[9], D.player.heroGrade[1], "칸 1 → Lv2 줄");
+  assert.deepStrictEqual(F1.player.grollGrade[5], D.player.grollGrade[2], "룰렛 칸 2 → Lv3 줄");
+  assert.deepStrictEqual(F1.player.merchantHeroGrade[7], D.player.merchantHeroGrade[1]);
+  assert.deepStrictEqual(F1.player.enemyGrade, D.player.enemyGrade, "적 등급은 레벨 그대로");
+  assert.deepStrictEqual(E.metaData(D, { nodes: { heroGrade: 1 } }).player.heroGrade[0], D.player.heroGrade[1], "레벨로 모드: 한 칸 앞당김");
+  console.log("ok · 레벨업 → 영구 강화(하트·영웅 레벨·등급 셋)"); }

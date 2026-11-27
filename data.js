@@ -348,7 +348,7 @@ var IDLE_DATA = {
   // recoverOnBoss: 장 보스(10번째 판)를 깨면 체력이 다 차요
   // consolation 위로금(2026-11-22): 진 판 골드 = 클리어 골드 × perDamage × 적에게 준 피해 비율(최소 min). 한 명도 못 잡아도 받아요. 연패할수록 × (1 + streakBonus × (연패 − 1)), streakMax연패까지
   //   지면 상점이 그대로 남으니, 이 골드로 남은 물건을 살 수 있어요
-  life: { enabled: true, max: 10, perLevel: 1, lastStand: true, /* 2026-11-24: 플레이어 레벨업마다 하트 +1(최대 없음, 시작 max는 10). lastStand: 한 판(런)에 처음 0이 되면 죽지 않고 1로 남음 */ base: 1, perGrade: 1, bossExtra: 0, recoverOnBoss: true, consolation: { perDamage: 0.5, min: 0.1, minGold: 50, streakBonus: 0.5, streakMax: 3 }, loseCampfire: true, // loseCampfire(2026-11-22): 지면(체력이 남았을 때) 모닥불이 나와 영웅 1명을 룰렛으로 받고 같은 판에 다시 도전 // minGold: 지면 적어도 이만큼 (2026-11-24: 200 → 50. 진 판이 이긴 판(120G~)보다 많이 받던 문제. 50 = 상점 리셋 1번 값)
+  life: { enabled: true, max: 10, perLevel: 0 /* 2026-11-27 레벨업 하트 +1 없앰(사용자: "제거"). 예전 1 */, lastStand: true, /* 2026-11-24: 플레이어 레벨업마다 하트 +1(최대 없음, 시작 max는 10). lastStand: 한 판(런)에 처음 0이 되면 죽지 않고 1로 남음 */ base: 1, perGrade: 1, bossExtra: 0, recoverOnBoss: true, consolation: { perDamage: 0.5, min: 0.1, minGold: 50, streakBonus: 0.5, streakMax: 3 }, loseCampfire: true, // loseCampfire(2026-11-22): 지면(체력이 남았을 때) 모닥불이 나와 영웅 1명을 룰렛으로 받고 같은 판에 다시 도전 // minGold: 지면 적어도 이만큼 (2026-11-24: 200 → 50. 진 판이 이긴 판(120G~)보다 많이 받던 문제. 50 = 상점 리셋 1번 값)
   },
 
   // ───── 마나스톤 (두 번째 재화) ─────
@@ -477,8 +477,7 @@ var IDLE_DATA = {
     //   골드 칸은 낸 골드 × goldWin. 결과는 받거나 포기(리셋 없음). 돌리는 횟수는 player.grollSpins(레벨별)
     //   2026-11-26: 후보는 전투 룰렛이 아니라 이 표로 따로 뽑아요(상점처럼 레벨별 등급 가중치). 같은 스테이지 안에서는 돌릴 때마다 같은 구성
     groll: { cost: 1, goldWin: 2, heroes: 4, skills: 1, goldSlots: 1,
-      grade: [[70, 25, 5, 0], [65, 28, 7, 0], [55, 30, 13, 2], [50, 32, 15, 3], [42, 33, 19, 6],   // [일반, 고급, 희귀, 전설] 레벨 1~10. 처음 값은 player.shopGrade와 같게
-              [36, 34, 22, 8], [30, 34, 25, 11], [25, 33, 28, 14], [20, 32, 30, 18], [15, 30, 33, 22]] },
+      /* grade 표는 2026-11-27 player.grollGrade로 옮김 */ },
     oddeven: { bet: 1, win: 2, maxBets: 3 }, // 2026-11-24: 가운데 버튼으로 bet만큼씩 최대 maxBets번 넣어요(누를 때마다 골드 차감). 맞히면 넣은 합 × win
     // 진영 발판(2026-11-21, 22 바뀜): 몹 전리품 'p'. 받으면 빈 칸 중 무작위 한 곳에 깔려요. 그 칸에 선 영웅은 누구든 전투 동안 발판 진영이 더해져요(원래 진영은 그대로)
     //   (속성 시너지·상성·속성 고유 효과·속성 조건 유물 모두 바뀐 속성으로 쳐요). 판이 새로 시작되면 사라져요
@@ -544,6 +543,9 @@ var IDLE_DATA = {
     potion:     [1, 1, 2, 2, 2, 3, 3, 3, 3, 3], // 2026-11-26: 물약 칸(들 수 있는 물약 수). Lv3·Lv6에 1칸씩 (사용자: "여러개팔고 레벨로 제한"). 예전 모든 레벨 2칸
     bag:        [5, 5, 6, 6, 6, 7, 7, 7, 7, 7], // 2026-11-26: 백팩 최대 7칸(사용자: "7칸으로할꺼야"). Lv3·Lv6에 1칸씩. 예전 [5,5,6,6,6,7,7,7,8,8] (Lv9에 8칸)
     // heroGrade: 적·용병·상인으로 나오는 영웅 등급 확률 가중치 [일반, 고급, 희귀, 전설] (레벨 1~10)
+    enemyGrade: [[85, 15, 0, 0], [70, 25, 5, 0], [58, 30, 11, 1], [48, 32, 17, 3], [40, 32, 23, 5], [32, 32, 28, 8], [26, 30, 33, 11], [20, 28, 37, 15], [15, 26, 40, 19], [10, 24, 42, 24]], // 2026-11-27: 적 영웅 등급(레벨로만). 영웅 등급 확률을 영구 강화로 빼면서 적은 예전 heroGrade 그대로 따로 둠
+    grollGrade: [[70, 25, 5, 0], [65, 28, 7, 0], [55, 30, 13, 2], [50, 32, 15, 3], [42, 33, 19, 6], [36, 34, 22, 8], [30, 34, 25, 11], [25, 33, 28, 14], [20, 32, 30, 18], [15, 30, 33, 22]], // 2026-11-27: 돈고블린 룰렛 등급(events.groll.grade에서 옮김) [일반, 고급, 희귀, 전설]
+    merchantHeroGrade: [[58, 30, 11, 1], [48, 32, 17, 3], [40, 32, 23, 5], [32, 32, 28, 8], [26, 30, 33, 11], [20, 28, 37, 15], [15, 26, 40, 19], [10, 24, 42, 24], [10, 24, 42, 24], [10, 24, 42, 24]], // 2026-11-27: 방랑 상인 영웅 등급 = 예전 '내 레벨 +2' 줄을 표로 (Lv9·10은 마지막 줄)
     heroGrade:  [[85, 15, 0, 0], [70, 25, 5, 0], [58, 30, 11, 1], [48, 32, 17, 3], [40, 32, 23, 5],
                  [32, 32, 28, 8], [26, 30, 33, 11], [20, 28, 37, 15], [15, 26, 40, 19], [10, 24, 42, 24]],
     shopGrade:  [[70, 25, 5, 0], [65, 28, 7, 0], [55, 30, 13, 2], [50, 32, 15, 3], [42, 33, 19, 6],
@@ -556,7 +558,7 @@ var IDLE_DATA = {
   // cost[i] = i+1단계 비용(훈장). E.metaData(data, state)가 강화를 반영한 data를 돌려줘요(봇·화면 둘 다 이걸 씀)
   meta: {
     medal: { clear: 1, boss: 2, firstClear: 10 }, // 판이 끝날 때 받는 훈장: 판 클리어마다 clear, 보스 판(5·10) +boss, 장 첫 클리어 +firstClear (기획안 3번 초안)
-    flatAlso: ['mimicBlue'], // "영구 강화로" 모드에서 칸 key 말고도 Lv1에 고정할 레벨 표 줄(미믹 수에 딸린 파랑 미믹 수)
+    flatAlso: ['mimicBlue', 'heroGrade', 'grollGrade', 'merchantHeroGrade'], /* 2026-11-27 영웅·돈고블린 룰렛·상인 영웅 등급도 영구 강화로 (사용자: "영구강화로빼기") */ // "영구 강화로" 모드에서 칸 key 말고도 Lv1에 고정할 레벨 표 줄(미믹 수에 딸린 파랑 미믹 수)
     lines: [
       { id: 'start', name: '모닥불', nodes: [
         { id: 'start', name: '영웅 획득', unit: '명', /* 2026-11-27 이름 '시작 모닥불 +1' → '영웅 획득'(사용자: "시작 모닥불은 이상하다"). 시작 모닥불에서 고르는 영웅 수 */ path: 'events.campfire.startPicks', add: 1, cost: [5] } ] }, // 가운데. req 없음 = 처음부터 찍을 수 있음
@@ -570,6 +572,7 @@ var IDLE_DATA = {
         { id: 'merchSlot', req: ['shopSlot'], name: '상인 상품 수', unit: '개', key: 'merchantSlots', add: 1, cap: 6, cost: [6, 12] },
         { id: 'swampSlot', req: ['merchSlot'], name: '늪지 상인 물약 수', unit: '개', key: 'swampSlots', add: 1, cap: 6, cost: [6, 12] }, // 2026-11-27 (사용자: "말했지 내가? 플레이어레벨 그거 해당하는거 이미.")
         { id: 'merchHero', req: ['merchSlot'], name: '상인 영웅 수', unit: '명', key: 'merchantHeroes', add: 1, cap: 2, cost: [10] },
+        { id: 'merchHeroGrade', req: ['merchHero'], name: '상인 영웅 등급 확률', shift: 'merchantHeroGrade', cost: [8, 16] }, // 2026-11-27 비용 임시
         { id: 'merchOff', req: ['merchSlot'], name: '상인 최대 할인', unit: '%', key: 'merchantOff', add: 5, cap: 60, cost: [6, 12] },
         { id: 'merchOffMin', req: ['merchOff'], name: '상인 최저 할인', unit: '%', path: 'events.merchant.offMinAdd', add: 5, cost: [6, 12] }, // 2026-11-27 할인은 최대·최저 둘 (사용자: "최대와 최저야. 하나더", "격차는 5%정도씩"). 비용은 최대 할인과 같게 임시
         { id: 'shopGrade', req: ['shopReset'], name: '상점 등급 확률', shift: 'shopGrade', cost: [8, 16] } ] },
@@ -582,6 +585,8 @@ var IDLE_DATA = {
         { id: 'eventReset', req: ['campfire'], name: '모닥불 리셋', unit: '회', key: 'eventReroll', add: 1, cost: [6, 12] },
         { id: 'fairyReset', req: ['eventReset'], name: '요정 리셋', unit: '회', key: 'fairyReroll', add: 1, cost: [6, 12] }, // 2026-11-27 모닥불·요정 리셋을 나눔. 비용은 모닥불 리셋과 같게 임시
         { id: 'daisReset', req: ['eventReset'], name: '양탄자 리셋', unit: '회', key: 'daisReroll', add: 1, cost: [6, 12] },
+        { id: 'heroGrade', req: ['campfire'], name: '영웅 등급 확률', shift: 'heroGrade', cost: [8, 16] }, // 2026-11-27 모닥불·영입·상점 영웅 등급(적은 enemyGrade라 안 바뀜). 비용 임시
+        { id: 'grollGrade', req: ['groll'], name: '돈고블린 룰렛 등급 확률', shift: 'grollGrade', cost: [8, 16] }, // 2026-11-27 비용 임시
         { id: 'groll', req: ['campfire'], name: '돈고블린 룰렛', unit: '회', key: 'grollSpins', add: 1, cost: [6, 12] },
         { id: 'mimic', req: ['campfire'], name: '미믹 수', unit: '마리', key: 'mimicCount', add: 1, cap: 4, cost: [8] },
         { id: 'mBlueUp', req: ['mimic'], name: '파랑 미믹 확률', unit: '%', path: 'events.mimic.blueUp', add: 10, cost: [8, 16] }, // 2026-11-27 보물상자 등급(꺼진 보물상자 판) 칸 대신. 갈색 미믹마다 이 %로 파랑(2등급)이 됨 (사용자: "갈파왕 123등급", "파랑 확률 업")
@@ -601,7 +606,8 @@ var IDLE_DATA = {
       { id: 'h_bard', name: '서포터', job: 'bard', nodes: [
         { id: 'b_hp', req: ['t_hp'], name: '서포터 체력', hero: 'hp', add: 0.05, cost: [5, 10, 15] }, { id: 'b_def', req: ['b_hp'], name: '서포터 방어력', hero: 'def', add: 0.05, cost: [5, 10, 15] } ] },
       { id: 'h_all', name: '팀 전체', job: 'all', nodes: [
-        { id: 't_hp', req: ['start'], name: '팀 체력', hero: 'hp', add: 0.03, cost: [8, 16, 24] }, { id: 't_atk', req: ['t_hp'], name: '팀 공격력', hero: 'atk', add: 0.03, cost: [8, 16, 24] } ] }
+        { id: 't_hp', req: ['start'], name: '팀 체력', hero: 'hp', add: 0.03, cost: [8, 16, 24] }, { id: 't_atk', req: ['t_hp'], name: '팀 공격력', hero: 'atk', add: 0.03, cost: [8, 16, 24] },
+        { id: 'heroLv', req: ['t_atk'], name: '영웅 레벨', unit: '레벨', path: 'campaign.heroLvPlus', add: 1, cost: [10, 20, 30] } ] } /* 2026-11-27 영웅 레벨 +1(레벨업과 같이, 사용자: "이것도 영구 강화로도"). 비용 임시 */
     ]
   },
   // 등급 테두리 색: 코스트 1·2·3 (캐릭터 그림 외곽선)

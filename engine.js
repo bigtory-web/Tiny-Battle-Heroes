@@ -603,7 +603,7 @@
   function grollCost(data, n, plv) { var G = data.events.groll || {}; return Math.max(1, Math.round(stageReward(data, n, 0, null, plv) * (G.cost || 1))); }
   function grollSpins(data, plv) { var S = data.player && data.player.grollSpins; return S ? S[Math.max(0, Math.min((plv || 1) - 1, S.length - 1))] : 1; }
   // 후보(2026-11-26 별도 표): 영웅 heroes명 + 유물 skills개 + 골드 goldSlots칸(낸 값 × goldWin). 등급은 groll.grade[레벨]. rnd를 안 주면 스테이지·레벨로 고정 시드 → 같은 스테이지는 같은 구성
-  function rollGroll(data, n, rnd, plv, owned) { var G = data.events.groll || {}, W = G.grade ? G.grade[Math.max(0, Math.min((plv || 1) - 1, G.grade.length - 1))] : [1, 1, 1, 1], out = [];
+  function rollGroll(data, n, rnd, plv, owned) { var G = data.events.groll || {}, GT = (data.player && data.player.grollGrade) || G.grade, W = GT ? GT[Math.max(0, Math.min((plv || 1) - 1, GT.length - 1))] : [1, 1, 1, 1], out = [];
     rnd = rnd || makeRng(n * 7919 + (plv || 1) * 104729 + 17);
     function pickG() { var t = W.reduce(function (a, b) { return a + b; }, 0), x = rnd() * t; for (var k = 0; k < W.length; k++) { x -= W[k]; if (x < 0) return k + 1; } return 1; }
     var PL0 = data.recruit.pool, hs = data.heroes.filter(function (h) { return !h.mob && h.art !== false && (!PL0 || !PL0.length || PL0.indexOf(h.id) >= 0); });
@@ -629,7 +629,7 @@
     for (var i = 0; i < nS && sk.length; i++) { var id = sk.splice(Math.floor(rnd() * sk.length), 1)[0], bp = skillBuyPrice(data, id, n, owned || []);
       out.push({ type: 's', id: id, base: bp.gold || bp.mana, cur: bp.gold > 0 ? 'gold' : 'mana' }); }
     var gotH = [];
-    for (var j = 0; j < nH; j++) { var hid = pickHeroByGrade(data, rnd, (plv || 1) + 2, gotH); gotH.push(hid);
+    for (var j = 0; j < nH; j++) { var hid = pickHeroByGrade(data, rnd, plv || 1, gotH, 'merchantHeroGrade'); gotH.push(hid);
       out.push({ type: 'h', id: hid, base: Math.round(M.heroPrice * heroGrade(data, hid) * Math.pow(data.shop.priceGrowth, n)), cur: 'gold' }); } // 상인은 레벨 +2 확률로 조금 더 좋은 영웅
     // 2026-11-26: 상품마다 할인율이 달라요(최대 = 레벨 할인율). offMin×최대 ~ 최대 사이 offStep 단위, 한 개는 꼭 최대 ("UP TO 50%")
     var mx = merchantOff(data, plv), st = M.offStep || 5, lo = Math.min(mx, Math.ceil(mx * (M.offMin != null ? M.offMin : 0.5) / st) * st + (M.offMinAdd || 0)), top = out.length ? Math.floor(rnd() * out.length) : -1;
@@ -676,7 +676,7 @@
     // 적 영웅: 플레이어 레벨의 등급 확률(player.heroGrade)로 한 명씩 뽑아요. 같은 스테이지·레벨이면 늘 같은 적, 종으로 늘어난 적은 뒤에 붙어요
     var bfx = (ev && (ev.kind === 'mobs' || ev.kind === 'chest')) ? [] : bellFx(data, n, bell, plv), BFX = (data.bell && data.bell.fx) || {}, bv = function (k) { return (BFX[k] || {}).v || 0; }, bhas = function (k) { return bfx.indexOf(k) >= 0; };
     var baseCnt = cnt; if (bhas('more')) cnt += bv('more');
-    var picks = []; for (var pi = 0; pi < cnt; pi++) picks.push(pickHeroByGrade(data, rnd, plv + ((C.diff || {}).gradeShift || 0), picks)); /* 2026-11-27 제약: 적 등급만 앞당김 */ if (n === 0 && C.firstEnemy && picks.length) picks[0] = C.firstEnemy; // 1-1 적 고정
+    var picks = []; for (var pi = 0; pi < cnt; pi++) picks.push(pickHeroByGrade(data, rnd, plv + ((C.diff || {}).gradeShift || 0), picks, 'enemyGrade')); /* 2026-11-27 제약: 적 등급만 앞당김 */ if (n === 0 && C.firstEnemy && picks.length) picks[0] = C.firstEnemy; // 1-1 적 고정
     if (bhas('elite')) { var topG = picks.reduce(function (g, id) { return Math.max(g, heroGrade(data, id)); }, 1), eg = Math.min(4, topG + 1), PL = data.heroes.filter(function (h) { return h.art !== false && (h.grade || 1) === eg && picks.indexOf(h.id) < 0; });
       if (PL.length) picks.push(PL[Math.floor(rnd() * PL.length)].id); }
     var em = C.heroLv === 'player' ? C.enemyMul : C.enemyMul * Math.min(1, C.earlyMul + n * C.earlyRamp); // 영웅 레벨 = 플레이어 레벨이면 숨은 초반 배율 없음 // 초반 적은 약하게 시작해서 점점 원래 세기로
@@ -816,8 +816,8 @@
   function critChance(data, h) { var C = data.crit; if (!C || !h) return 0; return h.crit != null ? h.crit : h.passive && h.passive.kind === 'crit' ? h.passive.v : (C.base[h.role] || 0); }
   function heroGrade(data, id) { var h = heroById(data, id); return (h && h.grade) || 1; } // 영웅 고유 등급 1~5
   // 플레이어 레벨의 등급 확률로 영웅 하나 뽑기. exclude에 든 영웅은 피하고, 그 등급에 없으면 가까운 등급에서
-  function pickHeroByGrade(data, rnd, plv, exclude) { exclude = exclude || [];
-    var P = data.player, W = P && P.heroGrade ? P.heroGrade[Math.max(0, Math.min((plv || 1) - 1, P.heroGrade.length - 1))] : [1, 1, 1, 1, 1];
+  function pickHeroByGrade(data, rnd, plv, exclude, tbl) { exclude = exclude || [];
+    var P = data.player, T = P && (P[tbl || 'heroGrade'] || P.heroGrade), W = T ? T[Math.max(0, Math.min((plv || 1) - 1, T.length - 1))] : [1, 1, 1, 1, 1]; /* 2026-11-27 tbl: 'enemyGrade'(적)·'merchantHeroGrade'(방랑 상인) */
     var tot = W.reduce(function (a, b) { return a + b; }, 0), r = rnd() * tot, g = 1; for (var k = 0; k < W.length; k++) { r -= W[k]; if (r < 0) { g = k + 1; break; } }
     var PL0 = data.recruit.pool, all = data.heroes.filter(function (h) { return h.art !== false && (!PL0 || !PL0.length || PL0.indexOf(h.id) >= 0); });
     for (var dd = 0; dd < 5; dd++) for (var sgn = -1; sgn <= 1; sgn += 2) { var gg = g + dd * sgn;
@@ -899,10 +899,10 @@
   function metaData(data, state) { var M = data.meta, S = (state && state.nodes) || (state && state.mode === 'meta' ? {} : null); if (!M || !S) return data;
     var cp = function (o) { if (!o) return o; var r = {}; for (var q in o) r[q] = o[q]; return r; }, d = cp(data), HB = {};
     d.player = cp(data.player); d.shop = cp(data.shop); d.campaign = cp(data.campaign); d.life = cp(data.life); d.recruit = cp(data.recruit); if (d.recruit) d.recruit.reroll = cp(data.recruit.reroll);
-    if (state.mode === 'meta') { var flat = (M.flatAlso || []).slice(); M.lines.forEach(function (L) { L.nodes.forEach(function (N) { if (N.key) flat.push(N.key); }); }); flat.forEach(function (k) { var r = d.player[k]; if (r) d.player[k] = r.map(function () { return r[0]; }); }); }
+    var flat = []; if (state.mode === 'meta') { flat = (M.flatAlso || []).slice(); M.lines.forEach(function (L) { L.nodes.forEach(function (N) { if (N.key) flat.push(N.key); }); }); flat.forEach(function (k) { var r = d.player[k]; if (r) d.player[k] = r.map(function () { return r[0]; }); }); }
     M.lines.forEach(function (L) { L.nodes.forEach(function (N) { var n = Math.min(S[N.id] || 0, N.cost.length); if (!n) return;
       if (N.key && d.player[N.key]) d.player[N.key] = d.player[N.key].map(function (v) { var w = v + N.add * n; return N.cap != null ? Math.max(v, Math.min(w, N.cap)) : w; });
-      else if (N.shift && d.player[N.shift]) { var row = d.player[N.shift]; d.player[N.shift] = row.map(function (v, i) { return row[Math.min(i + n, row.length - 1)]; }); } // 등급 확률 = 레벨 표를 n칸 앞당김
+      else if (N.shift && d.player[N.shift]) { var row = data.player[N.shift], fx = flat.indexOf(N.shift) >= 0; d.player[N.shift] = row.map(function (v, i) { return row[Math.min((fx ? 0 : i) + n, row.length - 1)]; }); } /* 2026-11-27 고정된 표면 Lv1 줄에서 n칸 앞 */ // 등급 확률 = 레벨 표를 n칸 앞당김
       else if (N.path) { var ks = N.path.split('.'), o = d; for (var i = 0; i < ks.length - 1; i++) o = o[ks[i]] = cp(o[ks[i]]); /* 지나는 객체는 복사(원본 data를 안 바꾸게) */ var last = ks[ks.length - 1], v0 = o[last]; o[last] = Array.isArray(v0) ? v0.map(function (x) { return x + N.add * n; }) : (v0 || 0) + N.add * n; }
       else if (N.hero) { var J = HB[L.job] || (HB[L.job] = {}); J[N.hero] = (J[N.hero] || 0) + N.add * n; } }); });
     d.heroBoost = HB; return d; }
