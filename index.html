@@ -2894,8 +2894,7 @@ img.rimg{image-rendering:auto!important}
 #shopBuy .boff{background:#2f9a3a} /* 할인 % 딱지 = 초록 (2026-11-26 사용자) */
 /* 돈고블린 전구 */
 #roul .rstage > .rbulbs{display:none}
-#roul .rbox.groll .rstage > .rbulbs{display:block;position:absolute;inset:5.5px;z-index:6;pointer-events:none} /* 전구 자리 = 테두리 띠 가운데 */
-#roul .rbox.groll .rstage{box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 9px var(--el,#5d5470),inset 0 0 0 11px #17141d!important} /* 돈고블린만 테두리를 두껍게 해서 전구가 박힌 모양 (2026-11-27 사용자: "테두리 안에 원 박히듯이. 그리고 원 개수 지금 2배로") */
+#roul .rbox.groll .rstage > .rbulbs{display:block;position:absolute;inset:3.5px;z-index:6;pointer-events:none} /* 전구 자리 = 테두리 선 위 (2026-11-27 사용자: "테두리 안에 원 박히듯이" → "테두리는 두껍게말고") */
 #roul .rbulbs s{position:absolute;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%; /* 모양만 둥근 전구, 배치·개수는 예전 그대로, 테두리 안쪽 (2026-11-26 사용자) */text-decoration:none;background:#ffe27a;box-shadow:0 0 0 1px #17141d,0 0 4px 1px rgba(255,210,80,.6)}
 #roul .rbox.groll.spin .rbulbs s{animation:bulbrun .48s steps(1) infinite;animation-delay:var(--d)}
 #roul .rbox.groll.reveal:not(.still):not(.spin) .rbulbs s{animation:bulbflash .6s steps(1),bulbon 1.4s steps(1) .6s infinite}
