@@ -1,11 +1,11 @@
 ---
-name: art-background
+name: game-art-background
 description: 챕터 전투 배경이나 앞장식을 만들거나 고칠 때 쓴다.
 ---
 
 # 배경·앞장식
 
-먼저 `art-common`을 따른다.
+먼저 `game-art-common`을 따른다.
 
 ## 규격
 

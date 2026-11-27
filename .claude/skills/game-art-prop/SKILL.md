@@ -1,11 +1,11 @@
 ---
-name: art-prop
+name: game-art-prop
 description: 전장 위의 칸·발판·상자·장식·이펙트 그림을 만들 때 쓴다.
 ---
 
 # 전장 소품·이펙트 그림
 
-먼저 `art-common`을 따른다.
+먼저 `game-art-common`을 따른다.
 
 ## 규격
 

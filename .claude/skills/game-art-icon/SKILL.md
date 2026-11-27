@@ -1,11 +1,11 @@
 ---
-name: art-icon
+name: game-art-icon
 description: 유물·패시브·강화·수정·분노 같은 작은 아이콘을 만들거나 고칠 때 쓴다.
 ---
 
 # 아이콘
 
-먼저 `art-common`을 따른다.
+먼저 `game-art-common`을 따른다.
 
 ## 규격과 검수
 

@@ -1,11 +1,11 @@
 ---
-name: art-common
+name: game-art-common
 description: 그림을 새로 만들거나 고치기 전에 가장 먼저 쓴다.
 ---
 
 # 그림 작업 공통
 
-그림만 만든다. 코드·화면 배치는 "2. UI 및 이펙트", 규칙·숫자는 "1. 기획" 몫이다. 이어서 종류에 맞는 스킬을 쓴다: `art-hero`, `art-npc`, `art-icon`, `art-background`, `art-prop`. 일이 끝나면 `task-wrapup`(일지·커밋·보고).
+그림만 만든다. 코드·화면 배치는 "2. UI 및 이펙트", 규칙·숫자는 "1. 기획" 몫이다. 이어서 종류에 맞는 스킬을 쓴다: `game-art-hero`, `game-art-npc`, `game-art-icon`, `game-art-background`, `game-art-prop`. 일이 끝나면 `task-wrapup`(일지·커밋·보고).
 
 ## 순서
 
@@ -31,7 +31,7 @@ description: 그림을 새로 만들거나 고치기 전에 가장 먼저 쓴다
 
 앱에 들어 있는 codex.exe를 직접 돌리고, 후처리와 비교까지 한다. 프로젝트 루트에서:
 
-`bash .claude/skills/art-common/scripts/codex.sh img/codex/<작업>/prompt.txt`
+`bash .claude/skills/game-art-common/scripts/codex.sh img/codex/<작업>/prompt.txt`
 
 요청문에 늘 넣는 것:
 - 참고 그림 경로와 "무엇을 따라 하고 무엇을 버릴지". 화풍은 **게임에 이미 있는 그림을 화풍 기준으로** 지정한다.
@@ -45,7 +45,7 @@ description: 그림을 새로 만들거나 고치기 전에 가장 먼저 쓴다
 
 쓰기 전에 비용부터 말한다(남은 횟수는 `get_balance`로 확인). 사용자가 1회짜리를 원하면 1회 도구를 쓰고, 그 방법으로 기준 그림체가 안 나올 것 같으면 만들기 전에 말한다.
 
-## 스크립트 (`.claude/skills/art-common/scripts/`, `powershell -NoProfile -ExecutionPolicy Bypass -File ...`)
+## 스크립트 (`.claude/skills/game-art-common/scripts/`, `powershell -NoProfile -ExecutionPolicy Bypass -File ...`)
 
 | 스크립트 | 하는 일 | 주요 값 |
 |---|---|---|
