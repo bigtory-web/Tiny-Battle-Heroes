@@ -622,7 +622,7 @@
   function rollCampfire(data, rnd, plv) { var CF = data.events.campfire, out = [], cn = data.player && data.player.campfire ? perk(data, plv).campfire : CF.count; for (var i = 0; i < cn; i++) out.push(pickHeroByGrade(data, rnd, plv || 1, out)); return out; }
   function campfireAtStart(data) { var CF = data.events && data.events.campfire; return !!(CF && CF.atStart) && (data.events.off || []).indexOf('campfire') < 0; }
   // 합류 영웅(2026-11-27): 적을 더하지 않고, 그 판 적(분노 0) 중 1명을 등급 무게(player.mercGrade[레벨], 업그레이드 +%)로 뽑아요 (사용자: "합류 확률이라는 게 적 중에서 등급별 합류될 대상을 타깃하는 그 확률로")
-  function pickMerc(data, n, rnd, plv) { var T = data.player && data.player.mercGrade, W = T ? T[Math.max(0, Math.min((plv || 1) - 1, T.length - 1))] : [1, 1, 1, 1], C = stageTeam(data, n, null, 0, plv).team.filter(function (u) { return !u.mob && !heroById(data, u.id).mob; });
+  function pickMerc(data, n, rnd, plv) { var T = data.player && gradeTable(data, 'mercGrade'), W = T ? T[Math.max(0, Math.min((plv || 1) - 1, T.length - 1))] : [1, 1, 1, 1], C = stageTeam(data, n, null, 0, plv).team.filter(function (u) { return !u.mob && !heroById(data, u.id).mob; });
     if (!C.length) return pickHeroByGrade(data, rnd, plv, null, 'mercGrade'); var w = C.map(function (u) { return W[heroGrade(data, u.id) - 1] || 0; }), tot = w.reduce(function (a, b) { return a + b; }, 0); if (!tot) return C[Math.floor(rnd() * C.length)].id;
     var x = rnd() * tot; for (var i = 0; i < C.length; i++) { x -= w[i]; if (x < 0) return C[i].id; } return C[C.length - 1].id; }
   function mercPrice(data, id, n) { var M = data.events.merc; return Math.round(M.price * heroGrade(data, id) * Math.pow(data.shop.priceGrowth, n) * (1 - Math.min(90, M.costCut || 0) / 100)); } /* 2026-11-27 costCut: 업그레이드 비용 감소 */ // 등급이 높을수록 비싸요
@@ -822,8 +822,10 @@
   function critChance(data, h) { var C = data.crit; if (!C || !h) return 0; return h.crit != null ? h.crit : h.passive && h.passive.kind === 'crit' ? h.passive.v : (C.base[h.role] || 0); }
   function heroGrade(data, id) { var h = heroById(data, id); return (h && h.grade) || 1; } // 영웅 고유 등급 1~5
   // 플레이어 레벨의 등급 확률로 영웅 하나 뽑기. exclude에 든 영웅은 피하고, 그 등급에 없으면 가까운 등급에서
+  // 등급 표 고르기(2026-11-27 기준 표): player에 그 표가 있으면 그것, 없고 gradeFrom에 있으면 기준 표를 shift줄 옮겨 만듦, 둘 다 없으면 heroGrade
+  function gradeTable(data, tbl) { var P = data.player || {}; tbl = tbl || 'heroGrade'; if (P[tbl]) return P[tbl]; var F = P.gradeFrom && P.gradeFrom[tbl], B = F && P[F.base]; if (!B) return P.heroGrade; return B.map(function (r, i) { return B[Math.min(i + (F.shift || 0), B.length - 1)]; }); }
   function pickHeroByGrade(data, rnd, plv, exclude, tbl) { exclude = exclude || [];
-    var P = data.player, T = P && (P[tbl || 'heroGrade'] || P.heroGrade), W = T ? T[Math.max(0, Math.min((plv || 1) - 1, T.length - 1))] : [1, 1, 1, 1, 1]; /* 2026-11-27 tbl: 'enemyGrade'(적)·'merchantHeroGrade'(방랑 상인) */
+    var P = data.player, T = P && gradeTable(data, tbl), W = T ? T[Math.max(0, Math.min((plv || 1) - 1, T.length - 1))] : [1, 1, 1, 1, 1]; /* 2026-11-27 tbl: 'enemyGrade'(적)·'merchantHeroGrade'(방랑 상인) */
     var tot = W.reduce(function (a, b) { return a + b; }, 0), r = rnd() * tot, g = 1; for (var k = 0; k < W.length; k++) { r -= W[k]; if (r < 0) { g = k + 1; break; } }
     var PL0 = data.recruit.pool, all = data.heroes.filter(function (h) { return h.art !== false && (!PL0 || !PL0.length || PL0.indexOf(h.id) >= 0); });
     for (var dd = 0; dd < 5; dd++) for (var sgn = -1; sgn <= 1; sgn += 2) { var gg = g + dd * sgn;
@@ -912,6 +914,7 @@
       else if (N.path) { var ks = N.path.split('.'), o = d; for (var i = 0; i < ks.length - 1; i++) o = o[ks[i]] = cp(o[ks[i]]); /* 지나는 객체는 복사(원본 data를 안 바꾸게) */ var last = ks[ks.length - 1], v0 = o[last]; o[last] = Array.isArray(v0) ? v0.map(function (x) { return x + N.add * n; }) : (v0 || 0) + N.add * n; }
       else if (N.gradeUp) { var GA = GU[N.gradeUp.table] || (GU[N.gradeUp.table] = {}); GA[N.gradeUp.grade] = (GA[N.gradeUp.grade] || 0) + N.add * n; }
       else if (N.hero) { var J = HB[L.job] || (HB[L.job] = {}); J[N.hero] = (J[N.hero] || 0) + N.add * n; } }); });
+    for (var gf in (data.player.gradeFrom || {})) d.player[gf] = gradeTable(data, gf); /* 기준 표에서 만든 표는 원본 기준 표(업그레이드 전)에서 만들고 자기 +%만 얹음 */
     for (var gt in GU) if (d.player[gt]) d.player[gt] = d.player[gt].map(function (row) { return gradeAdd(row, GU[gt]); });
     d.heroBoost = HB; return d; }
   // 등급별 확률 +%p (2026-11-27): row 앞 4칸 = [일반, 고급, 희귀, 전설] 가중치(전리품 표는 5번째 골드 칸이 있어 그대로 둠). 높은 등급부터 더하고, 더한 만큼 낮은 등급부터 뺌(0 밑으로는 안 감, 뺄 게 없으면 그만큼만 더함). 가중치 합은 그대로

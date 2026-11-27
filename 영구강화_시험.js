@@ -77,3 +77,9 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
   const a = ev(D), b = ev(E.metaData(D, { nodes: { mercCost: 2 } })); assert.strictEqual(a.id, b.id); assert.ok(Math.abs(b.price - a.price * 0.8) <= 1, "비용 20% 감소");
   const M = E.metaData(D, { nodes: { rg4: 5 } }); assert.deepStrictEqual(M.player.mercGrade[0], [75, 15, 0, 10]); assert.deepStrictEqual(M.player.heroGrade, D.player.heroGrade, "영웅 표는 그대로");
   console.log("ok · 합류 영웅 비용 " + a.price + " → " + b.price + ", 전설 +10%"); }
+// 기준 표(2026-11-27): 상인·합류 영웅은 영웅 등급 표를 읽음(상인 2줄 위). 영웅 업그레이드는 새지 않고, 기준 표를 고치면 따라감
+{ const P = D.player; assert.ok(!P.merchantHeroGrade && !P.mercGrade, "복사본 없음");
+  const M = E.metaData(D, { nodes: { hg4: 5 } }); assert.deepStrictEqual(M.player.merchantHeroGrade[0], P.heroGrade[2]); assert.deepStrictEqual(M.player.mercGrade[0], P.heroGrade[0], "영웅 업그레이드가 상인·합류로 안 샘");
+  const D2 = Object.assign({}, D, { player: Object.assign({}, P, { heroGrade: P.heroGrade.map((r, i) => i === 2 ? [1, 1, 1, 97] : r) }) });
+  let leg = 0; for (let s = 1; s <= 60; s++) { let x = s; const r = () => (x = (x * 9301 + 49297) % 233280) / 233280; const it = E.rollMerchant(D2, 3, r, 1); it.filter(o => o.type === 'h').forEach(o => { if (E.heroGrade(D2, o.id) === 4) leg++; }); }
+  assert.ok(leg > 0, "기준 표 Lv3 줄을 바꾸면 Lv1 상인 영웅이 따라감"); console.log("ok · 기준 표(상인·합류)"); }
