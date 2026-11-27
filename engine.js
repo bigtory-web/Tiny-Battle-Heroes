@@ -555,7 +555,7 @@
     var GR = V.groups && V.groups[kind]; if (GR && !fixedK) { var gk = Object.keys(GR), gt = gk.reduce(function (a, k) { return a + GR[k]; }, 0), gr = rnd() * gt; for (var gi = 0; gi < gk.length; gi++) { gr -= GR[gk[gi]]; if (gr < 0) { kind = gk[gi]; break; } } } // 2026-11-26: 같은 그룹(예: 방랑상인·늪지 상인)은 장별 확률로 하나
     var ev = { kind: kind };
     if (kind === 'swampShop') ev.ids = rollPotions(data, rnd, plv);
-    if (kind === 'merc') { ev.id = pickHeroByGrade(data, rnd, plv, null, 'mercGrade'); /* 2026-11-27 합류 영웅 등급 표 */ ev.price = mercPrice(data, ev.id, n); }
+    if (kind === 'merc') { ev.id = pickMerc(data, n, rnd, plv); ev.price = mercPrice(data, ev.id, n); }
     if (kind === 'mobs') rollMobs(data, n, rnd, plv, ev);
     if (kind === 'mimic') rollMimic(data, n, rnd, plv, ev);
     if (kind === 'dais') ev.tag = rollDais(data, rnd);
@@ -621,6 +621,10 @@
   // 모닥불: 영웅 count명이 둘러앉아 있어요. 말풍선을 누르면 룰렛이 돌아 그중 1명이 동료가 돼요(전투 없음). 등급은 플레이어 레벨 확률(atStart면 레벨 1 확률)
   function rollCampfire(data, rnd, plv) { var CF = data.events.campfire, out = [], cn = data.player && data.player.campfire ? perk(data, plv).campfire : CF.count; for (var i = 0; i < cn; i++) out.push(pickHeroByGrade(data, rnd, plv || 1, out)); return out; }
   function campfireAtStart(data) { var CF = data.events && data.events.campfire; return !!(CF && CF.atStart) && (data.events.off || []).indexOf('campfire') < 0; }
+  // 합류 영웅(2026-11-27): 적을 더하지 않고, 그 판 적(분노 0) 중 1명을 등급 무게(player.mercGrade[레벨], 업그레이드 +%)로 뽑아요 (사용자: "합류 확률이라는 게 적 중에서 등급별 합류될 대상을 타깃하는 그 확률로")
+  function pickMerc(data, n, rnd, plv) { var T = data.player && data.player.mercGrade, W = T ? T[Math.max(0, Math.min((plv || 1) - 1, T.length - 1))] : [1, 1, 1, 1], C = stageTeam(data, n, null, 0, plv).team.filter(function (u) { return !u.mob && !heroById(data, u.id).mob; });
+    if (!C.length) return pickHeroByGrade(data, rnd, plv, null, 'mercGrade'); var w = C.map(function (u) { return W[heroGrade(data, u.id) - 1] || 0; }), tot = w.reduce(function (a, b) { return a + b; }, 0); if (!tot) return C[Math.floor(rnd() * C.length)].id;
+    var x = rnd() * tot; for (var i = 0; i < C.length; i++) { x -= w[i]; if (x < 0) return C[i].id; } return C[C.length - 1].id; }
   function mercPrice(data, id, n) { var M = data.events.merc; return Math.round(M.price * heroGrade(data, id) * Math.pow(data.shop.priceGrowth, n) * (1 - Math.min(90, M.costCut || 0) / 100)); } /* 2026-11-27 costCut: 업그레이드 비용 감소 */ // 등급이 높을수록 비싸요
   // 방랑상인 진열: [{ type: 's'|'h', id, gold, mana, price, cur: 'gold'|'mana' }]. 값은 원래 값 × discount, 최소 minPrice (재화는 하나만)
   // owned(가진 스킬)를 주면 가진 스킬은 등급업 값으로 쳐요. price는 그 재화의 값이에요
@@ -674,7 +678,7 @@
     for (var k = 0; k < (bell || 0) && k < BL.tiers.length; k++) { var r = makeRng(n * 977 + 53 + (plv || 1) * 7919 + k * 131), L = BL.tiers[k]; r(); out.push(L[Math.floor(r() * L.length)]); } return out; }
   function stageTeam(data, n, ev, bell, plv) { plv = plv || 1; bell = Math.max(0, Math.min(bell || 0, bellMax(data, n, ev)));
     var C = data.campaign, R = data.recruit, lv = stageLevel(data, n);
-    var mercN = ev && ev.kind === 'merc' ? 1 : 0, base = fromTable(R.enemyCount, n), cnt = Math.min(R.fieldSlots, base + mercN) - mercN + (data.bell ? data.bell.enemy * bell : 0), rnd = makeRng(n * 977 + 13 + plv * 7919);
+    var mercN = 0 /* 2026-11-27 합류 영웅은 적 중에서 고름(더하지 않음) */, base = fromTable(R.enemyCount, n), cnt = Math.min(R.fieldSlots, base + mercN) - mercN + (data.bell ? data.bell.enemy * bell : 0), rnd = makeRng(n * 977 + 13 + plv * 7919);
     // 적 영웅: 플레이어 레벨의 등급 확률(player.heroGrade)로 한 명씩 뽑아요. 같은 스테이지·레벨이면 늘 같은 적, 종으로 늘어난 적은 뒤에 붙어요
     var bfx = (ev && (ev.kind === 'mobs' || ev.kind === 'chest')) ? [] : bellFx(data, n, bell, plv), BFX = (data.bell && data.bell.fx) || {}, bv = function (k) { return (BFX[k] || {}).v || 0; }, bhas = function (k) { return bfx.indexOf(k) >= 0; };
     var baseCnt = cnt; if (bhas('more')) cnt += bv('more');
@@ -710,7 +714,7 @@
       for (var wi = occ.length - 1; wi > 0; wi--) { var wj = Math.floor(rndW() * (wi + 1)), wt = occ[wi]; occ[wi] = occ[wj]; occ[wj] = wt; }
       swamp = occ.slice(0, nW); team.forEach(function (u) { if (swamp.indexOf(u.slot) >= 0) { u.swamp = SW.amount != null ? SW.amount : SW.perSec; u.swampE = SW.every || 0; } }); }
     if (ev && ev.kind === 'goblin') team.push({ id: 'goblin', level: lv, slot: 4, mul: m, mob: true });
-    if (mercN) team.push({ id: ev.id, level: lv, slot: 4, mul: m, merc: true });
+    if (ev && ev.kind === 'merc') { var mu = team.filter(function (u) { return u.id === ev.id; })[0]; if (mu) mu.merc = true; } /* 2026-11-27 그 적이 합류 영웅(못 찾으면 표시 없음) */
     return { n: n, name: stageName(data, n), level: lv, boss: boss, wall: C.walls.indexOf(n) >= 0, team: team, skills: eskills, event: ev || null, bell: bell, bellFx: bfx, curse: bhas('curse') ? bv('curse') : 0, swamp: swamp };
   }
   // 영웅 덤(2026-11-18): 이 영웅을 얻으면 같이 받는 보상. null | { type: 's', id }(유물) | { type: 'g'|'m', amt }. 등급이 낮을수록 잘 붙어요
