@@ -3326,6 +3326,8 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   var UPKEY = 'idle-testbed-upgrade';
   function upLoad(){ var m = null; try { m = JSON.parse(localStorage.getItem(UPKEY)); } catch (e) {} m = m || {}; m.medals = m.medals || 0; m.nodes = m.nodes || {}; m.cleared = m.cleared || {}; return m; }
   function upSave(m){ try { localStorage.setItem(UPKEY, JSON.stringify(m)); } catch (e) {} }
+  /* 뺀 업그레이드 노드에 쓴 훈장은 돌려줌 (2026-11-27 사용자: "돌려줘"). 리셋 때 또 주지 않게 쓴 훈장 기록에서도 뺌 */
+  (function(){ var m = upLoad(), back = E.metaRefund ? E.metaRefund(IDLE_DATA, m) : 0; if (back > 0){ if (m.spent != null) m.spent = Math.max(0, m.spent - back); upSave(m); } })();
   var RUNMETA = SAVED ? SAVED.meta || {} : upLoad().nodes, RUNMODE = (SAVED ? SAVED.metaMode : upLoad().mode) || 'level'; /* 'level' 레벨로 · 'meta' 영구 강화로 */
   var RUNDIFF = (SAVED ? SAVED.diff : upLoad().diff) || 'easy'; /* 제약(난이도) */
   function runData(ch){ return E.metaData(E.difficultyData(E.chapterData(IDLE_DATA, ch), RUNDIFF), { nodes: RUNMETA, mode: RUNMODE }); }
