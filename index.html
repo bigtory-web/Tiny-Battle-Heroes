@@ -1391,7 +1391,7 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .sklv{font-style:normal;color:#9fe07a;font-size:10px}
 .hinfo .hi-ult .skn{font-size:9px}
 .hinfo.btl{z-index:730}
-.hinfo.btl .hi-st4 span{white-space:nowrap;gap:4px}
+.hinfo.btl .hi-st4 span{white-space:nowrap;gap:4px} .hinfo .hi-st4 .std{font-style:normal;font-size:10px} .hinfo .hi-st4 b i.std.up{color:#7be07b} .hinfo .hi-st4 b i.std.dn{color:#ff7a6a}
 .hinfo .hi-hp{color:#9fe07a} .hinfo .hi-dead{color:#ff8f7a}
 /* 종: 누를 때 검은 테두리 없이 (사용자 요청) — 포커스 테두리·터치 강조·안쪽 검은 줄 제거, 색 테두리만 남겨요 */
 #bellBtn .bnext{position:absolute;left:50%;top:calc(100% + 4px);transform:translateX(-50%);white-space:nowrap;pointer-events:none;padding:1px 5px;background:rgba(23,20,29,.72);color:#f3e6c4;font:600 10px/14px var(--body);letter-spacing:.02em}
@@ -4326,6 +4326,16 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
       '<div class="hi-st4"><span>체력<b>' + Math.round(o.hp).toLocaleString() + '</b></span><span>공격<b>' + Math.round(o.atk) + '</b></span><span>방어<b>' + Math.round(o.def) + '</b></span><span>공속<b>' + (+(1 / (o.interval || h.interval)).toFixed(2)) + '</b></span><span>사거리<b>' + (mk === 'b' ? (RNG_NM[D.events.mimic.blueRange] || '2칸' /* 숫자(픽셀)면 2칸 */) : RNG_NM[h.range] || '-') + '</b></span></div>' +
       (ms ? skRow(skFrame(pasIcon(mk === 'k' ? 'shieldBreakStun' : mk === 'b' ? 'ultBlind' : 'hitSlow'), HG(id).col), ms.name, 1, ms.desc) : '') +
       (dd ? '<div class="hi-ult mlootrow' + (mm ? ' big' : '') + '"><b class="mlh">전리품</b><div class="mdrops">' + dd + '</div></div>' : ''); }
+  /* 늪·수정·물약으로 바뀐 능력치 표시 (2026-11-27 사용자: "수치 올라가면 파티 전투력과 상세 정보창에서도 변화를"): 오름 초록, 내림 빨강 */
+  var RC_PX = [52, 100, 150, 210, 262, 314, 366];
+  function rngCells(px){ var k = 0; RC_PX.forEach(function(r, i){ if (Math.abs(r - px) < Math.abs(RC_PX[k] - px)) k = i; }); return (k + 1) + '칸'; }
+  function stD(r){ var p = Math.round((r || 0) * 100); return p ? ' <i class="std ' + (p > 0 ? 'up' : 'dn') + '">(' + (p > 0 ? '+' : '') + p + '%)</i>' : ''; }
+  function st4(v, d){ d = d || {}; return '<div class="hi-st4"><span>체력<b>' + Math.round(v.hp).toLocaleString() + stD(d.hp) + '</b></span><span>공격<b>' + Math.round(v.atk) + stD(d.atk) + '</b></span><span>방어<b>' + Math.round(v.def) + stD(d.def) + '</b></span><span>공속<b>' + (+(1 / v.iv).toFixed(2)) + stD(d.aspd) + '</b></span><span>치명타<b>' + Math.round(100 * v.crit) + '%' + stD(d.crit) + '</b></span><span>사거리<b>' + (d.reach != null ? '<i class="std ' + (d.reach > 0 ? 'up' : 'dn') + '">' + v.range + '</i>' : v.range) + '</b></span></div>'; }
+  /* x = 효과가 걸린 b.stats, q = 효과 없이 만든 전투의 값(방어·치명타·사거리 비교) */
+  function stDiff(x, q){ var r = function(a, b){ return b ? a / b - 1 : 0; }; return { hp: r(x.maxHp, x.base.maxHp), atk: r(x.atk, x.base.atk), aspd: r(x.base.interval, x.interval), def: q ? r(x.def, q.def) : 0, crit: q ? r(x.crit, q.crit) : 0, reach: q && Math.abs(x.reach - q.reach) > 1 ? x.reach - q.reach : null }; }
+  function formBattle(plain){ var st = noFight() || S.stage >= E.stageCount(D) ? null : E.stageTeam(D, S.stage, S.event, S.bell || 0, plv()); if (!st) return null; var o = { seed: 1, modules: S.modules, record: false, skills: S.skills, enemySkills: st.skills }; if (!plain){ o.potions = potSpec(); o.crystal = cryOpt(st); } try { return E.createBattle(D, teamSpec().map(padSpec), foeTeamAt(st.team), o); } catch (e) { return null; } }
+  /* 배치 중 영웅의 바뀔 값 (수정 칸·마신 물약) */
+  function formDiff(unit){ if (bt || !unit || S.team.indexOf(unit.uid) < 0) return null; var sp = teamSpec().filter(function(t){ return t && t.tuid === unit.uid; })[0], w = sp && formBattle(), p = sp && formBattle(true); if (!w || !p) return null; var f = function(b){ var u = b.A.filter(function(a){ return a.slot === sp.slot; })[0]; return u && b.stats(u.uid); }, x = f(w), q = f(p); return x && q ? stDiff(x, q) : null; }
   function infoHtml(id, lv, st, mul, foe, noStar, unit){
     var EL = E.effectLevels(D, id), GE = D.gradeEffects || {};
     var h = hero(id), hT = padAdd(h, unit && padOf(unit.uid));
@@ -4333,7 +4343,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
 
     return '<div class="hi-top"><span class="hi-av hic" style="--hg:' + HG(id).col + '">' + av(id) + (st && !noStar ? starsIn(st, id) : '') + '</span><div><b>' + nmH(h) + ' <em class="hlv">Lv ' + lv + '</em></b>' +
       '<div class="hi-tags">' + tagHtml(hT) + '</div></div></div>' +
-      '<div class="hi-st4"><span>체력<b>' + Math.round(h.hp * gr * mh).toLocaleString() + '</b></span><span>공격<b>' + Math.round(h.atk * gr * ma) + '</b></span><span>방어<b>' + h.def + '</b></span><span>공속<b>' + (+(1 / h.interval).toFixed(2)) + '</b></span><span>치명타<b>' + Math.round(100 * (E.critChance ? E.critChance(D, h) : 0)) + '%</b></span><span>사거리<b>' + (RNG_NM[h.range] || '-') + '</b></span></div>' +
+      (function(){ var d = foe ? null : formDiff(unit), k = function(n){ return 1 + ((d && d[n]) || 0); }, cr = E.critChance ? E.critChance(D, h) : 0; return st4({ hp: h.hp * gr * mh * k('hp'), atk: h.atk * gr * ma * k('atk'), def: h.def * k('def'), iv: h.interval / k('aspd'), crit: cr * k('crit'), range: d && d.reach != null ? rngCells(RC_PX[Math.max(0, Math.min(RC_PX.length - 1, RC_PX.reduce(function(m, r, i){ return Math.abs(r - h.range) < Math.abs(RC_PX[m] - h.range) ? i : m; }, 0) + (d.reach > 0 ? 1 : -1)))]) : RNG_NM[h.range] || '-' }, d); })() +
       (unit && E.unitSkills ? trRows(unit) : skRow(skFrame(ultIconEl(h), HG(id).col), ultName(h), EL.ult, ultDescFull(h, U, 1 + (GE.ultPer || 0) * (EL.ult - 1)), ultNum(U))) +
       pasLine(id, false, foe ? st : (unit ? unit.star : st));
   }
@@ -4344,12 +4354,12 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   function battleInfoHtml(u){
     var h = u.h, foe = u.side !== 'A', st = foe ? 0 : curGrades[u.slot], GE = D.gradeEffects || {}, U = h.ult;
     var bm = foe ? (curFoeMul[u.slot] || {}) : gmul(st), bg = 1 + D.growth.perLevel * ((u.level || 1) - 1);
-    if (h.mob) return mobInfoHtml(u.id, { blue: u.blue, lv: u.level, hp: h.hp * bg * (bm.hp || 1), atk: h.atk * bg * (bm.atk || 1), def: h.def * bg, interval: h.interval, dead: !u.alive, drops: (curEv && curEv.kind === 'mobs' && curEv.drops) ? [].concat(curEv.drops[u.slot] || []) : [] });
+    var mx = h.mob && bt && bt.stats && bt.stats(u.uid); if (h.mob) return mobInfoHtml(u.id, { blue: u.blue, lv: u.level, hp: mx ? mx.maxHp : h.hp * bg * (bm.hp || 1), atk: mx ? mx.atk : h.atk * bg * (bm.atk || 1), def: h.def * bg, interval: mx ? mx.interval : h.interval, dead: !u.alive, drops: (curEv && curEv.kind === 'mobs' && curEv.drops) ? [].concat(curEv.drops[u.slot] || []) : [] });
     if (false) return '<div class="hi-top"><span class="hi-av">' + av(u.id) + '</span><div><b>돈고블린</b><div class="hi-tag">싸우지 않아요 · ' + D.events.goblin.flee + '초 뒤 도망</div></div></div><div class="hi-ult"><div>잡고 이기면 클리어 골드 ×' + D.events.goblin.goldMul + '</div></div>';
     var PS = h.passive && (D.passives || {})[h.passive.kind];
     return '<div class="hi-top"><span class="hi-av hic" style="--hg:' + HG(u.id).col + '">' + av(u.id) + starsIn(foe ? u.star || 1 : st, u.id) + '</span><div><b>' + nmH(h) + ' <em class="hlv">Lv ' + (u.level || '') + '</em></b>' +
       (u.boss || !u.alive ? '<div class="hi-tag">' + (u.boss ? '보스' : '') + (u.boss && !u.alive ? ' · ' : '') + (u.alive ? '' : '<span class="hi-dead">쓰러짐</span>') + '</div>' : '') + '<div class="hi-tags">' + tagHtml(u.el2 || u.race2 ? Object.assign({}, h, { el2: u.el2, race2: u.race2 }) : h) + '</div></div></div>' +
-      '<div class="hi-st4"><span>체력<b>' + Math.round(h.hp * bg * (bm.hp || 1)).toLocaleString() + '</b></span><span>공격<b>' + Math.round(h.atk * bg * (bm.atk || 1)) + '</b></span><span>방어<b>' + h.def + '</b></span><span>공속<b>' + (+(1 / h.interval).toFixed(2)) + '</b></span><span>치명타<b>' + Math.round(100 * (E.critChance ? E.critChance(D, h) : 0)) + '%</b></span><span>사거리<b>' + (RNG_NM[h.range] || '-') + '</b></span></div>' +
+      (function(){ var x = bt && bt.stats && bt.stats(u.uid); if (!x) return st4({ hp: h.hp * bg * (bm.hp || 1), atk: h.atk * bg * (bm.atk || 1), def: h.def, iv: h.interval, crit: E.critChance ? E.critChance(D, h) : 0, range: RNG_NM[h.range] || '-' }); var d = stDiff(x, bt._plain && bt._plain[u.side + u.slot]); return st4({ hp: x.maxHp, atk: x.atk, def: h.def * (1 + d.def) /* 방어는 상세 창이 원래 보여 주던 기준값에 바뀐 비율만 */, iv: x.interval, crit: x.crit, range: d.reach != null ? rngCells(x.reach) : RNG_NM[h.range] || '-' }, d); })() +
       skRow(skFrame(ultIconEl(h), HG(u.id).col, 1 - (u.energy || 0) / (D.battle.energyMax || 100), ultFlash(u)), ultName(h), u.ultLv, ultDescFull(h, U, 1 + (GE.ultPer || 0) * (u.ultLv - 1)), ultNum(U)) +
       (u.extra || []).map(function(x){ var xh = hero(x.from); return skRow(skFrame(ultIconEl(xh), HG(x.from).col), ultName(xh) + ' <small class="trtag">초월</small>', x.lv, ultDescFull(xh, x.ult, x.k), ultNum(x.ult)); }).join('') +
       (h.passive && h.passive.kind !== 'none' && PS && u.pasLv ? skRow(skFrame(pasIcon(h.passive.kind), HG(u.id).col), PS.name, u.pasLv, pasDesc(u.id, u.pasLv)) : pasLine(u.id, false, 0)) + /* 켜졌으면 켜진 줄, 아니면 잠긴 줄(희귀·전설만) */
@@ -4567,7 +4577,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     vsBarInit(); tpw.last = { A: -1, E: -1 };
     var swFP = foePos(st.team), swQ = (st.swamp || []).map(function(sl){ return swFP[sl]; }).filter(Boolean);
     bt = E.createBattle(D, teamSpec().map(padSpec), foeTeamAt(st.team), { potions: potSpec(), crystal: cryOpt(st), seed: (Math.random() * 1e9) | 0, modules: S.modules, record: true, skills: S.skills, enemySkills: st.skills });
-    bt._swamp = swQ; bt._cry = st.crystal || null; bt._pot = {}; (bt.potions || []).forEach(function(p){ var P = E.potionById(D, p.id); (p.uids || []).forEach(function(id){ if (P) (bt._pot[id] || (bt._pot[id] = [])).push(potPic(P.id)); }); }); setTimeout(potBar, 0); bt.E.forEach(function(u){ if (MOBSZ[u.h.mob]) tpw.E[u.slot] = mobPw(u); }); // 몹 전투력은 능력치로
+    bt._swamp = swQ; bt._cry = st.crystal || null; bt._plain = {}; try { var pb = E.createBattle(D, teamSpec().map(padSpec), foeTeamAt(st.team), { seed: 1, modules: S.modules, record: false, skills: S.skills, enemySkills: st.skills }); pb.A.concat(pb.E).forEach(function(u){ bt._plain[u.side + u.slot] = pb.stats(u.uid); }); } catch (e) {} bt._pot = {}; (bt.potions || []).forEach(function(p){ var P = E.potionById(D, p.id); (p.uids || []).forEach(function(id){ if (P) (bt._pot[id] || (bt._pot[id] = [])).push(potPic(P.id)); }); }); setTimeout(potBar, 0); bt.E.forEach(function(u){ if (MOBSZ[u.h.mob]) tpw.E[u.slot] = mobPw(u); }); // 몹 전투력은 능력치로
     logI = 0; acc = 0; fxs = []; shots = []; combos = {}; seqHit = {}; ultAt = {}; arrows = []; uxs = []; UC = {}; bolts = []; skArrowSrc = null; pops = []; knocks = {}; hitStop = {}; blinks = {}; dashes = {}; skDmg = { A: 0, E: 0 }; if (HAS_FX) FX.clear(); banners = []; ultPops = []; graves = {}; lunges = {}; flash = 0; done = false;
     $('res').hidden = true; $('field').style.visibility = 'hidden'; cv.hidden = false; $('skipBtn').disabled = false;
     $('tab-camp').classList.add('busy'); $('fightBtn').disabled = true; dpsLast = null; DPSW = {}; document.querySelectorAll('.dps .dpsb').forEach(function(b){ b.innerHTML = ''; }); /* 새 전투: DPS 기록 새로 */ $('fightBtn').classList.add('busyhide'); /* 전투 중에는 숨김 */ $('spdBtn').disabled = false;
@@ -4637,13 +4647,13 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   function vsBarForm(){ var bar = $('vsBar'); if (!bar) return; var tb0 = $('talkBtn'); if (tb0) tb0.style.visibility = isOddEven() || isFork() || isLvPick() ? 'hidden' : ''; if (bt) return; var done = S.stage >= E.stageCount(D);
     if (done){ bar.hidden = true; return; } vsBarInit(); var evm = noFight(); bar.classList.toggle('evmode', evm);
     var st = evm ? { team: [], skills: [] } : E.stageTeam(D, S.stage, S.event, S.bell || 0, plv()), spA = teamSpec().map(padSpec), b0 = null;
-    try { b0 = E.createBattle(D, spA, foeTeamAt(st.team), { seed: 1, crystal: cryOpt(st), modules: S.modules, record: false, skills: S.skills, enemySkills: st.skills }); } catch (e) {}
-    var pA = 0, pE = 0; S.team.forEach(function(uid){ var u0 = uid && U(uid); if (u0) pA += uPow(u0); }); st.team.forEach(function(x){ if (!E.unitPower) return; if (hero(x.id).mob){ if (MOBSZ[hero(x.id).mob] && b0) pE += mobPw(b0.E.filter(function(u){ return u.slot === x.slot; })[0]); return; } var m = x.mul || {}; pE += E.unitPower(D, { id: x.id, star: x.star || 1 }, x.level) * Math.sqrt((m.hp || 1) * (m.atk || 1)); });
+    try { b0 = E.createBattle(D, spA, foeTeamAt(st.team), { seed: 1, potions: potSpec(), crystal: cryOpt(st), modules: S.modules, record: false, skills: S.skills, enemySkills: st.skills }); } catch (e) {}
+    var pm = function(sd, slot){ var u = b0 && b0.stats && b0[sd].filter(function(a){ return a.slot === slot; })[0], x = u && b0.stats(u.uid); return x ? x.powerMul : 1; }; var pA = 0, pE = 0; spA.forEach(function(sp){ var u0 = sp && U(sp.tuid); if (u0) pA += uPow(u0) * pm('A', sp.slot); }); st.team.forEach(function(x){ if (!E.unitPower) return; if (hero(x.id).mob){ if (MOBSZ[hero(x.id).mob] && b0) pE += mobPw(b0.E.filter(function(u){ return u.slot === x.slot; })[0]); return; } var m = x.mul || {}; pE += E.unitPower(D, { id: x.id, star: x.star || 1 }, x.level) * Math.sqrt((m.hp || 1) * (m.atk || 1)) * pm('E', x.slot); });
     if (E.relicPowerMul){ pA *= E.relicPowerMul(D, S.skills); pE *= E.relicPowerMul(D, st.skills); }
     ['A', 'E'].forEach(function(sd){ var L = b0 ? b0[sd] : [], mx = 0, sh = 0; L.forEach(function(u){ mx += u.maxHp; sh += u.shield > 1 ? u.shield : 0; }); vsBarSet(sd, mx, mx, sh, Math.round(sd === 'A' ? pA : pE), true); });
     if (evm){ var be = $('tbE'); be.querySelector('.tpw em').textContent = '???'; be.querySelector('small').textContent = '???'; } pwTint(); aimMarks(evm || scrollPend ? null : b0); } // 이벤트 판: 적 쪽은 ???
   function updTeamBars(){ if (!bt || !tpw) return; ['A', 'E'].forEach(function(sd){ var L = bt[sd], hp = 0, mx = 0, sh = 0, pw = 0;
-      L.forEach(function(u){ if (u.escaped) return; mx += u.maxHp; if (u.alive){ hp += Math.max(0, u.hp); sh += u.shield > 1 ? u.shield : 0; pw += tpw[sd][u.slot] || 0; } });
+      L.forEach(function(u){ if (u.escaped) return; mx += u.maxHp; if (u.alive){ hp += Math.max(0, u.hp); sh += u.shield > 1 ? u.shield : 0; var sx = bt.stats && bt.stats(u.uid); pw += (tpw[sd][u.slot] || 0) * (sx ? sx.powerMul : 1); /* 늪·수정·물약으로 바뀐 만큼 */ } });
       pw = Math.round(pw * (sd === 'A' ? tpw.mA : tpw.mE)); vsBarSet(sd, hp, mx, sh, pw, true, L.filter(function(u){ return u.alive && !u.escaped; }).length); }); } // 전체 HP·전투력 (전투 중 매 프레임)
   var finSlow = 0;
   function startFinisher(){ var lastDie = null; for (var i = bt.log.length - 1; i >= 0; i--){ if (bt.log[i].kind === 'die'){ lastDie = bt.log[i]; break; } }
