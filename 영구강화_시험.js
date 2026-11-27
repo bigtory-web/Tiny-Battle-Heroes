@@ -100,3 +100,19 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
   const mm = E.createBattle(C2, [{ id: id, slot: 0, level: 1 }], foe, { seed: 3, crystal: { cells: cells, ids: ["hp"], more: 0.25 } }); assert.ok(Math.abs(mm.A[0].maxHp - b0 * 0.25) < 1e-9, "분노 3단계: -75%");
   assert.strictEqual(E.stageTeam(C2, 0, null, 3, 1).crystalMore, 0.25); assert.strictEqual(E.stageTeam(C2, 0, null, 0, 1).crystalMore, 0);
   console.log("ok · 수정 칸"); }
+// 수정 9종 + 수정 상인(2026-11-27)
+{ const C2 = E.chapterData(D, 2), id = D.heroes.find(h => h.range === 'mid').id, foe = [{ id: id, slot: 0, level: 1 }];
+  const mk = (ids) => E.createBattle(C2, [{ id: id, slot: 0, level: 1 }, { id: id, slot: 6, level: 1 }], foe, { seed: 3, crystal: ids && { cells: [0, 6], ids: ids } });
+  const b0 = mk(null); assert.strictEqual(D.crystals.list.length, 9);
+  const chk = (cid, f) => { const b = mk([cid]); f(b.A[0], b.A[1], b0.A[0], b0.A[1]); };
+  chk('def', (m, p, m0, p0) => assert.ok(Math.abs(m.def - m0.def * 0.5) < 1e-9 && Math.abs(p.def - p0.def * 1.25) < 1e-9));
+  chk('aspd', (m, p, m0, p0) => assert.ok(Math.abs(m.interval - m0.interval * 2) < 1e-9 && Math.abs(p.interval - p0.interval / 1.25) < 1e-9));
+  chk('care', (m, p) => assert.ok(Math.abs(m.lineCare + 0.5) < 1e-9 && Math.abs(p.lineCare - 0.25) < 1e-9));
+  chk('energy', (m, p) => assert.ok(m.enMul === 0.5 && p.enMul === 1.25));
+  chk('reach', (m, p, m0, p0) => { assert.strictEqual(m0.reach, 150); assert.strictEqual(m.reach, 100); assert.strictEqual(p.reach, 210); });
+  const r = mk(['reach']); r.A[0].alive = false; r.step(); assert.strictEqual(r.A[1].reach, 150, "거울 수정 플러스 꺼지면 원래 사거리");
+  assert.deepStrictEqual(C2.events.groups, { merchant: { merchant: 3, crystalShop: 7 } }); assert.strictEqual(E.crystalSellPrice(D, 'atk'), 30);
+  const ids = E.rollCrystals(D, () => 0.3, 1); assert.ok(ids.length > 0 && new Set(ids).size === ids.length);
+  assert.strictEqual(E.chapterData(D, 3).campaign.enemyLv[0], D.campaign.enemyLv[0] + 2, "3장 적 레벨 +2"); assert.strictEqual(C2.campaign.enemyLv[0], D.campaign.enemyLv[0] + 1);
+  let seen = 0, bought = 0; for (let s = 1; s <= 40; s++) { const R = E.campaign(C2, { seed: s }); const c = (R.events || {}).crystalShop; if (c) { seen += c.seen || 0; bought += c.bought || 0; } }
+  console.log("ok · 수정 9종·상인 (봇 수정 상인", seen, "번, 산 것", bought + ")"); }

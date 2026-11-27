@@ -260,8 +260,8 @@ var IDLE_DATA = {
     chapterDefs: [
       { featured: ['boar', 'ranger', 'minotaur', 'dragon'], featuredMul: 3, /* 2026-11-27 특별 출현: 등급별 1명, 기획이 외형 보고 고름(사용자: "임의로 니가 외형보고 등급별로1개씩"). 러시·로빈·힐다·드라코. 같은 등급 안에서 3배 잘 나옴(임시) */ name: '용의 초원', foeName: '용' /* 2026-11-27 챕터 이름은 분노 상징 캐릭터로(사용자: "용의 초원, 악어의 늪지대 이렇게 분노 상징하는 캐릭터들"). 예전 '초원' */, bg: 'img/p/bg_field.png', bgDusk: 'img/p/bg_field_dusk.png' },
       /* 2026-11-27 2장 = 수정 동굴(버프 챕터), 늪지대는 3장으로 (사용자: "늪지대를 3챕터로하고. 2챕터용으로"). 이름 앞 분노 캐릭터·특별 출현 영웅·배경·분노 3단계는 미정(지금은 기본 분노, 배경은 초원) */
-      { bg: 'img/p/bg_cave.png', bgDusk: 'img/p/bg_cave_dusk.png', bgNight: 'img/p/bg_cave_night.png' /* 배경은 확인 중인 B안 */, featured: ['batling', 'icefairy', 'gargoyle', 'archmage'], featuredMul: 3, /* 2026-11-27 특별 출현: 기획이 외형 보고 고름. 녹스(꼬마박쥐)·크리스탈(얼음요정)·스톤(가고일)·테티스(대마법사) */ name: '골렘의 수정 동굴', foeName: '골렘', foeIcon: 'img/p/ui_golemfoe' /* 사용자: "골렘이낫겟어". 분노 아이콘 그림 대기(foeIcon 없음 → 기본) */, lvPlus: 1 /* 임시 */, crystal: { slots: 2, start: ['hp'] }, bellTiers: [['more'], ['relic'], ['crystal']] /* 수정 슬롯 2칸, 1번 칸은 챕터 시작 때 start 수정 고정(여러 개 넣으면 그중 무작위, 사용자: "체력 수정이 고정인게 걸리면 랜덤으로 할수도"). 슬롯이 비면 효과 없음 */ },
-      { featured: ['mudgolem', 'turtle', 'druid', 'kraken'], featuredMul: 3, /* 특별 출현: 매디(늪지기)·셸리(거북기사)·윌로(드루이드)·애비(크라켄) */ name: '악어의 늪지대', foeName: '악어', /* 예전 '늪지대' */ story: '초원을 지나면 안개 낀 늪지대가 나온다. 발이 빠지는 진흙 위에서 적들은 오래 버틸수록 사나워진다. 늪 한가운데에는 수상한 물약을 파는 개구리 상인이 산다.', /* 2026-11-27 챕터 이야기(사용자: "늪지대 스토리도 넣어줘") */ foeIcon: 'img/p/ui_swampfoe', bg: 'img/p/bg_swamp.png', bgDusk: 'img/p/bg_swamp_dusk.png', lvPlus: 1, swamp: { cells: 1, every: 5, amount: 0.01 } /* 2026-11-27: 5초마다 +1% (사용자: "늪칸효과 5초마다 1%로해.."). 예전 perSec 0.05 = 1초마다 +5% */, bellTiers: [['more'], ['relic'], ['swamp']], groups: { merchant: { merchant: 3, swampShop: 7 } } }
+      { bg: 'img/p/bg_cave.png', bgDusk: 'img/p/bg_cave_dusk.png', bgNight: 'img/p/bg_cave_night.png' /* 배경은 확인 중인 B안 */, featured: ['batling', 'icefairy', 'gargoyle', 'archmage'], featuredMul: 3, /* 2026-11-27 특별 출현: 기획이 외형 보고 고름. 녹스(꼬마박쥐)·크리스탈(얼음요정)·스톤(가고일)·테티스(대마법사) */ name: '골렘의 수정 동굴', foeName: '골렘', foeIcon: 'img/p/ui_golemfoe' /* 사용자: "골렘이낫겟어". 분노 아이콘 그림 대기(foeIcon 없음 → 기본) */, lvPlus: 1 /* 2026-11-27 사용자: "2·3챕터는 지금처럼 둘 다 +1" + 3장은 +1 더 */, crystal: { slots: 2, start: ['hp'] }, bellTiers: [['more'], ['relic'], ['crystal']], groups: { merchant: { merchant: 3, crystalShop: 7 } } /* 수정 상인 = 방랑상인 자리에 70% (사용자: "이거임") */ /* 수정 슬롯 2칸, 1번 칸은 챕터 시작 때 start 수정 고정(여러 개 넣으면 그중 무작위, 사용자: "체력 수정이 고정인게 걸리면 랜덤으로 할수도"). 슬롯이 비면 효과 없음 */ },
+      { featured: ['mudgolem', 'turtle', 'druid', 'kraken'], featuredMul: 3, /* 특별 출현: 매디(늪지기)·셸리(거북기사)·윌로(드루이드)·애비(크라켄) */ name: '악어의 늪지대', foeName: '악어', /* 예전 '늪지대' */ story: '초원을 지나면 안개 낀 늪지대가 나온다. 발이 빠지는 진흙 위에서 적들은 오래 버틸수록 사나워진다. 늪 한가운데에는 수상한 물약을 파는 개구리 상인이 산다.', /* 2026-11-27 챕터 이야기(사용자: "늪지대 스토리도 넣어줘") */ foeIcon: 'img/p/ui_swampfoe', bg: 'img/p/bg_swamp.png', bgDusk: 'img/p/bg_swamp_dusk.png', lvPlus: 2 /* 2026-11-27 3장은 +1 더 (사용자: "3은 1더 올려") */, swamp: { cells: 1, every: 5, amount: 0.01 } /* 2026-11-27: 5초마다 +1% (사용자: "늪칸효과 5초마다 1%로해.."). 예전 perSec 0.05 = 1초마다 +5% */, bellTiers: [['more'], ['relic'], ['swamp']], groups: { merchant: { merchant: 3, swampShop: 7 } } }
     ],
     idle: { enabled: false, base: 8, growth: 1.2, maxHours: 8 } // 방치 보상 (꺼짐: 방치형 게임이 아니에요). 골드는 스테이지 보상과 전리품으로만 들어와요
   },
@@ -273,7 +273,18 @@ var IDLE_DATA = {
   // ───── 물약(2026-11-26, 2장 늪지 상인): 마시면 그 전투 동안만. 끝나면 이기든 지든 사라져요. kind는 열 유물 효과를 그대로 써요(대상만 다름)
   //   target: 'team' 아군 전체 · 'rand' 무작위 아군 1명(마실 때 정해져 머리 위에 표시) · kind 'swamp' = 늪 칸과 같은 1초마다 공격력 +amount
   // 2026-11-27 수정(2장 수정 동굴): 수정 슬롯에 박히면 수정 칸 효과. stat 능력치, minus 마이너스 칸 영웅·plus 플러스 칸 영웅(비율) (사용자: "체력이 50% 감소한다. 체력이 25% 증가한다. 이렇게 . 체력 수정")
-  crystals: { list: [ { id: 'hp', name: '체력 수정', stat: 'hp', minus: -0.5, plus: 0.25 } ] },
+  //   2026-11-27 9종(사용자 "ㅇㅋ"): 방어 계열(체력·바위·생명) = 탱커를 키움, 공격 계열(힘·바람·그림자) = 탱커를 희생해 딜러를 키움, 특수(번개·발걸음·거울). 빨강은 안 씀(칸 장식 마이너스 색). reach만 칸 단위
+  //   price: 수정 상인 값(임시), 판매 = price × sellRate. 두 수정의 효과는 한 칸에서 겹쳐요(사용자: "이게 의도임")
+  crystals: { sellRate: 0.5 /* 사용자: "판매하고 끼면됨 판매 반값" */, list: [
+    { id: 'hp',     name: '체력 수정',   color: '초록', stat: 'hp',     minus: -0.5, plus: 0.25, price: 60, desc: '체력' },
+    { id: 'def',    name: '바위 수정',   color: '갈색', stat: 'def',    minus: -0.5, plus: 0.25, price: 60, desc: '방어력' },
+    { id: 'care',   name: '생명 수정',   color: '분홍', stat: 'care',   minus: -0.5, plus: 0.25, price: 60, desc: '받는 회복·보호막' },
+    { id: 'atk',    name: '힘 수정',     color: '주황', stat: 'atk',    minus: -0.5, plus: 0.25, price: 60, desc: '공격력' },
+    { id: 'aspd',   name: '바람 수정',   color: '하늘', stat: 'aspd',   minus: -0.5, plus: 0.25, price: 60, desc: '공격 속도' },
+    { id: 'crit',   name: '그림자 수정', color: '보라', stat: 'crit',   minus: -0.5, plus: 0.25, price: 60, desc: '치명타 확률' },
+    { id: 'energy', name: '번개 수정',   color: '노랑', stat: 'energy', minus: -0.5, plus: 0.25, price: 60, desc: '궁극기 에너지 충전' },
+    { id: 'move',   name: '발걸음 수정', color: '흰색', stat: 'move',   minus: -0.5, plus: 0.25, price: 60, desc: '이동 속도' },
+    { id: 'reach',  name: '거울 수정',   color: '은색', stat: 'reach',  minus: -1,   plus: 1,    price: 60, desc: '사거리', unit: '칸' } ] },
   potions: {
     sellRate: 0.5, // 2026-11-27: 물약 판매 값 = 산 값 × sellRate (반올림). 버릴 수 있게 상세 창에 [마시기]·[판매] 둘 다 (사용자: "산 값의 절반")
     grade: 1, // 2026-11-27: 물약 등급은 모두 일반(1). 상점 칸 테두리·등급 바탕에 씀 (사용자: "노멀이야 등급은. 물약은 모두")
@@ -405,7 +416,7 @@ var IDLE_DATA = {
     //   atStart: true면 게임(그리고 체력 0 뒤 새 판)을 이 모닥불로 시작해요. 시작 영웅이 매번 달라져요(recruit.startHero는 꺼졌을 때만 써요)
     //   이벤트 스테이지(2026-11-18 바뀜): 모닥불·방랑상인·보물상자는 스테이지 수를 쓰지 않아요. 스테이지를 깨고 다음으로 올라갈 때 n과 n+1 사이(1-1.5처럼)에 들러요
     //   시작 모닥불은 1-0.5이고 첫 전투는 1-1이에요. 들른 뒤에는 그 다음 스테이지 전투로 가요(다시 도전할 때는 안 나와요). 목록 = stageKinds
-    stageKinds: ['campfire', 'merchant', 'chest', 'altar', 'mobs', 'fairy', 'groll', 'mimic', 'dais', 'swampShop'], /* 2026-11-26: swampShop 늪지 상인(2장, 방랑상인 그룹) */ /* 2026-11-26: dais 단상 */ // 2026-11-26: 홀짝(oddeven) 뺌(사용자: 이벤트에서 홀짝은 제거해). 되돌리려면 'oddeven'을 넣고 weights에 oddeven 추가
+    stageKinds: ['campfire', 'merchant', 'chest', 'altar', 'mobs', 'fairy', 'groll', 'mimic', 'dais', 'swampShop', 'crystalShop'], /* 2026-11-27 crystalShop 수정 상인(2장, 방랑상인 그룹) */ /* 2026-11-26: swampShop 늪지 상인(2장, 방랑상인 그룹) */ /* 2026-11-26: dais 단상 */ // 2026-11-26: 홀짝(oddeven) 뺌(사용자: 이벤트에서 홀짝은 제거해). 되돌리려면 'oddeven'을 넣고 weights에 oddeven 추가
     fixed: { 1: 'fairy' }, // 2026-11-22 몹 판 끔(예전 2: 'mobs') // 2026-11-21: 1-2 앞엔 요정, 1-3 앞엔 몹이 꼭 나와요 { 스테이지 번호(0부터): 이벤트 }
     fork: false, // 2026-11-22 끔(사용자: 우측 선택지는 하나만). 갈림길: 이벤트 스테이지가 나오면 2개 중 골라요 (fixed 판은 그대로)
     off: [], // 도구: 여기 적은 이벤트 종류는 안 나와요(예: ['chest']). campfire를 끄면 시작 모닥불도 없어요 (2026-11-18)
@@ -415,6 +426,7 @@ var IDLE_DATA = {
     info: {
       campfire: { name: '모닥불', desc: '모닥불에 둘러앉은 영웅 중 1명이 룰렛으로 동료가 된다. 전투는 없다.' },
       merchant: { name: '방랑상인', desc: '희귀 이상 유물과 영웅을 싸게 파는 특별 상점이 열린다. 전투는 없다.' },
+      crystalShop: { name: '수정 상인', desc: '수정을 판다. 수정 슬롯에 끼우면 수정 칸 효과가 된다. 끼운 수정은 반값에 팔 수 있다.' }, // 2026-11-27
       swampShop: { name: '늪지 상인', desc: '물약을 판다. 물약은 마신 그 전투에서만 힘이 되고, 전투가 끝나면 사라진다.' }, // 2026-11-27 (사용자: "물약을 판다 물약이 뭔지 알려주면 끝")
       chest:    { name: '보물상자', desc: '정해진 시간 동안 상자를 때린다. 많이 깎을수록 골드·마나스톤·유물 보상이 쌓인다. 지지 않는다.' },
       altar:    { name: '초월 제단', desc: '백팩 영웅을 재료로 넣어 전장 영웅을 초월시킨다. 초월은 여기서만 할 수 있다.' },
@@ -436,6 +448,7 @@ var IDLE_DATA = {
     lines: {
       campfire: { enter: ['어서 와! 여행을 해 보자!', '어서 와, 같이 갈 사람을 찾고 있었어!', '반가워! 불 좀 쬐고 가!'], done: ['좋은 여행 되길!', '잘 부탁해!', '조심히 다녀와!'] }, // 2026-11-26: 모닥불 오른쪽 자리(둘레 2번째, CF_POS[1]) 영웅이 말해요(사용자: "말풍선은 이 위에 넣어 줘. 어서 와 여행을 해 보자! 이런 걸로"). 예전 '... ...'
       merchant: { enter: ['오늘만 이 가격!', '어서 오세요~', '귀한 물건 있어요.'], done: ['또 오세요~', '좋은 거래였어요!', '길 조심해요.'] },
+      crystalShop: { enter: ['반짝이는 걸 찾나?', '동굴 깊은 데서 캐 왔지.', '수정 하나 끼워 봐.'], done: ['잘 어울리네.', '또 와.', '빛을 잃지 마.'] }, /* 2026-11-27 임시 대사 */
       swampShop: { enter: ['개굴, 물약 사 가!', '늪에선 이게 최고지.', '한 모금이면 힘이 나!'], done: ['쭉 들이켜!', '개굴~ 또 와!', '늪 조심해!'] },
       groll:    { enter: ['한 판 해 볼 텨?', '운 좀 시험해 봐!', '골드 있지? 히히.'], done: ['다음엔 대박이야!', '또 와, 히히.', '재밌었지?'] },
       fairy:    { enter: ['반짝반짝, 선물 줄게!', '어머, 손님이네?', '반짝! 기다렸어~'], done: ['잘 다녀와!', '조심히 다녀와~', '또 놀러 와!'] }, // 사용자: "요정이면 반짝반짝 선물줄게! 버튼 누른뒤 잘 다녀와! 이런느낌"

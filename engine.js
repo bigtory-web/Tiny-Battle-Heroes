@@ -75,7 +75,7 @@
     function reviveU(src, d, pct) { d.alive = true; d.hp = d.maxHp * pct; d.shield = 0; d.burn = null; d.stun = 0; if (rec) log.push({ t: t, kind: 'heal', from: src.uid, to: d.uid, amt: Math.round(d.hp) }); }
     var shSrc = null; // 지금 행동 중인 영웅: 그 사이에 생긴 보호막을 이 영웅이 준 것으로 세요 (DPS 창)
     function addShield(x, amt) { if (!x.alive || amt <= 0) return; if (x.lineCare) amt *= 1 + x.lineCare; if (x.side === 'A' && opts.curse) amt *= 1 - opts.curse; x.shield += amt; if (rec) log.push({ t: t, kind: 'shield', from: shSrc ? shSrc.uid : undefined, to: x.uid, amt: Math.round(amt) }); /* 2026-11-26: 방패 숫자 연출용 */ if (shSrc && shSrc.stats) shSrc.stats.shield += amt; holders(x.side, 'shieldRally').forEach(function (l) { if ((l.rallyN || 0) < (PP(l).max || 10)) { l.rallyN = (l.rallyN || 0) + 1; l.stkAtk = (l.stkAtk || 0) + l.pv; } }); }
-    function gainEnergy(x, n) { if (x.alive) x.energy = Math.min(B.energyMax, x.energy + n); }
+    function gainEnergy(x, n) { if (x.alive) x.energy = Math.min(B.energyMax, x.energy + n * (x.enMul || 1)); } // enMul: 번개 수정
     function lifestealHeal(u, amt) { if (amt <= 0) return; heal(u, u, amt); holders(u.side, 'lifestealEnergy').forEach(function (d) { gainEnergy(d, d.pv); }); }
     // 쓰러짐 처리(모든 피해가 여기로): 버팀·환생·부활을 먼저 보고, 진짜 쓰러지면 처치·아군 쓰러짐 특성
     function die(dst, src) {
@@ -162,7 +162,7 @@
       var hadSh = dst.shield > 0, absorbed = Math.min(dst.shield, dmg); dst.shield -= absorbed; dmg -= absorbed;
       dst.hp -= dmg; src.stats.dealt += dmg + absorbed; dst.stats.taken += dmg + absorbed;
       if (dst.trig) { if (dst.trig.kind === 'struck') dst.energy = Math.min(B.energyMax, dst.energy + B.energyMax / dst.trig.n); } // 발동 타입: 피격 N회마다
-      else if (EN.onHitScale) dst.energy = Math.min(B.energyMax, dst.energy + (dmg / dst.maxHp) * EN.onHitScale * (JP(dst).hitEnergy || 1)); // 기사: 맞으면 차는 에너지 배
+      else if (EN.onHitScale) dst.energy = Math.min(B.energyMax, dst.energy + (dmg / dst.maxHp) * EN.onHitScale * (JP(dst).hitEnergy || 1) * (dst.enMul || 1)); // 기사: 맞으면 차는 에너지 배
       if (rec) log.push({ t: t, kind: 'hit', from: src.uid, to: dst.uid, amt: Math.round(dmg + absorbed), crit: crit || undefined, mag: magic || undefined, burn: burning || undefined });
       if (dst.hp <= 0) die(dst, src);
       if (hadSh && dst.shield <= 0 && has(dst, 'shieldBreakStun')) alive(foes(dst)).forEach(function (x) { if (dist(x, dst) <= (PP(dst).r || 90)) x.stun = Math.max(x.stun || 0, dst.pv); });
@@ -283,7 +283,11 @@
     //   플러스는 마이너스 칸에 영웅이 있을 때만, 그 영웅이 죽으면 꺼져요(사용자: "마이너스에있어야 플러스가 활성화야", "죽으면 끝나야지")
     var CRY = null; (function () { var OC = opts.crystal; if (!OC || !OC.cells) return; var cL = (OC.ids || []).map(function (id) { return crystalById(data, id); }).filter(Boolean); if (!cL.length) return;
       var on = function (sl) { return A.filter(function (x) { return x.slot === sl && !x.h.mob; })[0]; }, mU = on(OC.cells[0]), pU = on(OC.cells[1]);
-      var app = function (u, key, sign) { cL.forEach(function (c) { var f = 1 + (c[key] || 0) - (key === 'minus' ? OC.more || 0 : 0); if (sign < 0) f = 1 / f; if (c.stat === 'hp') { u.maxHp *= f; u.hp *= f; } else if (c.stat === 'atk') u.atk *= f; }); }; // shortcut: 체력·공격력만, 수정 목록이 정해지면 능력치 더함
+      var RC = [52, 100, 150, 210, 262, 314, 366]; // 사거리 칸(1~5칸 = 근접·2칸·중거리·장거리·최장거리, 6·7칸은 거울 수정으로만)
+      var app = function (u, key, sign) { cL.forEach(function (c) { var v = (c[key] || 0) - (key === 'minus' ? OC.more || 0 : 0), f = 1 + v, s = c.stat; if (sign < 0) { f = 1 / f; v = -v; }
+        if (s === 'hp') { u.maxHp *= f; u.hp *= f; } else if (s === 'atk') u.atk *= f; else if (s === 'def') u.def *= f; else if (s === 'aspd') u.interval /= f; else if (s === 'crit') u.crit *= f; else if (s === 'move') u.spd *= f;
+        else if (s === 'energy') u.enMul = (u.enMul || 1) * f; else if (s === 'care') u.lineCare = (u.lineCare || 0) + v;
+        else if (s === 'reach') { var ci = 0; RC.forEach(function (r, i) { if (Math.abs(r - u.reach) < Math.abs(RC[ci] - u.reach)) ci = i; }); u.reach = RC[Math.max(0, Math.min(RC.length - 1, ci + Math.round(v)))]; } }); };
       if (mU) app(mU, 'minus', 1); if (mU && pU) { app(pU, 'plus', 1); CRY = { m: mU, p: pU, on: true, app: app }; } })();
     // ───── 연계 스킬(def.trigger): 쿨타임 없이, 조건(tag)에 맞는 아군에게 그 일이 생길 때마다 공격력이 쌓여요(최대 max번, 그 전투 동안) ─────
     // trigger: 'attack'(평타) | 'burn'(화상 피해) | 'haste'(숲 가속) | 'heal'(빛 회복) | 'chill'(얼음 둔화) | 'stun'(어둠 기절). to: 'self'(일으킨 영웅) | 'tag'(조건 맞는 아군 모두)
@@ -391,7 +395,7 @@
       if (!alive(E).length) result = 'win'; else if (!alive(A).length) result = 'lose';
       for (var k = 0; k < all.length && !result; k++) {
         var u = all[k]; if (!u.alive) continue; shSrc = u;
-        if (EN.perSec && !(u.trig && u.trig.kind === 'start')) u.energy = Math.min(B.energyMax, u.energy + EN.perSec * B.dt);
+        if (EN.perSec && !(u.trig && u.trig.kind === 'start')) u.energy = Math.min(B.energyMax, u.energy + EN.perSec * B.dt * (u.enMul || 1));
         if (u.pas && u.pas.kind === 'auraRegen') alive(team(u.side)).forEach(function (x) { if (x.hp < x.maxHp) heal(u, x, x.maxHp * u.pv * B.dt); });
         ['taunt', 'slow', 'haste', 'buffT', 'stun', 'stealth', 'root', 'blind', 'burnAmp', 'winT', 'markT', 'tbT'].forEach(function (f) { if (u[f] > 0) u[f] = Math.max(0, u[f] - B.dt); });
         if (u.stone > 0) { u.stone -= B.dt; if (u.stone <= 0) { u.stone = 0; heal(u, u, u.maxHp * u.pv); } u.moving = false; continue; } // 가고일: 돌이 된 동안 아무것도 안 해요
@@ -555,6 +559,10 @@
   function potionById(data, id) { return ((data.potions || {}).list || []).filter(function (p) { return p.id === id; })[0] || null; }
   function rollPotions(data, rnd, plv) { var SS = data.player && data.player.swampSlots, L = ((data.potions || {}).list || []).map(function (p) { return p.id; }), n = Math.min(L.length, SS ? SS[Math.max(0, Math.min((plv || 1) - 1, SS.length - 1))] : ((data.events || {}).swampShop || {}).count || 4), /* 2026-11-27: 파는 수는 레벨별(player.swampSlots) */ out = [];
     while (out.length < n) out.push(L.splice(Math.floor(rnd() * L.length), 1)[0]); return out; }
+  // 2026-11-27 수정 상인: 수정 n개(겹치지 않게). 파는 수는 늪지 상인과 같은 player.swampSlots(레벨별)
+  function rollCrystals(data, rnd, plv) { var SS = data.player && data.player.swampSlots, L = ((data.crystals || {}).list || []).map(function (c) { return c.id; }), n = Math.min(L.length, SS ? SS[Math.max(0, Math.min((plv || 1) - 1, SS.length - 1))] : 4), out = [];
+    while (out.length < n) out.push(L.splice(Math.floor(rnd() * L.length), 1)[0]); return out; }
+  function crystalSellPrice(data, id) { var c = crystalById(data, id); return c ? Math.round(c.price * ((data.crystals || {}).sellRate || 0.5)) : 0; } // 끼운 수정 판매 = 반값
   function rollEvent(data, n, rnd, plv, opts) {
     var V = data.events; if (!V) return null;
     // forceEvery: N이면 스테이지 N개마다(n % N === 0) 이벤트 스테이지가 100% 나와요 (도구용, 0이면 꺼짐). 보스 앞도 나와요
@@ -567,6 +575,7 @@
     var GR = V.groups && V.groups[kind]; if (GR && !fixedK) { var gk = Object.keys(GR), gt = gk.reduce(function (a, k) { return a + GR[k]; }, 0), gr = rnd() * gt; for (var gi = 0; gi < gk.length; gi++) { gr -= GR[gk[gi]]; if (gr < 0) { kind = gk[gi]; break; } } } // 2026-11-26: 같은 그룹(예: 방랑상인·늪지 상인)은 장별 확률로 하나
     var ev = { kind: kind };
     if (kind === 'swampShop') ev.ids = rollPotions(data, rnd, plv);
+    if (kind === 'crystalShop') ev.ids = rollCrystals(data, rnd, plv);
     if (kind === 'merc') { ev.id = pickMerc(data, n, rnd, plv); ev.price = mercPrice(data, ev.id, n); }
     if (kind === 'mobs') rollMobs(data, n, rnd, plv, ev);
     if (kind === 'mimic') rollMimic(data, n, rnd, plv, ev);
@@ -1011,6 +1020,7 @@
       if (ev && ev.kind === 'merchant' && merchantNoBattle(data)) bellN = 0;
       bellN = Math.min(bellN, bellMax(data, stage, ev)); bells.rung += bellN; var bellPaid = ev && ev.kind === 'chest' ? 0 : (bellN > bellPaidN ? bellGold(data, stage, bellPaidN, bellN, plv) : 0); gold += bellPaid; bellPaidN = Math.max(bellPaidN, bellN); // 같은 판에서 이미 받은 종 골드는 다시 안 줘요(2026-11-24)
       if (ev) { events[ev.kind] = events[ev.kind] || { seen: 0 }; events[ev.kind].seen++; }
+      if (ev && ev.kind === 'crystalShop') { /* 봇: 2번 슬롯이 비었으면 첫 수정을 사요(바꿔 끼우기는 안 함) */ var cid = (ev.ids || [])[0], CRx = crystalById(data, cid); events.crystalShop = events.crystalShop || {}; if (CRx && crys.length > 1 && !crys[1] && gold >= CRx.price * 2) { gold -= CRx.price; spent += CRx.price; crys[1] = cid; events.crystalShop.bought = (events.crystalShop.bought || 0) + 1; } continue; }
       if (ev && ev.kind === 'swampShop') { var HOLD = data.player ? perk(data, plv).potion : 2; (ev.ids || []).forEach(function (pid) { var P = potionById(data, pid); if (P && potions.length < HOLD && gold >= P.price * 2) { gold -= P.price; spent += P.price; potions.push(pid); events.swampShop.bought = (events.swampShop.bought || 0) + 1; } }); continue; } // 봇: 늪지 상인은 골드가 값의 2배 이상이면 칸이 찰 때까지 사요
       if (ev && ev.kind === 'merchant' && merchantNoBattle(data)) { // 방랑상인 판: 싸우지 않고 특별 상점만 열고 넘어가요
         rollMerchant(data, stage, rnd, plv, skills).forEach(function (it) {
@@ -1141,7 +1151,7 @@
     return out;
   }
 
-  var api = { battle: battle, createBattle: createBattle, chapterData: chapterData, potionById: potionById, crystalById: crystalById, crystalStart: crystalStart, difficultyData: difficultyData, chapterInfo: chapterInfo, metaData: metaData, metaNext: metaNext, metaBuy: metaBuy, metaStatus: metaStatus, metaNode: metaNode, metaBase: metaBase, metaMedals: metaMedals, potionSellPrice: potionSellPrice, rollPotions: rollPotions, stageTeam: stageTeam, heroLevel: heroLevel, levelPickRoll: levelPickRoll, levelPickKind: levelPickKind, skillUp: skillUp, startExtras: startExtras, bellFx: bellFx, stageLevel: stageLevel, stageName: stageName, stageCount: stageCount, autoFormation: autoFormation,
+  var api = { battle: battle, createBattle: createBattle, chapterData: chapterData, potionById: potionById, crystalById: crystalById, crystalStart: crystalStart, rollCrystals: rollCrystals, crystalSellPrice: crystalSellPrice, difficultyData: difficultyData, chapterInfo: chapterInfo, metaData: metaData, metaNext: metaNext, metaBuy: metaBuy, metaStatus: metaStatus, metaNode: metaNode, metaBase: metaBase, metaMedals: metaMedals, potionSellPrice: potionSellPrice, rollPotions: rollPotions, stageTeam: stageTeam, heroLevel: heroLevel, levelPickRoll: levelPickRoll, levelPickKind: levelPickKind, skillUp: skillUp, startExtras: startExtras, bellFx: bellFx, stageLevel: stageLevel, stageName: stageName, stageCount: stageCount, autoFormation: autoFormation,
     campaign: campaign, compare: compare, lossDamage: lossDamage, lossGold: lossGold, dmgFrac: dmgFrac, levelCost: levelCost, heroById: heroById, makeRng: makeRng,
     costCap: costCap, starMul: starMul, gradeMul: gradeMul, heroGrade: heroGrade, pickHeroByGrade: pickHeroByGrade, effectLevels: effectLevels, relicPowerMul: relicPowerMul, passiveValue: passiveValue, power: power, newUnit: newUnit, canMerge: canMerge, mergeUnits: mergeUnits, autoMerge: autoMerge, gainUnit: gainUnit,
     skillById: skillById, gradeRow: gradeRow, gradeLvOf: gradeLvOf, heroSellPrice: heroSellPrice, relicTargets: relicTargets, heroBonus: heroBonus, isBoss: isBoss, critChance: critChance, lootPool: lootPool, lootPick: lootPick, chestGrade: chestGrade, chestTiers: chestTiers, mobLoot: mobLoot, grollCost: grollCost, grollSpins: grollSpins, rollGroll: rollGroll, oddEvenBet: oddEvenBet, oddEvenResult: oddEvenResult, padTeam: padTeam, lootParse: lootParse, lootRerollPrice: lootRerollPrice, rerollMax: rerollMax, rollEvent: rollEvent, rollDais: rollDais, rollDaisCell: rollDaisCell, daisRerolls: daisRerolls, eventRerolls: eventRerolls, rollCampfire: rollCampfire, campfireAtStart: campfireAtStart, stageReward: stageReward, bellMax: bellMax, bellGold: bellGold, rollMerchant: rollMerchant, isEventStage: isEventStage, unitSkills: unitSkills, canTranscend: canTranscend, transcend: transcend, unitBattleSpec: unitBattleSpec, unitPower: unitPower, skillPool: skillPool, merchantPrice: merchantPrice, merchantOff: merchantOff, merchantNoBattle: merchantNoBattle, chestReward: chestReward, rollScroll: rollScroll, mercPrice: mercPrice, skillPrice: skillPrice, skillManaPrice: skillManaPrice, skillBuyPrice: skillBuyPrice, skillGradeNow: skillGradeNow, skillMaxLevel: skillMaxLevel, refreshPrice: refreshPrice, rollShop: rollShop, rollShopHeroes: rollShopHeroes, canTake: canTake, takeSkill: takeSkill, playerLevel: playerLevel, perk: perk, skillSellPrice: skillSellPrice, sellSkill: sellSkill };
