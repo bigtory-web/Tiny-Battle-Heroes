@@ -1,0 +1,5 @@
+Add-Type -AssemblyName System.Drawing
+$o=New-Object System.Drawing.Bitmap 920,330; $g=[System.Drawing.Graphics]::FromImage($o); $g.Clear([System.Drawing.ColorTranslator]::FromHtml('#55607c')); $g.InterpolationMode='NearestNeighbor'; $g.PixelOffsetMode='Half'
+$i=0; foreach($f in 'img\p\flame.png','img\codex\eyes\brave_on_flame.png'){ $im=New-Object System.Drawing.Bitmap ([IO.Path]::GetFullPath($f)); $g.DrawImage($im,(New-Object System.Drawing.Rectangle ($i*460+5),5,440,286),(New-Object System.Drawing.Rectangle 23,30,20,13),[System.Drawing.GraphicsUnit]::Pixel); $g.DrawImage($im,(New-Object System.Drawing.Rectangle ($i*460+190),280,48,40),(New-Object System.Drawing.Rectangle 23,28,24,20),[System.Drawing.GraphicsUnit]::Pixel); $i++ }
+$o.Save([IO.Path]::GetFullPath('img\codex\eyes\brave_view.png'))
+$a=New-Object System.Drawing.Bitmap ([IO.Path]::GetFullPath('img\p\flame.png')); $b=New-Object System.Drawing.Bitmap ([IO.Path]::GetFullPath('img\codex\eyes\test2.png')); $n=0; for($y=0;$y -lt 64;$y++){ for($x=0;$x -lt 64;$x++){ if($a.GetPixel($x,$y).ToArgb() -ne $b.GetPixel($x,$y).ToArgb()){$n++} } }; "basic stamp on Blaze differs by $n px"
