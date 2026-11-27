@@ -8,3 +8,9 @@ $p=New-Object System.Drawing.Bitmap 780,400; $g=[System.Drawing.Graphics]::FromI
 $g.DrawImage($b,0,10,384,384); $g.DrawImage($o,396,10,384,384); $p.Save([IO.Path]::GetFullPath('img\codex\bearwalk\walk1_final_view.png'))
 $z=New-Object System.Drawing.Bitmap 920,300; $g=[System.Drawing.Graphics]::FromImage($z); $g.Clear([System.Drawing.ColorTranslator]::FromHtml('#55607c')); $g.InterpolationMode='NearestNeighbor'; $g.PixelOffsetMode='Half'
 $g.DrawImage($b,(New-Object System.Drawing.Rectangle 0,0,450,225),(New-Object System.Drawing.Rectangle 12,44,40,20),[System.Drawing.GraphicsUnit]::Pixel); $g.DrawImage($o,(New-Object System.Drawing.Rectangle 460,0,450,225),(New-Object System.Drawing.Rectangle 12,44,40,20),[System.Drawing.GraphicsUnit]::Pixel); $z.Save([IO.Path]::GetFullPath('img\codex\bearwalk\walk1_final_legs.png'))
+# olive dots the colour snap put on the right ear
+$o2=New-Object System.Drawing.Bitmap $o; $br=$o2.GetPixel(24,26); if(-not ($br.A -and $br.R -gt $br.G+40)){ $br=[System.Drawing.ColorTranslator]::FromHtml('#9a4524') }
+$n=0; for($y=18;$y -le 30;$y++){ for($x=30;$x -le 48;$x++){ $c=$o2.GetPixel($x,$y); if($c.A -and $c.G -ge ($c.R-25) -and $c.G -gt 60 -and $c.B -lt 80){ $o2.SetPixel($x,$y,$br); $n++ } } }
+"ear pixels fixed $n"; $o2.Save([IO.Path]::GetFullPath('img\codex\bearwalk\walk1_final.png'))
+$p=New-Object System.Drawing.Bitmap 780,400; $g=[System.Drawing.Graphics]::FromImage($p); $g.Clear([System.Drawing.ColorTranslator]::FromHtml('#55607c')); $g.InterpolationMode='NearestNeighbor'; $g.PixelOffsetMode='Half'
+$g.DrawImage($b,0,10,384,384); $g.DrawImage($o2,396,10,384,384); $p.Save([IO.Path]::GetFullPath('img\codex\bearwalk\walk1_final_view.png'))
