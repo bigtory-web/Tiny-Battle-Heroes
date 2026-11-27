@@ -266,12 +266,12 @@
       var f0 = sum(foe, 'hp') + sum(foe, 'shield'), h0 = sum(mine, 'hp'), s0 = sum(mine, 'shield'); fireSkill(sk);
       sk.stats.casts++; sk.stats.dealt += Math.max(0, f0 - sum(foe, 'hp') - sum(foe, 'shield')); sk.stats.healed += Math.max(0, sum(mine, 'hp') - h0); sk.stats.shield += Math.max(0, sum(mine, 'shield') - s0); }
     // ───── 열 유물(def.trigger === 'line', 2026-11-23): 전투 시작 때 선 열(u.line 0 전방 · 1 중반 · 2 후반)로 한 번 정해져요. line 없으면 모든 열, alone = 그 열에 혼자일 때, full = 그 열에 full명 이상일 때 ─────
-    allSkills.forEach(function (sk) { var d = sk.def; if (d.trigger !== 'line') return; var T = team(sk.side), v = d.amount * sk.mul, cnt = {}, starSum = T.filter(function (x) { return !x.h.mob; }).reduce(function (a, x) { return a + (x.star || 1); }, 0);
+    allSkills.forEach(function (sk) { var d = sk.def; if (d.trigger !== 'line') return; var T = team(sk.side), v = d.amount * sk.mul, hitU = [], cnt = {}, starSum = T.filter(function (x) { return !x.h.mob; }).reduce(function (a, x) { return a + (x.star || 1); }, 0);
       T.forEach(function (x) { cnt[x.line] = (cnt[x.line] || 0) + 1; });
       T.forEach(function (x) { if (d.line != null && x.line !== d.line) return; if (d.alone && cnt[x.line] !== 1) return; if (d.full && cnt[x.line] < d.full) return;
         if (d.kind === 'lineGuard') x.lineDR = (x.lineDR || 0) + v; else if (d.kind === 'lineThorns') x.lineTh = (x.lineTh || 0) + v; else if (d.kind === 'lineEnergy') x.energy = Math.min(B.energyMax, x.energy + v);
         else if (d.kind === 'lineCare') x.lineCare = (x.lineCare || 0) + v; else if (d.kind === 'lineHaste') x.interval /= 1 + v; else if (d.kind === 'lineHide') x.stealth = Math.max(x.stealth || 0, v);
-        else if (d.kind === 'lineAtk') x.atk *= 1 + v; else if (d.kind === 'starCrown') x.atk *= 1 + v * starSum; else if (d.kind === 'lineDef') x.def += v; }); sk.fired++; });
+        else if (d.kind === 'lineAtk') x.atk *= 1 + v; else if (d.kind === 'starCrown') x.atk *= 1 + v * starSum; else if (d.kind === 'lineDef') x.def += v; hitU.push(x.uid); }); sk.fired++; if (rec && hitU.length) log.push({ t: t, kind: 'relicLine', id: d.id, side: sk.side, uids: hitU }); }); // 2026-11-27 열 유물이 걸린 영웅(화면 이펙트용)
     // ───── 물약(2026-11-26): opts.potions = [{ id, slot? }] 우리 편에 전투 시작 때 한 번. target 'rand'는 slot(마실 때 정한 영웅), 없으면 무작위 1명. 열 유물과 같은 효과 ─────
     A.concat(E).forEach(function (u) { u.b0 = { hp: u.maxHp, atk: u.atk, iv: u.interval }; }); // 2026-11-27 물약·수정·늪 등 전투 효과 전 값(전투력·상세 창 변화 비교용)
     var potionLog = []; (opts.potions || []).forEach(function (pt) { var P = potionById(data, pt.id); if (!P) return; var T = alive(A).filter(function (x) { return !x.h.mob; }); if (!T.length) return;
@@ -294,7 +294,7 @@
     // trigger: 'attack'(평타) | 'burn'(화상 피해) | 'haste'(숲 가속) | 'heal'(빛 회복) | 'chill'(얼음 둔화) | 'stun'(어둠 기절). to: 'self'(일으킨 영웅) | 'tag'(조건 맞는 아군 모두)
     function trig(kind, u) { for (var i = 0; i < allSkills.length; i++) { var sk = allSkills[i], d = sk.def; if (d.trigger !== kind || sk.side !== u.side) continue;
         var T = alive(team(u.side)), ok = tagMatch(d.tag, T); if (!ok(u)) continue;
-        (d.to === 'self' ? [u] : T.filter(ok)).forEach(function (x) { x.stk = x.stk || {}; if ((x.stk[d.id] || 0) >= d.max) return; x.stk[d.id] = (x.stk[d.id] || 0) + 1; x.stkAtk = (x.stkAtk || 0) + d.amount * sk.mul; });
+        (d.to === 'self' ? [u] : T.filter(ok)).forEach(function (x) { x.stk = x.stk || {}; if ((x.stk[d.id] || 0) >= d.max) return; x.stk[d.id] = (x.stk[d.id] || 0) + 1; x.stkAtk = (x.stkAtk || 0) + d.amount * sk.mul; if (rec) log.push({ t: t, kind: 'relicStack', id: d.id, uid: x.uid, n: x.stk[d.id], max: d.max }); }); // 2026-11-27 연계 유물이 쌓일 때(화면 이펙트용)
         sk.fired++; } }
     // ───── 속성 고유 효과(data.elementFx): 그 속성 영웅의 평타가 맞으면 늘 생겨요 ─────
     var EFX = data.elementFx || {};
