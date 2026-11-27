@@ -527,7 +527,7 @@
     /* 2026-11-27: 적 레벨 +N은 특징에 안 보여요(사용자: "적레벨+1은 하지마"). 값은 out.lvPlus에 그대로 */
     (def.bellTiers || (data.bell && data.bell.tiers) || []).forEach(function (T, i) { T.forEach(function (k) { var F = BF[k] || {}; out.bell.push({ tier: i + 1, name: F.name || k, desc: F.desc || '', icon: F.icon || '', tierIcon: (def.foeIcon || 'img/p/ui_foe') + (i + 1) + '.png' }); }); });
     out.featured = (def.featured || []).map(function (id) { var h = heroById(data, id) || {}; return { id: id, name: h.name || id, alias: h.alias || '', grade: h.grade || 1 }; }); // 특별 출현 영웅(등급별 1명)
-    var G = def.groups || {}; for (var g in G) { var W = G[g], tot = 0, k2; for (k2 in W) tot += W[k2]; for (k2 in W) if (k2 !== g) out.events.push({ icon: k2 === 'swampShop' ? 'img/p/ui_swampshop.png' : '', name: (INF[k2] || {}).name || k2, desc: (INF[k2] || {}).desc || '', note: ((INF[g] || {}).name || g) + ' 자리에 ' + Math.round(W[k2] / tot * 100) + '% 확률로 나온다.' }); }
+    var G = def.groups || {}; for (var g in G) { var W = G[g], tot = 0, k2; for (k2 in W) tot += W[k2]; for (k2 in W) if (k2 !== g) out.events.push({ icon: k2 === 'swampShop' ? 'img/p/ui_swampshop.png' : k2 === 'crystalShop' ? 'img/p/ui_cryshop.png' : '', name: (INF[k2] || {}).name || k2, desc: (INF[k2] || {}).desc || '', note: ((INF[g] || {}).name || g) + ' 자리에 ' + Math.round(W[k2] / tot * 100) + '% 확률로 나온다.' }); }
     return out; }
   // 2026-11-27 제약(난이도): 그 구간의 data를 만들어요. 적 레벨 +lvPlus, 적 영웅 등급 앞당김, 적 유물 표, 훈장 배율. 쉬움(또는 없음)이면 data 그대로
   function difficultyData(data, id) { var C = data.campaign, T = ((C.difficulty || {}).tiers || []).filter(function (t) { return t.id === id; })[0]; if (!T || (!T.lvPlus && !T.gradeShift && !T.relics && (T.medalMul || 1) === 1)) return data;
