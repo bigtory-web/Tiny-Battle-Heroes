@@ -477,7 +477,7 @@ var IDLE_DATA = {
     // groll 돈고블린 룰렛(2026-11-26, 홀짝 대신): 전투 없는 이벤트 스테이지. 돌릴 때마다 골드 = 그 판 클리어 골드 × cost. 후보는 전투 승리 룰렛과 같고(그 판 적 영웅·유물, 레벨 가중치),
     //   골드 칸은 낸 골드 × goldWin. 결과는 받거나 포기(리셋 없음). 돌리는 횟수는 player.grollSpins(레벨별)
     //   2026-11-26: 후보는 전투 룰렛이 아니라 이 표로 따로 뽑아요(상점처럼 레벨별 등급 가중치). 같은 스테이지 안에서는 돌릴 때마다 같은 구성
-    groll: { cost: 1, goldWin: 2, heroes: 4, skills: 1, goldSlots: 1,
+    groll: { cost: 1, costCut: 0 /* 2026-11-27 영구 강화 돈고블린 룰렛 비용 감소(%) */, goldWin: 2, heroes: 4, skills: 1, goldSlots: 1,
       /* grade 표는 2026-11-27 player.grollGrade로 옮김 */ },
     oddeven: { bet: 1, win: 2, maxBets: 3 }, // 2026-11-24: 가운데 버튼으로 bet만큼씩 최대 maxBets번 넣어요(누를 때마다 골드 차감). 맞히면 넣은 합 × win
     // 진영 발판(2026-11-21, 22 바뀜): 몹 전리품 'p'. 받으면 빈 칸 중 무작위 한 곳에 깔려요. 그 칸에 선 영웅은 누구든 전투 동안 발판 진영이 더해져요(원래 진영은 그대로)
@@ -559,7 +559,7 @@ var IDLE_DATA = {
   // cost[i] = i+1단계 비용(훈장). E.metaData(data, state)가 강화를 반영한 data를 돌려줘요(봇·화면 둘 다 이걸 씀)
   meta: {
     medal: { clear: 1, boss: 2, firstClear: 10 }, // 판이 끝날 때 받는 훈장: 판 클리어마다 clear, 보스 판(5·10) +boss, 장 첫 클리어 +firstClear (기획안 3번 초안)
-    flatAlso: ['mimicBlue', 'heroGrade', 'grollGrade', 'merchantHeroGrade'], /* 2026-11-27 영웅·돈고블린 룰렛·상인 영웅 등급도 영구 강화로 (사용자: "영구강화로빼기") */ // "영구 강화로" 모드에서 칸 key 말고도 Lv1에 고정할 레벨 표 줄(미믹 수에 딸린 파랑 미믹 수)
+    flatAlso: ['mimicBlue'], /* 2026-11-27: 영웅·상인 영웅·돈고블린 룰렛 등급을 잠깐 Lv1 고정에 넣었다가 뺌 — 등급 확률은 레벨업이 메인, 영구 강화(+단계)는 보조 (사용자: "레벨업으로 영웅 확률 업 맞아", "고블린도 그렇게 하자", "레벨업 메인으로, 영구 강화는 보조") */ // "영구 강화로" 모드에서 칸 key 말고도 Lv1에 고정할 레벨 표 줄(미믹 수에 딸린 파랑 미믹 수)
     lines: [
       { id: 'start', name: '모닥불', nodes: [
         { id: 'start', name: '영웅 획득', unit: '명', /* 2026-11-27 이름 '시작 모닥불 +1' → '영웅 획득'(사용자: "시작 모닥불은 이상하다"). 시작 모닥불에서 고르는 영웅 수 */ path: 'events.campfire.startPicks', add: 1, cost: [5] } ] }, // 가운데. req 없음 = 처음부터 찍을 수 있음
@@ -588,6 +588,7 @@ var IDLE_DATA = {
         { id: 'daisReset', req: ['eventReset'], name: '양탄자 리셋', unit: '회', key: 'daisReroll', add: 1, cost: [6, 12] },
         { id: 'heroGrade', req: ['campfire'], name: '영웅 등급 확률', unit: '단계', shift: 'heroGrade', cost: [8, 16] }, // 2026-11-27 모닥불·영입·상점 영웅 등급(적은 enemyGrade라 안 바뀜). 비용 임시
         { id: 'grollGrade', req: ['groll'], name: '돈고블린 룰렛 등급 확률', unit: '단계', shift: 'grollGrade', cost: [8, 16] }, // 2026-11-27 비용 임시
+        { id: 'grollCost', req: ['groll'], name: '돈고블린 룰렛 비용 감소', unit: '%', path: 'events.groll.costCut', add: 10, cost: [8, 16] }, // 2026-11-27 (사용자: "감소도 추가하고"). 숫자·비용 임시
         { id: 'groll', req: ['campfire'], name: '돈고블린 룰렛', unit: '회', key: 'grollSpins', add: 1, cost: [6, 12] },
         { id: 'mimic', req: ['campfire'], name: '미믹 수', unit: '마리', key: 'mimicCount', add: 1, cap: 4, cost: [8] },
         { id: 'mBlueUp', req: ['mimic'], name: '파랑 미믹 확률', unit: '%', path: 'events.mimic.blueUp', add: 10, cost: [8, 16] }, // 2026-11-27 보물상자 등급(꺼진 보물상자 판) 칸 대신. 갈색 미믹마다 이 %로 파랑(2등급)이 됨 (사용자: "갈파왕 123등급", "파랑 확률 업")

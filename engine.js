@@ -602,7 +602,7 @@
   function daisRerolls(data, plv) { var P = data.player && data.player.daisReroll; return P ? P[Math.max(0, Math.min((plv || 1) - 1, P.length - 1))] : 0; }
   // 돈고블린 홀짝: 걸 골드(스테이지 n), 결과 판정. pick = 'odd' | 'even', roll = 1~6 같은 숫자
   // 돈고블린 룰렛(2026-11-26): 한 번 돌리는 값, 레벨별 횟수, 후보(골드 칸 = 낸 값 × goldWin)
-  function grollCost(data, n, plv) { var G = data.events.groll || {}; return Math.max(1, Math.round(stageReward(data, n, 0, null, plv) * (G.cost || 1))); }
+  function grollCost(data, n, plv) { var G = data.events.groll || {}; return Math.max(1, Math.round(stageReward(data, n, 0, null, plv) * (G.cost || 1) * (1 - Math.min(90, G.costCut || 0) / 100))); } /* 2026-11-27 costCut: 영구 강화 비용 감소(최대 90%) */
   function grollSpins(data, plv) { var S = data.player && data.player.grollSpins; return S ? S[Math.max(0, Math.min((plv || 1) - 1, S.length - 1))] : 1; }
   // 후보(2026-11-26 별도 표): 영웅 heroes명 + 유물 skills개 + 골드 goldSlots칸(낸 값 × goldWin). 등급은 groll.grade[레벨]. rnd를 안 주면 스테이지·레벨로 고정 시드 → 같은 스테이지는 같은 구성
   function rollGroll(data, n, rnd, plv, owned) { var G = data.events.groll || {}, GT = (data.player && data.player.grollGrade) || G.grade, W = GT ? GT[Math.max(0, Math.min((plv || 1) - 1, GT.length - 1))] : [1, 1, 1, 1], out = [];
