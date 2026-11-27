@@ -5,7 +5,7 @@ description: 그림을 새로 만들거나 고치기 전에 가장 먼저 쓴다
 
 # 그림 작업 공통
 
-그림만 만든다. 코드·화면 배치는 "2. UI 및 이펙트", 규칙·숫자는 "1. 기획" 몫이다. 이어서 종류에 맞는 스킬을 쓴다: `game-art-hero`, `game-art-npc`, `game-art-icon`, `game-art-background`, `game-art-prop`. 일이 끝나면 `task-wrapup`(일지·커밋·보고).
+그림만 만든다. 코드·화면 배치는 "2. UI 및 이펙트", 규칙·숫자는 "1. 기획" 몫이다. 이어서 종류에 맞는 스킬을 쓴다: `game-art-hero`, `game-art-npc`, `game-art-icon`, `game-art-background`, `game-art-prop`. 새 챕터 그림은 `game-art-chapter`의 목록부터 본다. 일이 끝나면 `task-wrapup`(일지·커밋·보고).
 
 ## 순서
 
