@@ -131,3 +131,5 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
 // 리셋 +1까지만, 레벨업 증가 없음(2026-11-27)
 { assert.deepStrictEqual(D.player.eventReroll, Array(10).fill(0)); const st = { medals: 0, nodes: { shopReset: 2, eventReset: 1, daisReset: 2 } }; assert.strictEqual(E.metaRefund(D, st), 24); assert.deepStrictEqual(st.nodes, { shopReset: 1, eventReset: 1, daisReset: 1 }); assert.strictEqual(E.metaRefund(D, st), 0);
   const M = E.metaData(D, { nodes: { eventReset: 1, fairyReset: 1, daisReset: 1 } }); assert.strictEqual(E.eventRerolls(M, 10), 1); assert.strictEqual(E.eventRerolls(M, 10, "fairy"), 1); console.log("ok · 리셋 +1까지만"); }
+// 방랑상인 리셋: 기본 0, 업그레이드 +1(2026-11-27)
+{ const M = E.metaData(D, { nodes: { merchReset: 1 } }); assert.deepStrictEqual(D.events.merchant.reroll.max, [0]); assert.deepStrictEqual(M.events.merchant.reroll.max, [1]); assert.strictEqual(E.metaBase(D, E.metaNode(D, 'merchReset')), 0); console.log("ok · 상인 리셋"); }
