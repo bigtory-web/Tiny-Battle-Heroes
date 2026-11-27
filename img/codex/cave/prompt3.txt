@@ -1,0 +1,15 @@
+Look at:
+- img/codex/cave/cave2_src.png : our chapter 2 CRYSTAL CAVE battle background (draft). 
+- img/p/bg_swamp.png : another chapter background of the same game, for the level of richness and the pixel art look.
+
+Develop the draft into a much richer, more atmospheric, finished background and save it as img/codex/cave/cave3_src.png. Keep the general layout (ceiling with stalactites on top, off-center tunnel, big crystal clusters left and right, flat floor below, floor starting at about 59% of the height), the same aspect ratio, crisp square pixels, hard edges, thin dark navy outlines.
+
+Add:
+- DEPTH in 3 layers: dark foreground rock framing the far left and right edges, the main wall with ledges, rock pillars and overhangs, and behind the tunnel a visible far cavern with small dim glowing crystals and distant stalactites, paler and bluer with distance.
+- LIGHT: the crystals are the light source. Bright sky-blue cores, soft banded glow on the surrounding rock, rim light on rock edges facing the crystals, darker corners between them. Clear contrast between lit and unlit rock instead of one flat blue-grey.
+- CRYSTALS: more variety in size and angle, one clearly dominant giant cluster on one side so the picture is not symmetrical, small veins and shards growing from cracks and the ceiling. Colors only within deep blue, sky blue, cyan and a little white. No red, orange, pink, purple or green.
+- a narrow strip of glowing underground water along part of the foot of the wall, with reflections.
+- floor: keep it calm and readable because characters and hex tiles stand on it; subtle stone relief and soft reflected glow near the wall, quiet center, a few shards only near the side edges.
+
+Note: the top 14% of the picture is cut off in game, so important shapes must be below that.
+No characters, creatures, text, UI, hex grid or frame. Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

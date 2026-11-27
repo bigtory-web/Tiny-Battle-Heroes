@@ -1,0 +1,9 @@
+Look at img/codex/cave/cave3_src.png : our crystal cave battle background in pixel art. Also look at img/codex/cave/cave2_src.png for its uneven stone floor. Refine cave3 and save the result as img/codex/cave/cave4_src.png.
+
+Keep the same composition, depth, far cavern, ceiling, crystals, glowing veins, water, square pixels, hard edges and aspect ratio.
+
+Change only:
+- FLOOR: it is a flat empty sheet. Give it real uneven ground: large irregular rock slabs with a lighter top edge and darker underside, slight rises and dips, a couple of shallow glowing puddles near the left and right sides, soft cyan-blue light pooling on the floor under the big crystal clusters, some pebbles and a few tiny shards toward the sides. The center stays calm and low-contrast because characters stand there.
+- COLOR: the rock walls and floor are as saturated blue as the crystals. Make the rock a darker, greyer slate-indigo (floor a little warmer grey), so that only the crystals, veins, water and the light around them read as bright blue and they stand out strongly.
+
+No red, orange, pink, purple or green. No characters, text, UI or frame. Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
