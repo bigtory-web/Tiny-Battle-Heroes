@@ -3550,7 +3550,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     if (!on){ shopSel = null; sellArm = null; merchShow = false; } else if (!$('hinfo').hidden){ $('hinfo').hidden = true; sel = null; if (typeof relSel !== 'undefined') relSel = null; document.querySelectorAll('.picked').forEach(function(x){ x.classList.remove('picked'); }); } /* 상점을 열면 상세 창 닫기 */ renderShop(); }
   function showTab(t){
     if (t === 'shop'){ if ($('tab-camp').hidden) showTab('camp'); $('tab-tool').hidden = true; setShop(!shopOpen()); return; }
-    if (t === 'tool'){ if (!$('tab-tool').hidden){ showTab('camp'); return; } if ($('tab-camp').hidden) showTab('camp'); setShop(false); hideInfo(); hideTip(); $('tab-tool').hidden = false; if ($('tab-tool').pickFirst) $('tab-tool').pickFirst(); renderUk(); return; } /* 도구 = 전장 위 팝업 (2026-11-27 사용자: "전체 화면식으로 하니까 별로야. 일부 팝업식으로") */
+    if (t === 'tool'){ if (!$('tab-tool').hidden){ showTab('camp'); return; } if ($('tab-camp').hidden) showTab('camp'); setShop(false); hideInfo(); hideTip(); $('tab-tool').hidden = false; renderUk(); if ($('tab-tool').pickLast) $('tab-tool').pickLast(); return; } /* 도구 = 전장 위 팝업 (2026-11-27 사용자: "전체 화면식으로 하니까 별로야. 일부 팝업식으로") */
     setShop(false);
     ['camp', 'hero', 'tool'].forEach(function(k){ $('tab-' + k).hidden = k !== t; });
     $('backBtn').hidden = t === 'camp'; if (t === 'camp') renderForm(); // 크기 등 바뀐 설정을 전장에 다시 맞춰요
@@ -4393,7 +4393,11 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     var cards = [].slice.call(tp.querySelectorAll(':scope > section.card')), G = [['전투 요소', [0]], ['봇 캠페인', [1]], ['성장·레벨', [2, 3]], ['이벤트', [8, 9, 10]], ['캐릭터 크기', [11, 6]], ['화면 설정', [4, 5]], ['테스트', [12, 7]]];
     var body = document.createElement('div'); body.className = 'toolbody'; body.innerHTML = '<div class="toolnav">' + G.map(function(g, i){ return '<button type="button" data-tg="' + i + '">' + g[0] + '</button>'; }).join('') + '</div><div class="toolpane"></div>'; tp.appendChild(body); var pane = body.querySelector('.toolpane'); cards.forEach(function(c){ pane.appendChild(c); });
     var pick = function(i){ cards.forEach(function(c, n){ c.hidden = G[i][1].indexOf(n) < 0; }); G[i][1].forEach(function(n){ if (cards[n]) pane.appendChild(cards[n]); }); body.querySelectorAll('[data-tg]').forEach(function(b){ b.classList.toggle('sel', +b.dataset.tg === i); }); pane.scrollTop = 0; };
-    body.querySelector('.toolnav').addEventListener('click', function(e){ var b = e.target.closest('[data-tg]'); if (b) pick(+b.dataset.tg); }); tp.pickFirst = function(){ pick(0); }; pick(0); })();
+    /* 마지막에 보던 항목·스크롤을 저장(S.ui)해 다시 열 때 그 자리 (2026-11-27 사용자: "마지막 위치값 고정해 줘") */
+    var keepT = 0, keep = function(){ clearTimeout(keepT); keepT = setTimeout(save, 300); };
+    body.querySelector('.toolnav').addEventListener('click', function(e){ var b = e.target.closest('[data-tg]'); if (!b) return; pick(+b.dataset.tg); S.ui = S.ui || {}; S.ui.toolTab = +b.dataset.tg; S.ui.toolTop = 0; keep(); });
+    pane.addEventListener('scroll', function(){ if (tp.hidden) return; S.ui = S.ui || {}; S.ui.toolTop = pane.scrollTop; keep(); });
+    tp.pickLast = function(){ var u = S.ui || {}, top = u.toolTop || 0; pick(G[u.toolTab] ? u.toolTab : 0); pane.scrollTop = top; }; pick(0); })();
   function hiFill(html, fresh){ var p = $('hinfo'), old = p.querySelector('.hi-body'), sc = !fresh && old ? old.scrollTop : 0;
     html = html.replace(/<button class="hi-x"[^>]*>✕<\/button>/g, ''); var i = html.indexOf('<div class="hi-st4">'), j = html.indexOf('<div class="hi-btns">');
     if (i >= 0) html = html.slice(0, i) + '<div class="hi-body">' + html.slice(i, j > i ? j : html.length) + '</div>' + (j > i ? html.slice(j) : '');
