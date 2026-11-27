@@ -2853,7 +2853,7 @@ img.rimg{image-rendering:auto!important}
 #roul .dstuft.t1{left:14px;bottom:26px;width:36px} #roul .dstuft.t2{right:64px;bottom:20px;width:27px;animation-delay:-1.4s} #roul .dstuft.t3{left:30px;top:22px;width:22px;animation-delay:-2.2s} #roul .dstuft.t4{right:20px;top:34px;width:30px;animation-delay:-3s}
 #field .pad,#field .padtgt,#field .altcell{width:calc(100% * 112.8 / 720);height:calc(100% * 74.4 / 400)} /* 칸 1.2배: scale 대신 크기를 직접 (scale 은 가운데 맞춤 translate 까지 키워 어긋났음) */
 #field .dsomen,#field .dsgone,#field > .cellhl{width:calc(100% * 93.6 / 720);height:calc(100% * 67.2 / 400)}
-/* 양털 뭉치: 칸 아래 가장자리, 캐릭터보다 앞·HP 막대보다 뒤. 천천히 둥실 (2026-11-26 사용자: "캐릭터 앞에 배치") */ #field .dsomen.front{z-index:340} #field .dsomen.front b{left:30%;width:40%;bottom:2%} #field .dsomen.front i{left:36%;right:36%;top:92%;height:8%}
+/* 양털 뭉치: 칸 정가운데, 캐릭터가 있으면 그 위를 덮음(HP 막대보다 뒤). 천천히 둥실 (2026-11-26 "캐릭터 앞에 배치" → 2026-11-27 사용자: "중앙으로 하고. 캐릭터 위 덮어") */ #field .dsomen.front{z-index:340} #field .dsomen.front b{left:30%;width:40%;bottom:auto;top:50%;transform:translateY(-50%)} #field .dsomen.front i{left:36%;right:36%;top:70%;height:8%}
 #field .rugw{width:calc(100% * 91.2 / 720);height:calc(100% * 64.8 / 400)}
 /* 룰렛형 팝업 장식 자리(팝업기준안 2-7): 큰 칸 좌우 끝·세로 가운데·끝이 바깥. 팝업마다 그림(background)만 따로 */
 .dvine{position:absolute;left:12px;top:calc(50% - 28px);width:34px;height:56px;pointer-events:none;z-index:3} .dvine.r{left:auto;right:12px;transform:scaleX(-1)} /* 대칭 꺾쇠 < > (2026-11-26 사용자) */
