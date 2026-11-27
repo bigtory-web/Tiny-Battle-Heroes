@@ -36,3 +36,14 @@ $i=0; foreach($v in 'a','b','c'){ $x=12+$i*196; $g.FillRectangle($slot,$x,12,184
   $r=0; foreach($s in $sets){ $k=Gem $v $s; $px=12+$r*64; $py=215+$i*100; $g.FillRectangle($slot,$px,$py,56,56); $g.DrawImage($k,($px+4),($py+4),48,48); $g.FillRectangle($slot,($px+8),($py+62),32,32); $g.DrawImage($k,($px+12),($py+66),24,24); $r++ }
   $i++ }
 $pv.Save([IO.Path]::GetFullPath('img\codex\cryset\gem_compare.png'))
+# chosen: B -> the nine game icons (reach = mirror, gets two slanted shine bands)
+$ids = 'hp','def','care','atk','aspd','crit','energy','move','reach'
+for($n=0;$n -lt 9;$n++){ $k = Gem 'b' $sets[$n]
+  if($ids[$n] -eq 'reach'){ foreach($off in 19,26){ for($y=0;$y -lt 24;$y++){ $x=$off-$y; if($x -ge 0 -and $x -lt 24){ $c=$k.GetPixel($x,$y); if($c.A -and $c.ToArgb() -ne (C '#101826').ToArgb()){ $k.SetPixel($x,$y,[System.Drawing.Color]::White) } } } } }
+  $k.Save([IO.Path]::GetFullPath("img\p\ui_cry_$($ids[$n]).png")) }
+$pv=New-Object System.Drawing.Bitmap 800,420; $g=[System.Drawing.Graphics]::FromImage($pv); $g.Clear((C '#221e2b')); $g.InterpolationMode='NearestNeighbor'; $g.PixelOffsetMode='Half'; $g.TextRenderingHint='AntiAlias'
+$font=New-Object System.Drawing.Font 'Malgun Gothic',12; $names=Get-Content -Encoding UTF8 img\codex\cryset\names.txt
+for($i=0;$i -lt 9;$i++){ $im=New-Object System.Drawing.Bitmap ([IO.Path]::GetFullPath("img\p\ui_cry_$($ids[$i]).png")); $x=15+($i%5)*158; $y=15+[math]::Floor($i/5)*170
+  $g.FillRectangle($slot,$x,$y,144,144); $g.DrawImage($im,($x+12),($y+12),120,120); $g.DrawString(($names[$i] -replace ' \(.*\)',''),$font,[System.Drawing.Brushes]::White,($x+8),($y+146))
+  $g.FillRectangle($slot,(15+$i*50),365,40,40); $g.DrawImage($im,(15+$i*50+8),373,24,24); $im.Dispose() }
+$pv.Save([IO.Path]::GetFullPath('img\codex\cryset\final.png'))
