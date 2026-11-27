@@ -1,6 +1,6 @@
 ---
 name: game-art
-description: 타이니 배틀 히어로즈 그림 작업 절차와 검수표. 영웅, 배경(낮·노을·밤), 전장 앞장식, 24×24 아이콘, 분노 아이콘, 상인을 만들거나 고치고 검수할 때 쓴다. 새 챕터 그림, 영웅 다시 그리기, 새 아이콘, "도트 느낌", "외곽선", "눈", "무기가 안 보인다", "화풍 맞추기" 요청에 쓴다.
+description: 영웅·배경·아이콘·상인 그림을 만들거나 고치고 검수할 때 쓴다.
 ---
 
 # 게임 그림 작업
@@ -9,7 +9,7 @@ description: 타이니 배틀 히어로즈 그림 작업 절차와 검수표. �
 
 ## 순서
 
-1. `화면규칙.md`와 `역할/이미지.md`를 읽는다.
+1. `화면규칙.md`를 다시 확인한다(컴팩트 뒤에는 읽은 내용이 빠질 수 있다). 새 화면 규칙은 그 파일에 더한다.
 2. 방법이 정해지지 않은 요청이면 "이렇게 하려고 해요"를 한 줄로 먼저 말한다. 모습·자리가 애매하면 묻는다.
 3. **1장 시안 → 사용자 확인 → 나머지.** 확인 전에는 `img/codex/<작업>/`에만 두고 `img/p/`는 바꾸지 않는다.
 4. 보여 주기 전에 아래 **검수표**로 두 번 검수한다: 확대해서 한 번, 게임 화면(또는 합성)에서 한 번. 기준·지금 것·새 안을 나란히 놓고 번호나 A/B로 고르게 하고, 아쉬운 점도 같이 말한다.
@@ -61,6 +61,8 @@ description: 타이니 배틀 히어로즈 그림 작업 절차와 검수표. �
 
 ## 코덱스
 
+앱에 들어 있는 codex.exe를 직접 돌리고, 후처리와 비교까지 한다.
+
 프로젝트 루트에서 `bash .claude/skills/game-art/scripts/codex.sh img/codex/<작업>/prompt.txt`
 
 요청문에 늘 넣는 것:
@@ -90,7 +92,7 @@ description: 타이니 배틀 히어로즈 그림 작업 절차와 검수표. �
 
 ## 게임 화면에 얹어 보기 (파일·저장 상태를 안 건드림)
 
-`.claude/launch.json`의 `testbed`(8765). 배경은 브라우저에서 아래를 실행하고 화면을 찍는다. 챕터를 바꾸거나 버튼을 눌러 저장 상태를 바꾸지 않는다. 팝업이 가리면 `.popw{display:none}`만 숨긴다.
+`.claude/launch.json`의 `testbed-qa`(8766). 8765는 사용자의 저장 데이터라 열지 않는다. 배경은 브라우저에서 아래를 실행하고 화면을 찍는다. 챕터를 바꾸거나 버튼을 눌러 저장 상태를 바꾸지 않는다. 팝업이 가리면 `.popw{display:none}`만 숨긴다.
 
 ```js
 const im=new Image(); im.onload=()=>{const c=document.createElement('canvas');c.width=im.width;c.height=im.height;const x=c.getContext('2d');x.drawImage(im,0,-58);x.translate(0,im.height);x.scale(1,-1);x.drawImage(im,0,im.height-58,im.width,58,0,0,im.width,58);const s=document.createElement('style');s.textContent='.field{background:url('+c.toDataURL()+') 50% 50% / 100% 100.5% no-repeat !important}';document.head.appendChild(s)}; im.src='img/codex/<작업>/<그림>.png';
