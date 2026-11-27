@@ -5588,10 +5588,10 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   var upSel = null, UPICO = { start: 1, bag: 1, relic: 1, potion: 1, shopSlot: 1, shopReset: 1, merchSlot: 1, swampSlot: 1, merchHero: 1, merchOff: 1, shopGrade: 1, startGold: 1, life: 1, clearGold: 1, lootReset: 1, campfire: 1, eventReset: 1, daisReset: 1, groll: 1, mimic: 1, chest: 1, lootGrade: 1, g_hp: 1, g_def: 1, w_atk: 1, w_hp: 1, a_atk: 1, a_crit: 1, r_atk: 1, r_crit: 1, m_atk: 1, m_hp: 1, b_hp: 1, b_def: 1, t_hp: 1, t_atk: 1 }; /* 아이콘 있는 칸(img/p/up_<id>.png, 24px 1배). 이름은 팁에서. 새 그림이 오면 여기에 더해요 */
   /* 칸 자리(가로 칸, 세로 칸). 가운데 = 모닥불. 데이터에 새 칸이 생기면 여기에 자리를 더해요 */
   var UPPOS = { start: [0, 0], bag: [0, -1], relic: [-1, -1], potion: [0, -2], shopSlot: [-2, 0], shopReset: [-3, 0], shopGrade: [-4, 0], merchSlot: [-2, 1], merchHero: [-3, 1], swampSlot: [-2, 2], merchOff: [-1, 1], startGold: [2, 0], life: [2, -1], clearGold: [3, 0], lootReset: [4, 0], lootGrade: [5, 0], campfire: [2, 1], eventReset: [3, 1], daisReset: [4, 1], groll: [1, 1], mimic: [2, 2], chest: [3, 2], t_hp: [0, 3], t_atk: [0, 4], g_hp: [-3, 4], g_def: [-3, 5], w_atk: [-2, 4], w_hp: [-2, 5], a_atk: [-1, 4], a_crit: [-1, 5], r_atk: [1, 4], r_crit: [1, 5], m_atk: [2, 4], m_hp: [2, 5], b_hp: [3, 4], b_def: [3, 5] };
-  /* 설명 한 줄: "유물 칸이 한 단계마다 1(+1)씩 오른다." 앞 = 지금까지 오른 양, 괄호(초록) = 다음 단계에서 더. 다 찍으면 괄호 없음 (2026-11-27 사용자) */
+  /* 설명 한 줄: "유물 칸이 1(+1)씩 오른다." 앞 = 지금까지 오른 양, 괄호(초록) = 다음 단계에서 더. 다 찍으면 괄호 없음. "한 단계마다"는 뺌 (2026-11-27 사용자) */
   function upDesc(N, L, n){ var unit = N.hero || N.key === 'merchantOff' ? '%' : N.path === 'campaign.startGold' || N.key === 'clearGold' ? 'G' : N.shift ? '칸' : '', add = N.hero ? Math.round(N.add * 100) : N.shift ? 1 : N.add;
     var who = N.hero ? L.name + ' 영웅의 ' + ({ atk: '공격력', hp: '체력', def: '방어력', crit: '치명타 확률' })[N.hero] : N.id === 'start' ? '시작 모닥불 고르기' : N.name, c = who.charCodeAt(who.length - 1), j = c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28 ? '이' : '가';
-    return who + j + ' 한 단계마다 ' + (n ? (add * n) + unit : '') + (n < N.cost.length ? '<u>(+' + add + unit + ')</u>' : '') + '씩 ' + (N.shift ? '앞당겨진다.' : '오른다.'); }
+    return who + j + ' ' + (n ? (add * n) + unit : '') + (n < N.cost.length ? '<u>(+' + add + unit + ')</u>' : '') + '씩 ' + (N.shift ? '앞당겨진다.' : '오른다.'); }
   var upTouch = false;
   function upNode(id){ var out = null; D.meta.lines.forEach(function(L){ L.nodes.forEach(function(N){ if (N.id === id) out = { N: N, L: L }; }); }); return out; }
   /* 칸 옆에 바로 뜨는 팁: 이름 · 설명 · 이번 단계 효과 · 비용 */
