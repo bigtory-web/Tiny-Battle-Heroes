@@ -136,3 +136,5 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
 // 늪지·수정 상인 리셋, 수정 상인 수정 수(2026-11-27)
 { const M = E.metaData(D, { mode: 'meta', nodes: { swampReset: 1, crystalReset: 1, crystalSlot: 2 } }); assert.deepStrictEqual(D.events.swampShop.reroll.max, [0]); assert.deepStrictEqual(M.events.swampShop.reroll.max, [1]); assert.deepStrictEqual(M.events.crystalShop.reroll.max, [1]);
   assert.strictEqual(E.rollCrystals(M, () => 0.5, 1).length, 6, "수정 수 4 + 2"); assert.strictEqual(E.rollCrystals(E.metaData(D, { mode: 'meta', nodes: {} }), () => 0.5, 1).length, 4); console.log("ok · 상인 리셋·수정 수"); }
+// 밸런스 툴 힘 곡선(2026-11-27): 스테이지 10줄, 클리어율 0~1, 전투력 숫자
+{ const c = E.powerCurve(E.chapterData(D, 2), { runs: 3, meta: { mode: 'meta', nodes: {} } }); assert.strictEqual(c.length, 10); assert.ok(c.every(r => r.clearRate >= 0 && r.clearRate <= 1 && r.foePow >= 0)); assert.ok(c[0].myPow > 0 && c[0].foePow > 0); console.log("ok · 힘 곡선", c.map(r => r.ratio).join(" ")); }
