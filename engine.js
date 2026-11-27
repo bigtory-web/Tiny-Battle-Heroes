@@ -576,7 +576,7 @@
     if (MM.kingUp > 0 && !nk && cnt > 0 && rnd() * 100 < MM.kingUp) { nk = 1; if (nw > 0) nw--; else nb--; } /* 2026-11-27 영구 강화: 왕관 미믹 확률(갈색부터 바뀜). 0이면 rnd를 안 써서 예전 판과 같음 */
     if (MM.blueUp > 0) { for (var bu = nw, j0 = 0; j0 < bu; j0++) if (rnd() * 100 < MM.blueUp) { nw--; nb++; } } /* 파랑 미믹 확률: 갈색마다 굴림 */
     ev.ids = []; ev.drops = []; ev.blue = []; for (var i = 0; i < cnt; i++) { var king = i >= nw + nb; ev.ids.push(king ? 'mimicKing' : 'mimic'); ev.blue.push(!king && i >= nw);
-      if (king) { var sid = rollScroll(data, rnd, plv, []); ev.drops.push((sid ? ['s:' + sid] : []).concat(['g:' + Math.max(1, Math.round(rew * (MM.kingGold || 0.5)))])); } else ev.drops.push(['g:' + Math.max(1, Math.round(rew * (MM.gold || 0.3)))]); }
+      if (king) { var sid = rollScroll(data, rnd, plv, []); ev.drops.push((sid ? ['s:' + sid] : []).concat(['g:' + Math.max(1, Math.round(rew * (MM.kingGold || 0.5)))])); } else ev.drops.push(['g:' + Math.max(1, Math.round(rew * ((i >= nw && MM.blueGold) || MM.gold || 0.3)))]); }
     return ev; }
   function rollMobs(data, n, rnd, plv, ev) { var M = (data.mobs || []).filter(function (m) { return m.drops && m.drops.length; }), MB = data.events.mobs || {}, rew = stageReward(data, n, 0, null), els = Object.keys(data.elements.names);
     ev.ids = []; ev.drops = []; if (!M.length) return ev; var m = M[Math.floor(rnd() * M.length)], got = [];

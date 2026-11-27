@@ -450,7 +450,7 @@ var IDLE_DATA = {
     //   보상: 일반 = 클리어 골드 × gold, 왕관 = 유물 1개 + 클리어 골드 × kingGold. 체력 = mobs의 mimic·mimicKing hp × 스테이지 배율. slots = 적 쪽 칸 번호
     // 2026-11-26 배치: 1열(우리 쪽에 가까운 줄) 갈색, 2열 파랑, 3열 가운데 왕관. 칸 번호는 battle.arena.pos 순서(0 = 1열 가운데, 2 = 1열 위, 3 = 2열 가운데, 5 = 2열 위, 6 = 3열 가운데). 갈색 짝수·파랑 홀수 칸은 화면 색 고르기(slot % 2)와 맞춤
     //   blueHp: 파랑 미믹 체력 배율(갈색보다 셈). blueRange: 파랑 미믹 사거리(mid = 2칸, 갈색은 melee 1칸, 왕관은 mobs의 far 4칸). dmg: 방해할 때 그 영웅에게 주는 고정 피해. 방해는 색깔별: 갈색 둔화(slow*), 파랑 실명(blind*: blindDur초 동안 평타가 blindAmt 확률로 빗나감), 왕관 밀치기(knock*)
-    mimic: { dur: 20, kingFrom: 7, slowDur: 2, slowAmt: 0.4, knock: 40, knockStun: 0.4, gold: 0.3, kingGold: 0.5, blueUp: 0, kingUp: 0 /* 2026-11-27 영구 강화: 파랑·왕관 미믹 확률(%) */, blueHp: 1.5, blueRange: 100 /* 2026-11-27: 원거리 사거리를 늘려 mid가 3칸이 돼서, 파랑 미믹 2칸은 픽셀 값으로 고정 */, dmg: 1, blindDur: 2, blindAmt: 0.5, slots: { w: [0, 2, 1], b: [3, 5, 4], k: [6] } },
+    mimic: { dur: 20, kingFrom: 7, slowDur: 2, slowAmt: 0.4, knock: 40, knockStun: 0.4, gold: 0.3, blueGold: 0.4 /* 2026-11-27 파랑(2등급) 보상 = 클리어 골드 × 0.4, 갈색 0.3·왕관 0.5 사이 임시 (사용자: "응, 올려") */, kingGold: 0.5, blueUp: 0, kingUp: 0 /* 2026-11-27 영구 강화: 파랑·왕관 미믹 확률(%) */, blueHp: 1.5, blueRange: 100 /* 2026-11-27: 원거리 사거리를 늘려 mid가 3칸이 돼서, 파랑 미믹 2칸은 픽셀 값으로 고정 */, dmg: 1, blindDur: 2, blindAmt: 0.5, slots: { w: [0, 2, 1], b: [3, 5, 4], k: [6] } },
     // 미믹 방해 스킬 이름·설명(2026-11-26, 상세 창 스킬 칸용). w 갈색, b 파랑, k 왕관. 평타(공속 = mobs의 interval, 피해 = dmg)로 에너지가 차면 쓴다. 위 숫자(slowDur·blindAmt·knock 등)를 바꾸면 설명도 같이 고친다
     mimicSkills: {
       w: { name: '끈적한 침', desc: '에너지가 차면 영웅 1명을 2초 동안 40% 느리게 한다.' },
