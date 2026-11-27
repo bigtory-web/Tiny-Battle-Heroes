@@ -1,0 +1,6 @@
+Two images are attached.
+Image 1 is the current attack animation of a game character: a 2 x 2 sheet on magenta, 4 frames read left to right, top to bottom, enlarged 8 times (every 8x8 block is one sprite pixel).
+Image 2 is the NEW design of the same character (one still frame, enlarged 8 times).
+Use both as reference images for your image generation tool. Generate ONE new image: a 2 x 2 sheet with the same layout, 4 attack frames of the character of image 2: same hair, face, cape, book, colors, outline, SIZE and position inside its cell as image 2 (he is smaller than in image 1: follow image 2's size).
+Motion, following image 1: he pushes the open navy book forward to the right and the pages flip up, then pulls it back. Only the arms, the book and its pages move; head, hair, face, body and feet stay identical to image 2 in all 4 frames.
+Save it as img/codex/bloom/sheet/sprout_atk_src.png (save it even if the size differs slightly). Hard square pixels at the same pixel size as the attached images, very dark brown outline, no anti-aliasing, flat solid pure magenta background FF00FF, no grid lines, no text, no shadow, no magic effects. Python is not installed on this computer: do not use python. Use PowerShell Copy-Item to copy the generated file. Do not modify or create any other file.

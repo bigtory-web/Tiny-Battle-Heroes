@@ -7,6 +7,7 @@
 | `flame_short.png` | 낮게 정돈한 불꽃 머리 | 블레이즈(flame) | red orange flame shaped hair, low and tidy, three or four big flame locks, not taller than the knight plume |
 | `vine_ponytail.png` | 작은 높은 포니테일 + 큰 잎 | 아이비(vine) | high ponytail clearly small and short (ends at shoulder height, stays close to the head), a simple solid mass, with two big green leaves |
 | `coral_twincurl.png` | 회오리 양갈래 + 가운데 가르마 앞머리 | 코라(coral) | centre parting with light soft bangs; high twin tails tied above both ears, each twisted into a big spiral drill curl with clearly visible diagonal twist bands, flaring outward then hanging to shoulder height; the head stays round and full |
+| `sprout_fluffy.png` | 풍성한 곱슬 덩어리 머리 + 두 잎 새싹 | 블룸(sprout) | fluffy golden curly hair as one solid mass with a ragged outline, a small two-leaf green sprout on top |
 
 - 앞머리가 휑하면: "fill the front bangs a little more: soft locks from the centre parting down toward (not covering) the eyebrows, thin dark brown lines only where they meet the face" 만 따로 요청하고 이마 부분만 옮겨 붙인다.
 - 좌우 짝인 머리는 "the head is tilted: on the LEFT of the picture the tail, its tie and ornaments start ONE sprite pixel lower"를 함께 넣는다.
