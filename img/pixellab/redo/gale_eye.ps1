@@ -9,6 +9,7 @@ foreach($v in 'a','b'){
   if($v -eq 'b'){
     for($y=28;$y -le 29;$y++){ for($x=28;$x -le 33;$x++){ $o.SetPixel($x,($y+1),$src.GetPixel($x,$y)) } }
     for($x=28;$x -le 33;$x++){ $o.SetPixel($x,28,$src.GetPixel($x,27)) } }
+  for($y=0;$y -lt 64;$y++){ for($x=0;$x -lt 64;$x++){ $c=$o.GetPixel($x,$y); if($c.A -and $c.R -lt 90 -and $c.G -lt 30 -and $c.B -gt 28){ $o.SetPixel($x,$y,[System.Drawing.ColorTranslator]::FromHtml('#391a0c')) } } }
   $o.Save([IO.Path]::GetFullPath("img\pixellab\redo\gale_eye_$v.png")) }
 # preview: face zoom (before, a, b) and full sprites next to the knight
 $pv=New-Object System.Drawing.Bitmap 1170,760; $g=[System.Drawing.Graphics]::FromImage($pv); $g.Clear([System.Drawing.ColorTranslator]::FromHtml('#55607c')); $g.InterpolationMode='NearestNeighbor'; $g.PixelOffsetMode='Half'
