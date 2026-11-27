@@ -1,0 +1,11 @@
+Three game sprites are attached, enlarged 8 times (every 8x8 block is one sprite pixel).
+Image 1 is a boy fire mage: SIZE AND PIXEL-SIZE TEMPLATE only.
+Image 2 is the current draft of a coral guardian girl: the character to improve.
+Image 3 is her older sprite: use ONLY its big scallop shell shield.
+Use them as reference images for your image generation tool, generate ONE new image and save it as img/codex/redo3/coral_src15.png (save it even if the size differs slightly).
+Keep image 2's face, eyes, size, pose, coral antlers, shell hair ornaments, colors and shading style. Change ONLY these:
+1. Twin tails: from each tie the spiral curl goes OUT sideways for a short way and then bends and HANGS DOWN, a downward falling drill curl that reaches about shoulder-to-chest height (like an inverted L shape), with clear diagonal twist bands. Both sides.
+2. Armor: add more decoration: gold trim lines on the plates, a small coral emblem or pearl on the chest, a pearl and shell detail on the shoulder and belt. Keep it readable, not noisy, with three-tone shading.
+3. Weapon: the heavy coral mace gets a much spikier head: long sharp pointed spikes sticking out all around the ball (clearly jagged silhouette), three-tone shading.
+4. Shield: replace the shield with the scallop SHELL shield of image 3 (a cream white ribbed fan shaped shell with a scalloped edge), with shading and a clear dark outline so it separates from the white armor, same size as the current shield.
+Rules: very dark brown outline everywhere, do not make the picture bigger than image 2, hard square pixels at exactly the same pixel size as the attached sprites, no anti-aliasing, calm muted colors. Full body centered, 1024x1024 PNG, flat solid pure magenta background FF00FF, no text, no shadow. Python is not installed on this computer: do not use python. Use PowerShell Copy-Item to copy the generated file. Do not modify or create any other file.
