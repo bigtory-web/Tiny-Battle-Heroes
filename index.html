@@ -2178,7 +2178,7 @@ button.go,#fightBtn,#resPop .rpok,.rpok,.oebox .oebtns .go,.oebox .oebtns .oev,.
 /* 주 버튼 = 노랑 (위 기본값) / 올리기 = 초록 / 빼기 = 빨강 / 보조 = 파랑 */
 .hinfo .hi-b.go{--bb:#4fa84a;--bh:#8fdc7a;--bl:#2f6e2c}
 .hinfo .hi-b[data-hi="out"]{--bb:#c2414a;--bh:#ff8a8f;--bl:#7a1f26}
-.rbox .rbtns .again,#rAgain,#rNo,.evbtns [data-evleave],.rbtns .rlink,#backBtn,#rExit,#shopReroll .spRe{--bb:#3f6fc2;--bh:#8fb4ff;--bl:#26457e}
+#credits .rpok.redo,.rbox .rbtns .again,#rAgain,#rNo,.evbtns [data-evleave],.rbtns .rlink,#backBtn,#rExit,#shopReroll .spRe{--bb:#3f6fc2;--bh:#8fb4ff;--bl:#26457e}
 .rbtns .rlink,#rNo{padding:6px 12px!important;font-size:13px!important}
 /* 꺼짐·누름·고름 (모든 종류 같음) */ button.go:disabled,#fightBtn:disabled,.hinfo .hi-b:disabled,.rbox .rbtns .again:disabled,#rAgain:disabled,#shopReroll .spRe:disabled,.oebox .oebtns .go:disabled{animation:none!important}
 
@@ -2192,7 +2192,7 @@ button.go,#fightBtn,#resPop .rpok,.rpok,.oebox .oebtns .go,.oebox .oebtns .oev,.
 #field.altshow .altguide,#field.altshow .altflow{animation:altappear .3s .75s steps(3) both!important}
 /* 2026-11-24: 버튼 글자 대비 — 노랑 위는 진갈색 글자 + 밝은 아래 그림자, 초록·빨강·파랑 위는 흰 글자 + 어두운 외곽선 */
 button.go,#fightBtn,#resPop .rpok,.rpok,.oebox .oebtns .go,.oebox .oebtns .oev,.hinfo .hi-b,.hinfo .hi-b.go,.hinfo .hi-b.alt,.rbox .rbtns .again,#rAgain,#rNo,.evbtns [data-evleave],.rbtns .rlink,#backBtn,#rExit,#shopReroll .spRe{--bt:#3a2410;--bs:0 1px 0 rgba(255,236,170,.75);color:var(--bt)!important;text-shadow:var(--bs)!important}
-.hinfo .hi-b.go,.hinfo .hi-b[data-hi="out"],.rbox .rbtns .again,#rAgain,#rNo,.evbtns [data-evleave],.rbtns .rlink,#backBtn,#rExit,#shopReroll .spRe{--bt:#ffffff;--bs:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d,0 2px #17141d}
+#credits .rpok.redo,.hinfo .hi-b.go,.hinfo .hi-b[data-hi="out"],.rbox .rbtns .again,#rAgain,#rNo,.evbtns [data-evleave],.rbtns .rlink,#backBtn,#rExit,#shopReroll .spRe{--bt:#ffffff;--bs:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d,0 2px #17141d}
 
 /* 오른쪽 버튼 줄 이름: 12px 흰색에 가깝게, 아이콘 24px = 그림 1배 */
 .underbar .ulbl{font-size:12px!important;color:#fffaf0!important}
@@ -2389,7 +2389,7 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
 /* ───── 나머지 색 버튼(파랑·빨강·초록·회색)에도 같은 픽셀 입체 (2026-11-25 사용자: "다른버튼들도") ─────
    버튼이 원래 쓰던 색 변수(--bb 면, --bh 밝은 줄, --bl 어두운 단)로 명암 3단·아래 단·좌우 줄을 만들어서 색마다 따로 안 정해도 돼요. 비활성은 색 변수가 회색으로 바뀌어서 같은 구조의 회색이 돼요. X(닫기) 버튼은 작은 아이콘이라 제외.
    되돌리는 방법: 이 블록을 지우면 돼요. */
-.hinfo .hi-b,.hinfo .hi-b.go,.hinfo .hi-b.alt,.rbox .rbtns .again,#rAgain,#rNo,.evbtns [data-evleave],.rbtns .rlink,#backBtn,#rExit,#shopReroll .spRe,#arena.evstage #fightBtn,#trWin .rbtns .trreg{ /* 초월 등록: 꺼짐도 공통 회색 입체 (2026-11-26 사용자: "버튼 통일성") */
+#credits .rpok.redo,.hinfo .hi-b,.hinfo .hi-b.go,.hinfo .hi-b.alt,.rbox .rbtns .again,#rAgain,#rNo,.evbtns [data-evleave],.rbtns .rlink,#backBtn,#rExit,#shopReroll .spRe,#arena.evstage #fightBtn,#trWin .rbtns .trreg{ /* 초월 등록: 꺼짐도 공통 회색 입체 (2026-11-26 사용자: "버튼 통일성") */
   background:linear-gradient(var(--bh),var(--bh)) 10px 4px/8px 2px no-repeat,repeating-linear-gradient(135deg,rgba(255,255,255,.07) 0 2px,transparent 2px 8px),linear-gradient(color-mix(in srgb,var(--bb) 72%,#fff) 0 30%,var(--bb) 30% 64%,color-mix(in srgb,var(--bb) 80%,var(--bl)) 64% 100%)!important;
   box-shadow:inset 0 0 0 2px #17141d,inset 0 3px 0 -1px var(--bh),inset 3px 0 0 -1px color-mix(in srgb,var(--bb) 78%,var(--bl)),inset -3px 0 0 -1px color-mix(in srgb,var(--bb) 78%,var(--bl)),inset 0 -5px 0 -2px color-mix(in srgb,var(--bb) 55%,var(--bl)),inset 0 -7px 0 -2px var(--bl)!important}
 
@@ -2970,9 +2970,9 @@ img.rimg{image-rendering:auto!important}
 #tab-shop .stile.lockd em{color:#f3e6c4!important}
 /* 규칙: 빈 칸은 주변 바탕보다 늘 더 어둡게, "+"는 옅게 (2026-11-26 사용자: "이건 규칙이야") */
 #field .aimfaces{position:absolute;transform:translate(-50%,-100%);display:flex;gap:3px;z-index:344;pointer-events:none;font-style:normal} #field .aimfaces b{display:block;width:22px;height:22px;box-shadow:0 0 0 2px #ffd34d,0 0 0 3px #17141d} #field .aimfaces b.en{box-shadow:0 0 0 2px #ff5a4a,0 0 0 3px #17141d} #field .aimfaces .hic{width:22px!important;height:22px!important;display:block} #field .aimfaces.pop{animation:aimfade .35s ease-out both} @keyframes aimfade{from{opacity:0}to{opacity:1}} #field .aimfaces b.en .hic{transform:scaleX(-1)} /* 조용히 옅게 나타남만, 적 얼굴은 전장처럼 왼쪽 보기 (2026-11-26 사용자: "부드럽게 … 좌우 반전") */ #field.scrollin .aimfaces,#field.gridin .aimfaces,#arena.ending #field .aimfaces{display:none}
-/* 모험 완료 버튼 줄: 챕터 2 시작(노랑) · 다시 하기(파랑) */ #credits .crbtns{position:absolute;left:0;right:0;bottom:14px;display:none;justify-content:center;gap:8px;z-index:5} #credits.end .crbtns{display:flex} #credits .crbtns .rpok{position:static!important;display:block!important;margin:0!important;width:auto!important} #credits .crbtns .ch2 ~ .again0{background:#3f78c8!important;color:#fff!important;text-shadow:0 1px 0 #17141d!important}
+/* 모험 완료 버튼 줄: 챕터 2 시작(노랑) · 다시 하기(파랑) */ #credits .crbtns{position:absolute;left:0;right:0;bottom:14px;display:none;justify-content:center;gap:8px;z-index:5} #credits.end .crbtns{display:flex} #credits .crbtns .rpok{position:static!important;display:block!important;margin:0!important;width:auto!important} 
 /* 악어 분노 그림은 아래 여백이 5줄이라 2px 내림 (2026-11-27 사용자: "높이좀 낮춰서") */ #bellBtn .bic img[src*="swampfoe"]{position:relative;top:2px}
-/* [다시 하기] = 보조(파랑) */ #resPop .rpok.redo,#credits .rpok.redo{background:#3f78c8!important;color:#fff!important;text-shadow:0 1px 0 #17141d!important;--bb:#3f78c8;--bh:#5a92e0;--bl:#2a5596}
+#credits .rpok.redo{color:#fff!important;text-shadow:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d,0 2px #17141d!important} /* [다시 하기]: 게임 오버 = 노랑(메인), 모험 완료 = 파랑 — 파랑 모양은 아래 공통 파랑 줄 (2026-11-27 사용자: "게임 오버에는 주황. 모험 완료에는 파랑") */
 /* 영구 강화 창 */ .medic{display:inline-block;width:14px;height:14px;vertical-align:-2px;margin-right:3px;background:#ffd34d;box-shadow:inset -3px -3px 0 #b8861c,inset 2px 2px 0 #fff3b0,0 0 0 2px #17141d} .rit .medic{width:26px;height:26px;margin:0}
 #upWin{position:absolute;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;background:rgba(10,8,14,.62)} #upWin[hidden]{display:none} #upWin .upbox{width:94%;height:94%;display:flex;flex-direction:column;gap:6px;padding:8px;background:#2a2533;box-shadow:inset 0 0 0 2px #17141d,inset 0 0 0 4px #5d5470}
 #upWin .uphead{position:relative;display:flex;align-items:center;gap:14px;min-height:36px;padding:2px 4px;font:400 16px var(--display);color:#f3e6c4} #upWin .uphead .popx{position:absolute!important;right:0!important;left:auto!important;top:0!important}
