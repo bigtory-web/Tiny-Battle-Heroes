@@ -1,0 +1,9 @@
+Look at img/codex/upicon2/sheet_raw.png : our approved icon set. Draw a new icon in EXACTLY the same style: chunky pixel art with large hard square pixels designed on a 24 x 24 grid, the same thick very dark brown outline, 3 flat tones per color with light from the top left, very few big shapes.
+Also look at img/p/swamp_cell.png : the swamp tile of the game (teal water puddle with a brown mud rim).
+
+Generate ONE new image with your image generation tool and save it as img/codex/swampcellicon/raw.png.
+
+ONE single icon meaning "swamp tile": a wide muddy puddle seen slightly from above (thick brown mud rim, bright teal water filling the middle, slightly hexagonal outline), with two cattail reeds standing up on the left, one round green lily pad floating, and one or two small bubbles. The icon fills the square.
+
+[Format] Plain solid #FF00FF magenta background everywhere else. No text, no frame, no glow, no drop shadow.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
