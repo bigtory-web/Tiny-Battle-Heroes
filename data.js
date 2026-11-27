@@ -138,7 +138,7 @@ var IDLE_DATA = {
       ult: { kind: 'dash', mul: 3, stun: 1, desc: '가장 먼 적에게 돌진해 공격력 300% 피해를 주고 1초 기절시킨다.' }, passive: { kind: 'firstStrike', v: 3, stun: 0.5 } },
     { id: 'squire', name: '섀도', alias: '독칼잡이', sex: 'm', race: 'human', job: 'assassin', ultName: '그림자 찌르기', role: 'warrior', el: 'dark', range: 'melee', cost: 1, grade: 1, hp: 1240, atk: 139, def: 68, interval: 1.1,
       ult: { kind: 'blink', mul: 2.6, chain: 1, back: true, desc: '체력이 가장 낮은 적의 등 뒤로 순간이동해 공격력 260%로 찌르고 제자리로 돌아온다.' }, passive: { kind: 'none', v: 0 } },
-    { id: 'sprout', name: '블룸', alias: '새싹정령', sex: 'm' /* 2026-11-27 남캐로 다시 그림(사용자) */, race: 'elf', job: 'bard', ultName: '새싹의 노래', role: 'support', el: 'forest', range: 'mid', shot: 'note', cost: 1, grade: 1, hp: 1160, atk: 97, def: 75, interval: 1.4,
+    { id: 'sprout', name: '블룸', alias: '새싹정령', sex: 'm' /* 2026-11-27 남캐로 다시 그림(사용자) */, race: 'human' /* 2026-11-27 엘프 → 인간(사용자: 엘프 느낌 말고 인간 느낌, "ㅇ") */, job: 'bard', ultName: '새싹의 노래', role: 'support', el: 'forest', range: 'mid', shot: 'note', cost: 1, grade: 1, hp: 1160, atk: 97, def: 75, interval: 1.4,
       ult: { kind: 'buff', win: { kind: 'healEvery', v: 0.03, every: 1, t: 8 }, desc: '8초 동안 1초마다 체력이 가장 낮은 아군을 3% 회복한다.' }, passive: { kind: 'healEvery', v: 0.05, every: 5 } },
     { id: 'pup', name: '엠버', alias: '불강아지', sex: 'f', race: 'beast', job: 'archer', ultName: '불씨 뱉기', role: 'ranged', el: 'fire', range: 'far', shot: 'fire', cost: 1, grade: 1, hp: 920, atk: 149, def: 55, interval: 1.25,
       ult: { kind: 'snipe', mul: 2, burn: 6, desc: '체력이 가장 낮은 적에게 피해를 주고 6초 화상을 입힌다.' }, passive: { kind: 'lowBurn', v: 0.5 } },
