@@ -1,0 +1,217 @@
+<meta name="dash-one-writer">
+<meta name="dash-form" content="dashboard">
+<style>
+.tb { display: grid; gap: var(--cds-gap-xl); }
+.tb-lead { font-size: var(--cds-font-size-body); color: var(--color-fg-muted); max-width: 70ch; margin: 0; }
+.tb-lead b { color: var(--color-fg); font-variant-numeric: tabular-nums; }
+.tb-sec { display: grid; gap: var(--cds-gap-md); }
+.tb-sec > h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
+.tb-note { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); margin: 0; max-width: 75ch; }
+.tb-card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); min-width: 0; display: grid; gap: var(--cds-gap-sm); }
+.tb-card h3 { font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); margin: 0; }
+.tb-grid2 { display: grid; gap: var(--cds-gap-md); grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); }
+.tb-ctl { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm); align-items: center; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.tb-chart { position: relative; min-height: 300px; }
+.tb-chart.short { min-height: 180px; }
+.tb-chart svg { display: block; width: 100%; overflow: visible; }
+.tb-chart text { font-size: var(--cds-font-size-caption); fill: var(--cds-text-secondary); }
+.tb-chart .axis line, .tb-chart .axis path { stroke: var(--cds-chart-axis); }
+.tb-chart .grid line { stroke: var(--cds-chart-grid); }
+.tb-tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); box-shadow: var(--cds-shadow-popover); border-radius: var(--cds-radius); padding: var(--cds-pad-xs) var(--cds-pad-sm); font-size: var(--cds-font-size-caption); white-space: nowrap; z-index: 5; }
+.tb-legend { display: flex; flex-wrap: wrap; gap: var(--cds-gap-sm) var(--cds-gap-md); font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.tb-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.tb-legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.tb-heat { overflow-x: auto; }
+.tb-heat table, .tb-tbl table { border-collapse: collapse; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; width: 100%; }
+.tb-heat th, .tb-heat td { padding: 6px 8px; text-align: center; border: 1px solid var(--color-border-line); }
+.tb-heat th:first-child, .tb-heat td:first-child { text-align: left; white-space: nowrap; }
+.tb-tbl { overflow-x: auto; max-height: 520px; }
+.tb-tbl th, .tb-tbl td { padding: 5px 8px; text-align: right; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+.tb-tbl th { position: sticky; top: 0; background: var(--color-panel); cursor: pointer; font-weight: var(--cds-font-weight-medium); }
+.tb-tbl th:nth-child(-n+4), .tb-tbl td:nth-child(-n+4) { text-align: left; }
+.tb-bad { color: var(--color-bad); }
+</style>
+
+<div class="tb">
+  <p class="tb-lead" id="lead">스킬·유물 없이 영웅 1레벨 기준, 4등급 평균 실측 DPS는 1등급의 <b data-draw="gradeRatio" data-source="grade_ratio">—</b>배예요. 봇 기준으로는 3챕터 HARD에서 끝까지 깨는 비율이 <b data-draw="hardClear" data-source="hard_clear">—</b>%예요.</p>
+
+  <section class="tb-sec" id="heroes-sec">
+    <h2>영웅 1레벨: 때리는 힘과 버티는 힘</h2>
+    <p class="tb-note">실측 DPS는 영웅 혼자 30초 동안 허수아비(방어 0, 속성 없음)를 때린 피해 ÷ 30이에요. 궁극기·패시브·치명 포함. 실질 체력 = 체력 × (1 + 방어 ÷ 300). 오른쪽 위로 갈수록 센 영웅이에요.</p>
+    <div class="tb-ctl"><label for="gradeSel">등급</label>
+      <select class="dash-select" id="gradeSel" aria-label="등급"><option value="">전체</option><option value="1">1등급</option><option value="2">2등급</option><option value="3">3등급</option><option value="4">4등급</option></select></div>
+    <div class="tb-grid2">
+      <div class="tb-card" id="scatter-card"><h3>영웅마다 실측 DPS × 실질 체력</h3>
+        <div class="tb-chart" data-draw="scatter" data-source="heroes"></div>
+        <div class="tb-legend" data-draw="jobLegend"></div></div>
+      <div class="tb-card" id="jobbar-card"><h3>직업 × 등급 평균 실측 DPS</h3>
+        <div class="tb-chart" data-draw="jobbar" data-source="job_grade"></div>
+        <div class="tb-legend"><span>막대 하나 = 그 등급 영웅 평균, 왼쪽부터 1·2·3·4등급</span></div></div>
+    </div>
+  </section>
+
+  <section class="tb-sec" id="curve-sec">
+    <h2>스테이지 힘 곡선 (봇)</h2>
+    <p class="tb-note">봇 20판, 업그레이드 안 찍음, 하트를 다 쓰기 전 첫 판만. 전투력은 화면 전투력 막대와 같은 식이라 늪·분노·수정 같은 챕터 효과는 안 들어가요. 그래서 클리어율과 같이 봐요. 봇은 사람보다 단순해서 참고값이에요.</p>
+    <div class="tb-ctl"><label for="chSel">챕터</label>
+      <select class="dash-select" id="chSel" aria-label="챕터"><option value="1">1 용의 초원</option><option value="2">2 골렘의 수정 동굴</option><option value="3">3 악어의 늪지대</option></select>
+      <label for="dfSel">난이도</label>
+      <select class="dash-select" id="dfSel" aria-label="난이도"><option>EASY</option><option>NORMAL</option><option>HARD</option></select></div>
+    <div class="tb-grid2">
+      <div class="tb-card" id="power-card"><h3>내 전투력 vs 적 전투력</h3>
+        <div class="tb-chart" data-draw="powerLine" data-source="curve"></div>
+        <div class="tb-legend" data-draw="powerLegend"></div></div>
+      <div class="tb-card" id="clear-card"><h3>스테이지별 클리어율과 첫 판 승률</h3>
+        <div class="tb-chart" data-draw="clearBar" data-source="curve"></div>
+        <div class="tb-legend" data-draw="clearLegend"></div></div>
+    </div>
+  </section>
+
+  <section class="tb-sec" id="value-sec">
+    <h2>능력치 가치 (체력으로 환산)</h2>
+    <p class="tb-note">레벨 5 표준 팀끼리 싸우게 하고, 그 직업 영웅 한 명에게만 능력치를 올렸을 때 상대가 같은 영웅 체력을 몇 % 올려야 비기는지예요. 클수록 그 직업에게 값진 능력치예요. 체력 +20% 줄은 검산이라 20% 근처가 맞아요. 이 줄이 20%에서 많이 벗어난 직업은 그 열 결과가 흔들린다는 뜻이라 참고만 해요. +200%는 끝값(그 이상)이에요.</p>
+    <div class="tb-ctl"><label for="modeSel">스킬</label>
+      <select class="dash-select" id="modeSel" aria-label="스킬"><option>스킬 끔</option><option>스킬 켬</option></select></div>
+    <div class="tb-card" id="heat-card"><div class="tb-heat" data-draw="heat" data-source="stat_value"></div></div>
+  </section>
+
+  <section class="tb-sec" id="table-sec">
+    <h2>영웅 1레벨 표</h2>
+    <p class="tb-note">머리글을 누르면 정렬돼요.</p>
+    <div class="tb-card tb-tbl">
+      <table data-source="heroes" data-row-key="hero">
+        <thead><tr><th data-field="hero" data-k="hero">영웅</th><th data-field="grade" data-k="grade">등급</th><th data-field="job" data-k="job">직업</th><th data-field="range" data-k="range">사거리</th><th data-field="hp" data-k="hp">체력</th><th data-field="atk" data-k="atk">공격력</th><th data-field="def" data-k="def">방어</th><th data-field="interval" data-k="interval">공격 간격</th><th data-field="crit" data-k="crit">치명%</th><th data-field="base_dps" data-k="base_dps">평타 DPS</th><th data-field="dps" data-k="dps">실측 DPS</th><th data-field="ehp" data-k="ehp">실질 체력</th></tr></thead>
+        <tbody data-draw="heroRows"></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  const JOBS = ['수호자', '전사', '궁수', '마법사', '음유시인', '암살자'];
+  const col = j => dash.colors[JOBS.indexOf(j) % dash.colors.length];
+  const num = v => +v;
+  window.tbState = { grade: '', ch: '1', df: 'EASY', mode: '스킬 끔', sortK: 'dps', sortDir: -1 };
+  const S = window.tbState;
+  const on = (id, k, draws) => document.querySelectorAll('#' + id).forEach(el => el.addEventListener('change', () => { S[k] = el.value; draws.forEach(d => dash.draw(d)); }));
+  on('gradeSel', 'grade', ['scatter']); on('chSel', 'ch', ['powerLine', 'clearBar']); on('dfSel', 'df', ['powerLine', 'clearBar']); on('modeSel', 'mode', ['heat']);
+  document.querySelectorAll('.tb-tbl th[data-k]').forEach(th => th.addEventListener('click', () => { const k = th.dataset.k; S.sortDir = S.sortK === k ? -S.sortDir : (['hero', 'job', 'range'].includes(k) ? 1 : -1); S.sortK = k; dash.draw('heroRows'); }));
+
+  dash.calc('job_grade', { inputs: ['heroes'], title: '직업 × 등급 평균 실측 DPS', description: '같은 직업·등급 영웅들의 실측 DPS 평균', fn: (heroes) => {
+    const m = d3.rollups(heroes, v => Math.round(d3.mean(v, r => +r.dps)), r => r.job, r => +r.grade); const out = [];
+    m.forEach(([job, gs]) => gs.forEach(([grade, dps]) => out.push({ key: job + ' ' + grade, job, grade, dps }))); return out; } });
+  dash.calc('grade_ratio', { inputs: ['heroes'], title: '4등급 ÷ 1등급 평균 실측 DPS', description: '4등급 영웅 평균 실측 DPS를 1등급 평균으로 나눈 값', fn: (heroes) => {
+    const a = g => d3.mean(heroes.filter(r => +r.grade === g), r => +r.dps); return Math.round(a(4) / a(1) * 100) / 100; } });
+  dash.calc('hard_clear', { inputs: ['curve'], title: '3챕터 HARD 끝까지 클리어율', description: '3챕터 HARD 마지막 스테이지(3-10) 클리어율(봇 20판)', fn: (curve) => {
+    const r = curve.find(x => +x.chapter === 3 && x.difficulty === 'HARD' && +x.step === 10); return r ? +r.clear_rate : null; } });
+
+  const val = (el, id) => { const d = dash.data(id); el.classList.toggle('dash-skeleton', d.status === 'loading'); el.textContent = d.status === 'ok' && d.data != null ? String(d.data) : '—'; };
+  dash.draw('gradeRatio', el => val(el, 'grade_ratio'));
+  dash.draw('hardClear', el => val(el, 'hard_clear'));
+
+  function tipIn(el) { let t = el.querySelector('.tb-tip'); if (!t) { t = document.createElement('div'); t.className = 'tb-tip'; t.hidden = true; el.appendChild(t); } return t; }
+  function failed(el, d, msg) { el.classList.toggle('dash-skeleton', d.status === 'loading'); if (d.status !== 'ok') { el.replaceChildren(); if (d.status === 'error') { const p = document.createElement('p'); p.className = 'tb-note tb-bad'; p.textContent = msg; el.appendChild(p); } return true; } return false; }
+
+  dash.draw('jobLegend', el => { el.replaceChildren(...JOBS.map(j => { const s = document.createElement('span'), i = document.createElement('i'); i.style.background = col(j); s.append(i, j); return s; })); });
+
+  dash.draw('scatter', el => {
+    const d = dash.data('heroes'); if (failed(el, d, '영웅 표를 못 읽었어요.')) return;
+    const rows = d.data.filter(r => !S.grade || String(r.grade) === S.grade);
+    const W = el.clientWidth || 400, H = 300, m = { t: 10, r: 12, b: 34, l: 44 };
+    const x = d3.scaleLinear().domain([0, d3.max(d.data, r => +r.ehp) * 1.05]).nice().range([m.l, W - m.r]);
+    const y = d3.scaleLinear().domain([0, d3.max(d.data, r => +r.dps) * 1.08]).nice().range([H - m.b, m.t]);
+    const svg = d3.create('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('height', H).attr('role', 'img').attr('aria-label', '영웅마다 실측 DPS와 실질 체력 산점도');
+    svg.append('g').attr('class', 'grid').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W - m.l - m.r)).tickFormat('')).call(g => g.select('.domain').remove());
+    svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(Math.max(2, Math.floor(W / 90))));
+    svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5));
+    svg.append('text').attr('x', W - m.r).attr('y', H - 4).attr('text-anchor', 'end').text('실질 체력 →');
+    svg.append('text').attr('x', m.l).attr('y', m.t + 2).attr('dx', 4).text('↑ 실측 DPS');
+    const tip = tipIn(el);
+    svg.append('g').selectAll('circle').data(rows).join('circle').attr('cx', r => x(+r.ehp)).attr('cy', r => y(+r.dps)).attr('r', r => 3 + +r.grade * 1.5)
+      .style('fill', r => col(r.job)).style('fill-opacity', .8).style('stroke', 'var(--color-bg)')
+      .on('pointerenter pointermove', (ev, r) => { tip.hidden = false; tip.textContent = `${r.hero} · ${r.grade}등급 ${r.job} · DPS ${r.dps} · 실질 체력 ${r.ehp}`; const b = el.getBoundingClientRect(); tip.style.left = Math.min(ev.clientX - b.left + 10, W - 220) + 'px'; tip.style.top = (ev.clientY - b.top - 30) + 'px'; })
+      .on('pointerleave', () => { tip.hidden = true; });
+    el.replaceChildren(svg.node(), tip);
+  });
+
+  dash.draw('jobbar', el => {
+    const d = dash.data('job_grade'); if (failed(el, d, '평균을 못 냈어요.')) return;
+    const W = el.clientWidth || 400, H = 300, m = { t: 14, r: 8, b: 30, l: 40 };
+    const x0 = d3.scaleBand().domain(JOBS).range([m.l, W - m.r]).paddingInner(.2), x1 = d3.scaleBand().domain([1, 2, 3, 4]).range([0, x0.bandwidth()]).padding(.1);
+    const y = d3.scaleLinear().domain([0, d3.max(d.data, r => r.dps) * 1.12]).nice().range([H - m.b, m.t]);
+    const svg = d3.create('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('height', H).attr('role', 'img').attr('aria-label', '직업별·등급별 평균 실측 DPS 막대');
+    svg.append('g').attr('class', 'grid').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W - m.l - m.r)).tickFormat('')).call(g => g.select('.domain').remove());
+    svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x0));
+    svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5));
+    const tip = tipIn(el);
+    svg.append('g').selectAll('rect').data(d.data).join('rect').attr('x', r => x0(r.job) + x1(r.grade)).attr('width', x1.bandwidth()).attr('y', r => y(r.dps)).attr('height', r => y(0) - y(r.dps))
+      .style('fill', r => col(r.job)).style('fill-opacity', r => .35 + r.grade * .16)
+      .on('pointerenter pointermove', (ev, r) => { tip.hidden = false; tip.textContent = `${r.job} ${r.grade}등급 평균 ${r.dps}`; const b = el.getBoundingClientRect(); tip.style.left = Math.min(ev.clientX - b.left + 10, W - 160) + 'px'; tip.style.top = (ev.clientY - b.top - 30) + 'px'; })
+      .on('pointerleave', () => { tip.hidden = true; });
+    el.replaceChildren(svg.node(), tip);
+  });
+
+  const curveRows = d => d.data.filter(r => String(r.chapter) === S.ch && r.difficulty === S.df).sort((a, b) => a.step - b.step);
+  function legend(el, items) { el.replaceChildren(...items.map(([c, t, dash2]) => { const s = document.createElement('span'), i = document.createElement('i'); i.style.background = c; if (dash2) i.style.borderRadius = '2px'; s.append(i, t); return s; })); }
+  dash.draw('powerLegend', el => legend(el, [[dash.colors[0], '내 팀 전투력'], [dash.colors[1], '적 전투력']]));
+  dash.draw('clearLegend', el => legend(el, [[dash.colors[0], '클리어율', 1], [dash.colors[2 % dash.colors.length], '첫 판 승률', 1]]));
+
+  dash.draw('powerLine', el => {
+    const d = dash.data('curve'); if (failed(el, d, '힘 곡선을 못 읽었어요.')) return;
+    const rows = curveRows(d), W = el.clientWidth || 400, H = 300, m = { t: 12, r: 12, b: 30, l: 50 };
+    const x = d3.scalePoint().domain(rows.map(r => r.stage)).range([m.l, W - m.r]).padding(.3);
+    const y = d3.scaleLinear().domain([0, d3.max(rows, r => Math.max(+r.my_power, +r.foe_power)) * 1.08 || 1]).nice().range([H - m.b, m.t]);
+    const svg = d3.create('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('height', H).attr('role', 'img').attr('aria-label', '스테이지별 내 전투력과 적 전투력 선 그래프');
+    svg.append('g').attr('class', 'grid').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W - m.l - m.r)).tickFormat('')).call(g => g.select('.domain').remove());
+    svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x));
+    svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5, '~s'));
+    [['my_power', 0], ['foe_power', 1]].forEach(([k, ci]) => {
+      svg.append('path').datum(rows).attr('d', d3.line().x(r => x(r.stage)).y(r => y(+r[k]))).style('fill', 'none').style('stroke', dash.colors[ci]).style('stroke-width', 2);
+      svg.append('g').selectAll('circle').data(rows).join('circle').attr('cx', r => x(r.stage)).attr('cy', r => y(+r[k])).attr('r', r => +r.boss ? 5 : 3).style('fill', dash.colors[ci]); });
+    const tip = tipIn(el);
+    svg.append('g').selectAll('rect').data(rows).join('rect').attr('x', r => x(r.stage) - x.step() / 2).attr('width', x.step()).attr('y', m.t).attr('height', H - m.t - m.b).style('fill', 'transparent')
+      .on('pointerenter pointermove', (ev, r) => { tip.hidden = false; tip.textContent = `${r.stage}${+r.boss ? ' 보스' : ''} · 나 ${r.my_power} / 적 ${r.foe_power} (×${r.ratio})`; const b = el.getBoundingClientRect(); tip.style.left = Math.min(ev.clientX - b.left + 10, W - 230) + 'px'; tip.style.top = (ev.clientY - b.top - 30) + 'px'; })
+      .on('pointerleave', () => { tip.hidden = true; });
+    el.replaceChildren(svg.node(), tip);
+  });
+
+  dash.draw('clearBar', el => {
+    const d = dash.data('curve'); if (failed(el, d, '힘 곡선을 못 읽었어요.')) return;
+    const rows = curveRows(d), W = el.clientWidth || 400, H = 300, m = { t: 16, r: 8, b: 30, l: 40 };
+    const x0 = d3.scaleBand().domain(rows.map(r => r.stage)).range([m.l, W - m.r]).paddingInner(.25), x1 = d3.scaleBand().domain(['clear_rate', 'first_win']).range([0, x0.bandwidth()]).padding(.08);
+    const y = d3.scaleLinear().domain([0, 100]).range([H - m.b, m.t]);
+    const svg = d3.create('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('height', H).attr('role', 'img').attr('aria-label', '스테이지별 클리어율과 첫 판 승률 막대');
+    svg.append('g').attr('class', 'grid').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(W - m.l - m.r)).tickFormat('')).call(g => g.select('.domain').remove());
+    svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x0));
+    svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(v => v + '%'));
+    const tip = tipIn(el), cc = { clear_rate: dash.colors[0], first_win: dash.colors[2 % dash.colors.length] };
+    const bars = rows.flatMap(r => ['clear_rate', 'first_win'].map(k => ({ r, k, v: +r[k] })));
+    svg.append('g').selectAll('rect').data(bars).join('rect').attr('x', b => x0(b.r.stage) + x1(b.k)).attr('width', x1.bandwidth()).attr('y', b => y(b.v)).attr('height', b => y(0) - y(b.v))
+      .style('fill', b => b.k === 'clear_rate' && b.v < 50 ? 'var(--cds-chart-status-critical)' : cc[b.k])
+      .on('pointerenter pointermove', (ev, b) => { tip.hidden = false; tip.textContent = `${b.r.stage} · 클리어 ${b.r.clear_rate}% · 첫 판 ${b.r.first_win}% · 도전 ${b.r.tries}번`; const bb = el.getBoundingClientRect(); tip.style.left = Math.min(ev.clientX - bb.left + 10, W - 240) + 'px'; tip.style.top = (ev.clientY - bb.top - 30) + 'px'; })
+      .on('pointerleave', () => { tip.hidden = true; });
+    el.replaceChildren(svg.node(), tip);
+  });
+
+  dash.draw('heat', el => {
+    const d = dash.data('stat_value'); if (failed(el, d, '능력치 가치를 못 읽었어요.')) return;
+    const rows = d.data.filter(r => r.mode === S.mode), stats = [...new Set(rows.map(r => r.stat))];
+    const ext = d3.max(rows, r => Math.abs(+r.hp_equiv)) || 1, c = d3.scaleLinear().domain([-ext, 0, ext]).range([0, 0, 1]);
+    const t = document.createElement('table'), th = t.createTHead().insertRow(); ['능력치', ...JOBS].forEach(h => { const e = document.createElement('th'); e.textContent = h; th.appendChild(e); });
+    const tb = t.createTBody();
+    stats.forEach(st => { const tr = tb.insertRow(); const a = tr.insertCell(); a.textContent = st;
+      JOBS.forEach(j => { const r = rows.find(x => x.stat === st && x.job === j), td = tr.insertCell(); if (!r) { td.textContent = '—'; return; }
+        const v = +r.hp_equiv; td.textContent = (v > 0 ? '+' : '') + v + (v >= 200 ? '%+' : '%');
+        td.style.background = v >= 0 ? `color-mix(in srgb, ${dash.colors[0]} ${Math.round(c(v) * 70)}%, transparent)` : `color-mix(in srgb, var(--cds-chart-status-critical) ${Math.round(Math.min(1, -v / ext) * 50)}%, transparent)`; }); });
+    el.replaceChildren(t);
+  });
+
+  dash.draw('heroRows', el => {
+    const d = dash.data('heroes'); if (d.status !== 'ok') { el.replaceChildren(); return; }
+    const k = S.sortK, txt = ['hero', 'job', 'range'].includes(k), rows = d.data.slice().sort((a, b) => S.sortDir * (txt ? String(a[k]).localeCompare(String(b[k]), 'ko') : num(a[k]) - num(b[k])));
+    const cols = ['hero', 'grade', 'job', 'range', 'hp', 'atk', 'def', 'interval', 'crit', 'base_dps', 'dps', 'ehp'];
+    el.replaceChildren(...rows.map(r => { const tr = document.createElement('tr'); cols.forEach(c2 => { const td = document.createElement('td'); td.textContent = r[c2]; tr.appendChild(td); }); return tr; }));
+  });
+})();
+</script>
