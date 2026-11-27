@@ -573,6 +573,8 @@
   // 미믹 판(2026-11-26): ev.ids = 미믹 id들, ev.drops[i] = i번째 미믹을 잡으면 받는 키들 (g:골드, s:유물)
   function rollMimic(data, n, rnd, plv, ev) { var MM = data.events.mimic || {}, P = data.player, li = Math.max(0, (plv || 1) - 1), cnt = P && P.mimicCount ? P.mimicCount[Math.min(li, P.mimicCount.length - 1)] : 3, rew = stageReward(data, n, 0, null, plv);
     var nk = (plv || 1) >= (MM.kingFrom || 99) ? 1 : 0, nb = Math.min(cnt - nk, P && P.mimicBlue ? P.mimicBlue[Math.min(li, P.mimicBlue.length - 1)] : 0), nw = cnt - nk - nb; /* 갈색 nw, 파랑 nb, 왕관 nk 순서 */
+    if (MM.kingUp > 0 && !nk && cnt > 0 && rnd() * 100 < MM.kingUp) { nk = 1; if (nw > 0) nw--; else nb--; } /* 2026-11-27 영구 강화: 왕관 미믹 확률(갈색부터 바뀜). 0이면 rnd를 안 써서 예전 판과 같음 */
+    if (MM.blueUp > 0) { for (var bu = nw, j0 = 0; j0 < bu; j0++) if (rnd() * 100 < MM.blueUp) { nw--; nb++; } } /* 파랑 미믹 확률: 갈색마다 굴림 */
     ev.ids = []; ev.drops = []; ev.blue = []; for (var i = 0; i < cnt; i++) { var king = i >= nw + nb; ev.ids.push(king ? 'mimicKing' : 'mimic'); ev.blue.push(!king && i >= nw);
       if (king) { var sid = rollScroll(data, rnd, plv, []); ev.drops.push((sid ? ['s:' + sid] : []).concat(['g:' + Math.max(1, Math.round(rew * (MM.kingGold || 0.5)))])); } else ev.drops.push(['g:' + Math.max(1, Math.round(rew * (MM.gold || 0.3)))]); }
     return ev; }

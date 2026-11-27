@@ -48,3 +48,9 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
 { const minOff = st => { let m = 100; for (let s = 1; s < 60; s++) { let x = s; const r = () => (x = (x * 9301 + 49297) % 233280) / 233280; E.rollMerchant(E.metaData(D, st), 3, r, 5).forEach(it => { m = Math.min(m, it.off); }); } return m; };
   const a = minOff({ nodes: {} }), b = minOff({ nodes: { merchOffMin: 2 } }); assert.strictEqual(b - a, 10, "최저 +5% 두 번");
   console.log("ok · 상인 최저 할인", a + "% → " + b + "%"); }
+// 파랑·왕관 미믹 확률: 안 찍으면 예전과 같고, 찍으면 레벨 1에서도 파랑이 늘고 왕관이 나옴
+{ const cnt = (st, lv) => { let b = 0, k = 0, s = 7; const r = () => (s = (s * 9301 + 49297) % 233280) / 233280; const M = E.metaData(D, st);
+    for (let i = 0; i < 400; i++) { const e = E.rollEvent(M, 5, r, lv, { forceKind: "mimic" }); b += e.blue.filter(Boolean).length; k += e.ids.filter(x => x === 'mimicKing').length; } return [b / 400, k / 400]; };
+  const a = cnt({ nodes: {} }, 1), c = cnt({ nodes: { mBlueUp: 2, mKingUp: 2 } }, 1);
+  assert.deepStrictEqual(a, [1, 0], "안 찍으면 Lv1 파랑 1·왕관 0 그대로"); assert.ok(c[0] > 1.1 && c[1] > 0.1 && c[1] < 0.3, "파랑 늘고 왕관 약 20%");
+  console.log("ok · 미믹 확률", JSON.stringify(a), "→", JSON.stringify(c.map(x => +x.toFixed(2)))); }
