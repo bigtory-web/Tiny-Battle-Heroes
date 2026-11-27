@@ -10,3 +10,21 @@
 
 - 앞머리가 휑하면: "fill the front bangs a little more: soft locks from the centre parting down toward (not covering) the eyebrows, thin dark brown lines only where they meet the face" 만 따로 요청하고 이마 부분만 옮겨 붙인다.
 - 좌우 짝인 머리는 "the head is tilted: on the LEFT of the picture the tail, its tie and ornaments start ONE sprite pixel lower"를 함께 넣는다.
+
+## 머리 유형 (어색해서 수정 요청할 때 고른다)
+
+뒤·옆 모양(윤곽)과 앞머리(인상)를 하나씩 조합한다. 처음 요청에는 넣지 않는다.
+
+| 뒤·옆 모양 | 앞머리 |
+|---|---|
+| 짧게 뻗친 머리 (블레이즈) | 뻗친 앞머리 (블레이즈) |
+| 단발 | 내린 앞머리 (아이비) |
+| 포니테일 (아이비) | 가운데 가르마 (코라) |
+| 양갈래 (코라) | 한쪽으로 넘김 |
+| 긴 머리 | |
+| 땋은 머리 | |
+| 모자·투구·후드 | |
+
+- 유형마다 고정: 정수리 크기, 옆머리 너비(3~4점), 묶는 높이, 왼쪽 1점 낮게.
+- 캐릭터마다 바꿈: 색, 장신구, 끝 모양(말림·뻗침).
+- 누가 어느 조합인지 위 "쓰는 영웅" 칸에 적어 겹침을 본다.
