@@ -116,3 +116,8 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
   assert.strictEqual(E.chapterData(D, 3).campaign.enemyLv[0], D.campaign.enemyLv[0] + 2, "3장 적 레벨 +2"); assert.strictEqual(C2.campaign.enemyLv[0], D.campaign.enemyLv[0] + 1);
   let seen = 0, bought = 0; for (let s = 1; s <= 40; s++) { const R = E.campaign(C2, { seed: s }); const c = (R.events || {}).crystalShop; if (c) { seen += c.seen || 0; bought += c.bought || 0; } }
   console.log("ok · 수정 9종·상인 (봇 수정 상인", seen, "번, 산 것", bought + ")"); }
+// 전투 중 지금 능력치·전투력 배율(2026-11-27): 수정 칸·늪이 걸리면 바뀜
+{ const C2 = E.chapterData(D, 2), id = D.heroes[0].id; const b = E.createBattle(C2, [{ id, slot: 0, level: 1 }, { id, slot: 6, level: 1 }], [{ id, slot: 0, level: 1 }], { seed: 3, crystal: { cells: [0, 6], ids: ['hp', 'atk'] } });
+  assert.ok(Math.abs(b.stats(b.A[0].uid).powerMul - 0.5) < 1e-9 && Math.abs(b.stats(b.A[1].uid).powerMul - 1.25) < 1e-9);
+  const b1 = E.createBattle(D, [{ id, slot: 0, level: 1 }], [{ id, slot: 0, level: 1 }], { seed: 3 }); assert.strictEqual(b1.stats(b1.A[0].uid).powerMul, 1, "효과 없으면 1");
+  console.log("ok · 전투 중 능력치"); }

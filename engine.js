@@ -273,6 +273,7 @@
         else if (d.kind === 'lineCare') x.lineCare = (x.lineCare || 0) + v; else if (d.kind === 'lineHaste') x.interval /= 1 + v; else if (d.kind === 'lineHide') x.stealth = Math.max(x.stealth || 0, v);
         else if (d.kind === 'lineAtk') x.atk *= 1 + v; else if (d.kind === 'starCrown') x.atk *= 1 + v * starSum; else if (d.kind === 'lineDef') x.def += v; }); sk.fired++; });
     // ───── 물약(2026-11-26): opts.potions = [{ id, slot? }] 우리 편에 전투 시작 때 한 번. target 'rand'는 slot(마실 때 정한 영웅), 없으면 무작위 1명. 열 유물과 같은 효과 ─────
+    A.concat(E).forEach(function (u) { u.b0 = { hp: u.maxHp, atk: u.atk, iv: u.interval }; }); // 2026-11-27 물약·수정·늪 등 전투 효과 전 값(전투력·상세 창 변화 비교용)
     var potionLog = []; (opts.potions || []).forEach(function (pt) { var P = potionById(data, pt.id); if (!P) return; var T = alive(A).filter(function (x) { return !x.h.mob; }); if (!T.length) return;
       if (P.target === 'rand') { var one = T.filter(function (x) { return x.slot === pt.slot; })[0] || T[Math.floor(rand() * T.length)]; T = [one]; }
       T.forEach(function (x) { var v = P.amount, k = P.kind; if (k === 'swamp') { x.swampV = (x.swampV || 0) + v; if (P.every) x.swampE = P.every; } else if (k === 'lineGuard') x.lineDR = (x.lineDR || 0) + v; else if (k === 'lineThorns') x.lineTh = (x.lineTh || 0) + v; else if (k === 'lineEnergy') x.energy = Math.min(B.energyMax, x.energy + v);
@@ -493,7 +494,8 @@
       relics: allSkills.map(function (sk) { return { side: sk.side, id: sk.def.id, dealt: Math.round(sk.stats.dealt), healed: Math.round(sk.stats.healed), shield: Math.round(sk.stats.shield), casts: sk.stats.casts }; }), status: status,
       log: rec ? log : null };
     }
-    var self = { A: A, E: E, skills: skills, enemySkills: enemySkills, status: status, potions: potionLog, /* 2026-11-26: 마신 물약이 걸린 영웅(화면 표시용) */ get crystal() { return CRY ? { m: CRY.m.uid, p: CRY.p.uid, on: CRY.on } : null; }, /* 2026-11-27 수정 칸이 걸린 영웅(화면 표시용) */ step: step, finish: finish, get time() { return t; }, get result() { return result; }, log: log };
+    var self = { A: A, E: E, skills: skills, enemySkills: enemySkills, status: status, potions: potionLog, /* 2026-11-26: 마신 물약이 걸린 영웅(화면 표시용) */ stats: function (uid) { var u = A.concat(E).filter(function (x) { return x.uid === uid; })[0]; if (!u) return null; var a = atkOf(u), b = u.b0 || { hp: u.maxHp, atk: u.atk, iv: u.interval };
+      return { hp: u.hp, maxHp: u.maxHp, atk: a, def: u.def, interval: u.interval, crit: u.crit, reach: u.reach, spd: u.spd, base: { maxHp: b.hp, atk: b.atk, interval: b.iv }, powerMul: Math.sqrt((u.maxHp / b.hp) * (a / b.atk) * (b.iv / u.interval)) }; }, /* 2026-11-27 지금 능력치(늪·수정·물약 등이 걸린 값)와 전투 효과 전 값. powerMul = 전투력 배율(체력×공격력÷공격 간격의 제곱근 비) (사용자: "늪지대나 다른 효과가 수치 올라가면 파티 전투력과 상세 정보창에서도 변화") */ get crystal() { return CRY ? { m: CRY.m.uid, p: CRY.p.uid, on: CRY.on } : null; }, /* 2026-11-27 수정 칸이 걸린 영웅(화면 표시용) */ step: step, finish: finish, get time() { return t; }, get result() { return result; }, log: log };
     return self;
   }
   function battle(data, ally, enemy, opts) {
