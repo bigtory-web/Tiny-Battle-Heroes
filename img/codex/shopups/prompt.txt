@@ -1,0 +1,11 @@
+Look at:
+- img/p/up_swampSlot.png : our 24x24 upgrade icon "swamp merchant potion count": a small frog face on the left and one potion bottle on the right. COPY this composition, size and style exactly.
+- img/p/ui_cryshop.png : our crystal merchant mole face (yellow miner helmet with lamp, round gold spectacles, pink nose).
+- img/p/ui_cry_hp.png : our green crystal.
+
+Make ONE 24x24 pixel-art icon "crystal merchant crystal count": the small mole face (with its helmet and spectacles) on the left, and one tall tilted green crystal on the right, same arrangement and relative sizes as the frog and bottle. Thick very dark brown outline, 3 flat tones, light from the upper left.
+
+The whole drawing is at most 22 x 22 art pixels, drawn with large crisp square pixels (each art pixel about 44 real pixels in a 1024x1024 image).
+Save as img/codex/shopups/slot_src.png (if the size differs a little, save it anyway).
+No anti-aliasing, no gradients, no shadow, flat solid #FF00FF magenta background, no text.
+Python is not installed on this computer: do not use python. Use PowerShell Copy-Item to copy the generated file. Do not modify or create any other file.
