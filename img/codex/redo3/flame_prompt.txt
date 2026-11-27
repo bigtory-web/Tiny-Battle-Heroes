@@ -1,0 +1,13 @@
+Two game sprites are attached. These are the actual in-game sprite files at their native size (small, one sprite pixel per image pixel, transparent background).
+Attached image 1 is the knight: the STYLE AND BODY TEMPLATE of the game.
+Attached image 2 is the current sprite of the character to redraw.
+Use both attached sprites as the reference images for your image generation tool. Generate ONE new image and save it as img/codex/redo3/flame_src.png. Save it even if the size differs slightly.
+Redraw the character of image 2 as a clearly better sprite: keep who it is (same concept, sex, race, hair color family, element), and apply these changes.
+
+Character: a young human fire mage BOY.
+- Clothes: a deep dark maroon robe (much darker and calmer than now) with a hood down and thin gold trim, brown belt. The robe must be clearly darker than the hair and the fireball.
+- Hair: red orange flame shaped hair, but lower and tidier, three or four big flame locks, not taller than the knight plume.
+- Held item: one fireball with a bright yellow core floating just above his raised open hand, big and clean, close to the body, separated from the hair and robe by a clear dark outline.
+- Calm muted reds and oranges, no neon.
+
+Rules: keep the knight sprite as the exact BODY TEMPLATE: the same head size, the same tiny short body and small feet, the same stance and camera angle seen slightly from above, the same overall size (body no taller and no wider than the knight), and pixel blocks exactly as large as the knight pixel blocks (a 64 by 64 pixel grid; do not draw finer or coarser pixels). The head stays as huge as the knight head, more than half of the body height. Draw the new character with the same thick dark brown outline all around with no gaps, flat 2 to 3 step shading, calm muted saturation, hard square pixels, no anti-aliasing, no blur, no gradients. Face drawn exactly like the knight: two simple open eyes only, same shape and size on both sides, each 3 pixel rows tall, no big white glint, not smiling, no nose, no mouth. The character looks about 20 degrees downward: the eye and eyebrow on the viewer's left sit one pixel lower than on the viewer's right. Body and held item turned toward the right. Full body centered, enlarged to a 1024x1024 PNG with crisp square pixels, flat solid pure magenta background color FF00FF with nothing else in it, no text, no shadow. Do not use pure magenta or hot pink on the character. Python is not installed on this computer: do not use python. Use PowerShell Copy-Item to copy the generated file. Do not modify or create any other file.

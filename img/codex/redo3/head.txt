@@ -1,0 +1,6 @@
+Two game sprites are attached. These are the actual in-game sprite files at their native size (small, one sprite pixel per image pixel, transparent background).
+Attached image 1 is the knight: the STYLE AND BODY TEMPLATE of the game.
+Attached image 2 is the current sprite of the character to redraw.
+Use both attached sprites as the reference images for your image generation tool. Generate ONE new image and save it as img/codex/redo3/ID_src.png. Save it even if the size differs slightly.
+Redraw the character of image 2 as a clearly better sprite: keep who it is (same concept, sex, race, hair color family, element), and apply these changes.
+

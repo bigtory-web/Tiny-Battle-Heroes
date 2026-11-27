@@ -1,0 +1,5 @@
+Two game sprites are attached, enlarged 8 times (every 8x8 block is one sprite pixel). Image 1 is the knight (style and body template). Image 2 is the current draft of a character. Use both as reference images for your image generation tool, generate ONE new image and save it as img/codex/redo3/coral_src4.png (save it even if the size differs slightly).
+Redraw image 2 keeping its design, colors, face, eyes, pose, size and pixel size EXACTLY. Change ONLY this:
+1. The back arm on the left side is a confusing bulky white block with a dark band. Replace it with one slim simple arm: a small blue and white shoulder plate and a small closed hand resting near the hip, with the blue hair visible behind it.
+2. Make the lower armor simple: one white skirt plate with a deep blue middle tab, then the two small boots.
+Thick dark brown outline with no gaps, hard square pixels, no anti-aliasing. Full body centered, 1024x1024 PNG, flat solid pure magenta background FF00FF, no text, no shadow. Python is not installed on this computer: do not use python. Use PowerShell Copy-Item to copy the generated file. Do not modify or create any other file.
