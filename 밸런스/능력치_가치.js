@@ -23,4 +23,5 @@ let md = '# 능력치 가치 (거울 전)\n\n- 같은 팀끼리 싸우고, 한�
 const res = Object.entries(STATS).map(([k, f]) => [k, win(f)]).sort((a, b) => b[1] - a[1]);
 res.forEach(([k, w]) => { md += '| ' + k + ' | ' + Math.round(w * 1000) / 10 + '% | ' + (w >= 0.5 ? '+' : '') + Math.round((w - 0.5) * 1000) / 10 + '%p |\n'; });
 md += '\n## 공식으로 본 관계\n\n- 받는 피해 = 1 − 방어 ÷ (방어 + ' + D.battle.defK + '). 버티는 힘(실질 체력) = 체력 ÷ (1 − 감소율) = 체력 × (1 + 방어 ÷ ' + D.battle.defK + ').\n- 그래서 방어 ' + D.battle.defK + '이 늘 때마다 실질 체력이 처음 체력만큼(×1) 늘어요. 방어가 낮은 영웅일수록 방어 10%의 가치가 작아요.\n- 평타 DPS = 공격력 ÷ 공격 간격 × (1 + 치명 확률 × (치명 배율 − 1)). 공격력 +10%와 공격 속도 +10%는 평타에서는 같은 값이고, 궁극기 피해는 공격력만 키워요.\n';
+{ const REC = require('./기록.js'), v = {}; res.forEach(([k, w]) => v[k] = { 이긴비율: w }); const s = REC.save('능력치_가치', v, { 팀: N, 레벨: lv }); md += '\n기록: 밸런스/기록/' + s.file + '\n' + REC.compareMd(s.prev, s.rec); }
 require('fs').writeFileSync('밸런스/능력치_가치.md', md); console.log(md);

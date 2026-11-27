@@ -19,6 +19,7 @@ const by={};rows.forEach(r=>{(by[r.grade]=by[r.grade]||[]).push(r)});
 md+='\n## 등급별 실측 DPS\n\n| 등급 | 영웅 수 | 평균 | 가장 낮음 | 가장 높음 |\n|---|---|---|---|---|\n';
 for(const g in by){const L=by[g],av=Math.round(L.reduce((a,r)=>a+r.dps,0)/L.length),lo=L[L.length-1],hi=L[0];md+=`| ${g} | ${L.length} | ${av} | ${lo.name} ${lo.dps} | ${hi.name} ${hi.dps} |\n`;}
 const byJ={};rows.forEach(r=>{const k=r.grade+'|'+r.job;(byJ[k]=byJ[k]||[]).push(r.dps)});
+{ const REC=require('./기록.js'), v={}; rows.forEach(r=>v[r.name]={실측DPS:r.dps,평타DPS:r.base,체력:r.hp,공격력:r.atk}); const s=REC.save('1레벨_DPS',v,{초:T,판:5}); md+='\n기록: 밸런스/기록/'+s.file+'\n'+REC.compareMd(s.prev,s.rec); }
 require('fs').mkdirSync('밸런스',{recursive:true});require('fs').writeFileSync('밸런스/1레벨_DPS.md',md);
 console.log(md.split('## 등급별')[1]);
 console.log(rows.length);
