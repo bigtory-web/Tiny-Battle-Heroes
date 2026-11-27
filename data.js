@@ -138,7 +138,7 @@ var IDLE_DATA = {
       ult: { kind: 'dash', mul: 3, stun: 1, desc: '가장 먼 적에게 돌진해 공격력 300% 피해를 주고 1초 기절시킨다.' }, passive: { kind: 'firstStrike', v: 3, stun: 0.5 } },
     { id: 'squire', name: '섀도', alias: '독칼잡이', sex: 'm', race: 'human', job: 'assassin', ultName: '그림자 찌르기', role: 'warrior', el: 'dark', range: 'melee', cost: 1, grade: 1, hp: 1240, atk: 139, def: 68, interval: 1.1,
       ult: { kind: 'blink', mul: 2.6, chain: 1, back: true, desc: '체력이 가장 낮은 적의 등 뒤로 순간이동해 공격력 260%로 찌르고 제자리로 돌아온다.' }, passive: { kind: 'none', v: 0 } },
-    { id: 'sprout', name: '블룸', alias: '새싹정령', sex: 'f', race: 'elf', job: 'bard', ultName: '새싹의 노래', role: 'support', el: 'forest', range: 'mid', shot: 'note', cost: 1, grade: 1, hp: 1160, atk: 97, def: 75, interval: 1.4,
+    { id: 'sprout', name: '블룸', alias: '새싹정령', sex: 'm' /* 2026-11-27 남캐로 다시 그림(사용자) */, race: 'elf', job: 'bard', ultName: '새싹의 노래', role: 'support', el: 'forest', range: 'mid', shot: 'note', cost: 1, grade: 1, hp: 1160, atk: 97, def: 75, interval: 1.4,
       ult: { kind: 'buff', win: { kind: 'healEvery', v: 0.03, every: 1, t: 8 }, desc: '8초 동안 1초마다 체력이 가장 낮은 아군을 3% 회복한다.' }, passive: { kind: 'healEvery', v: 0.05, every: 5 } },
     { id: 'pup', name: '엠버', alias: '불강아지', sex: 'f', race: 'beast', job: 'archer', ultName: '불씨 뱉기', role: 'ranged', el: 'fire', range: 'far', shot: 'fire', cost: 1, grade: 1, hp: 920, atk: 149, def: 55, interval: 1.25,
       ult: { kind: 'snipe', mul: 2, burn: 6, desc: '체력이 가장 낮은 적에게 피해를 주고 6초 화상을 입힌다.' }, passive: { kind: 'lowBurn', v: 0.5 } },
@@ -218,7 +218,7 @@ var IDLE_DATA = {
       ult: { kind: 'revive1', pct: 0.3, mul: 1.6, desc: '쓰러진 아군 1명을 체력 30%로 되살린다. 쓰러진 아군이 없으면 아군 전체에게 보호막을 씌운다.' }, passive: { kind: 'reviveAlly', v: 0.3 } },
     { id: 'kraken', name: '애비', alias: '크라켄', sex: 'f', race: 'demon', job: 'guardian', ultName: '심해의 손아귀', role: 'tank', el: 'water', range: 'melee', cost: 3, grade: 4, hp: 2410, atk: 86, def: 190, interval: 1.6,
       ult: { trig: { kind: 'struck', n: 6 }, kind: 'taunt', dur: 5, shieldPct: 0.15, win: { kind: 'tauntDrain', v: 10, t: 5 }, desc: '6번 맞을 때마다 5초 동안 도발하고, 그동안 맞으면 공격자의 에너지 10을 빼앗는다.' }, passive: { kind: 'tauntDrain', v: 10 } },
-    { id: 'windlord', name: '게일', alias: '바람의군주', sex: 'f', race: 'elf', job: 'archer', ultName: '폭풍 화살', role: 'ranged', el: 'forest', range: 'far', shot: 'arrow', cost: 3, grade: 4, hp: 1100, atk: 209, def: 65, interval: 1.25,
+    { id: 'windlord', name: '게일', alias: '바람의군주', sex: 'm' /* 2026-11-27 남캐로 다시 그림(사용자) */, race: 'elf', job: 'archer', ultName: '폭풍 화살', role: 'ranged', el: 'forest', range: 'far', shot: 'arrow', cost: 3, grade: 4, hp: 1100, atk: 209, def: 65, interval: 1.25,
       ult: { kind: 'buff', win: { kind: 'hasteDouble', v: 1, t: 5 }, desc: '5초 동안 평타로 화살을 2발 쏜다.' }, passive: { kind: 'hasteDouble', v: 1 } }
   ],
   ranges: { melee: '근거리', mid: '중거리', long: '장거리', far: '최장거리' },
