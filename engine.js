@@ -232,7 +232,7 @@
         case 'selfHaste': u.haste = U.dur; u.hasteAmt = U.amount; break;
         case 'chillAll': F.forEach(function (x) { x.slow = U.dur; x.slowAmt = Math.min(0.8, U.amount); }); break;
         case 'nova': F.forEach(function (x) { if (dist(x, u) <= (U.r || 100)) { hurt(u, x, U.mul); x.stun = Math.max(x.stun || 0, U.stun || 1); } }); break;
-        case 'dash': if (F.length) { var far = F.reduce(function (m, x) { return dist(u, x) > dist(u, m) ? x : m; }); u.x = far.x - u.face * 40; u.y = far.y; hurt(u, far, U.mul); if (U.stun && far.alive) far.stun = Math.max(far.stun || 0, U.stun); } break;
+        case 'dash': if (F.length) { var far = F.reduce(function (m, x) { return dist(u, x) > dist(u, m) ? x : m; }); var dx0 = u.x, dy0 = u.y; u.x = far.x - u.face * 40; u.y = far.y; if (rec) log.push({ t: t, kind: 'dash', uid: u.uid, to: far.uid, fx: dx0, fy: dy0 }); /* 2026-11-27 화면 돌진 연출용: 떠난 자리 fx·fy */ hurt(u, far, U.mul); if (U.stun && far.alive) far.stun = Math.max(far.stun || 0, U.stun); } break;
         case 'bombard': if (F.length) { var rr = U.r || 90, ctr = F.reduce(function (m, x) { var c1 = F.filter(function (y) { return dist(x, y) <= rr; }).length, c0 = F.filter(function (y) { return dist(m, y) <= rr; }).length; return c1 > c0 ? x : m; });
           F.forEach(function (x) { if (dist(x, ctr) <= rr) hurt(u, x, U.mul); }); } break;
         case 'pierce': { var pt = pickTarget(u); if (pt) F.forEach(function (x) { if (x === pt || Math.abs(x.y - pt.y) < 35) hurt(u, x, U.mul); }); break; }
