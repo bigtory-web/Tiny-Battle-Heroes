@@ -1,0 +1,2 @@
+Add-Type -AssemblyName System.Drawing
+$i=0; foreach($p in @(@('basic','eye1'),@('sleepy','eye4'),@('sparkle','eye5'),@('lashes','eye8'))){ $a=New-Object System.Drawing.Bitmap ([IO.Path]::GetFullPath("img\codex\eyes\test_$($p[0]).png")); $b=New-Object System.Drawing.Bitmap ([IO.Path]::GetFullPath("img\codex\eyes\$($p[1]).png")); $n=0; for($y=0;$y -lt 64;$y++){ for($x=0;$x -lt 64;$x++){ if($a.GetPixel($x,$y).ToArgb() -ne $b.GetPixel($x,$y).ToArgb()){$n++} } }; "$($p[0]): differs from concept by $n px"; $a.Dispose(); $b.Dispose() }
