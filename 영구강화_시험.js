@@ -72,3 +72,8 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
   assert.deepStrictEqual(F1.player.enemyGrade, D.player.enemyGrade, "적 등급은 레벨 그대로");
 
   console.log("ok · 레벨업 → 영구 강화(하트·영웅 레벨·등급별 %·돈고블린 비용)"); }
+// 합류 영웅(떠돌이 용병): 비용 감소 칸, 등급 칸은 합류 영웅 표에만
+{ const r0 = () => 0.3, ev = d => E.rollEvent(d, 5, r0, 3, { forceKind: "merc" });
+  const a = ev(D), b = ev(E.metaData(D, { nodes: { mercCost: 2 } })); assert.strictEqual(a.id, b.id); assert.ok(Math.abs(b.price - a.price * 0.8) <= 1, "비용 20% 감소");
+  const M = E.metaData(D, { nodes: { rg4: 5 } }); assert.deepStrictEqual(M.player.mercGrade[0], [75, 15, 0, 10]); assert.deepStrictEqual(M.player.heroGrade, D.player.heroGrade, "영웅 표는 그대로");
+  console.log("ok · 합류 영웅 비용 " + a.price + " → " + b.price + ", 전설 +10%"); }

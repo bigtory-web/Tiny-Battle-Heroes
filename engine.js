@@ -555,7 +555,7 @@
     var GR = V.groups && V.groups[kind]; if (GR && !fixedK) { var gk = Object.keys(GR), gt = gk.reduce(function (a, k) { return a + GR[k]; }, 0), gr = rnd() * gt; for (var gi = 0; gi < gk.length; gi++) { gr -= GR[gk[gi]]; if (gr < 0) { kind = gk[gi]; break; } } } // 2026-11-26: 같은 그룹(예: 방랑상인·늪지 상인)은 장별 확률로 하나
     var ev = { kind: kind };
     if (kind === 'swampShop') ev.ids = rollPotions(data, rnd, plv);
-    if (kind === 'merc') { ev.id = pickHeroByGrade(data, rnd, plv); ev.price = mercPrice(data, ev.id, n); }
+    if (kind === 'merc') { ev.id = pickHeroByGrade(data, rnd, plv, null, 'mercGrade'); /* 2026-11-27 합류 영웅 등급 표 */ ev.price = mercPrice(data, ev.id, n); }
     if (kind === 'mobs') rollMobs(data, n, rnd, plv, ev);
     if (kind === 'mimic') rollMimic(data, n, rnd, plv, ev);
     if (kind === 'dais') ev.tag = rollDais(data, rnd);
@@ -621,7 +621,7 @@
   // 모닥불: 영웅 count명이 둘러앉아 있어요. 말풍선을 누르면 룰렛이 돌아 그중 1명이 동료가 돼요(전투 없음). 등급은 플레이어 레벨 확률(atStart면 레벨 1 확률)
   function rollCampfire(data, rnd, plv) { var CF = data.events.campfire, out = [], cn = data.player && data.player.campfire ? perk(data, plv).campfire : CF.count; for (var i = 0; i < cn; i++) out.push(pickHeroByGrade(data, rnd, plv || 1, out)); return out; }
   function campfireAtStart(data) { var CF = data.events && data.events.campfire; return !!(CF && CF.atStart) && (data.events.off || []).indexOf('campfire') < 0; }
-  function mercPrice(data, id, n) { return Math.round(data.events.merc.price * heroGrade(data, id) * Math.pow(data.shop.priceGrowth, n)); } // 등급이 높을수록 비싸요
+  function mercPrice(data, id, n) { var M = data.events.merc; return Math.round(M.price * heroGrade(data, id) * Math.pow(data.shop.priceGrowth, n) * (1 - Math.min(90, M.costCut || 0) / 100)); } /* 2026-11-27 costCut: 업그레이드 비용 감소 */ // 등급이 높을수록 비싸요
   // 방랑상인 진열: [{ type: 's'|'h', id, gold, mana, price, cur: 'gold'|'mana' }]. 값은 원래 값 × discount, 최소 minPrice (재화는 하나만)
   // owned(가진 스킬)를 주면 가진 스킬은 등급업 값으로 쳐요. price는 그 재화의 값이에요
   function merchantOff(data, plv) { var P = data.player, M = data.events.merchant; return P && P.merchantOff ? P.merchantOff[Math.max(0, Math.min((plv || 1) - 1, P.merchantOff.length - 1))] : Math.round((1 - (M.discount != null ? M.discount : (M.priceMul || 1))) * 100); } // 방랑상인 할인율(%)
