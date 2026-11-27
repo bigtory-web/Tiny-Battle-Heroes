@@ -1,0 +1,16 @@
+Look at:
+- img/p/bg_swamp.png : a battle background of our 2D mobile RPG. Match its pixel art look: clearly visible square pixels (like a 480x270 canvas scaled up), hard edges, 3-4 flat tones per shape, thin very dark outlines (dark navy here, not black), same level of detail.
+- img/p/bg_field.png : the chapter 1 background, only for the camera angle and where the ground starts.
+
+Make the battle background for chapter 2, a CRYSTAL CAVE. It must look clearly DIFFERENT in structure from both references (no row of repeated trees or bushes).
+
+Layout (landscape, same aspect ratio 720x402):
+- TOP 0-30%: the cave CEILING of dark rock with hanging stalactites of different lengths and a few downward-pointing crystal clusters. There is NO sky. Note: the top 14% of the picture gets cut off in game, so the stalactite tips and ceiling crystals must hang down to between 20% and 35% of the height to stay visible.
+- MIDDLE: the back cave wall. A wide dark tunnel opening a little off-center leading into depth with a soft blue light far inside; a FEW LARGE crystal clusters of different sizes growing from the rock on both sides, uneven spacing, asymmetrical. The wall meets the ground at about 59% of the image height (same as the references).
+- BOTTOM 41%: FLAT open stone ground seen from the same slightly-from-above angle. Characters, hex tiles and UI are drawn on top, so keep it calm, low-contrast, uncluttered, medium brightness (not too dark): subtle stone slabs, cracks, a few tiny crystal shards near the side edges only.
+
+Colors: calm BLUE and SKY-BLUE glowing crystals, soft glow on nearby rock; rock in muted slate blue-grey. Absolutely no red, orange, pink or green crystals.
+
+Generate ONE new image with your image generation tool and save it as img/codex/cave/cave1_src.png
+No characters, no creatures, no text, no UI, no hex grid, no frame.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

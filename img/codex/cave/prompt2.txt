@@ -1,0 +1,10 @@
+Look at img/codex/cave/cave1_src.png : our crystal cave battle background in pixel art. Refine it and save the result as img/codex/cave/cave2_src.png.
+
+Keep the same composition, ceiling, stalactites, tunnel, crystal clusters, colors, square pixels and hard edges, same aspect ratio.
+
+Change only:
+- the border where the wall meets the floor is a perfectly straight ruled line. Make it natural and uneven: rocks, rubble, rock bases and small crystal shards of different sizes overlapping the floor edge, going up and down a little. Keep it around the same height.
+- the floor is too flat and boring. Give it gentle uneven stone relief: a few large irregular rock slabs with slightly lighter top and darker edge, shallow dips, one or two small shallow water puddles reflecting blue light, a soft blue glow on the floor below the big crystal clusters, a few pebbles. Characters stand on it, so keep the center calm and low-contrast.
+- let the floor be a slightly warmer, greyer stone than the wall so floor and wall separate clearly.
+
+No red, orange, pink or green. No characters, no text, no UI. Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
