@@ -3547,7 +3547,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   function setShop(on){ if (on) trClose(); $('tab-shop').hidden = !on; $('arena').classList.toggle('shopping', on); document.querySelectorAll('[data-go="shop"]').forEach(function(sb){ sb.classList.toggle('on', on && !merchShow); /* 방랑상점은 말 걸기로 연 것 */ });
     if (!on){ shopSel = null; sellArm = null; merchShow = false; } else if (!$('hinfo').hidden){ $('hinfo').hidden = true; sel = null; if (typeof relSel !== 'undefined') relSel = null; document.querySelectorAll('.picked').forEach(function(x){ x.classList.remove('picked'); }); } /* 상점을 열면 상세 창 닫기 */ renderShop(); }
   function showTab(t){
-    if (t === 'shop'){ if ($('tab-camp').hidden) showTab('camp'); setShop(!shopOpen()); return; }
+    if (t === 'shop'){ if ($('tab-camp').hidden) showTab('camp'); $('tab-tool').hidden = true; setShop(!shopOpen()); return; }
     if (t === 'tool'){ if (!$('tab-tool').hidden){ showTab('camp'); return; } if ($('tab-camp').hidden) showTab('camp'); setShop(false); hideInfo(); hideTip(); $('tab-tool').hidden = false; $('tab-tool').scrollTop = 0; renderUk(); return; } /* 도구 = 전장 위 팝업 (2026-11-27 사용자: "전체 화면식으로 하니까 별로야. 일부 팝업식으로") */
     setShop(false);
     ['camp', 'hero', 'tool'].forEach(function(k){ $('tab-' + k).hidden = k !== t; });
@@ -4391,7 +4391,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     html = html.replace(/<button class="hi-x"[^>]*>✕<\/button>/g, ''); var i = html.indexOf('<div class="hi-st4">'), j = html.indexOf('<div class="hi-btns">');
     if (i >= 0) html = html.slice(0, i) + '<div class="hi-body">' + html.slice(i, j > i ? j : html.length) + '</div>' + (j > i ? html.slice(j) : '');
     p.innerHTML = '<button class="hi-x" data-hix="1" type="button" title="닫기">✕</button>' + html; var b = p.querySelector('.hi-body'); if (b) b.scrollTop = sc; if ($('arena').classList.contains('ending')) p.querySelectorAll('.hi-b').forEach(function(x){ x.disabled = true; }); /* 모험 완료 장면: 판매·초월 회색 (2026-11-26 사용자: "막아") */ } /* 모든 상세 창에 닫기 ✕ */
-  function showInfo(html, side){ var p = $('hinfo'); if (shopOpen()) setShop(false); /* 창은 한 번에 하나 */ hiFill(html, true); p.className = 'hinfo ' + side; p.hidden = false; }
+  function showInfo(html, side){ var p = $('hinfo'); if (shopOpen()) setShop(false); if ($('tab-tool')) $('tab-tool').hidden = true; /* 창은 한 번에 하나 */ hiFill(html, true); p.className = 'hinfo ' + side; p.hidden = false; }
   function hideInfo(){ $('hinfo').hidden = true; }
   new MutationObserver(function(){ if ($('hinfo').hidden){ delete $('field').dataset.sf; document.querySelectorAll('#field > .cellhl').forEach(function(x){ x.remove(); }); } }).observe($('hinfo'), { attributes: true, attributeFilter: ['hidden'] }); /* 상세 창이 닫히면 적 선택 라인도 풀림 */
   (function(){ var sc = document.createElement('div'); sc.id = 'shopScrim'; sc.className = 'shopscrim'; $('tab-shop').parentNode.insertBefore(sc, $('tab-shop'));
