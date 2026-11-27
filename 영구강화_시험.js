@@ -61,7 +61,7 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
   console.log("ok · 기존 값", ["eventReset", "life", "startGold", "mimic", "bag"].map(i => E.metaNode(D, i).name + " " + b(i) + E.metaNode(D, i).unit).join(", ")); }
 // 2026-11-27 레벨업 → 영구 강화: 하트 없음, 영웅 레벨 칸, 영웅·돈고블린·상인 영웅 등급 앞당김(영구 강화로 모드는 Lv1 고정 + 칸), 적 등급은 그대로
 { assert.strictEqual(D.life.perLevel, 0, "레벨업 하트 없음");
-  assert.strictEqual(E.heroLevel(E.metaData(D, { nodes: { heroLv: 2 } }), 3), 5, "영웅 레벨 +2");
+  assert.strictEqual(E.heroLevel(E.metaData(D, { nodes: { heroLv: 2 } }), 3), 3, "2026-11-27 영웅 레벨 노드 뺌: 예전 저장에 남아 있어도 효과 없음");
   const F = E.metaData(D, { mode: 'meta', nodes: {} }), F1 = E.metaData(D, { mode: 'meta', nodes: { hg4: 1, gg3: 2, mg2: 1 } });
   assert.deepStrictEqual(F.player.heroGrade, D.player.heroGrade, "영구 강화로 모드도 등급은 레벨업 메인");
   assert.deepStrictEqual(F1.player.heroGrade[0], [83, 15, 0, 2], "영웅 전설 +2%: 일반에서");

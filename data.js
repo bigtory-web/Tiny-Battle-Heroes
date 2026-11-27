@@ -636,8 +636,7 @@ var IDLE_DATA = {
       { id: 'h_bard', name: '서포터', job: 'bard', nodes: [
         { id: 'b_hp', req: ['t_hp'], name: '서포터 체력', hero: 'hp', add: 0.05, cost: [5, 10, 15] }, { id: 'b_def', req: ['b_hp'], name: '서포터 방어력', hero: 'def', add: 0.05, cost: [5, 10, 15] } ] },
       { id: 'h_all', name: '팀 전체', job: 'all', nodes: [
-        { id: 't_hp', req: ['start'], name: '팀 체력', hero: 'hp', add: 0.03, cost: [8, 16, 24] }, { id: 't_atk', req: ['t_hp'], name: '팀 공격력', hero: 'atk', add: 0.03, cost: [8, 16, 24] },
-        { id: 'heroLv', req: ['t_atk'], name: '영웅 레벨', unit: '레벨', path: 'campaign.heroLvPlus', add: 1, cost: [10, 20, 30] } ] } /* 2026-11-27 영웅 레벨 +1(레벨업과 같이, 사용자: "이것도 영구 강화로도"). 비용 임시 */
+        { id: 't_hp', req: ['start'], name: '팀 체력', hero: 'hp', add: 0.03, cost: [8, 16, 24] }, { id: 't_atk', req: ['t_hp'], name: '팀 공격력', hero: 'atk', add: 0.03, cost: [8, 16, 24] } ] } /* 2026-11-27 영웅 레벨 노드(heroLv)는 뺌(사용자: "이건 빼자. 이상하네", 기획결정기록 0-30). 예전: 영웅 레벨 +1(레벨업과 같이, 사용자: "이것도 영구 강화로도"). 비용 임시 */
     ]
   },
   // 등급 테두리 색: 코스트 1·2·3 (캐릭터 그림 외곽선)
