@@ -5252,9 +5252,13 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     var row = o.querySelector('.mmrow'), loot = o.querySelector('.mmloot'), btn = $('mmGet'), n = P.m.length;
     row.innerHTML = n ? P.m.map(function(id){ return '<i class="mmc' + (id === 'mimicKing' ? ' king' : id === 'mimic:g2' ? ' g2' : '') + '"><b></b></i>'; }).join('') : '<span class="mmnone">미믹이 모두 도망쳤어요.</span>';
     loot.innerHTML = ''; btn.disabled = true; o.hidden = false;
-    var cells = [].slice.call(row.querySelectorAll('.mmc'));
-    cells.forEach(function(c, i){ mimicT.push(setTimeout(function(){ c.classList.add('in'); }, 200 + i * 300)); mimicT.push(setTimeout(function(){ c.classList.add('open'); }, 200 + n * 300 + i * 180)); });
-    mimicT.push(setTimeout(function(){ loot.innerHTML = P.loot.length ? P.loot.map(function(k){ var p = LP(k), tip = p.type === 's' ? ' data-tipsk="' + p.id + '" data-tiplv="1"' : ''; return '<span class="mlt"' + tip + '>' + lootIcon(k) + (p.amt ? '<em>' + p.amt.toLocaleString() + '</em>' : '') + '</span>'; }).join('') : ''; btn.disabled = false; if (n) fwFx(row); /* 잡은 미믹이 있으면 폭죽 */ }, n ? 400 + n * 480 : 200)); }
+    /* 2026-11-27 사용자: "폭죽은 나중이고. 잡은 순으로 하나씩 배치하고 한번에 입 여는 이미지 나오고 뒤에 폭죽. 열 때 맞춰서 보상 자르륵" */
+    var cells = [].slice.call(row.querySelectorAll('.mmc')), at = function(ms, fn){ mimicT.push(setTimeout(fn, ms)); }, tOpen = n ? 200 + n * 300 + 250 : 0, tLoot = n ? tOpen + 250 /* 뚜껑이 활짝 열리는 때 */ : 200, m = P.loot.length;
+    cells.forEach(function(c, i){ at(200 + i * 300, function(){ c.classList.add('in'); }); });
+    at(tOpen, function(){ cells.forEach(function(c){ c.classList.add('open'); }); });
+    at(tLoot, function(){ loot.innerHTML = P.loot.map(function(k, i){ var p = LP(k), tip = p.type === 's' ? ' data-tipsk="' + p.id + '" data-tiplv="1"' : ''; return '<span class="mlt" style="animation-delay:' + (i * .09) + 's"' + tip + '>' + lootIcon(k) + (p.amt ? '<em data-to="' + p.amt + '">0</em>' : '') + '</span>'; }).join('');
+      [].forEach.call(loot.querySelectorAll('em[data-to]'), function(e){ var to = +e.dataset.to; for (var q = 1; q <= 10; q++) (function(q){ at(q * 55, function(){ e.textContent = Math.round(to * q / 10).toLocaleString(); }); })(q); }); });
+    at(tLoot + Math.max(m * 90 + 250, 600), function(){ btn.disabled = false; if (n) fwFx(row); /* 폭죽은 맨 마지막 */ }); }
   $('mmGet').addEventListener('click', function(){ var P = S.mimicPend; if (!P) return; var g0 = S.gold; S.mimicPend = null; P.loot.forEach(grantLoot); save(); $('mimicPop').hidden = true; hideTip(); evGo(); if (S.gold > g0) goldCount(g0, S.gold); });
   function grantLoot(k){ var p = LP(k); if (p.type === 'g') S.gold += p.amt; else if (p.type === 'm') S.mana = (S.mana || 0) + p.amt; else if (p.type === 's'){ if (E.canTake(D, S.skills, p.id, 999)){ E.takeSkill(D, S.skills, p.id); skKey = ''; } } else if (p.type === 'p') autoPad(p.id); }
   function synHl(d, side){ document.querySelectorAll('#field .synhl').forEach(function(e){ e.classList.remove('synhl'); }); if (!d || !d.per || d.only || bt) return; var y = synInfo(d, side); if (!y) return;
@@ -5459,7 +5463,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     var r = bt.finish(), st = E.stageTeam(D, curStage, curEv, curBell, curPlv), html = '', reward = 0, gain = ''; if (S.runStats){ S.runStats.battles++; if (r.win) S.runStats.wins++; S.runStats.kills += r.units.filter(function(x){ return x.side === 'E' && !x.alive && !x.escaped; }).length; bt.A.forEach(function(u){ var s = u.stats; if (!s || !E.heroById(D, u.id)) return; var t = S.runStats.by[u.id] || (S.runStats.by[u.id] = { dealt: 0, taken: 0, healed: 0, ults: 0 }); for (var k in t) t[k] += s[k] || 0; }); /* MVP 집계: 합성으로 사라진 영웅도 남음 */ }
     save(); // 경험치는 처치할 때마다 이미 더했어요
     var chestDone = !!(curEv && curEv.kind === 'chest' && E.chestReward), advanced = false;
-    if (curEv && curEv.kind === 'mimic' && E.mobLoot){ var ml = [].concat.apply([], E.mobLoot(st, r.units) || []).filter(Boolean), mk = r.units.filter(function(x){ return x.side === 'E' && !x.alive && !x.escaped; }).map(function(x){ return x.id === 'mimic' && x.slot % 2 ? 'mimic:g2' : x.id; }); /* 전장에서 본 색 그대로 */
+    if (curEv && curEv.kind === 'mimic' && E.mobLoot){ var ml = [].concat.apply([], E.mobLoot(st, r.units) || []).filter(Boolean), died = bt.log.filter(function(e){ return e.kind === 'die'; }).map(function(e){ return e.uid; }), mk = bt.E.filter(function(x){ return !x.alive && !x.escaped; }).sort(function(a, b){ return died.indexOf(a.uid) - died.indexOf(b.uid); }).map(function(x){ return x.id === 'mimic' && x.slot % 2 ? 'mimic:g2' : x.id; }); /* 잡은 순서대로, 색은 전장에서 본 그대로 */
       if (curStage === S.stage) S.mimicPend = { m: mk, loot: ml };
       S.adv = { up: false }; S.bellGold = 0; save();
       setTimeout(function(){ closeBattle(); if (S.mimicPend){ scrollPend = true; renderAll(); showMimicPop(); } else evGo(); }, skipNow ? 0 : 650); return; }
