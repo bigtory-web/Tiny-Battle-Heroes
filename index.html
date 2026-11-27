@@ -1967,6 +1967,7 @@ body:has(#roul:not([hidden])) .rsc{animation:none!important}
 .popl > .popw > .pov{width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;padding:0!important;box-sizing:border-box}
 .popl > .popw > .pov:not([hidden]){display:flex!important;align-items:center!important;justify-content:center!important}
 .popl > .popw > [hidden]{display:none!important}
+/* 도구 팝업 (전장 위, 다른 팝업과 같은 틀) */ .popl > .popw > #tab-tool.pcard{width:540px;max-width:94%;height:auto;max-height:94%;overflow-y:auto;overscroll-behavior:contain;box-sizing:border-box;padding:0 14px 14px!important;background:#221d2a!important;box-shadow:0 0 0 3px #17141d,0 0 0 6px #8a7652,0 10px 0 6px rgba(0,0,0,.4)} #tab-tool .toolhead{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;margin:0 -14px 10px;padding:8px 10px 8px 14px;background:#2d2638;box-shadow:0 3px 0 #17141d} #tab-tool .toolhead b{font:400 18px var(--display);color:#ffe9a8} #tab-tool .toolhead{min-height:44px} #tab-tool .toolhead .spX{left:auto!important;right:8px!important;top:2px!important}
 /* 격자 배치 (2026-11-24): [백팩 | HUD·전장·탭 | 오른쪽 기둥] */
 #tab-camp > .camp3{height:100%!important}
 .camp3{display:grid!important;grid-template-columns:64px 604px 260px;grid-template-rows:42px auto 60px;column-gap:8px;row-gap:6px;align-content:center;justify-content:center;position:relative}
@@ -3547,6 +3548,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     if (!on){ shopSel = null; sellArm = null; merchShow = false; } else if (!$('hinfo').hidden){ $('hinfo').hidden = true; sel = null; if (typeof relSel !== 'undefined') relSel = null; document.querySelectorAll('.picked').forEach(function(x){ x.classList.remove('picked'); }); } /* 상점을 열면 상세 창 닫기 */ renderShop(); }
   function showTab(t){
     if (t === 'shop'){ if ($('tab-camp').hidden) showTab('camp'); setShop(!shopOpen()); return; }
+    if (t === 'tool'){ if (!$('tab-tool').hidden){ showTab('camp'); return; } if ($('tab-camp').hidden) showTab('camp'); setShop(false); hideInfo(); hideTip(); $('tab-tool').hidden = false; $('tab-tool').scrollTop = 0; renderUk(); return; } /* 도구 = 전장 위 팝업 (2026-11-27 사용자: "전체 화면식으로 하니까 별로야. 일부 팝업식으로") */
     setShop(false);
     ['camp', 'hero', 'tool'].forEach(function(k){ $('tab-' + k).hidden = k !== t; });
     $('backBtn').hidden = t === 'camp'; if (t === 'camp') renderForm(); // 크기 등 바뀐 설정을 전장에 다시 맞춰요
@@ -4384,6 +4386,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   function popAdd(el, full){ var L = $('popl'); if (!L){ L = document.createElement('div'); L.id = 'popl'; L.className = 'popl'; document.querySelector('.camp3 > .mid').appendChild(L); } /* 전장이 큰 팝업을 자르지 않게 가운데 열에 붙여요 */
     if (!el || (el.parentNode && el.parentNode.parentNode === L)) return el; var w = document.createElement('div'); w.className = 'popw'; L.appendChild(w); w.appendChild(el); el.classList.add(full ? 'pov' : 'pcard'); return el; }
   (function(){ ['roul', 'chestPop', 'res', 'mobLoot', 'bagOver', 'evWin', 'mimicPop'].forEach(function(id){ if ($(id)) popAdd($(id), true); }); if ($('pendBox')) popAdd($('pendBox'), false); })();
+  (function(){ var tp = $('tab-tool'); tp.insertAdjacentHTML('afterbegin', '<div class="toolhead"><b>도구</b><button type="button" class="spX popx" data-toolx="1" title="닫기">✕</button></div>'); popAdd(tp, false); tp.querySelector('[data-toolx]').addEventListener('click', function(){ showTab('camp'); }); })();
   function hiFill(html, fresh){ var p = $('hinfo'), old = p.querySelector('.hi-body'), sc = !fresh && old ? old.scrollTop : 0;
     html = html.replace(/<button class="hi-x"[^>]*>✕<\/button>/g, ''); var i = html.indexOf('<div class="hi-st4">'), j = html.indexOf('<div class="hi-btns">');
     if (i >= 0) html = html.slice(0, i) + '<div class="hi-body">' + html.slice(i, j > i ? j : html.length) + '</div>' + (j > i ? html.slice(j) : '');
@@ -4614,7 +4617,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   (function(){ var caps = [['spdBtn', 'Q'], ['skipBtn', 'W'], ['punchBtn', 'E']].map(function(c){ var e = document.createElement('i'); e.className = 'keycap'; e.style.fontStyle = 'normal'; e.textContent = c[1]; e.hidden = true; document.querySelector('.app').appendChild(e); return [c[0], e]; });
     setInterval(function(){ var a = document.querySelector('.app').getBoundingClientRect(), k = a.width / 960, H = $('hud').getBoundingClientRect(); caps.forEach(function(c){ var b = $(c[0]), r = b.getBoundingClientRect(); c[1].hidden = !r.width; if (!r.width) return; c[1].style.left = (r.left - a.left + r.width / 2) / k + 'px'; c[1].style.top = (H.top - a.top) / k - 13 + 'px'; c[1].classList.toggle('off', b.disabled); }); }, 300); })();
   /* 단축키 (2026-11-26 사용자): 스페이스=전투 시작, Q 배속, W 스킵, E 원펀치. 회색·숨김 버튼은 안 먹고, 창이 떠 있으면 전투를 시작하지 않음 */
-  function keyWinOpen(){ return shopOpen() || ['chWin', 'upWin', 'hinfo', 'roul', 'chestPop', 'mimicPop', 'mobLoot', 'bagOver', 'evWin', 'lvPop', 'res', 'resPop', 'trWin', 'jumpList'].some(function(id){ var x = $(id); return x && !x.hidden && x.getClientRects().length > 0; }) || !!document.querySelector('.gover:not([hidden])'); }
+  function keyWinOpen(){ return shopOpen() || ['chWin', 'upWin', 'hinfo', 'roul', 'chestPop', 'mimicPop', 'mobLoot', 'bagOver', 'evWin', 'lvPop', 'res', 'resPop', 'trWin', 'jumpList', 'tab-tool'].some(function(id){ var x = $(id); return x && !x.hidden && x.getClientRects().length > 0; }) || !!document.querySelector('.gover:not([hidden])'); }
   document.addEventListener('keydown', function(e){ var id = { Space: 'fightBtn', KeyQ: 'spdBtn', KeyW: 'skipBtn', KeyE: 'punchBtn' }[e.code], t = e.target;
     if (!id || e.ctrlKey || e.metaKey || e.altKey || (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)))) return;
     e.preventDefault(); if (t && t.tagName === 'BUTTON') t.blur(); if (e.repeat) return; /* 방금 누른 버튼이 스페이스로 또 눌리지 않게 */
