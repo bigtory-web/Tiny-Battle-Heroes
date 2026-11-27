@@ -5,7 +5,7 @@ const full={medals:0,nodes:{}}; D.meta.lines.forEach(L=>L.nodes.forEach(N=>full.
 const M=E.metaData(D,full);
 assert.strictEqual(D.player.bag[0],5,"원본 그대로"); assert.strictEqual(M.player.bag[0],7); assert.strictEqual(M.player.bag[9],7,"cap");
 assert.strictEqual(M.player.skillSlots[0],6); assert.strictEqual(M.player.potion[0],3);
-assert.deepStrictEqual(M.player.shopGrade[0],[40,35,15,10],"2026-11-27 등급별 +10%(2%×5), 일반에서 뺌");
+assert.deepStrictEqual(M.player.shopGrade[0],[55,25,10,10],"2026-11-27 상점도 기준 표(Lv1 85/15/0/0) + 등급별 +10%, 일반에서 뺌");
 assert.strictEqual(M.shop.refreshMax,D.shop.refreshMax+2); assert.strictEqual(M.campaign.startGold,150); assert.strictEqual(M.life.max,16);
 assert.deepStrictEqual(M.recruit.reroll.max,[2]); assert.strictEqual(D.recruit.reroll.max[0],1);
 assert.strictEqual(M.player.clearGold[0],150);
@@ -26,7 +26,7 @@ let c0=0,c1=0; for(let s=1;s<=8;s++){ c0+=E.campaign(D,{seed:s}).cleared; c1+=E.
 console.log("ok · 훈장 합",D.meta.lines.reduce((a,L)=>a+L.nodes.reduce((b,N)=>b+N.cost.reduce((x,y)=>x+y,0),0),0),"· 봇 클리어 판 합(8판) 강화 전",c0,"후",c1);
 // "영구 강화로" 모드: 옮긴 줄은 Lv1 값 고정, 등장 확률·출전 인원은 그대로
 const MM=E.metaData(D,{mode:"meta"}); assert.ok(MM.player.bag.every(v=>v===D.player.bag[0])); assert.ok(MM.player.clearGold.every(v=>v===D.player.clearGold[0])); assert.ok(MM.player.mimicBlue.every(v=>v===D.player.mimicBlue[0]));
-assert.deepStrictEqual(MM.player.field,D.player.field); assert.deepStrictEqual(MM.player.heroGrade,D.player.heroGrade,"등급 확률은 레벨업이 메인"); assert.deepStrictEqual(MM.player.enemyGrade,D.player.enemyGrade); assert.deepStrictEqual(MM.player.shopGrade,D.player.shopGrade);
+assert.deepStrictEqual(MM.player.field,D.player.field); assert.deepStrictEqual(MM.player.heroGrade,D.player.heroGrade,"모드와 상관없이 기준 표 그대로"); assert.deepStrictEqual(MM.player.enemyGrade,D.player.heroGrade,"적·상점도 기준 표"); assert.deepStrictEqual(MM.player.shopGrade,D.player.heroGrade);
 const MF=E.metaData(D,{mode:"meta",nodes:full.nodes}); assert.ok(MF.player.bag.every(v=>v===7)); assert.strictEqual(E.metaData(D,{mode:"level"}),D,"레벨 모드 + 강화 없음 = 원본");
 let cm=0; for(let s=1;s<=5;s++){ cm+=E.campaign(D,{seed:s,meta:{mode:"meta"}}).cleared; E.campaign(E.chapterData(D,2),{seed:s,meta:{mode:"meta",nodes:full.nodes}}); }
 console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",cm);
@@ -65,11 +65,11 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
   const F = E.metaData(D, { mode: 'meta', nodes: {} }), F1 = E.metaData(D, { mode: 'meta', nodes: { hg4: 1, gg3: 2, mg2: 1 } });
   assert.deepStrictEqual(F.player.heroGrade, D.player.heroGrade, "영구 강화로 모드도 등급은 레벨업 메인");
   assert.deepStrictEqual(F1.player.heroGrade[0], [83, 15, 0, 2], "영웅 전설 +2%: 일반에서");
-  assert.deepStrictEqual(F1.player.grollGrade[0], [66, 25, 9, 0], "룰렛 희귀 +4%");
+  assert.deepStrictEqual(F1.player.grollGrade[0], [81, 15, 4, 0], "룰렛 희귀 +4% (기준 표 Lv1 85/15/0/0)");
   assert.deepStrictEqual(E.metaData(D, { nodes: { hg4: 5 } }).player.heroGrade[9], [0, 24, 42, 34], "일반이 모자라면 다음 낮은 등급에서");
   assert.deepStrictEqual(E.metaData(D, { nodes: { lg4: 5 } }).player.lootWeight[0][4], D.player.lootWeight[0][4], "전리품 골드 칸은 그대로");
   assert.strictEqual(E.grollCost(E.metaData(D, { nodes: { grollCost: 2 } }), 3, 1), Math.round(E.grollCost(D, 3, 1) * 0.8), "돈고블린 비용 20% 감소");
-  assert.deepStrictEqual(F1.player.enemyGrade, D.player.enemyGrade, "적 등급은 레벨 그대로");
+  assert.deepStrictEqual(F1.player.enemyGrade, D.player.heroGrade, "적 등급은 기준 표 그대로(영웅 업그레이드 안 샘)");
 
   console.log("ok · 레벨업 → 영구 강화(하트·영웅 레벨·등급별 %·돈고블린 비용)"); }
 // 합류 영웅(떠돌이 용병): 비용 감소 칸, 등급 칸은 합류 영웅 표에만
@@ -83,3 +83,7 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
   const D2 = Object.assign({}, D, { player: Object.assign({}, P, { heroGrade: P.heroGrade.map((r, i) => i === 2 ? [1, 1, 1, 97] : r) }) });
   let leg = 0; for (let s = 1; s <= 60; s++) { let x = s; const r = () => (x = (x * 9301 + 49297) % 233280) / 233280; const it = E.rollMerchant(D2, 3, r, 1); it.filter(o => o.type === 'h').forEach(o => { if (E.heroGrade(D2, o.id) === 4) leg++; }); }
   assert.ok(leg > 0, "기준 표 Lv3 줄을 바꾸면 Lv1 상인 영웅이 따라감"); console.log("ok · 기준 표(상인·합류)"); }
+// 등급 줄 = 스테이지(2026-11-27): 스테이지를 주면 레벨과 상관없이 gradeLv 줄, 안 주면 예전처럼 레벨 줄
+{ const H = D.player.heroGrade; assert.deepStrictEqual(E.gradeRow(D, 'heroGrade', 9, 1), H[6], "1-10 = 7번째 줄, 레벨 1이어도"); assert.deepStrictEqual(E.gradeRow(D, 'heroGrade', 9, 3), H[6]);
+  assert.deepStrictEqual(E.gradeRow(D, 'heroGrade', null, 3), H[2], "스테이지 없으면 레벨 줄"); assert.deepStrictEqual(E.gradeRow(D, 'lootWeight', 9, 1), D.player.lootWeight[6], "전리품은 자기 무게, 줄만 스테이지");
+  console.log("ok · 등급 줄 = 스테이지"); }
