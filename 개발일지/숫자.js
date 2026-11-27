@@ -28,7 +28,8 @@ const imgs = [];
 (function walk(d) { for (const x of fs.readdirSync(d)) { const p = path.join(d, x); fs.statSync(p).isDirectory() ? walk(p) : /\.png$/.test(x) && inDay(p) && imgs.push(x); } })(path.join(root, 'img'));
 // UI는 index 백업을 더 만들지 않아서(v396에서 멈춤) 그날 index.html을 바꾼 git 커밋 수로 센다
 const iv = require('child_process').execSync(`git log --since=${day}T00:00:00+09:00 --until=${day}T23:59:59+09:00 --format=%h -- index.html`, { cwd: root, encoding: 'utf8' }).split('\n').filter(Boolean);
-const items = ['기획', 'UI', '이미지'].map(s => { const p = path.join(__dirname, day, s + '.md'); if (!fs.existsSync(p)) return [s, 0, 0]; let t = fs.readFileSync(p, 'utf8'); const ri = t.indexOf('## 시간순 기록(원본)'); if (ri >= 0) t = t.slice(ri + 1); /* 2026-11-27: 맨 위 주제별 정리가 있으면 원본 아래만 센다(정리 절이 두 번 세지지 않게, UI 지적) */ return [s, (t.match(/^## /gm) || []).length, (t.match(/^## .*⭐/gm) || []).length]; });
+const items = ['기획', 'UI', '이미지'].map(s => { const p = path.join(__dirname, day, s + '.md'); if (!fs.existsSync(p)) return [s, 0, 0]; const all = fs.readFileSync(p, 'utf8'), ri = all.indexOf('## 시간순 기록(원본)'); /* 2026-11-27: 맨 위 주제별 정리가 있으면 항목 수는 원본 아래에서(제목 + "- 추가" 줄), ⭐는 정리 쪽에서 센다(UI 지적: 정리 절이 두 번 세지지 않게) */
+  const raw = ri >= 0 ? all.slice(ri + 1) : all, sum = ri >= 0 ? all.slice(0, ri) : all; return [s, (raw.match(/^## /gm) || []).length + (ri >= 0 ? (raw.match(/^- 추가/gm) || []).length : 0), (sum.match(/^## .*⭐/gm) || []).length]; });
 
 const md = `# ${day} 숫자
 
