@@ -68,8 +68,8 @@
   </section>
 
   <section class="tb-sec" id="value-sec">
-    <h2>능력치 가치 (체력으로 환산)</h2>
-    <p class="tb-note">레벨 5 표준 팀끼리 싸우게 하고, 그 직업 영웅 한 명에게만 능력치를 올렸을 때 상대가 같은 영웅 체력을 몇 % 올려야 비기는지예요. 클수록 그 직업에게 값진 능력치예요. 체력 +20% 줄은 검산이라 20% 근처가 맞아요. 이 줄이 20%에서 많이 벗어난 직업은 그 열 결과가 흔들린다는 뜻이라 참고만 해요. +200%는 끝값(그 이상)이에요.</p>
+    <h2>능력치 가치 (레벨로 환산)</h2>
+    <p class="tb-note">레벨 1 표준 팀끼리 싸우게 하고, 그 직업 영웅 한 명에게만 능력치를 올렸을 때 상대가 같은 영웅을 몇 레벨 올려야 비기는지예요(레벨 1단계 = 체력·공격·방어 +25%). 클수록 그 직업에게 값진 능력치예요. 맨 윗줄은 검산이라 1.0 근처가 맞아요. 1단계 측정(시드 10개)은 방향만 보는 값이라 칸마다 ±0.3쯤 흔들릴 수 있어요. 스킬 켬의 수호자·음유시인처럼 잴 수 없는 열은 비어 있어요.</p>
     <div class="tb-ctl"><label for="modeSel">스킬</label>
       <select class="dash-select" id="modeSel" aria-label="스킬"><option>스킬 끔</option><option>스킬 켬</option></select></div>
     <div class="tb-card" id="heat-card"><div class="tb-heat" data-draw="heat" data-source="stat_value"></div></div>
@@ -197,12 +197,12 @@
   dash.draw('heat', el => {
     const d = dash.data('stat_value'); if (failed(el, d, '능력치 가치를 못 읽었어요.')) return;
     const rows = d.data.filter(r => r.mode === S.mode), stats = [...new Set(rows.map(r => r.stat))];
-    const ext = d3.max(rows, r => Math.abs(+r.hp_equiv)) || 1, c = d3.scaleLinear().domain([-ext, 0, ext]).range([0, 0, 1]);
+    const ext = d3.max(rows, r => Math.abs(+r.lv_equiv)) || 1, c = d3.scaleLinear().domain([-ext, 0, ext]).range([0, 0, 1]);
     const t = document.createElement('table'), th = t.createTHead().insertRow(); ['능력치', ...JOBS].forEach(h => { const e = document.createElement('th'); e.textContent = h; th.appendChild(e); });
     const tb = t.createTBody();
     stats.forEach(st => { const tr = tb.insertRow(); const a = tr.insertCell(); a.textContent = st;
       JOBS.forEach(j => { const r = rows.find(x => x.stat === st && x.job === j), td = tr.insertCell(); if (!r) { td.textContent = '—'; return; }
-        const v = +r.hp_equiv; td.textContent = (v > 0 ? '+' : '') + v + (v >= 200 ? '%+' : '%');
+        const v = +r.lv_equiv; td.textContent = (v > 0 ? '+' : '') + v;
         td.style.background = v >= 0 ? `color-mix(in srgb, ${dash.colors[0]} ${Math.round(c(v) * 70)}%, transparent)` : `color-mix(in srgb, var(--cds-chart-status-critical) ${Math.round(Math.min(1, -v / ext) * 50)}%, transparent)`; }); });
     el.replaceChildren(t);
   });

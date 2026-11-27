@@ -23,12 +23,9 @@ for (let ch = 1; ch <= 3; ch++) for (const df of ['easy', 'normal', 'hard']) { c
   E.powerCurve(d, { runs: 20, meta: { mode: 'meta', nodes: {} } }).forEach(r => curve.push({ chapter: ch, difficulty: DN[df], stage: r.name, step: r.stage + 1, boss: r.boss ? 1 : 0, clear_rate: Math.round(r.clearRate * 100), first_win: Math.round(r.firstWin * 100), tries: Math.round(r.tries * 10) / 10, my_power: r.myPow, foe_power: r.foePow, ratio: r.ratio, hp_left: r.hpLeft, player_level: r.plv })); }
 fs.writeFileSync(path.join(OUT, 'curve.csv'), csv(curve, ['chapter', 'difficulty', 'stage', 'step', 'boss', 'clear_rate', 'first_win', 'tries', 'my_power', 'foe_power', 'ratio', 'hp_left', 'player_level']));
 
-// 3) 능력치 가치(기준표 B): 최신 기록 JSON, 없으면 기준표.md 표를 읽음
+// 3) 능력치 가치(기준표 B): 최신 기록 JSON의 L 줄(레벨 환산, 2026-11-27부터. 그 전 기록의 B 줄은 체력 %라 안 씀)
 const sv = []; const recs = fs.existsSync('밸런스/기록') ? fs.readdirSync('밸런스/기록').filter(f => f.startsWith('기준표_')).sort() : [];
-if (recs.length) { const v = JSON.parse(fs.readFileSync('밸런스/기록/' + recs.pop(), 'utf8')).values; for (const row in v) { const m = row.match(/^B (스킬끔|스킬켬) (.+)$/); if (!m) continue; for (const st in v[row]) sv.push({ mode: m[1] === '스킬끔' ? '스킬 끔' : '스킬 켬', job: m[2], stat: st, hp_equiv: v[row][st] }); } }
-else { const md = fs.readFileSync('밸런스/기준표.md', 'utf8'); let mode = null, jobs = null;
-  for (const line of md.split('\n')) { if (/^### 스킬 끔/.test(line)) mode = '스킬 끔'; else if (/^### 스킬 켬/.test(line)) mode = '스킬 켬'; else if (/^## C/.test(line) || line.startsWith('**1포인트')) mode = null;
-    if (!mode || !line.startsWith('|')) continue; const c = line.split('|').slice(1, -1).map(s => s.trim()); if (c[0] === '능력치') { jobs = c.slice(1); continue; } if (!jobs || /^-+$/.test(c[0]) || !/[+-]\d|이상/.test(c[1] || '')) continue;
-    c.slice(1).forEach((x, i) => { const n = /이상/.test(x) ? 200 : parseInt(x.replace('%', ''), 10); if (!isNaN(n)) sv.push({ mode, job: jobs[i], stat: c[0].replace(/ \(.*\)$/, ''), hp_equiv: n }); }); } }
-fs.writeFileSync(path.join(OUT, 'stat_value.csv'), csv(sv, ['mode', 'job', 'stat', 'hp_equiv']));
+for (const f of recs.reverse()) { const R = JSON.parse(fs.readFileSync('밸런스/기록/' + f, 'utf8')), v = R.values; for (const row in v) { const m = row.match(/^L (스킬끔|스킬켬) (.+)$/); if (!m) continue; for (const st in v[row]) sv.push({ mode: m[1] === '스킬끔' ? '스킬 끔' : '스킬 켬', job: m[2], stat: st, lv_equiv: v[row][st], stage: R.settings.단계 }); } if (sv.length) break; }
+if (!sv.length) console.warn('기준표 기록에 L 줄이 없어요: node 밸런스/기준표.js 먼저');
+fs.writeFileSync(path.join(OUT, 'stat_value.csv'), csv(sv, ['mode', 'job', 'stat', 'lv_equiv', 'stage']));
 console.log('heroes', heroes.length, 'curve', curve.length, 'stat_value', sv.length);
