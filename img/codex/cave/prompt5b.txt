@@ -1,0 +1,11 @@
+Look at:
+- img/p/bg_swamp.png : THE STYLE REFERENCE. This is an existing battle background of our game.
+- img/codex/cave/cave4_src.png : the CONTENT reference, our new crystal cave. Its composition is approved but its art style does not match the game.
+
+Redraw the crystal cave so that it looks like it was painted by the same artist as the style reference, and save it as img/codex/cave/cave5b_src.png
+
+From the style reference copy exactly: pixel size and softness of edges, outline color and thickness, number of shading tones, how rocks and surfaces are shaped and textured, amount of contrast and saturation, how bright the overall picture is, how calm and sparsely detailed the ground is.
+From the content reference keep: the layout (stalactite ceiling, off-center tunnel with a far cavern, crystal clusters left and right with the big one on the right, water along the foot of the wall, flat floor starting at about 59% of the height, same aspect ratio) and the idea that blue and sky-blue crystals light the cave.
+Do NOT keep from the content reference: neon glow, glossy highlights, lightning-like glowing veins, very dark blacks, heavy contrast, dark foreground rocks that the style reference does not have.
+
+No red, orange, pink or green crystals. No characters, text, UI or frame. Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
