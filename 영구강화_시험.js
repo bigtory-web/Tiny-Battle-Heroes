@@ -121,3 +121,7 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
   assert.ok(Math.abs(b.stats(b.A[0].uid).powerMul - 0.5) < 1e-9 && Math.abs(b.stats(b.A[1].uid).powerMul - 1.25) < 1e-9);
   const b1 = E.createBattle(D, [{ id, slot: 0, level: 1 }], [{ id, slot: 0, level: 1 }], { seed: 3 }); assert.strictEqual(b1.stats(b1.A[0].uid).powerMul, 1, "효과 없으면 1");
   console.log("ok · 전투 중 능력치"); }
+// 수정 설명 글(2026-11-27 사용자 글)
+{ assert.deepStrictEqual(E.crystalText(D, 'hp'), ['붉은 수정의 영웅은 체력이 50% 감소한다.', '푸른 수정의 영웅은 체력이 25% 증가한다.', '영웅이 살아 있을 때만 효과가 발동한다.']);
+  assert.strictEqual(E.crystalText(D, 'move')[1], '푸른 수정의 영웅은 이동 속도가 25% 증가한다.'); assert.strictEqual(E.crystalText(D, 'reach')[0], '붉은 수정의 영웅은 사거리가 1칸 감소한다.'); assert.strictEqual(E.crystalText(D, 'hp', 0.25)[0], '붉은 수정의 영웅은 체력이 75% 감소한다.');
+  console.log("ok · 수정 설명 글"); }
