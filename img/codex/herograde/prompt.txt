@@ -1,0 +1,8 @@
+Look at img/codex/upicon3/sheet_A.png : our approved icon set (see the merchant girl face, icon number 5). Draw a new icon in EXACTLY the same style: chunky pixel art with large hard square pixels designed on a 24 x 24 grid, the same thick very dark brown outline, 3 flat tones per color with light from the top left, very few big shapes.
+
+Generate ONE new image with your image generation tool and save it as img/codex/herograde/raw.png.
+
+ONE single icon meaning "hero": the head of a young adventurer hero (front view, head only), spiky golden-orange hair, a red headband with a small gold plate, confident eyes, determined smile, a bit of blue collar under the chin. Clearly different from the hooded merchant girl. The head fills the square.
+
+[Format] Plain solid #FF00FF magenta background everywhere else. No text, no frame, no glow, no drop shadow.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.
