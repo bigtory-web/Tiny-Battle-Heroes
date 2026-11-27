@@ -22,7 +22,8 @@ for (const f of fs.readdirSync(logDir).filter(x => x.endsWith('.jsonl'))) {
 const k = n => n >= 1e6 ? (n / 1e6).toFixed(1) + 'M' : Math.round(n / 1e3) + 'k';
 
 // 만든 것: 그날 저장된 백업·그림·게시 버전(index 백업 번호)
-const backups = fs.readdirSync(root).filter(x => /\.v\d+[a-z]?\.\w+$/.test(x) && inDay(path.join(root, x)));
+const bdir = path.join(root, '백업'); /* 2026-11-27 백업 파일은 루트에서 백업/ 폴더로 옮김 */
+const backups = [root, bdir].filter(d => fs.existsSync(d)).flatMap(d => fs.readdirSync(d).filter(x => /\.v\d+[a-z]?\.\w+$/.test(x) && inDay(path.join(d, x))));
 const imgs = [];
 (function walk(d) { for (const x of fs.readdirSync(d)) { const p = path.join(d, x); fs.statSync(p).isDirectory() ? walk(p) : /\.png$/.test(x) && inDay(p) && imgs.push(x); } })(path.join(root, 'img'));
 // UI는 index 백업을 더 만들지 않아서(v396에서 멈춤) 그날 index.html을 바꾼 git 커밋 수로 센다
