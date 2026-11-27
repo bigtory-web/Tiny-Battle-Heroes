@@ -1,5 +1,5 @@
 ---
-name: playlink-deploy
+name: game-ui-playlink-deploy
 description: 플레이 링크(전투 테스트베드 아티팩트)를 배포할 때 쓴다.
 ---
 

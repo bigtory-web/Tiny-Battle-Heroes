@@ -14,8 +14,8 @@
 - 새 그림이나 그림 수정 → "3. 이미지" (필요한 크기·용도를 같이 적는다)
 
 ## 쓰는 스킬 (`.claude/skills/`)
-- `screen-work`: 화면·이펙트를 고치거나 확인할 때
-- `playlink-deploy`: 플레이 링크를 배포할 때
+- `game-ui-screen-work`: 화면·이펙트를 고치거나 확인할 때
+- `game-ui-playlink-deploy`: 플레이 링크를 배포할 때
 - `task-wrapup`: 일 하나를 끝낼 때(일지·커밋·보고)
 
 ## 일지

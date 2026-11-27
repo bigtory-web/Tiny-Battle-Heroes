@@ -1040,3 +1040,9 @@
 한 것: .claude/skills에 task-wrapup, screen-work, playlink-deploy, qa-playtest, code-audit, devlog-page, promo-video를 만들고 game-art를 고침. 역할 파일 6개의 절차는 스킬로 옮기고 "쓰는 스킬"만 남김. 기획 쪽 스킬 6개와 역할/기획.md는 기획 세션이 이미 만들어 그대로 둠.
 의도: 사용자 "지금까지 반복해서 했던 작업 절차를 개발일지와 역할 파일에서 찾아 정리하고 … 스킬로 만들어 줘", "이대로 저장".
 결과: 스킬 목록에 새 스킬이 뜨는 것 확인. 각 스킬로 실제 작업을 해 보지는 않음.
+
+## [개발] UI 스킬 이름에 game-ui- 붙임
+버전: 코드 변경 없음
+한 것: screen-work → game-ui-screen-work, playlink-deploy → game-ui-playlink-deploy. 역할/UI.md와 스킬 안의 참조도 맞춤.
+의도: 사용자 "game-ui 스킬 이름 앞에자 각각 저거 붙여줘", 대상은 "UI 스킬 2개만".
+결과: 옛 이름이 남은 참조 없음.

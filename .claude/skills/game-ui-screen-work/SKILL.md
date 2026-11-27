@@ -1,11 +1,11 @@
 ---
-name: screen-work
+name: game-ui-screen-work
 description: 화면 배치·버튼·팝업·이펙트를 고치거나 확인할 때 쓴다.
 ---
 
 # 화면 고치기와 확인
 
-"2. UI 및 이펙트"의 기본 절차다. 끝나면 `task-wrapup`, 배포는 `playlink-deploy`.
+"2. UI 및 이펙트"의 기본 절차다. 끝나면 `task-wrapup`, 배포는 `game-ui-playlink-deploy`.
 
 ## 1. 시작 전
 
