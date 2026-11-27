@@ -51,8 +51,9 @@
       // 초월 추가 스킬: spec.extra = [{ from: 영웅 id, lv }]. 그 영웅의 궁극기를 그 레벨 위력으로 함께 써요
       u.extra = (spec.extra || []).map(function (e) { var hh = heroById(data, e.from); return hh && hh.ult ? { from: e.from, ult: hh.ult, el: hh.el, lv: e.lv, k: 1 + (GE.ultPer || 0) * (Math.min(lvCap, e.lv) - 1) } : null; }).filter(Boolean); var PO = GE.passiveOn, pas0 = PO && (spec.star || 1) >= PO.star && u.grade >= PO.grade ? 1 : base.pas; /* 패시브: 등급 PO.grade 이상 영웅이 ★PO.star가 되면 켜져요 */ u.pasLv = u.h.passive ? Math.min(GE.maxLv || 5, spec.pasLv != null ? spec.pasLv : pas0) : 0;
       u.uk = 1 + (GE.ultPer || 0) * (u.ultLv - 1);
-      if (opts.statsOnly) u.extra = []; /* 2026-11-27 밸런스 측정용: 능력치만(궁극기·패시브·초월 스킬 끔, 직업 효과는 남김) */
-      if (u.pasLv > 0 && !opts.statsOnly) { u.pas = u.h.passive; u.pv = u.pas.v * (1 + (GE.pasPer || 0) * (u.pasLv - 1)); } });
+      u.noUlt = !!spec.noUlt; u.noPas = !!spec.noPas; /* 2026-11-28 밸런스 측정용: 이 영웅만 궁극기·초월 스킬(noUlt) / 패시브(noPas) 끔 */
+      if (opts.statsOnly || u.noUlt) u.extra = []; /* 2026-11-27 밸런스 측정용: 능력치만(궁극기·패시브·초월 스킬 끔, 직업 효과는 남김) */
+      if (u.pasLv > 0 && !opts.statsOnly && !u.noPas) { u.pas = u.h.passive; u.pv = u.pas.v * (1 + (GE.pasPer || 0) * (u.pasLv - 1)); } });
     // 시작할 때 걸리는 패시브
     A.concat(E).forEach(function (u) { if (!u.pas) return; var k = u.pas.kind, mine = u.side === 'A' ? A : E, opp = u.side === 'A' ? E : A;
       if (k === 'shieldAlly') { var na = mine.filter(function (x) { return x !== u; }).sort(function (a, b) { return dist(a, u) - dist(b, u); })[0] || u; na.shield += na.maxHp * u.pv; }
@@ -468,7 +469,7 @@
         else if (!inReach) { if (has(u, 'chargeHit')) u.charged = true; var mv = Math.min(d - u.reach * 0.9, u.spd * B.dt * (1 - (u.slow > 0 ? u.slowAmt : 0))); u.x += (tg.x - u.x) / d * mv; u.y += (tg.y - u.y) / d * mv; }
         u.timer = Math.max(0, u.timer - B.dt * speed);
         if (u.timer > 0) continue;
-        var ultReady = !opts.statsOnly && !!u.h.ult && u.energy >= B.energyMax && !u.trigDone; if (ultReady && u.trig && u.trig.kind === 'start') u.trigDone = true; // 전투 시작형은 한 번만 // 몹은 궁극기가 없어요
+        var ultReady = !opts.statsOnly && !u.noUlt && !!u.h.ult && u.energy >= B.energyMax && !u.trigDone; if (ultReady && u.trig && u.trig.kind === 'start') u.trigDone = true; // 전투 시작형은 한 번만 // 몹은 궁극기가 없어요
         if (!inReach && !(ultReady && SELF_ULT[u.h.ult.kind])) continue; // 사거리 밖이면 다가가기만 해요
         u.timer += u.interval;
         if (ultReady && u.h.ult.cast) { u.energy = 0; u.castT = u.h.ult.cast; u.moving = false; if (rec) log.push({ t: t, kind: 'cast', uid: u.uid, dur: u.h.ult.cast }); continue; } // 마법사: 주문을 외우기 시작해요
