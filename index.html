@@ -6253,7 +6253,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     b.style.setProperty('--rg', GR(n + 1).col); /* 기본 일반 · 1 고급 · 2 희귀 · 3 전설 (팁 테두리와 같음) */
     b.hidden = (!bt && noFight()) || bStg >= E.stageCount(D) || !!(bEv && (bEv.kind === 'mobs' || bEv.kind === 'mimic' || bEv.kind === 'oddeven')); b.className = 'bell b' + n + (mx ? '' : ' lock') + (bt ? ' inbt' : ''); b.disabled = !mx;
     var up = b.dataset.n != null && n > +b.dataset.n; b.dataset.n = n; var bic = b.querySelector('.bic'); if (up && bic.animate) bic.animate([{ transform: 'scale(1.5) translateY(-4px)' }, { transform: 'scale(.92)' }, { transform: 'none' }], { duration: 320, easing: 'ease-out' });
-    bic.innerHTML = im ? '<img data-raw="1" src="img/p/ui_' + (D.campaign.swamp ? 'swampfoe' : 'foe') + Math.max(1, n) + '.png" alt="">' : '🔔'; /* 늪지대 챕터 = 악어 */
+    bic.innerHTML = im ? '<img data-raw="1" src="' + foeBase() + Math.max(1, n) + '.png" alt="">' : '🔔';
     b.querySelector('.bdots').innerHTML = [1, 2, 3].slice(0, mx).map(function(i){ return '<i' + (i <= n ? ' class="on"' : '') + '></i>'; }).join('');
     var bg1 = E.bellGold ? E.bellGold(D, S.stage, n, n + 1, plv()) : 0, nx = b.querySelector('.bnext');
     // 다음 1번 울릴 때 생기는 효과만 한 줄로 (다 울렸으면 숨김)
@@ -6267,7 +6267,8 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     if (tipEl === b){ if (b.dataset.tiptx) showTip(b); else hideTip(); } // 열려 있는 종 툴팁도 새 값으로
     if (nx && B.tiers){ nx.hidden = true; } else if (nx){ nx.hidden = !mx || n >= mx; nx.innerHTML = chestEv ? '다음 단계: <b>상자 강화</b> (체력 +' + Math.round((D.events.chest.bell || {}).hp * 100) + '% · 보상 +' + Math.round((D.events.chest.bell || {}).reward * 100) + '%)' : '다음 단계: 적 영웅 ' + (B.enemy || 1) + '명 추가 · <b>+' + bg1.toLocaleString() + 'G</b>' + ''; }
     b.title = B.tiers && !chestEv ? '' : !mx ? '전장이 꽉 차서 종을 울릴 수 없어요' : (n ? n + '단계 (받은 골드 ' + g(S.bellGold || 0) + ') · ' : '위험 종 · ') + (n < mx ? '울리면 바로 +' + bg1.toLocaleString() + ' G · 적 +1명 · 되돌릴 수 없어요' : '더 울릴 수 없어요'); }
-  [1, 2, 3].forEach(function(n){ ['foe', 'swampfoe'].forEach(function(k){ new Image().src = 'img/p/ui_' + k + n + '_blink.png'; }); });
+  function foeBase(){ return (D.campaign.chapterDef || {}).foeIcon || 'img/p/ui_foe'; } /* 분노 아이콘 = 챕터 데이터(chapterDefs foeIcon), 눈 깜빡임 그림은 <이름>N_blink.png */
+  [1, 2, 3].forEach(function(n){ new Image().src = foeBase() + n + '_blink.png'; });
   (function foeBlink(){ setTimeout(function(){ var b = $('bellBtn'), im = b && b.querySelector('.bic img');
     if (im && !b.hidden && !b.classList.contains('b0')){ var src = im.getAttribute('src'); if (src.indexOf('_blink') < 0){ im.setAttribute('src', src.replace('.png', '_blink.png')); setTimeout(function(){ im.setAttribute('src', src); }, 120); } }
     foeBlink(); }, 2500 + Math.random() * 1500); })();
