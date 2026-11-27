@@ -97,4 +97,6 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
   assert.ok(Math.abs(m - b0 * 0.5) < 1e-9 && Math.abs(p - b1 * 1.25) < 1e-9, "-50% / +25%"); assert.deepStrictEqual(hp({ cells: cells, ids: [] }).slice(1), [b0, b1], "빈 슬롯 = 효과 없음");
   const one = E.createBattle(C2, [{ id: id, slot: 6, level: 1 }], foe, { seed: 3, crystal: { cells: cells, ids: ['hp'] } }); assert.strictEqual(one.A[0].maxHp, b1, "마이너스 칸 비면 플러스 꺼짐");
   bt.A[0].alive = false; bt.step(); assert.ok(Math.abs(bt.A[1].maxHp - b1) < 1e-9 && !bt.crystal.on, "마이너스 영웅이 죽으면 플러스 끝");
+  const mm = E.createBattle(C2, [{ id: id, slot: 0, level: 1 }], foe, { seed: 3, crystal: { cells: cells, ids: ["hp"], more: 0.25 } }); assert.ok(Math.abs(mm.A[0].maxHp - b0 * 0.25) < 1e-9, "분노 3단계: -75%");
+  assert.strictEqual(E.stageTeam(C2, 0, null, 3, 1).crystalMore, 0.25); assert.strictEqual(E.stageTeam(C2, 0, null, 0, 1).crystalMore, 0);
   console.log("ok · 수정 칸"); }

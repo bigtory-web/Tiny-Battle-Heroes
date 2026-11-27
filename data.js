@@ -260,7 +260,7 @@ var IDLE_DATA = {
     chapterDefs: [
       { featured: ['boar', 'ranger', 'minotaur', 'dragon'], featuredMul: 3, /* 2026-11-27 특별 출현: 등급별 1명, 기획이 외형 보고 고름(사용자: "임의로 니가 외형보고 등급별로1개씩"). 러시·로빈·힐다·드라코. 같은 등급 안에서 3배 잘 나옴(임시) */ name: '용의 초원', foeName: '용' /* 2026-11-27 챕터 이름은 분노 상징 캐릭터로(사용자: "용의 초원, 악어의 늪지대 이렇게 분노 상징하는 캐릭터들"). 예전 '초원' */, bg: 'img/p/bg_field.png', bgDusk: 'img/p/bg_field_dusk.png' },
       /* 2026-11-27 2장 = 수정 동굴(버프 챕터), 늪지대는 3장으로 (사용자: "늪지대를 3챕터로하고. 2챕터용으로"). 이름 앞 분노 캐릭터·특별 출현 영웅·배경·분노 3단계는 미정(지금은 기본 분노, 배경은 초원) */
-      { featured: ['batling', 'icefairy', 'gargoyle', 'archmage'], featuredMul: 3, /* 2026-11-27 특별 출현: 기획이 외형 보고 고름. 녹스(꼬마박쥐)·크리스탈(얼음요정)·스톤(가고일)·테티스(대마법사) */ name: '골렘의 수정 동굴', foeName: '골렘' /* 사용자: "골렘이낫겟어". 분노 아이콘 그림 대기(foeIcon 없음 → 기본) */, lvPlus: 1 /* 임시 */, crystal: { slots: 2, start: ['hp'] } /* 수정 슬롯 2칸, 1번 칸은 챕터 시작 때 start 수정 고정(여러 개 넣으면 그중 무작위, 사용자: "체력 수정이 고정인게 걸리면 랜덤으로 할수도"). 슬롯이 비면 효과 없음 */ },
+      { featured: ['batling', 'icefairy', 'gargoyle', 'archmage'], featuredMul: 3, /* 2026-11-27 특별 출현: 기획이 외형 보고 고름. 녹스(꼬마박쥐)·크리스탈(얼음요정)·스톤(가고일)·테티스(대마법사) */ name: '골렘의 수정 동굴', foeName: '골렘' /* 사용자: "골렘이낫겟어". 분노 아이콘 그림 대기(foeIcon 없음 → 기본) */, lvPlus: 1 /* 임시 */, crystal: { slots: 2, start: ['hp'] }, bellTiers: [['more'], ['relic'], ['crystal']] /* 수정 슬롯 2칸, 1번 칸은 챕터 시작 때 start 수정 고정(여러 개 넣으면 그중 무작위, 사용자: "체력 수정이 고정인게 걸리면 랜덤으로 할수도"). 슬롯이 비면 효과 없음 */ },
       { featured: ['mudgolem', 'turtle', 'druid', 'kraken'], featuredMul: 3, /* 특별 출현: 매디(늪지기)·셸리(거북기사)·윌로(드루이드)·애비(크라켄) */ name: '악어의 늪지대', foeName: '악어', /* 예전 '늪지대' */ story: '초원을 지나면 안개 낀 늪지대가 나온다. 발이 빠지는 진흙 위에서 적들은 오래 버틸수록 사나워진다. 늪 한가운데에는 수상한 물약을 파는 개구리 상인이 산다.', /* 2026-11-27 챕터 이야기(사용자: "늪지대 스토리도 넣어줘") */ foeIcon: 'img/p/ui_swampfoe', bg: 'img/p/bg_swamp.png', bgDusk: 'img/p/bg_swamp_dusk.png', lvPlus: 1, swamp: { cells: 1, every: 5, amount: 0.01 } /* 2026-11-27: 5초마다 +1% (사용자: "늪칸효과 5초마다 1%로해.."). 예전 perSec 0.05 = 1초마다 +5% */, bellTiers: [['more'], ['relic'], ['swamp']], groups: { merchant: { merchant: 3, swampShop: 7 } } }
     ],
     idle: { enabled: false, base: 8, growth: 1.2, maxHours: 8 } // 방치 보상 (꺼짐: 방치형 게임이 아니에요). 골드는 스테이지 보상과 전리품으로만 들어와요
@@ -391,6 +391,7 @@ var IDLE_DATA = {
       energy: { name: '선제', icon: '⚡', v: 50,   desc: '적 전체가 궁극기 에너지 50을 들고 시작한다.' },
       elite:  { name: '강적 출현', icon: '👑', v: 1, desc: '한 등급 위 영웅 1명이 더 나온다.' },
       curse:  { name: '저주', icon: '🕯️', v: 0.3, desc: '우리 팀의 회복량과 보호막이 30% 줄어든다.' },
+      crystal: { name: '수정 균열', icon: '💎', v: 0.25, desc: '마이너스 칸 영웅이 25% 더 약해진다.' }, /* 2026-11-27 2장 분노 3단계: 마이너스 칸 감소 +25%(체력 수정이면 -50% → -75%, 사용자: "25% 추가해버려") */
       swamp:  { name: '늪지대', icon: '🌿', v: 1, desc: '적 쪽 늪지대 1칸이 늘어난다.' } /* 2026-11-27 이름 늪 확장 → 늪지대 (사용자: "분노3단계 늪확장>늪지대 늪지대1칸이") */ // 2026-11-26: 2장 분노 3단계(정예 대신)
     } },
 

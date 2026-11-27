@@ -279,10 +279,11 @@
         else if (k === 'lineCare') x.lineCare = (x.lineCare || 0) + v; else if (k === 'lineHaste') x.interval /= 1 + v; else if (k === 'lineHide') x.stealth = Math.max(x.stealth || 0, v); else if (k === 'lineAtk') x.atk *= 1 + v; });
       potionLog.push({ id: P.id, uids: T.map(function (x) { return x.uid; }), slots: T.map(function (x) { return x.slot; }) }); });
     // ───── 2026-11-27 수정 칸(2장 수정 동굴): opts.crystal = { cells: [마이너스 칸, 플러스 칸], ids: 슬롯에 박힌 수정 id }. 슬롯이 비면 효과 없음. 수정마다 마이너스 칸 영웅은 minus, 플러스 칸 영웅은 plus(비율)
+    //   more: 분노 '수정 균열'이면 마이너스 감소를 그만큼 더(stageTeam의 crystalMore)
     //   플러스는 마이너스 칸에 영웅이 있을 때만, 그 영웅이 죽으면 꺼져요(사용자: "마이너스에있어야 플러스가 활성화야", "죽으면 끝나야지")
     var CRY = null; (function () { var OC = opts.crystal; if (!OC || !OC.cells) return; var cL = (OC.ids || []).map(function (id) { return crystalById(data, id); }).filter(Boolean); if (!cL.length) return;
       var on = function (sl) { return A.filter(function (x) { return x.slot === sl && !x.h.mob; })[0]; }, mU = on(OC.cells[0]), pU = on(OC.cells[1]);
-      var app = function (u, key, sign) { cL.forEach(function (c) { var f = 1 + (c[key] || 0); if (sign < 0) f = 1 / f; if (c.stat === 'hp') { u.maxHp *= f; u.hp *= f; } else if (c.stat === 'atk') u.atk *= f; }); }; // shortcut: 체력·공격력만, 수정 목록이 정해지면 능력치 더함
+      var app = function (u, key, sign) { cL.forEach(function (c) { var f = 1 + (c[key] || 0) - (key === 'minus' ? OC.more || 0 : 0); if (sign < 0) f = 1 / f; if (c.stat === 'hp') { u.maxHp *= f; u.hp *= f; } else if (c.stat === 'atk') u.atk *= f; }); }; // shortcut: 체력·공격력만, 수정 목록이 정해지면 능력치 더함
       if (mU) app(mU, 'minus', 1); if (mU && pU) { app(pU, 'plus', 1); CRY = { m: mU, p: pU, on: true, app: app }; } })();
     // ───── 연계 스킬(def.trigger): 쿨타임 없이, 조건(tag)에 맞는 아군에게 그 일이 생길 때마다 공격력이 쌓여요(최대 max번, 그 전투 동안) ─────
     // trigger: 'attack'(평타) | 'burn'(화상 피해) | 'haste'(숲 가속) | 'heal'(빛 회복) | 'chill'(얼음 둔화) | 'stun'(어둠 기절). to: 'self'(일으킨 영웅) | 'tag'(조건 맞는 아군 모두)
@@ -728,7 +729,7 @@
     var CC = C.crystal, crystal = null; if (CC) { var rndC = makeRng(n * 977 + 83 + plv * 7919), cs = data.battle.arena.pos.map(function (_, i) { return i; }); for (var ci = cs.length - 1; ci > 0; ci--) { var cj = Math.floor(rndC() * (ci + 1)), ct = cs[ci]; cs[ci] = cs[cj]; cs[cj] = ct; } crystal = cs.slice(0, 2); }
     if (ev && ev.kind === 'goblin') team.push({ id: 'goblin', level: lv, slot: 4, mul: m, mob: true });
     if (ev && ev.kind === 'merc') { var mu = team.filter(function (u) { return u.id === ev.id; })[0]; if (mu) mu.merc = true; } /* 2026-11-27 그 적이 합류 영웅(못 찾으면 표시 없음) */
-    return { n: n, name: stageName(data, n), level: lv, boss: boss, wall: C.walls.indexOf(n) >= 0, team: team, skills: eskills, event: ev || null, bell: bell, bellFx: bfx, curse: bhas('curse') ? bv('curse') : 0, swamp: swamp, crystal: crystal };
+    return { n: n, name: stageName(data, n), level: lv, boss: boss, wall: C.walls.indexOf(n) >= 0, team: team, skills: eskills, event: ev || null, bell: bell, bellFx: bfx, curse: bhas('curse') ? bv('curse') : 0, swamp: swamp, crystal: crystal, crystalMore: bhas('crystal') ? bv('crystal') : 0 };
   }
   // 영웅 덤(2026-11-18): 이 영웅을 얻으면 같이 받는 보상. null | { type: 's', id }(유물) | { type: 'g'|'m', amt }. 등급이 낮을수록 잘 붙어요
   function heroBonus(data, id, n, rnd, plv) { var B = data.heroBonus; if (!B || rnd() >= (B.chance[heroGrade(data, id)] || 0)) return null;
@@ -1047,7 +1048,7 @@
       if (ev && ev.kind === 'fairy') { if (ev.ids.length) { var fid = ev.ids[lootPick(data, ev.ids, plv, rnd, stage)]; if (canTake(data, skills, fid, data.player ? perk(data, plv).skillSlots : 0)) takeSkill(data, skills, fid); } continue; } // 요정: 룰렛으로 유물 1개
       if (ev && ev.kind === 'campfire') { var ci = lootPick(data, ev.ids, plv, rnd, stage); gainHero(ev.ids[ci], team); giveBonus(ev.bonus && ev.bonus[ci]); continue; } // 모닥불: 싸우지 않고 1명 얻고, 같은 스테이지 전투로 가요
       var plvAt = plv; // 클리어 골드·전리품은 화면처럼 전투 시작 때 레벨로 (2026-11-24)
-      var res = battle(data, padTeam(team, pads), st.team, { seed: seed + attempts * 31, modules: opts.modules, skills: skills, enemySkills: st.skills, curse: st.curse, potions: potions.map(function (id) { return { id: id }; }), crystal: st.crystal ? { cells: st.crystal, ids: crys.filter(Boolean) } : null }); if (potions.length) { events.potionDrunk = (events.potionDrunk || 0) + potions.length; potions = []; } // 물약은 마신 전투가 끝나면 사라져요
+      var res = battle(data, padTeam(team, pads), st.team, { seed: seed + attempts * 31, modules: opts.modules, skills: skills, enemySkills: st.skills, curse: st.curse, potions: potions.map(function (id) { return { id: id }; }), crystal: st.crystal ? { cells: st.crystal, ids: crys.filter(Boolean), more: st.crystalMore } : null }); if (potions.length) { events.potionDrunk = (events.potionDrunk || 0) + potions.length; potions = []; } // 물약은 마신 전투가 끝나면 사라져요
       attempts++; tries++; time += res.time; battleTime += res.time;
       if (data.player) { var gx = data.player.xpPerKill * res.units.filter(function (x) { return x.side === 'E' && !x.alive && !x.escaped; }).length; if (!res.win) gx = Math.max(gx, data.player.xpLoseMin || 0); xp += gx; var plv0 = plv; plv = playerLevel(data, xp).level; if (LF && LF.perLevel) life += (plv - plv0) * LF.perLevel;
         for (var lp = plv0; lp < plv && data.player.levelPick; lp++) { var LK = levelPickKind(data, lp + 1, units, skills); // 레벨마다 하나만, 번갈아
