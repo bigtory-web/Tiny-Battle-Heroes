@@ -1,0 +1,17 @@
+Look at:
+- img/p/bg_cave.png : the crystal cave battle background of our pixel art game (slate blue-grey rocks with thin dark navy outlines, bright blue and sky-blue crystals).
+- img/p/fg_field.png : the foreground strip we made for chapter 1. Use the SAME layout and height, but with cave things.
+
+Generate ONE new image with your image generation tool and save it as img/codex/cavefg/fg_raw.png.
+
+A FOREGROUND decoration strip overlaid at the very bottom edge of that background, IN FRONT of the characters. Exactly the same pixel art style, outline color and pixel size feel as bg_cave.png, a little darker (closer to the camera).
+
+Composition (very wide, very low strip):
+- spans the FULL width and sits on the BOTTOM edge of the image.
+- LEFT and RIGHT CORNERS are tall clumps: rounded slate rocks, short stalagmites and clusters of blue crystals. Their height is about 9 percent of the image width, and each corner clump is about 20 percent of the width.
+- the middle of the width has only a few very low pebbles and tiny crystal shards with large gaps, height under 2 percent of the image width, so characters behind stay fully visible.
+- the two corners are different from each other (not mirrored).
+- cut off naturally by the bottom edge (no base line, no ground slab).
+
+[Format] Plain solid #FF00FF magenta everywhere except the rocks and crystals. No ground fill, no shadow or glow on the magenta, no text, no border. Crisp pixel art, no blur. Very wide landscape image. No red, orange, pink or purple on the objects.
+Python is not installed on this computer: do not use python. If you need to copy or move the generated file, use PowerShell Copy-Item and keep the image exactly as generated. Do not modify or create any other file.

@@ -7,13 +7,15 @@ Add-Type -ReferencedAssemblies System.Drawing -TypeDefinition @"
 using System; using System.Drawing;
 public static class Px {
   static int Near(int[][] c, int r, int g, int bl){ int b=0; long bd=long.MaxValue; for(int i=0;i<c.Length;i++){ long x=r-c[i][0], y=g-c[i][1], z=bl-c[i][2]; long d=x*x+y*y+z*z; if(d<bd){bd=d;b=i;} } return b; }
+  static bool Key(Color p){ return p.R>150 && p.B>130 && p.G<100; }
   public static void Run(string src, string dst, int w, int h, int k, int reach, int dark, double share){
     var s=new Bitmap(src); int sw=s.Width, sh=s.Height; var rnd=new Random(1); var c=new int[k][];
     var px=new Color[sw,sh]; var L=new int[sw,sh];
     for(int y=0;y<sh;y++) for(int x=0;x<sw;x++){ var p=s.GetPixel(x,y); px[x,y]=p; L[x,y]=(p.R*3+p.G*6+p.B)/10; }
-    for(int i=0;i<k;i++){ var p=px[rnd.Next(sw), rnd.Next(sh)]; c[i]=new int[]{p.R,p.G,p.B}; }
-    for(int it=0;it<12;it++){ var sum=new long[k,4]; for(int y=0;y<sh;y+=3) for(int x=0;x<sw;x+=3){ var p=px[x,y]; int n=Near(c,p.R,p.G,p.B); sum[n,0]+=p.R; sum[n,1]+=p.G; sum[n,2]+=p.B; sum[n,3]++; }
-      for(int i=0;i<k;i++) if(sum[i,3]>0) c[i]=new int[]{(int)(sum[i,0]/sum[i,3]),(int)(sum[i,1]/sum[i,3]),(int)(sum[i,2]/sum[i,3])}; }
+    int keyN=0; foreach(var q in px) if(Key(q)) keyN++; int first=keyN>1000?1:0; if(first==1) c[0]=new int[]{255,0,255};
+    for(int i=first;i<k;i++){ Color p; do p=px[rnd.Next(sw), rnd.Next(sh)]; while(first==1 && Key(p)); c[i]=new int[]{p.R,p.G,p.B}; }
+    for(int it=0;it<12;it++){ var sum=new long[k,4]; for(int y=0;y<sh;y+=3) for(int x=0;x<sw;x+=3){ var p=px[x,y]; if(first==1 && Key(p)) continue; int n=Near(c,p.R,p.G,p.B); sum[n,0]+=p.R; sum[n,1]+=p.G; sum[n,2]+=p.B; sum[n,3]++; }
+      for(int i=first;i<k;i++) if(sum[i,3]>0) c[i]=new int[]{(int)(sum[i,0]/sum[i,3]),(int)(sum[i,1]/sum[i,3]),(int)(sum[i,2]/sum[i,3])}; }
     // a line pixel is darker than both sides along some direction
     var line=new bool[sw,sh]; int[][] dirs={ new[]{1,0}, new[]{0,1}, new[]{1,1}, new[]{1,-1} };
     for(int y=0;y<sh;y++) for(int x=0;x<sw;x++) foreach(var d in dirs){
@@ -22,7 +24,7 @@ public static class Px {
       int need=Math.Max(dark, Math.Min(L[ax,ay],L[bx,by])*14/100); if(L[ax,ay]-L[x,y]>=need && L[bx,by]-L[x,y]>=need){ line[x,y]=true; break; } }
     var cell=new int[w,h]; var isLine=new bool[w,h]; var lineCol=new Color[w,h];
     for(int j=0;j<h;j++) for(int i=0;i<w;i++){ var cnt=new int[k]; int n=0, ln=0; long r=0,g=0,bl=0;
-      for(int y=j*sh/h;y<(j+1)*sh/h;y++) for(int x=i*sw/w;x<(i+1)*sw/w;x++){ var p=px[x,y]; n++; cnt[Near(c,p.R,p.G,p.B)]++; if(line[x,y]){ ln++; r+=p.R; g+=p.G; bl+=p.B; } }
+      for(int y=j*sh/h;y<(j+1)*sh/h;y++) for(int x=i*sw/w;x<(i+1)*sw/w;x++){ var p=px[x,y]; n++; cnt[Near(c,p.R,p.G,p.B)]++; if(line[x,y] && !(first==1 && Key(p))){ ln++; r+=p.R; g+=p.G; bl+=p.B; } }
       int b=0; for(int q=1;q<k;q++) if(cnt[q]>cnt[b]) b=q; cell[i,j]=b;
       if(ln>=n*share){ isLine[i,j]=true; int q=Near(c,(int)(r/ln),(int)(g/ln),(int)(bl/ln)); lineCol[i,j]=Color.FromArgb(c[q][0]*82/100,c[q][1]*82/100,c[q][2]*85/100); } }
     // thin L-shaped doubles: drop a corner whose two line neighbours already touch diagonally
