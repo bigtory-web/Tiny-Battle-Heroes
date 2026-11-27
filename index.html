@@ -3378,7 +3378,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   var ULTIMG = {}, ULTEMO = { taunt: '😠', teamShield: '🛡️', strike: '⚔️', multi: '🗡️', backstab: '🗡️', snipe: '🎯', aoe: '💥', chain: '⚡', healAll: '💚', haste: '🥁',
     shieldOne: '🛡️', selfShield: '🪨', revive1: '🕊️', reviveAll: '🌟', stone: '🗿', buff: '📯', selfHaste: '💨', chillAll: '❄️', nova: '💫', dash: '🌀', zigzag: '🔀', bombard: '☄️', pierce: '🏹', barrage: '🌩️', blink: '🌑', mark: '📍' };
   // 새 스킬 연출: [fx 이름, 대상(self 시전자 · ally 우리 편 · foe 상대 편), 크기]
-  var ULTMAP = { shieldOne: ['shield', 'self', 1], selfShield: ['shield', 'self', 1.1], revive1: ['heal', 'ally', .8], reviveAll: ['heal', 'ally', 1], stone: ['poof', 'foe', 1], buff: ['levelup', 'ally', .9], selfHaste: ['levelup', 'self', .9], chillAll: ['frost', 'foe', 1], nova: ['hit', 'self', 2], dash: ['poof', 'self', 1], zigzag: ['slash', 'self', 1.3], bombard: ['hit', 'foe', 1.3], pierce: ['slash', 'self', 1.5], blink: ['slash', 'self', 1.3] };
+  var ULTMAP = { shieldOne: ['shield', 'self', 1], selfShield: ['shield', 'self', 1.1], revive1: ['heal', 'ally', .8], reviveAll: ['heal', 'ally', 1], stone: ['poof', 'foe', 1], buff: ['levelup', 'ally', .9], selfHaste: ['levelup', 'self', .9], chillAll: ['frost', 'foe', 1], nova: ['hit', 'self', 2], zigzag: ['slash', 'self', 1.3], bombard: ['hit', 'foe', 1.3], pierce: ['slash', 'self', 1.5], blink: ['slash', 'self', 1.3] };
   D.heroes.forEach(function(h){ if (h.art === false) return; var im = new Image(); im.onload = function(){ ULTIMG[h.id] = im; imgReady(); }; im.src = 'img/p/ult_' + h.id + '.png'; });
   function ultIcon(h, px){ return ULTIMG[h.id] ? '<img class="ulti" src="img/p/ult_' + h.id + '.png" alt="" style="width:' + px + 'px;height:' + px + 'px">' : '<span class="ulti">' + (ULTEMO[h.ult.kind] || '✨') + '</span>'; }
   function g(n){ n = Math.floor(n); return n >= 1e6 ? (n / 1e6).toFixed(1) + 'M G' : n >= 1e4 ? (n / 1e3).toFixed(1) + 'K G' : n.toLocaleString() + ' G'; }
@@ -4478,7 +4478,9 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
   function nightNotice(){ var EN = D.battle.enrage, a = $('arena'), o = document.createElement('div'); o.className = 'nightmsg'; o.innerHTML = '<b>밤의 분노가 찾아옵니다…</b><span>모든 피해가 1초마다 +' + Math.round((EN.perSec || 0) * 100) + '%</span>'; a.appendChild(o); setTimeout(function(){ o.remove(); }, 2800); } /* 밤이 되는 순간 전장 가운데 안내(전투는 안 멈춤). 숫자는 D.battle.enrage.perSec */
   var nightA = 0; /* 광폭화 밤 분위기 진하기 0~1 (서서히 바뀜) */
   var blinks = {}; // uid → { t, f, pts:[[x,y,face]], t0, k, cur } 순간이동 연출 (back 스킬)
+  var dashes = {}; // uid → { x, y, t0, dur } 돌진: 떠난 자리에서 도착 자리까지 미끄러져 달려가게 그림
   function posOf(u){ var bk = blinks[u.uid]; if (bk && bk.cur && u.alive) return [zx(bk.cur[0]), zy(bk.cur[1]) + OFF]; var x = u.x, y = u.y;
+    var ds = dashes[u.uid]; if (ds && u.alive){ var dk = (performance.now() - ds.t0) / ds.dur; if (dk >= 1) delete dashes[u.uid]; else { dk = dk * dk; /* 점점 빨라지며 달려듦 */ x = ds.x + (u.x - ds.x) * dk; y = ds.y + (u.y - ds.y) * dk; } }
     if (march){ if (u.side === 'A' && u.alive){ var go = gatherOff(u), e = march.e || 0; x = u.x + (GATHER[0] + go[0] - u.x) * e; y = u.y + (GATHER[1] + go[1] - u.y) * e; } else x -= march.sx; }
     return [zx(x), zy(y) + OFF]; }
   // ───── DPS 미터: 유닛별 누적 피해·초당 피해(막대는 팀 최고 대비). 팀 스킬은 한 줄로 따로 ─────
@@ -4544,7 +4546,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     var swFP = foePos(st.team), swQ = (st.swamp || []).map(function(sl){ return swFP[sl]; }).filter(Boolean);
     bt = E.createBattle(D, teamSpec().map(padSpec), foeTeamAt(st.team), { potions: potSpec(), seed: (Math.random() * 1e9) | 0, modules: S.modules, record: true, skills: S.skills, enemySkills: st.skills });
     bt._swamp = swQ; bt._pot = {}; (bt.potions || []).forEach(function(p){ var P = E.potionById(D, p.id); (p.uids || []).forEach(function(id){ if (P) (bt._pot[id] || (bt._pot[id] = [])).push(potPic(P.id)); }); }); setTimeout(potBar, 0); bt.E.forEach(function(u){ if (MOBSZ[u.h.mob]) tpw.E[u.slot] = mobPw(u); }); // 몹 전투력은 능력치로
-    logI = 0; acc = 0; fxs = []; shots = []; combos = {}; seqHit = {}; ultAt = {}; arrows = []; uxs = []; UC = {}; bolts = []; skArrowSrc = null; pops = []; knocks = {}; hitStop = {}; blinks = {}; skDmg = { A: 0, E: 0 }; if (HAS_FX) FX.clear(); banners = []; ultPops = []; graves = {}; lunges = {}; flash = 0; done = false;
+    logI = 0; acc = 0; fxs = []; shots = []; combos = {}; seqHit = {}; ultAt = {}; arrows = []; uxs = []; UC = {}; bolts = []; skArrowSrc = null; pops = []; knocks = {}; hitStop = {}; blinks = {}; dashes = {}; skDmg = { A: 0, E: 0 }; if (HAS_FX) FX.clear(); banners = []; ultPops = []; graves = {}; lunges = {}; flash = 0; done = false;
     $('res').hidden = true; $('field').style.visibility = 'hidden'; cv.hidden = false; $('skipBtn').disabled = false;
     $('tab-camp').classList.add('busy'); $('fightBtn').disabled = true; dpsLast = null; DPSW = {}; document.querySelectorAll('.dps .dpsb').forEach(function(b){ b.innerHTML = ''; }); /* 새 전투: DPS 기록 새로 */ $('fightBtn').classList.add('busyhide'); /* 전투 중에는 숨김 */ $('spdBtn').disabled = false;
     cancelAnimationFrame(raf); last = performance.now(); raf = requestAnimationFrame(loop);
@@ -4772,6 +4774,12 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
       var hu = unitByUid(ev.to), hp = posOf(hu); if (ev.amt > 0) dmgPop(hp[0], hp[1] - 34, { fx: 'heal', s: '+' + ev.amt, c: '#e9ffd8', c2: '#4fd86a', max: 1.1, size: 15 });
     } else if (ev.kind === 'shield'){
       var su = unitByUid(ev.to), amt = Math.round(ev.amt); if (su && amt > 0) shieldPop(su, amt);
+    } else if (ev.kind === 'dash'){
+      /* 돌진: 떠난 자리 흙먼지 → 잔상을 남기며 달려가 → 대상에 부딪힘 (2026-11-27 사용자: "돌진인데 별 연출이 없어") */
+      var du = unitByUid(ev.uid), dt = unitByUid(ev.to); if (du){ var sec = .26 / (speed || 1), dir = du.x >= ev.fx ? 1 : -1; dashes[du.uid] = { x: ev.fx, y: ev.fy, t0: performance.now(), dur: sec * 1000 };
+        uxAdd('smoke', zx(ev.fx), zy(ev.fy) + OFF + 26, {}, .45);
+        [0, .3, .55, .75].forEach(function(f){ var f2 = f * f; uxAdd('ghost', zx(ev.fx + (du.x - ev.fx) * f2), zy(ev.fy + (du.y - ev.fy) * f2) + OFF + 26, { id: du.id, dir: dir }, .3, sec * f); });
+        var B1 = bt; setTimeout(function(){ if (bt !== B1) return; var p = posOf(du); uxAdd('smoke', p[0], p[1] + 26, {}, .45); if (dt) fxAt('hit', dt, { scale: 1.2 }); }, sec * 1000); }
     } else if (ev.kind === 'jobBlink'){
       /* 암살자 순간이동: 떠난 자리에 잔상+연기, 도착 자리에 연기 (궁극기 순간이동과 같은 연출, 2026-11-27 사용자) */
       var ju = unitByUid(ev.uid); if (ju){ var jx = zx(ev.fx), jy = zy(ev.fy) + OFF + 26, jp = posOf(ju); uxAdd('ghost', jx, jy, { id: ju.id, dir: -(ju.face || 1) }, .45); uxAdd('smoke', jx, jy, {}, .45); uxAdd('smoke', jp[0], jp[1] + 26, {}, .45); }
