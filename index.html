@@ -38,13 +38,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .badge.boss{background:#5a4a1b;color:var(--gold)}
 
 /* 하단 탭 */
-.nav{position:fixed;left:0;right:0;bottom:0;z-index:4;background:#171828;border-top:1px solid var(--line);padding-bottom:var(--sb)}
-.nav .in{max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);height:var(--navH)}
-.nav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:700 11px var(--body);color:var(--muted);position:relative}
-.nav button .i{font-size:22px;line-height:1;filter:grayscale(1);opacity:.6}
-.nav button.on{color:var(--gold)}
-.nav button.on .i{filter:none;opacity:1}
-.nav button.on::before{content:'';position:absolute;top:0;left:30%;right:30%;height:3px;border-radius:0 0 3px 3px;background:var(--gold)}
+
 .dot{position:absolute;top:10px;right:calc(50% - 20px);width:8px;height:8px;border-radius:50%;background:var(--red)}
 
 /* 캠페인 */
@@ -59,7 +53,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 .vs b{font:400 18px var(--display)} .vs .me{color:var(--green)} .vs .them{color:#ff9a8a;text-align:right}
 .vs span{font-size:11px;color:var(--muted)}
 .go{font:400 20px var(--display);padding:14px 22px;border-radius:14px;border:0;background:linear-gradient(180deg,#ffdc6e,#e3a21a);color:#2a1d05;box-shadow:0 4px 0 #8a5a0a;width:100%}
-
 
 .ghost{padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--panel-2);font-size:13px;font-weight:700}
 .shdr{display:flex;align-items:center;gap:10px;margin-bottom:10px}
@@ -79,7 +72,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .idleChip b{font:400 15px var(--display);color:var(--gold)}
 
 .frow{display:flex;align-items:center;gap:8px;margin:12px 0 8px}
-.frow .ffilter{margin:0;flex:1}
+
 .frow .ghost{flex:none;padding:8px 12px}
 .fightWrap{position:sticky;bottom:calc(var(--navH) + var(--sb) + 10px);margin-top:14px;z-index:2}
 .chest{display:flex;align-items:center;gap:12px}
@@ -104,8 +97,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 .hrow .st{font-size:11px;color:#c9cdfa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .up{flex:none;width:86px;padding:8px 4px;border-radius:12px;border:0;background:#3a6a3a;color:#d9ffd4;font:700 12px/1.2 var(--body)}
 .up small{display:block;font-weight:600;font-size:11px;color:var(--gold)}
-
-
 
 /* 편성 (전체 화면) */
 .sheet{position:fixed;inset:0;z-index:6;background:var(--bg);overflow:auto}
@@ -251,10 +242,7 @@ b.pasx{display:inline-flex;align-items:center;justify-content:center;width:100%;
 img.lic.padic{object-fit:contain}
 .foe.boss::before{display:none;content:'';position:absolute;left:50%;bottom:-17px;width:124px;height:30px;transform:translateX(-50%);background:var(--dais) no-repeat;image-rendering:pixelated;z-index:-1;pointer-events:none}
 .unit .lv{margin-top:-6px;font:700 10px var(--body);color:var(--text);background:rgba(0,0,0,.75);border-radius:6px;padding:0 6px;position:relative}
-.ffilter{display:flex;gap:6px;margin:12px 0 8px;overflow-x:auto}
-.ffilter button{flex:none;width:38px;height:38px;border-radius:50%;border:2px solid var(--line);background:var(--panel);font:700 11px var(--body);color:var(--muted);padding:0}
-.ffilter button.on{border-color:var(--gold);color:var(--gold);box-shadow:0 0 0 2px rgba(255,211,77,.25)}
-.ffilter button .d{display:block;width:16px;height:16px;border-radius:50%;margin:0 auto;background:var(--el)}
+
 .roster{display:grid;grid-template-columns:repeat(auto-fill,52px);gap:6px;justify-content:center}
 .chip{aspect-ratio:1;border:2px solid var(--el);background:#1b1d30;border-radius:12px;padding:0;display:flex;align-items:center;justify-content:center;position:relative;font-size:24px}
 .chip .lv{position:absolute;top:2px;right:4px;font:700 9px var(--body);color:var(--text);text-shadow:0 1px 2px #000}
@@ -295,10 +283,6 @@ img.lic.padic{object-fit:contain}
 .gain .big{width:64px;height:64px;border-radius:50%;border:3px solid var(--el);flex:none;overflow:hidden;background:#1b1d30;display:flex;align-items:center;justify-content:center;font-size:30px}
 .gain b{font:400 17px var(--display)}
 .pend{border-color:var(--gold)}
-.pend .opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px;margin-top:10px}
-.pend .opts button{border:1px solid var(--line);background:var(--panel-2);border-radius:12px;padding:6px 4px;font:700 11px var(--body);display:flex;flex-direction:column;align-items:center;gap:4px}
-.pend .opts .ph{width:44px;height:44px;border-radius:50%;border:2px solid var(--el);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:22px;background:#1b1d30}
-.pend .opts button.new{border-color:var(--gold)}
 
 /* 영입 룰렛 (오른쪽에서 밀려 들어와요) */
 .roul{position:absolute;inset:0;z-index:800;background:rgba(0,0,0,.5);display:flex;justify-content:flex-end;align-items:center}
@@ -379,7 +363,6 @@ img.mni{width:16px;height:16px;image-rendering:pixelated;vertical-align:-3px;mar
 .rbtns .go{font-size:17px;padding:10px 6px}
 .rbtns .again{grid-column:1 / -1;border-color:var(--gold);color:var(--gold)}
 
-
 /* 상점·스킬 */
 .skl{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
 .skl .s{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:8px 4px;text-align:center;font:700 11px var(--body)}
@@ -441,8 +424,7 @@ select{background:var(--panel-2);color:var(--text);border:1px solid var(--line);
 html,body{overflow:hidden;background:#0b0c14}
 .app{position:fixed;left:0;top:0;width:960px;height:540px;padding-top:14px;box-sizing:border-box;max-width:none;margin:0;min-height:0;transform-origin:0 0;overflow:hidden;background:radial-gradient(circle at 50% 0,#252a4a 0,var(--bg) 60%);border-radius:0}
 .top{position:absolute;left:0;right:0;top:0;height:44px;padding:0 14px}
-.nav{position:absolute;bottom:0;padding-bottom:0}
-.nav .in{max-width:none;height:46px}
+
 .page{position:absolute;left:0;right:0;top:0;bottom:0;overflow-y:auto;padding:10px 14px}
 #tab-camp{padding:8px;overflow:hidden}
 .camp3{height:100%;gap:8px}
@@ -551,13 +533,11 @@ html,body{overflow:hidden;background:#0b0c14}
 .sdesc .hint{color:#c9bfd8;font-size:12px}
 .shopR .go,.shopPop .go{width:100%;font-size:17px;padding:12px;background:#f2b53a;color:#3a2208;border:0;border-radius:0;font-family:var(--display);clip-path:polygon(4px 0,calc(100% - 4px) 0,100% 4px,100% calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,0 calc(100% - 4px),0 4px);box-shadow:inset 0 0 0 3px #5a3a0c,inset 0 6px 0 -3px #ffe08a,inset 0 -8px 0 -3px #9a6416}
 
-
-
 /* 영입 카드: 결과 한 줄과 카드 안 백팩 고르기 */
 .rres{margin-top:8px;padding:8px;background:#2a2533;color:#f3e6c4;font:600 12px/1.5 var(--body);box-shadow:inset 0 0 0 3px #17141d}
 .rpend{margin-top:8px;max-height:220px;overflow:auto;text-align:left;color:#f3e6c4}
 .rpend h2{font:400 15px var(--display);margin:0 0 4px} .rpend .muted{font-size:11px}
-.rpend .opts{grid-template-columns:repeat(3,1fr)}
+
 .rbtns [hidden]{display:none!important}
 .rbtns{grid-template-columns:1fr 1fr}
 .rbtns .again{grid-column:auto;color:#3a2208;font-size:14px}
@@ -565,7 +545,7 @@ html,body{overflow:hidden;background:#0b0c14}
 /* ───── 픽셀 풍 UI 테마: 모서리를 계단처럼 깎고, 두꺼운 테두리 + 위쪽 밝은 줄 / 아래쪽 어두운 줄로 입체감 ───── */
 :root{ --px-bg:#1d1a24; --px-panel:#3b3546; --px-panel2:#2a2533; --px-hi:#5d5470; --px-lo:#17141d; --px-ink:#f3e6c4; --px-gold:#f2b53a; --px-gold-lo:#9a6416; --px-parch:#d9c49a; --px-parch-lo:#8f7a52; }
 .app{background:var(--px-bg)}
-.px,.hud,.sbtn,.btncol .go,.bagcol .chip,.bres,.rbox,.stg span,.page .card,.item,.skl .s,.backBtn,.bres .go,.rbtns .go,.rbtns .ghost,.pend .opts button,.hrow,.up,#tab-tool select,#tab-tool .ghost{
+.px,.hud,.sbtn,.btncol .go,.bagcol .chip,.bres,.rbox,.stg span,.page .card,.item,.skl .s,.backBtn,.bres .go,.rbtns .go,.rbtns .ghost,.hrow,.up,#tab-tool select,#tab-tool .ghost{
   clip-path:polygon(4px 0,calc(100% - 4px) 0,100% 4px,100% calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,0 calc(100% - 4px),0 4px);border-radius:0!important}
 /* 판넬 */
 .hud,.page .card,.bres,.rbox,.hrow,.item,.skl .s{background:var(--px-panel);border:0!important;box-shadow:inset 0 0 0 3px var(--px-lo),inset 0 6px 0 -3px var(--px-hi),inset 0 -6px 0 -3px var(--px-lo)!important;color:var(--px-ink)}
@@ -573,18 +553,16 @@ html,body{overflow:hidden;background:#0b0c14}
 .hud .it{color:var(--px-ink);font-size:18px;text-shadow:0 2px 0 var(--px-lo)}
 .hud .it + .it{border-left:3px solid var(--px-lo)}
 /* 버튼 (돌판 느낌) */
-.sbtn,.backBtn,.rbtns .ghost,.pend .opts button,#tab-tool .ghost{background:var(--px-panel);color:var(--px-ink);border:0!important;
+.sbtn,.backBtn,.rbtns .ghost,#tab-tool .ghost{background:var(--px-panel);color:var(--px-ink);border:0!important;
   box-shadow:inset 0 0 0 3px var(--px-lo),inset 0 6px 0 -3px var(--px-hi),inset 0 -7px 0 -3px var(--px-lo)!important;font-family:var(--display);font-weight:400;text-shadow:0 2px 0 var(--px-lo)}
 .sbtn{font-size:13px;letter-spacing:.5px}
 .sbtn span{font-size:22px;filter:drop-shadow(0 2px 0 var(--px-lo))}
-
 
 .btncol .idleChip{background:#2f4a2c;box-shadow:inset 0 0 0 3px #142012,inset 0 6px 0 -3px #4f7a47,inset 0 -7px 0 -3px #142012!important;border:0!important}
 .btncol .idleChip b{color:var(--px-gold);text-shadow:0 2px 0 #142012}
 /* 금색 큰 버튼 (전투 시작·확인·영입) */
 .btncol .go,.bres .go,.rbtns .go{background:var(--px-gold);color:#3a2208;border:0;font-family:var(--display);text-shadow:0 1px 0 #ffd98a;
   box-shadow:inset 0 0 0 3px #5a3a0c,inset 0 6px 0 -3px #ffe08a,inset 0 -8px 0 -3px var(--px-gold-lo)!important}
-
 
 /* 전장 틀: 참고 이미지처럼 양피지 테두리 */
 .arena{padding:6px;background:var(--px-parch);clip-path:polygon(6px 0,calc(100% - 6px) 0,100% 6px,100% calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,0 calc(100% - 6px),0 6px);box-shadow:inset 0 0 0 3px var(--px-parch-lo),inset 0 -6px 0 -3px #b39d6e}
@@ -2247,7 +2225,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
 #arena.evstage .evacts .evact .eai img,#arena.evstage #altGoBtn .cbox img{width:24px!important;height:24px!important}
 #arena.evstage .evacts .evact > b,#arena.evstage #altGoBtn > b{width:auto!important;margin:0!important;padding:0!important;background:none!important;font:400 18px var(--display)!important;color:#3a2410!important;text-shadow:0 1px 0 rgba(255,236,170,.75)!important}
 
-
 #arena.evstage #evBet .oedots i{width:7px;height:7px}
 /* 이벤트 판: 떠나기 = 아래 오른쪽 파랑 (아이콘 + 떠나기 + 작은 EXIT) */
 #arena.evstage #fightBtn{position:absolute;right:0;bottom:2px;width:auto!important;min-width:120px;padding:0 12px!important;display:flex;align-items:center;justify-content:center;gap:6px;--bb:#3f6fc2;--bh:#8fb4ff;--bl:#26457e;--bt:#ffffff;--bs:-1px 0 #17141d,1px 0 #17141d,0 -1px #17141d,0 1px #17141d,0 2px #17141d}
@@ -2397,7 +2374,6 @@ button:not([data-f]){clip-path:none!important;border-radius:0!important}
   box-shadow:inset 0 0 0 2px var(--fo),inset 0 4px 0 -2px var(--fl),inset 3px 0 0 -1px #c98a1e,inset -3px 0 0 -1px #c98a1e,inset 0 -7px 0 -2px var(--fm),inset 0 -10px 0 -2px var(--fb)!important;
   clip-path:polygon(2px 0,calc(100% - 2px) 0,calc(100% - 2px) 2px,100% 2px,100% calc(100% - 2px),calc(100% - 2px) calc(100% - 2px),calc(100% - 2px) 100%,2px 100%,2px calc(100% - 2px),0 calc(100% - 2px),0 2px,2px 2px)!important}
 
-
 /* 2026-11-25 이벤트 판: 행동 버튼(말 걸기 등) 자체를 전장 가운데에, 떠나기(아이콘)는 그 오른쪽 옆에 붙임 (사용자: "전투 시작 버튼 위치가 중앙이 아니야") */
 #arena.evstage .evacts,#arena.evstage #altGoBtn{left:calc(50% - 80px)!important}
 #arena.evstage #fightBtn{left:calc(50% + 88px)!important}
@@ -2409,7 +2385,6 @@ button.go:not(#fightBtn):not(#rAgain):not(.again):not(#rNo):not(.ghost):not(.llx
   background:linear-gradient(#fff3b8,#fff3b8) 10px 4px/8px 2px no-repeat,linear-gradient(#fff3b8,#fff3b8) 22px 4px/2px 2px no-repeat,repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 2px,transparent 2px 8px),linear-gradient(#ffd45c 0 30%,#f2b53a 30% 64%,#dc9a22 64% 100%)!important;
   box-shadow:inset 0 0 0 2px #3a2208,inset 0 3px 0 -1px #fff0b0,inset 3px 0 0 -1px #c98a1e,inset -3px 0 0 -1px #c98a1e,inset 0 -5px 0 -2px #b8761c,inset 0 -7px 0 -2px #8a5a0a!important;
   color:#3a2208!important;text-shadow:0 1px 0 #ffe9a8!important}
-
 
 /* ───── 나머지 색 버튼(파랑·빨강·초록·회색)에도 같은 픽셀 입체 (2026-11-25 사용자: "다른버튼들도") ─────
    버튼이 원래 쓰던 색 변수(--bb 면, --bh 밝은 줄, --bl 어두운 단)로 명암 3단·아래 단·좌우 줄을 만들어서 색마다 따로 안 정해도 돼요. 비활성은 색 변수가 회색으로 바뀌어서 같은 구조의 회색이 돼요. X(닫기) 버튼은 작은 아이콘이라 제외.
