@@ -1,0 +1,2 @@
+Add-Type -AssemblyName System.Drawing
+foreach($n in 'sprout_now','flame_ref','b_new'){ $im=New-Object System.Drawing.Bitmap ([IO.Path]::GetFullPath("img\codex\bloom\$n.png")); $o=New-Object System.Drawing.Bitmap 512,512; $g=[System.Drawing.Graphics]::FromImage($o); $g.InterpolationMode='NearestNeighbor'; $g.PixelOffsetMode='Half'; $g.DrawImage($im,0,0,512,512); $o.Save([IO.Path]::GetFullPath("img\codex\bloom\${n}_x8.png")) }

@@ -1,0 +1,7 @@
+Three images are attached, game pixel art enlarged 8 times (every 8x8 block is one sprite pixel).
+Image 1 is a boy fire mage: SIZE AND PIXEL-SIZE TEMPLATE only.
+Image 2 is the character to improve: a young human BOY with golden fluffy hair, a green sprout on top, a green cape and a navy book. His head and face are too big and he looks taller than the others.
+Image 3 is the APPROVED FACE (eyes, brows and jaw line): the new face must be drawn exactly like it, with the same size; only keep image 2's brown eye color.
+Use them as reference images for your image generation tool, generate ONE new image and save it as img/codex/bloom/sprout_src.png (save it even if the size differs slightly).
+Redraw the character of image 2 at the SAME SCALE as the boy of image 1: the same head size, the same face size and the same total height (he must not be taller than image 1; the sprout stays small). Keep his design: golden fluffy hair shape, green sprout, green cape, navy open book held in front, colors, pose.
+Very dark brown outline everywhere including where hair meets the face, hard square pixels, no anti-aliasing, no mouth. Full body centered, 1024x1024 PNG, flat solid pure magenta background FF00FF, no text, no shadow. Python is not installed on this computer: do not use python. Use PowerShell Copy-Item to copy the generated file. Do not modify or create any other file.
