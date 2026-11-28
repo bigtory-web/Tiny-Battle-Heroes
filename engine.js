@@ -49,7 +49,7 @@
       var TRD = data.transcend || {}, lvCap = Math.max(GE.maxLv || 5, TRD.enabled ? TRD.maxLv || 5 : 0);
       u.ultLv = Math.min(lvCap, spec.ultLv || base.ult);
       // 초월 추가 스킬: spec.extra = [{ from: 영웅 id, lv }]. 그 영웅의 궁극기를 그 레벨 위력으로 함께 써요
-      u.extra = (spec.extra || []).map(function (e) { var hh = heroById(data, e.from); return hh && hh.ult ? { from: e.from, ult: hh.ult, el: hh.el, lv: e.lv, k: 1 + (GE.ultPer || 0) * (Math.min(lvCap, e.lv) - 1) } : null; }).filter(Boolean); var PO = GE.passiveOn, pas0 = PO && (spec.star || 1) >= PO.star && u.grade >= PO.grade ? 1 : base.pas; /* 패시브: 등급 PO.grade 이상 영웅이 ★PO.star가 되면 켜져요 */ u.pasLv = u.h.passive ? Math.min(GE.maxLv || 5, spec.pasLv != null ? spec.pasLv : pas0) : 0;
+      u.extra = (spec.extra || []).map(function (e) { var hh = heroById(data, e.from); return hh && hh.ult ? { from: e.from, ult: hh.ult, el: hh.el, lv: e.lv, kr: 1 + (GE.ultPer || 0) * (Math.min(lvCap, e.lv) - 1), k: (1 + (GE.ultPer || 0) * (Math.min(lvCap, e.lv) - 1)) * ((B.ultPower && B.ultPower[hh.job]) || 1) * (hh.ultPow || 1) } : null; }) /* 2026-11-28 초월 스킬도 원래 영웅의 직업 위력·영웅 위력을 받음(k), 덤 효과는 레벨만(kr) */.filter(Boolean); var PO = GE.passiveOn, pas0 = PO && (spec.star || 1) >= PO.star && u.grade >= PO.grade ? 1 : base.pas; /* 패시브: 등급 PO.grade 이상 영웅이 ★PO.star가 되면 켜져요 */ u.pasLv = u.h.passive ? Math.min(GE.maxLv || 5, spec.pasLv != null ? spec.pasLv : pas0) : 0;
       u.ukLv = 1 + (GE.ultPer || 0) * (u.ultLv - 1); /* 2026-11-28 덤 효과(확률·비율)는 궁극기 레벨만 받음 */ u.uk = (1 + (GE.ultPer || 0) * (u.ultLv - 1)) * ((B.ultPower && B.ultPower[u.h.job]) || 1) * (u.h.ultPow || 1); /* 2026-11-28 직업별 궁극기 위력(data.battle.ultPower) × 영웅별(hero.ultPow) */
       u.noUlt = !!spec.noUlt; u.noPas = !!spec.noPas; /* 2026-11-28 밸런스 측정용: 이 영웅만 궁극기·초월 스킬(noUlt) / 패시브(noPas) 끔 */
       if (opts.statsOnly || u.noUlt) u.extra = []; /* 2026-11-27 밸런스 측정용: 능력치만(궁극기·패시브·초월 스킬 끔, 직업 효과는 남김) */
@@ -210,14 +210,14 @@
 
     // 속성 효과는 스킬(궁극기)에 붙어요: 스킬이 맞힌 적마다 생기고, 아무도 안 맞히는 스킬이면 가장 가까운 적(불·얼음·어둠) 또는 자기 편(숲·빛)에 한 번 생겨요
     var ultSrc = null, ultEl = null, ultHit = false;
-    function ultimate(u, ult0, k0, el) { var ps = ultSrc, pe = ultEl, ph = ultHit; ultSrc = u; ultEl = (ult0 || u.h.ult || {}).noElem ? null : el || u.el; /* 2026-11-28 noElem: 궁극기 피해에 속성 효과 없음(탬버, 사용자: "속성 기절 빼기") */ ultHit = false;
-      ultimate0(u, ult0, k0);
+    function ultimate(u, ult0, k0, el, kr0) { var ps = ultSrc, pe = ultEl, ph = ultHit; ultSrc = u; ultEl = (ult0 || u.h.ult || {}).noElem ? null : el || u.el; /* 2026-11-28 noElem: 궁극기 피해에 속성 효과 없음(탬버, 사용자: "속성 기절 빼기") */ ultHit = false;
+      ultimate0(u, ult0, k0, kr0);
       if (!ultHit && u.alive) { var e0 = ultEl; if (e0 === 'forest' || e0 === 'light') elemHit(u, null, atkOf(u), e0); else { var nt = pickTarget(u); if (nt) elemHit(u, nt, atkOf(u), e0); } }
       ultSrc = ps; ultEl = pe; ultHit = ph; }
     function tauntOn(u, dur) { var n = B.tauntN ? B.tauntN[(u.h.grade || 1) - 1] || 0 : 0; u.taunt = Math.max(u.taunt || 0, dur); u.tauntSet = n ? alive(foes(u)).sort(function (a, b) { return dist(a, u) - dist(b, u); }).slice(0, n) : null; } /* 2026-11-28 도발은 가까운 적 n명만(등급별 battle.tauntN, 0 = 전부. 사용자: "223") */
     function tauntsMe(x, u) { return x.taunt > 0 && (!x.tauntSet || x.tauntSet.indexOf(u) >= 0); }
-    function ultimate0(u, ult0, k0) {
-      magic = true; var U0 = ult0 || u.h.ult, k = k0 || u.uk || 1, kr = k0 || u.ukLv || 1, U = {}; for (var q in U0) U[q] = U0[q]; /* 2026-11-28 위력(k: 레벨 × 직업 × 영웅)은 본 효과의 양(피해·회복·보호막)에만, 덤 효과(확률·비율·감소·나눠 받기)는 레벨(kr)만 (사용자: "피해에만 곱하기") */
+    function ultimate0(u, ult0, k0, kr0) {
+      magic = true; var U0 = ult0 || u.h.ult, k = k0 || u.uk || 1, kr = kr0 || k0 || u.ukLv || 1, U = {}; for (var q in U0) U[q] = U0[q]; /* 2026-11-28 위력(k: 레벨 × 직업 × 영웅)은 본 효과의 양(피해·회복·보호막)에만, 덤 효과(확률·비율·감소·나눠 받기)는 레벨(kr)만 (사용자: "피해에만 곱하기") */
       if (U.mul) U.mul *= k; if (U.shieldPct) U.shieldPct *= k; if (U.tick) U.tick *= k; if (U.blast) U.blast *= k; if (U.thorns) U.thorns *= k; if (U.hitMul) U.hitMul *= k; if (U.aoeMul) U.aoeMul *= k; if (U.follow) U.follow *= k; if (U.amount) U.amount *= U.kind === 'seeds' ? k : kr; if (U.dr) U.dr = Math.min(0.8, U.dr * kr); if (U.share) U.share = Math.min(1, U.share * kr); // 궁극기 레벨만큼 세져요
       var F = alive(foes(u)), T = alive(team(u.side)); u.stats.ults++; if (JP(u).ultEnergy && !(u.trig && u.trig.kind === 'start')) T.forEach(/* 2026-11-28 전투 시작형 궁극기는 서포터 직업 에너지 없음(피프·클라렌, 사용자: A) */function (x) { if (x !== u) gainEnergy(x, JP(u).ultEnergy); }); // 서포터: 궁극기를 쓰면 다른 아군 에너지
       // shortcut: 초월 추가 스킬의 창도 같은 u.win을 써서 기본 스킬 창을 덮어써요, 둘 다 창이 있는 조합이 많아지면 창을 여러 개로 나눠요
@@ -233,7 +233,7 @@
         case 'blink': var bx0 = u.x, by0 = u.y, bf0 = u.face; for (var bc = 0; bc < (U.chain || 1); bc++) { var BF = alive(foes(u)); if (!BF.length) break; var bt0 = BF.reduce(function (m, x) { return x.hp / x.maxHp < m.hp / m.maxHp ? x : m; });
           u.x = bt0.x + u.face * 30; u.y = bt0.y; u.face = -u.face; hurt(u, bt0, U.mul); if (bt0.alive) break; } if (U.back) { u.x = bx0; u.y = by0; u.face = bf0; } break; // 등 뒤로 순간이동해 베고, 쓰러뜨리면 다음 적으로. back이면 제자리로 돌아와요
         case 'mark': F.slice().sort(function (a, b) { return atkOf(b) - atkOf(a); }).slice(0, U.n || 1).forEach(function (mk) { hurt(u, mk, U.mul); if (mk.alive) { mk.markT = U.dur; mk.markV = U.amount; } }); break; /* 2026-11-28 n: 공격력 높은 적 n명(트레사) */
-        case 'barrage': u.brg = { left: U.hits, every: U.every || 0.4, t: 0, mul: U.mul, el: ultEl }; break; // 여러 번 공격: 0.4초마다 1번씩 (첫 발은 바로)
+        case 'barrage': (u.brgL = u.brgL || []).push({ left: U.hits, every: U.every || 0.4, t: 0, mul: U.mul, el: ultEl }); break; /* 2026-11-28 연발 여러 개를 함께(초월로 연발 둘이 붙으면 하나가 덮이던 것) */ // 여러 번 공격: 0.4초마다 1번씩 (첫 발은 바로)
         case 'shieldOne': { var na = T.filter(function (x) { return x !== u; }).sort(function (a, b) { return dist(a, u) - dist(b, u); })[0] || u; addShield(na, na.maxHp * U.shieldPct); break; }
         case 'selfShield': addShield(u, u.maxHp * U.shieldPct); break;
         case 'revive1': { var d1 = team(u.side).filter(function (x) { return !x.alive && !x.escaped && !x.h.mob; })[0]; if (d1) reviveU(u, d1, U.pct); else T.forEach(function (x) { addShield(x, atkOf(u) * (U.mul || 1)); }); break; }
@@ -440,10 +440,10 @@
         if (u.dStk && on(u, 'hasteStack')) speed *= 1 + u.dStk * u.pv;
         holders(u.side, 'chillAura').forEach(function (f) { if (alive(foes(u)).filter(function (x) { return x.slow > 0 || x.chill > 0; }).length >= (PP(f).n || 3)) speed *= 1 + f.pv; });
         if (u.stun > 0 && u.h.mob !== 'mimic') { u.moving = false; continue; } /* 미믹은 기절해도 도망 시간은 봐요(아래에서 방해만 멈춤) */
-        if (u.brg) { u.brg.t -= B.dt; if (u.brg.t <= 0) { u.brg.t += u.brg.every; var BF2 = alive(foes(u)); if (BF2.length) { var ps2 = ultSrc, pe2 = ultEl; ultSrc = u; ultEl = u.brg.el || u.el; magic = true;
-            hurt(u, BF2[Math.floor(rand() * BF2.length)], u.brg.mul); magic = false; ultSrc = ps2; ultEl = pe2; } if (--u.brg.left <= 0) u.brg = null;
-            if (!alive(E).length) { result = 'win'; break; } if (!alive(A).length) { result = 'lose'; break; } } }
-        if (u.castT > 0) { u.castT -= B.dt; u.moving = false; if (u.castT <= 0) { u.castT = 0; var hc = u.stats.healed; ultimate(u); (u.extra || []).forEach(function (e) { if (u.alive) ultimate(u, e.ult, e.k, e.el); }); afterUlt(u, u.stats.healed - hc); // 주문 끝: 스킬이 나가요 (기절하면 멈췄다가 이어서 외워요)
+        if (u.brgL && u.brgL.length) u.brgL = u.brgL.filter(function (bg) { bg.t -= B.dt; if (bg.t <= 0) { bg.t += bg.every; var BF2 = alive(foes(u)); if (BF2.length) { var ps2 = ultSrc, pe2 = ultEl; ultSrc = u; ultEl = bg.el || u.el; magic = true;
+            hurt(u, BF2[Math.floor(rand() * BF2.length)], bg.mul); magic = false; ultSrc = ps2; ultEl = pe2; } bg.left--; } return bg.left > 0; });
+        if (u.brgL && u.brgL.length) { if (!alive(E).length) { result = 'win'; break; } if (!alive(A).length) { result = 'lose'; break; } }
+        if (u.castT > 0) { u.castT -= B.dt; u.moving = false; if (u.castT <= 0) { u.castT = 0; var hc = u.stats.healed; ultimate(u); (u.extra || []).forEach(function (e) { if (u.alive) ultimate(u, e.ult, e.k, e.el, e.kr); }); afterUlt(u, u.stats.healed - hc); // 주문 끝: 스킬이 나가요 (기절하면 멈췄다가 이어서 외워요)
             if (!alive(E).length) { result = 'win'; break; } if (!alive(A).length) { result = 'lose'; break; } } continue; } // 넉백으로 잠깐 멈춤
         if (u.h.mob === 'mimic') { /* 미믹(2026-11-26): 평타 = 고정 피해 dmg, 에너지가 차면 영웅 1명 방해(갈색 둔화, 파랑 실명, 왕관 밀치기). dur초가 지나면 도망 */
           var MM = data.events.mimic || {}; u.age = (u.age || 0) + B.dt; u.moving = false;
@@ -499,7 +499,7 @@
         if (!inReach && !(ultReady && SELF_ULT[u.h.ult.kind])) continue; // 사거리 밖이면 다가가기만 해요
         u.timer += u.interval;
         if (ultReady && u.h.ult.cast) { u.energy = 0; u.castT = u.h.ult.cast; u.moving = false; if (rec) log.push({ t: t, kind: 'cast', uid: u.uid, dur: u.h.ult.cast }); continue; } // 마법사: 주문을 외우기 시작해요
-        if (ultReady) { u.energy = 0; var hb = u.stats.healed; ultimate(u); (u.extra || []).forEach(function (e) { if (u.alive) ultimate(u, e.ult, e.k, e.el); }); // 초월 추가 스킬도 함께 써요
+        if (ultReady) { u.energy = 0; var hb = u.stats.healed; ultimate(u); (u.extra || []).forEach(function (e) { if (u.alive) ultimate(u, e.ult, e.k, e.el, e.kr); }); // 초월 추가 스킬도 함께 써요
           afterUlt(u, u.stats.healed - hb); }
         if (!ultReady || (u.h.ult && u.h.ult.onTop)) { /* 2026-11-28 onTop: 궁극기 + 평타(녹스) */ if (TG === 'lowest' || TG === 'random') { var nt = pickTarget(u); if (nt && dist(u, nt) <= u.reach) tg = u.tgt = nt; }
           magic = false; var am = 1; if (u.boostN > 0) { am *= 1 + u.boostV; u.boostN--; } if (has(u, 'secondHit')) { u.atkC = (u.atkC || 0) + 1; if (u.atkC % 2 === 0) am *= 1 + u.pv; }
