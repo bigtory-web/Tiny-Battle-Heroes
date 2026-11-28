@@ -1,4 +1,4 @@
-// 영웅별 궁극기 위력(hero.ultPow) 찾기: node 밸런스/궁극기_맞추기.js --job=guardian [--seeds=30] → 밸런스/궁극기_맞추기/<job>.json (2026-11-28)
+// 영웅별 궁극기 위력(hero.ultPow) 찾기: node 밸런스/궁극기_맞추기.js --job=guardian [--seeds=30] → 밸런스/궁극기_맞추기/<job>.json (2026-11-28) [--names=아이리스,셀레네] 그 영웅만
 // 목표(궁극기 점수 ÷ 1000, 1성): 직업 평균 기사 60 · 마법사 80 · 서포터 70 · 전사·궁수·암살자 30 (사용자), 등급 한 칸마다 +12% (사용자: "응"), 직업 평균은 그대로
 // 측정: 실제 게임 길이 전투(양쪽 체력 ×0.6, 약 14초) + 크게 섞기(판마다 팀원 무작위 + 자리별 체력·공격 ±25%) — 절벽이 생기지 않게(2026-11-28)
 // 그 영웅만 궁극기를 끈 쪽(engine spec.noUlt)을 몇 레벨 올려야 비기는지 = 궁극기 가치(레벨) → 능력치 가격표 점수 → ÷ 1000
@@ -24,7 +24,7 @@ function score(t0, idx, m) { let w = 0, n = 0; for (let s = 1; s <= SEEDS; s++) 
   const X = sw ? b.E : b.A, Y = sw ? b.A : b.E, M0 = X.reduce((a, u) => a + u.maxHp, 0); allUp(Y[idx], m);
   while (!b.result && b.time < 90) b.step(); const left = S => S.reduce((a, u) => a + Math.max(0, u.alive ? u.hp : 0), 0); w += (left(X) - left(Y)) / M0; n++; } return 0.5 + w / n; }
 const ITER = 10, MLO = -0.6, MHI = 6;
-function lvEquiv(t, idx) { const f = m => score(t, idx, m); let lo = MLO, hi = MHI; if (f(hi) > 0.5) return Infinity; if (f(lo) < 0.5) return -Infinity;
+function lvEquiv(t, idx) { const f = m => score(t, idx, m); let lo = MLO, hi = MHI; if (f(0) > 0.5) lo = 0; else hi = 0; /* 2026-11-28 궁극기 켬이 이기면 0 위로만(팀원 섞기로 생기는 거꾸로 구간을 피함) */ if (f(hi) > 0.5) return Infinity; if (f(lo) < 0.5) return -Infinity;
   for (let i = 0; i < ITER; i++) { const m = (lo + hi) / 2; if (f(m) > 0.5) lo = m; else hi = m; } return GL * (lo + hi) / 2 / G; }
 // 능력치 가격표(최신 기록): 1레벨 = 그 영웅 체력·공격·방어 점수 × G/GL
 const pF = REC.list('능력치_가격').pop(), PR = JSON.parse(fs.readFileSync(path.join(REC.DIR, pF), 'utf8'));
@@ -32,7 +32,7 @@ const ptsPerLv = h => { const p = PR.values['가격 ' + ({ guardian: '수호자'
 // 그 영웅의 궁극기 비율(%), 위력 pow
 function ratio(h, pow) { const hh = D.heroes.find(x => x.id === h.id); hh.ultPow = pow; const base = teamFor(h.job), idx = base.findIndex(x => x.id === REP[h.job]), t1 = base.map((x, i) => i === idx ? { ...x, id: h.id } : x);
   const lv = lvEquiv(t1, idx); return lv === Infinity ? 999 : lv === -Infinity ? -999 : lv * ptsPerLv(hh) / 10; }
-const L = heroes.filter(h => h.job === JOB_), mf = avg(L.map(h => GF[(h.grade || 1) - 1])), t0 = Date.now(), OUT = [];
+const IDS = arg('names', '') ? arg('names').split(',') : null, L = heroes.filter(h => h.job === JOB_ && (!IDS || IDS.includes(h.name))), mf = avg(heroes.filter(h => h.job === JOB_).map(h => GF[(h.grade || 1) - 1])) /* --names여도 직업 전체 등급 평균 */, t0 = Date.now(), OUT = [];
 for (const h of L) { const tgt = TARGET[JOB_] * GF[(h.grade || 1) - 1] / mf, tries = [];
   const ev = p => { const r = ratio(h, p); tries.push([Math.round(p * 1000) / 1000, Math.round(r)]); process.stderr.write(JN[JOB_] + ' ' + h.name + ' 위력 ×' + p.toFixed(2) + ' → ' + Math.round(r) + '% (목표 ' + Math.round(tgt) + '%)\n'); return r; };
   let p0 = D.heroes.find(x => x.id === h.id).ultPow || 1, r0 = ev(p0), res; /* 지금 data.js 위력에서 시작 */
@@ -43,5 +43,6 @@ for (const h of L) { const tgt = TARGET[JOB_] * GF[(h.grade || 1) - 1] / mf, tri
   delete D.heroes.find(x => x.id === h.id).ultPow;
   OUT.push({ id: h.id, name: h.name, grade: h.grade || 1, target: Math.round(tgt), tries, ...res }); }
 fs.mkdirSync('밸런스/궁극기_맞추기', { recursive: true });
-fs.writeFileSync('밸런스/궁극기_맞추기/' + JOB_ + '.json', JSON.stringify({ job: JOB_, seeds: SEEDS, target: TARGET[JOB_], at: new Date().toISOString(), heroes: OUT }, null, 1));
+const OF = '밸런스/궁극기_맞추기/' + JOB_ + '.json', prev = IDS && fs.existsSync(OF) ? JSON.parse(fs.readFileSync(OF, 'utf8')).heroes.filter(o => !IDS.includes(o.name)) : []; /* --names=: 그 영웅만 다시 재고 나머지 결과는 그대로 */
+fs.writeFileSync(OF, JSON.stringify({ job: JOB_, seeds: SEEDS, target: TARGET[JOB_], at: new Date().toISOString(), heroes: prev.concat(OUT) }, null, 1));
 console.log(JN[JOB_] + ' 끝 ' + Math.round((Date.now() - t0) / 1000) + '초'); OUT.forEach(o => console.log(o.name, '등급', o.grade, '목표', o.target, '→ 위력', o.pow, o.ratio != null ? o.ratio + '%' : '', o.note || ''));
