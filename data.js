@@ -91,7 +91,7 @@ var IDLE_DATA = {
   heroes: [
     // shot(2026-11-25): 원거리 평타 투사체 그림 종류. arrow 화살 · stone 돌(포격수는 크게) · fire 불덩이 · ice 얼음 · bolt 번개 · orb 마법 구슬(진영 색) · note 음표. 없으면 진영 색 동그라미
     { id: 'bear',   name: '록시', alias: '바위곰', sex: 'f', race: 'beast', job: 'guardian', ultName: '바위 포효',   role: 'tank',    el: 'forest', range: 'melee', cost: 1, grade: 1,  hp: 1700, atk: 61, def: 160, interval: 1.6,
-      ult: { trig: { kind: 'struck', n: 10 }, kind: 'taunt', dur: 4, shieldPct: 0.05, win: { kind: 'attackShield', v: 0.05, dur: 1, t: 4 }, desc: '10번 맞을 때마다 4초 동안 도발하고, 그동안 평타를 칠 때마다 최대 체력 5% 보호막을 얻는다.' }, passive: { kind: 'attackShield', v: 0.05, dur: 1 } },
+      ult: { trig: { kind: 'struck', n: 10 }, kind: 'nova', r: 90, mul: 0, stun: 1, selfShield: 0.2, desc: '10번 맞을 때마다 주변 적을 1초 기절시키고, 최대 체력 20% 보호막을 얻는다.' } /* 2026-11-28 예전: 4초 도발 + 평타마다 보호막 5%(조건이 두 겹이라 약함) */, passive: { kind: 'attackShield', v: 0.05, dur: 1 } },
     { id: 'knight', name: '안셀름', alias: '철갑기사', sex: 'm', race: 'human', job: 'guardian', ultName: '수호의 방패', role: 'tank',    el: 'light',  range: 'melee', cost: 2, grade: 2,  hp: 2060, atk: 75, def: 180, interval: 1.6,
       ult: { kind: 'teamShield', mul: 1.6, win: { kind: 'shieldGuard', v: 0.2, t: 5 }, desc: '아군 전체에게 보호막을 씌우고, 5초 동안 보호막이 있는 아군이 받는 피해가 20% 줄어든다.' }, passive: { kind: 'shieldGuard', v: 0.2 } },
     { id: 'blades', name: '블레이크', alias: '쌍검', sex: 'm', race: 'human', job: 'warrior', ultName: '화염 일섬',     role: 'warrior', el: 'fire',   range: 'melee', cost: 2, grade: 2,  hp: 1400, atk: 150, def: 90,  interval: 1.2,
@@ -112,8 +112,8 @@ var IDLE_DATA = {
       ult: { kind: 'barrage', every: 0.4, hits: 4, mul: 1.15, win: { kind: 'ultRefund', v: 30 }, desc: '0.4초마다 번개를 4번 떨어뜨리고, 쓴 뒤 에너지 30이 남는다.' }, passive: { kind: 'ultRefund', v: 30 } },
     { id: 'song',   name: '멜로디', alias: '음유시인', sex: 'f', race: 'elf', job: 'bard', ultName: '숲의 노래', role: 'support', el: 'forest', range: 'mid', shot: 'note', cost: 2, grade: 2, hp: 1120, atk: 99, def: 70,  interval: 1.4,
       ult: { kind: 'healAll', mul: 2.4, win: { kind: 'healHaste', v: 0.15, dur: 3 }, desc: '아군 전체를 회복하고, 회복받은 아군의 공격 속도가 3초 동안 15% 빨라진다.' }, passive: { kind: 'healHaste', v: 0.15, dur: 2 } },
-    { id: 'drum', /* 2026-11-28 직업·등급 옮김(bard 1 → warrior 1), 능력치는 새 직업·등급 평균(임시). 사용자: "전체 65명에서 고루고루" */   name: '탬버', alias: '북치기', sex: 'f', race: 'demon', job: 'warrior', ultName: '전투 북소리',   role: 'warrior', el: 'dark',   range: 'melee', cost: 1, grade: 1, hp: 1280, atk: 124, def: 78,  interval: 1,
-      ult: { kind: 'haste', amount: 0.3, dur: 5, win: { kind: 'teamLifesteal', v: 0.15, t: 5 }, desc: '5초 동안 아군 공격 속도가 30% 빨라지고, 그동안 아군이 준 피해의 15%를 회복한다.' }, passive: { kind: 'lifestealEnergy', v: 2 } },
+    { id: 'drum', /* 2026-11-28 직업·등급 옮김(bard 1 → warrior 1), 능력치는 새 직업·등급 평균(임시). 사용자: "전체 65명에서 고루고루" */   name: '탬버', alias: '북치기', sex: 'f', race: 'demon', job: 'warrior', ultName: '전투 북',   role: 'warrior', el: 'dark',   range: 'melee', cost: 1, grade: 1, hp: 1280, atk: 124, def: 78,  interval: 1,
+      ult: { kind: 'buff', win: { kind: 'drumRally', v: 0.02, t: 4 }, desc: '4초 동안 해당 영웅이 평타를 칠 때마다 아군 전체 공격력이 2%씩 오른다.' } /* 2026-11-28 전사로 옮기며 바꿈. 예전: 아군 공격 속도 30% + 흡혈 */, passive: { kind: 'allyUltPower', v: 2 } },
     { id: 'wyvern',  name: '와이엇', alias: '비룡기사', sex: 'm', race: 'human', job: 'warrior', ultName: '급강하', role: 'warrior', el: 'fire',   range: 'melee',  cost: 3, grade: 4, hp: 1500, atk: 157, def: 95, interval: 1.2,
       ult: { kind: 'dash', mul: 3.2, desc: '맨 뒤 적에게 뛰어들어 공격력 320% 피해를 준다.' }, passive: { kind: 'dive', v: 1 } },
     { id: 'harpy',   name: '페드라', alias: '하피', sex: 'f', race: 'beast', job: 'archer', ultName: '깃털 폭풍',     role: 'ranged',  el: 'forest', range: 'far', shot: 'arrow', cost: 1, grade: 1, hp: 900, atk: 131, def: 50, interval: 1.1,
@@ -125,23 +125,23 @@ var IDLE_DATA = {
     // ── 추가 영웅 (종족·직업 빈칸 채우기). 새 영웅을 그림 없이 넣을 때는 art: false를 달면 적·전리품·목록에 안 나와요 ──
     { id: 'thorn',  name: '로즈', alias: '가시 수호자', sex: 'f', race: 'elf',   job: 'guardian', ultName: '가시 덩굴벽', role: 'tank',    el: 'forest', range: 'melee',  cost: 2, grade: 3, hp: 2780, atk: 94, def: 170, interval: 1.6,
       ult: { trig: { kind: 'struck', n: 5 }, kind: 'taunt', dur: 4, shieldPct: 0.1, win: { kind: 'thorns', v: 0.4, t: 4 }, desc: '5번 맞을 때마다 4초 동안 도발하고, 그동안 근접 공격으로 받은 피해의 40%를 공격자에게 돌려준다.' }, passive: { kind: 'thorns', v: 0.25 } },
-    { id: 'gate', /* 2026-11-28 직업·등급 옮김(guardian 4 → archer 4), 능력치는 새 직업·등급 평균(임시). 사용자: "전체 65명에서 고루고루" */   name: '헬가', alias: '지옥문지기', sex: 'f', race: 'demon', job: 'archer', ultName: '지옥문 봉인', role: 'ranged',  el: 'dark',   range: 'far', shot: 'arrow',  cost: 3, grade: 4, hp: 1100, atk: 209, def: 65, interval: 1.25,
-      ult: { kind: 'buff', win: { kind: 'guardShare', v: 0.5, t: 6 }, desc: '6초 동안 체력이 가장 낮은 아군이 받는 피해의 50%를 대신 받는다.' }, passive: { kind: 'guardShare', v: 0.3 } },
+    { id: 'gate', /* 2026-11-28 직업·등급 옮김(guardian 4 → archer 4), 능력치는 새 직업·등급 평균(임시). 사용자: "전체 65명에서 고루고루" */   name: '헬가', alias: '지옥문지기', sex: 'f', race: 'demon', job: 'archer', ultName: '영혼 사슬', role: 'ranged',  el: 'dark',   range: 'far', shot: 'arrow',  cost: 3, grade: 4, hp: 1100, atk: 209, def: 65, interval: 1.25,
+      ult: { kind: 'link', mul: 1.5, dur: 6, share: 0.5, desc: '적 2명을 사슬로 묶는다. 6초 동안 한쪽이 받는 피해의 50%를 다른 쪽도 받는다.' } /* 2026-11-28 궁수 전설로 옮기며 바꿈. 예전: 체력 가장 낮은 아군 피해 대신 받기 */, passive: { kind: 'linkNoHeal', v: 1 } },
     { id: 'lion',   name: '레오', alias: '사자왕', sex: 'm',   race: 'beast', job: 'guardian',  ultName: '사자의 맹세', role: 'tank',    el: 'light',  range: 'melee',  cost: 3, grade: 4, hp: 2380, atk: 95, def: 190, interval: 1.5,
       ult: { kind: 'teamShield', mul: 1.5, rally: 0.05, desc: '아군 전체에게 보호막을 씌우고, 이번 전투 동안 자신의 공격력이 보호막을 얻은 아군 1명마다 5% 오른다.' }, passive: { kind: 'shieldRally', v: 0.03, max: 10 } },
-    { id: 'shaman', /* 2026-11-28 직업·등급 옮김(mage 3 → archer 3), 능력치는 새 직업·등급 평균(임시). 사용자: "전체 65명에서 고루고루" */ name: '루나', alias: '늑대주술사', sex: 'f', race: 'beast', job: 'archer',   ultName: '가시 폭풍',   role: 'ranged',    el: 'forest', range: 'far', shot: 'arrow', cost: 2, grade: 3, hp: 1050, atk: 186, def: 60,  interval: 1.25,
-      ult: { kind: 'aoe', mul: 1, teamEnergy: 15, race: 'beast', desc: '적 전체에게 피해를 주고, 다른 수인 아군의 에너지를 15 채운다.' }, passive: { kind: 'ultBeastEnergy', v: 15 } },
+    { id: 'shaman', /* 2026-11-28 직업·등급 옮김(mage 3 → archer 3), 능력치는 새 직업·등급 평균(임시). 사용자: "전체 65명에서 고루고루" */ name: '루나', alias: '늑대주술사', sex: 'f', race: 'beast', job: 'archer',   ultName: '가시덤불 화살',   role: 'ranged',    el: 'forest', range: 'far', shot: 'arrow', cost: 2, grade: 3, hp: 1050, atk: 186, def: 60,  interval: 1.25,
+      ult: { kind: 'thorn', mul: 1.5, tick: 0.4, slow: 0.3, r: 70, dur: 3, desc: '가장 먼 적에게 화살을 쏘아 3초 동안 가시덤불을 만든다. 덤불 안의 적은 느려지고 1초마다 피해를 받는다.' } /* 2026-11-28 궁수로 옮기며 바꿈. 예전: 적 전체 피해 + 수인 에너지 */, passive: { kind: 'beastVolley', v: 1 } },
     { id: 'dancer', name: '마리나', alias: '검무희', sex: 'f',   race: 'elf',   job: 'warrior',  ultName: '물결 검무',   role: 'warrior', el: 'water',  range: 'melee',  cost: 2, grade: 2, hp: 1190, atk: 130, def: 80,  interval: 1.0,
       ult: { trig: { kind: 'hits', n: 4 }, kind: 'multi', hits: 3, mul: 1.1, win: { kind: 'hasteStack', v: 0.08, max: 10, t: 5 }, desc: '4번째 공격마다 3번 베고, 5초 동안 평타를 칠 때마다 공격 속도가 8%씩 빨라진다.' }, passive: { kind: 'hasteStack', v: 0.04, max: 10 } },
-    { id: 'imp', /* 2026-11-28 직업·등급 옮김(archer 1 → assassin 2), 능력치는 새 직업·등급 평균(임시). 사용자: "전체 65명에서 고루고루" */    name: '스파키', alias: '화염임프', sex: 'f', race: 'demon', job: 'assassin',   ultName: '불씨 화살',   role: 'warrior',  el: 'fire',   range: 'melee', cost: 1, grade: 2, hp: 1290, atk: 148, def: 83,  interval: 1.1,
-      ult: { kind: 'snipe', mul: 2.8, win: { kind: 'killEnergy', v: 50 }, desc: '체력이 가장 낮은 적을 쏘고, 쓰러뜨리면 에너지 50을 돌려받는다.' }, passive: { kind: 'killBurn', v: 3 } },
+    { id: 'imp', /* 2026-11-28 직업·등급 옮김(archer 1 → assassin 2), 능력치는 새 직업·등급 평균(임시). 사용자: "전체 65명에서 고루고루" */    name: '스파키', alias: '화염임프', sex: 'f', race: 'demon', job: 'assassin',   ultName: '불씨 자국',   role: 'warrior',  el: 'fire',   range: 'melee', cost: 1, grade: 2, hp: 1290, atk: 148, def: 83,  interval: 1.1,
+      ult: { kind: 'ember', mul: 2, blast: 1.2, r: 80, delay: 2, burn: 4, desc: '체력이 가장 낮은 적 등 뒤로 순간이동해 베고, 그 자리에 불씨를 남긴다. 불씨는 2초 뒤 터져 주변 적에게 피해를 주고 화상을 입힌다.' } /* 2026-11-28 암살자로 옮기며 바꿈. 예전: 저격 + 처치 시 에너지 */, passive: { kind: 'burnCrit', v: 0.2 } },
     // ── 추가 영웅 43명 (2026-11-18, 모두 65명). 43명 모두 그림이 들어와서 풀었어요 ──
     { id: 'boar', name: '러시', alias: '멧돼지전사', sex: 'm', race: 'beast', job: 'warrior', ultName: '돌진', role: 'warrior', el: 'forest', range: 'melee', cost: 1, grade: 1, hp: 1250, atk: 135, def: 75, interval: 1.1,
       ult: { kind: 'dash', mul: 3, stun: 1, desc: '가장 먼 적에게 돌진해 공격력 300% 피해를 주고 1초 기절시킨다.' }, passive: { kind: 'firstStrike', v: 3, stun: 0.5 } },
     { id: 'squire', name: '섀도', alias: '독칼잡이', sex: 'm', race: 'human', job: 'assassin', ultName: '그림자 찌르기', role: 'warrior', el: 'dark', range: 'melee', cost: 1, grade: 1, hp: 1240, atk: 139, def: 68, interval: 1.1,
       ult: { kind: 'blink', mul: 2.6, chain: 1, back: true, desc: '체력이 가장 낮은 적의 등 뒤로 순간이동해 공격력 260%로 찌르고 제자리로 돌아온다.' }, passive: { kind: 'none', v: 0 } },
-    { id: 'sprout', name: '블룸', alias: '새싹정령', sex: 'm' /* 2026-11-27 남캐로 다시 그림(사용자) */, race: 'human' /* 2026-11-27 엘프 → 인간(사용자: 엘프 느낌 말고 인간 느낌, "ㅇ") */, job: 'bard', ultName: '새싹의 노래', role: 'support', el: 'forest', range: 'mid', shot: 'note', cost: 1, grade: 1, hp: 1160, atk: 97, def: 75, interval: 1.4,
-      ult: { kind: 'buff', win: { kind: 'healEvery', v: 0.03, every: 1, t: 8 }, desc: '8초 동안 1초마다 체력이 가장 낮은 아군을 3% 회복한다.' }, passive: { kind: 'healEvery', v: 0.05, every: 5 } },
+    { id: 'sprout', name: '블룸', alias: '새싹정령', sex: 'm' /* 2026-11-27 남캐로 다시 그림(사용자) */, race: 'human' /* 2026-11-27 엘프 → 인간(사용자: 엘프 느낌 말고 인간 느낌, "ㅇ") */, job: 'bard', ultName: '새싹 씨앗', role: 'support', el: 'forest', range: 'mid', shot: 'note', cost: 1, grade: 1, hp: 1160, atk: 97, def: 75, interval: 1.4,
+      ult: { kind: 'seeds', n: 3, dur: 5, amount: 0.15, desc: '아군 3명에게 씨앗을 심는다. 5초 뒤 피어나며 체력 15%를 회복한다. 그 전에 체력이 반 아래로 떨어지면 바로 핀다.' } /* 2026-11-28 예전: 1초마다 3% 회복(짧은 전투에서 약함) */, passive: { kind: 'seedRoot', v: 1 } },
     { id: 'pup', name: '엠버', alias: '불강아지', sex: 'f', race: 'beast', job: 'archer', ultName: '불씨 뱉기', role: 'ranged', el: 'fire', range: 'far', shot: 'fire', cost: 1, grade: 1, hp: 920, atk: 149, def: 55, interval: 1.25,
       ult: { kind: 'snipe', mul: 2, burn: 6, desc: '체력이 가장 낮은 적에게 피해를 주고 6초 화상을 입힌다.' }, passive: { kind: 'lowBurn', v: 0.5 } },
     { id: 'mudgolem', name: '매디', alias: '늪지기', sex: 'f', race: 'demon', job: 'guardian', ultName: '진흙 벽', role: 'tank', el: 'water', range: 'melee', cost: 1, grade: 1, hp: 2190, atk: 75, def: 160, interval: 1.6,
@@ -196,8 +196,8 @@ var IDLE_DATA = {
       ult: { kind: 'healAll', mul: 2.2, win: { kind: 'healSteal', v: 0.3 }, desc: '아군 전체를 회복하고, 회복량의 30%만큼 가장 약한 적의 체력을 빼앗는다.' }, passive: { kind: 'healSteal', v: 0.3 } },
     { id: 'cannon', name: '캐넌', alias: '포격수', sex: 'm', race: 'human', job: 'archer', ultName: '포격', role: 'ranged', el: 'fire', range: 'far', shot: 'stone', cost: 2, grade: 3, hp: 1090, atk: 186, def: 60, interval: 1.25,
       ult: { kind: 'bombard', mul: 2, r: 90, desc: '적이 가장 많이 모인 곳에 포탄을 떨어뜨려 주변 적에게 공격력 200% 피해를 준다.' }, passive: { kind: 'splash', v: 0.36 } },
-    { id: 'coral', /* 2026-11-28 직업·등급 옮김(guardian 3 → bard 3), 능력치는 새 직업·등급 평균(임시). 사용자: "전체 65명에서 고루고루" */ name: '코라', alias: '산호수호자', sex: 'f', race: 'elf', job: 'bard', ultName: '산호 벽', role: 'support', el: 'water', range: 'mid', shot: 'note', cost: 3, grade: 3, hp: 1580, atk: 120, def: 75, interval: 1.4,
-      ult: { kind: 'buff', win: { kind: 'teamShieldEvery', v: 0.04, every: 2, t: 8 }, desc: '8초 동안 2초마다 아군 전체에게 최대 체력 4% 보호막을 씌운다.' }, passive: { kind: 'teamShieldEvery', v: 0.05, every: 10 } },
+    { id: 'coral', /* 2026-11-28 직업·등급 옮김(guardian 3 → bard 3), 능력치는 새 직업·등급 평균(임시). 사용자: "전체 65명에서 고루고루" */ name: '코라', alias: '산호수호자', sex: 'f', race: 'elf', job: 'bard', ultName: '산호 갑옷', role: 'support', el: 'water', range: 'mid', shot: 'note', cost: 3, grade: 3, hp: 1580, atk: 120, def: 75, interval: 1.4,
+      ult: { kind: 'coral', dur: 6, dr: 0.2, thorns: 0.1, desc: '6초 동안 아군 전체가 받는 피해가 20% 줄고, 맞으면 공격자에게 피해 10%를 돌려준다.' } /* 2026-11-28 예전: 2초마다 아군 보호막 4%(약함) */, passive: { kind: 'shieldBreakHeal', v: 0.03 } },
     { id: 'thunderbird', name: '토라', alias: '천둥새', sex: 'f', race: 'beast', job: 'mage', ultName: '낙뢰', role: 'mage', el: 'light', range: 'long', shot: 'bolt', cost: 3, grade: 4, hp: 1030, atk: 170, def: 60, interval: 1.5,
       ult: { kind: 'barrage', every: 0.4, hits: 4, mul: 1.3, win: { kind: 'ultStack', v: 0.2, max: 5, t: 999 }, desc: '0.4초마다 낙뢰를 4번 떨어뜨린다. 쓸 때마다 다음 낙뢰 피해가 20% 커진다. 최대 5번 쌓인다.' }, passive: { kind: 'ultStack', v: 0.2, max: 5 } },
     { id: 'necro', name: '모르티아', alias: '사령술사', sex: 'f', race: 'demon', job: 'mage', ultName: '망자의 손', role: 'mage', el: 'dark', range: 'long', shot: 'orb', cost: 3, grade: 4, hp: 952, atk: 161, def: 60, interval: 1.5,
@@ -667,7 +667,14 @@ var IDLE_DATA = {
   // at: 이 이벤트 스테이지에서만 초월돼요(2026-11-18). 비우면 아무 때나
   transcend: { enabled: true, maxSkills: 2, maxLv: 1, at: 'altar', perAltar: 1, trMaterial: false /* 2026-11-26: 이미 초월한 영웅은 재료로 못 씀 */ }, // perAltar(2026-11-23): 제단 한 번에 초월 1번만 (영웅마다도 maxSkills 2라 추가 스킬 1개까지) // maxSkills 2: 기본 + 추가 1개. 2026-11-22: 스킬 레벨 없음 — 같은 영웅을 넣으면 같은 스킬이 2개(동시에 발동)
   // 패시브 종류. {v}는 그 레벨의 수치(%는 100을 곱해 보여요)
-  passives: { // 2026-11-21: 영웅마다 다른 특성(캐릭터_특성표.md). {v}=값×100%, {n}=값
+  passives: {
+    allyUltPower: { name: '북의 응답', desc: '아군이 궁극기를 쓸 때마다 다음 평타 피해가 {n}배가 된다.' }, // 2026-11-28 탬버
+    shieldBreakHeal: { name: '산호의 품', desc: '아군 보호막이 깨질 때마다 그 아군 체력을 {v}% 회복한다.' }, // 2026-11-28 코라
+    linkNoHeal: { name: '끊긴 숨', desc: '사슬에 묶인 적은 회복을 받지 못한다.' }, // 2026-11-28 헬가
+    burnCrit: { name: '불씨 노리기', desc: '화상 걸린 적에게는 치명타 확률이 {v}% 오른다.' }, // 2026-11-28 스파키
+    beastVolley: { name: '무리 사냥', desc: '수인 아군이 궁극기를 쓰면 다음 평타로 화살 2발을 쏜다.' }, // 2026-11-28 루나
+    seedRoot: { name: '뿌리 내림', desc: '씨앗이 필 때 주변 적을 {n}초 동안 묶는다.' }, // 2026-11-28 블룸
+ // 2026-11-21: 영웅마다 다른 특성(캐릭터_특성표.md). {v}=값×100%, {n}=값
     shieldAlly: { name: '방패 내밀기', desc: '전투가 시작되면 가장 가까운 아군에게 그 아군 최대 체력 {v}% 보호막을 씌운다.' },
     shieldGuard: { name: '철벽 자세', desc: '보호막이 있는 동안 받는 피해가 {v}% 줄어든다.' },
     shieldBreakStun: { name: '등껍질 충격', desc: '보호막이 깨지면 주변 적을 {n}초 기절시킨다.' },
