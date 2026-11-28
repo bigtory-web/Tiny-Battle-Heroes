@@ -37,7 +37,7 @@
       return { uid: ++uid, id: h.id, name: h.name, h: h, side: side, slot: spec.slot, star: spec.star || 1, line: AR.lines ? (AR.lines[spec.slot] || 0) : (spec.slot < 2 ? 0 : 1), front: (AR.lines ? (AR.lines[spec.slot] || 0) === 0 : spec.slot < 2) || h.mob === 'goblin' || h.mob === 'chest', level: lv,
         x: spec.x != null ? spec.x : (side === 'A' ? p0[0] : AR.w - p0[0]), y: spec.y != null ? spec.y : p0[1], face: side === 'A' ? 1 : -1, moving: false, tgt: null,
         reach: AR.reach[h.range], spd: AR.speed[h.range],
-        maxHp: hp, hp: hp, atk: h.atk * g * (m.atk || 1) * (1 + hb('atk')), def: h.def * g * starMul(data, spec.star) * (1 + hb('def')), /* 2026-11-27 별(성급)이 방어도 올림(사용자: "일단 다 올리자") */ interval: h.interval / (spec.spd || 1), range: h.range, swampV: spec.swamp || 0, swampE: spec.swampE || 0, /* 2026-11-26 늪: 살아 있는 1초마다 공격력 +swampV. 2026-11-27: swampE가 있으면 swampE초마다 계단식(늪 칸) */ race2: spec.race2 && spec.race2 !== h.race ? spec.race2 : null, /* 단상으로 더해진 종족 */ el: spec.el || h.el, el2: spec.el2 && spec.el2 !== (spec.el || h.el) ? spec.el2 : null, // el2: 진영 발판으로 더해진 진영 // spec.el: 진영 발판 위면 그 진영
+        maxHp: hp, hp: hp, atk: h.atk * g * (m.atk || 1) * (1 + hb('atk')), def: h.def * g * starMul(data, spec.star, h.grade || 1) * (1 + hb('def')), /* 2026-11-27 별(성급)이 방어도 올림(사용자: "일단 다 올리자") */ interval: h.interval / (spec.spd || 1), range: h.range, swampV: spec.swamp || 0, swampE: spec.swampE || 0, /* 2026-11-26 늪: 살아 있는 1초마다 공격력 +swampV. 2026-11-27: swampE가 있으면 swampE초마다 계단식(늪 칸) */ race2: spec.race2 && spec.race2 !== h.race ? spec.race2 : null, /* 단상으로 더해진 종족 */ el: spec.el || h.el, el2: spec.el2 && spec.el2 !== (spec.el || h.el) ? spec.el2 : null, // el2: 진영 발판으로 더해진 진영 // spec.el: 진영 발판 위면 그 진영
         enMax: (B.energyCost && B.energyCost[h.job]) || B.energyMax, /* 2026-11-28 직업별 궁극기 필요 에너지 */ energy: h.ult && h.ult.trig ? (h.ult.trig.kind === 'start' ? ((B.energyCost && B.energyCost[h.job]) || B.energyMax) : 0) : Math.min((B.energyCost && B.energyCost[h.job]) || B.energyMax, SE.value + (spec.energy || 0)), trig: h.ult && h.ult.trig || null, timer: rand() * B.startJitter, alive: true, shield: 0, taunt: 0, slow: 0, slowAmt: 0, haste: 0, hasteAmt: 0,
         grade: h.grade || 1, ultLv: 0, pasLv: 0, uk: 1, pas: null, pv: 0, crit: critChance(data, h) + hb('crit'),
         boss: !!spec.boss, merc: !!spec.merc, blue: !!spec.blue, endureOnce: !!spec.endure, stats: { dealt: 0, taken: 0, healed: 0, ults: 0, shield: 0 } };
@@ -738,7 +738,7 @@
       return { n: n, name: stageName(data, n), level: lv, boss: false, wall: false, team: [{ id: 'chest', level: lv, slot: 3, /* 2026-11-24: 가운데 줄 가운데(화면 5번 칸) */ mul: { hp: em * hm, atk: 0 }, mob: true }], skills: [], event: ev, bell: bell }; }
     var rndB = makeRng(n * 977 + 41 + plv * 7919); team.forEach(function (u) { u.bonus = heroBonus(data, u.id, n, rndB, plv); if (bhas('haste')) u.spd = 1 + bv('haste'); if (bhas('energy')) u.energy = bv('energy'); if (bhas('endure')) u.endure = 1;
       if (bhas('rage') || bhas('tough')) u.mul = { hp: (u.mul.hp || 1) * (1 + (bhas('tough') ? bv('tough') : 0)), atk: (u.mul.atk || 1) * (1 + (bhas('rage') ? bv('rage') : 0)) }; });
-    if (bhas('star') && team.length) { var sU = team[Math.floor(rndB() * team.length)], sg = gradeMul(data, 1 + bv('star')) / gradeMul(data, 1); sU.star = 1 + bv('star'); sU.mul = { hp: sU.mul.hp * sg, atk: sU.mul.atk * sg }; } // 정예: 무작위 적 1명 별 +1 (2026-11-23) // 따로 굴려요: 종으로 적이 늘어도 있던 덤은 그대로
+    if (bhas('star') && team.length) { var sU = team[Math.floor(rndB() * team.length)], sg = gradeMul(data, 1 + bv('star'), heroGrade(data, sU.id)) / gradeMul(data, 1, heroGrade(data, sU.id)); sU.star = 1 + bv('star'); sU.mul = { hp: sU.mul.hp * sg, atk: sU.mul.atk * sg }; } // 정예: 무작위 적 1명 별 +1 (2026-11-23) // 따로 굴려요: 종으로 적이 늘어도 있던 덤은 그대로
     // 2026-11-26 늪 칸(2장): 적 쪽 칸 cells개(+분노 '늪 확장'). 적이 선 칸에서 먼저 골라요(빈 늪은 뜻이 없어서). 늪에 선 적은 살아 있는 every초마다 공격력 +amount(최대 없음, 2026-11-27 계단식)
     var SW = C.swamp, swamp = []; if (SW && team.length) { var rndW = makeRng(n * 977 + 71 + plv * 7919), occ = team.map(function (u) { return u.slot; }), nW = (SW.cells || 0) + (bhas('swamp') ? bv('swamp') : 0);
       for (var wi = occ.length - 1; wi > 0; wi--) { var wj = Math.floor(rndW() * (wi + 1)), wt = occ[wi]; occ[wi] = occ[wj]; occ[wj] = wt; }
@@ -843,8 +843,8 @@
   function levelCost(data, lv) { return Math.round(data.levelCost.base * Math.pow(data.levelCost.growth, lv - 1)); }
   // 등급 배율 (합성 등급 1~maxGrade)
   // 성급 배율 (합성 ★1~maxStar)
-  function starMul(data, star) { var M = data.recruit.merge, arr = M ? M.mul : data.recruit.starMul; return arr[(star || 1) - 1] || arr[arr.length - 1] || 1; }
-  function gradeMul(data, star) { return starMul(data, star); } // 예전 이름 (성급 배율)
+  function starMul(data, star, grade) { var M = data.recruit.merge, arr = M && grade && M.mulByGrade && M.mulByGrade[grade] ? M.mulByGrade[grade] : M ? M.mul : data.recruit.starMul; /* 2026-11-28 mulByGrade: 등급마다 다른 별 배율(없으면 mul 하나) */ return arr[(star || 1) - 1] || arr[arr.length - 1] || 1; }
+  function gradeMul(data, star, grade) { return starMul(data, star, grade); } // 예전 이름 (성급 배율)
   // 영웅 효과 레벨 (화면용): { ult, pas } — 등급 기본값
   function effectLevels(data, id) { var GE = data.gradeEffects || {}, b = GE[heroGrade(data, id)] || { ult: 1, pas: 0 }, h = heroById(data, id); return { ult: b.ult, pas: h && h.passive ? b.pas : 0 }; }
   function passiveValue(data, id, lv) { var h = heroById(data, id), GE = data.gradeEffects || {}; return h && h.passive && lv > 0 ? h.passive.v * (1 + (GE.pasPer || 0) * (lv - 1)) : 0; }
@@ -868,7 +868,7 @@
   function unitPower(data, u, lv) { var GE = data.gradeEffects || {}, per = GE.ultPer || 0.3, sk = unitSkills(data, u), base = effectLevels(data, u.id).ult || 1;
     var mul = 1 + per * (sk[0].lv - base) + sk.slice(1).reduce(function (a, s) { return a + per * s.lv; }, 0);
     return Math.round(power(data, u.id, lv || data.startLevel, u.star || 1) * mul); }
-  function power(data, id, lv, star) { var h = heroById(data, id), g = 1 + data.growth.perLevel * (lv - 1), s = starMul(data, star); return Math.sqrt(h.hp * g * s * h.atk * g * s / h.interval); }
+  function power(data, id, lv, star) { var h = heroById(data, id), g = 1 + data.growth.perLevel * (lv - 1), s = starMul(data, star, h.grade || 1); return Math.sqrt(h.hp * g * s * h.atk * g * s / h.interval); }
   // 클리어 골드: 종을 울린 만큼 늘어요
   // 종 한 번에 바로 받는 골드
   function bellGold(data, n, from, to, plv) { var B = data.bell, I = B && B.instant, base = stageReward(data, n, 0, null, plv), s = 0; if (!I) return 0; from = from || 0; to = to == null ? from + 1 : to; // from번 다음부터 to번까지 울린 골드 합. 2026-11-25: k번째 = 클리어 골드 × instant[k-1]
@@ -885,7 +885,7 @@
     var pick = [], used = 0;
     list.forEach(function (r) { var c = heroById(data, r.id).cost; if (pick.length < field && used + c <= cap) { pick.push(r); used += c; } });
     return placeSlots(data, pick).map(function (p) {
-      var r = p.ref, s = gradeMul(data, gr(r)); return { uid: r.uid, id: p.id, level: r.level, star: gr(r), grade: heroGrade(data, p.id), slot: p.slot, mul: { hp: s, atk: s }, ultLv: r.ultLv, extra: r.extra };
+      var r = p.ref, s = gradeMul(data, gr(r), heroGrade(data, p.id)); return { uid: r.uid, id: p.id, level: r.level, star: gr(r), grade: heroGrade(data, p.id), slot: p.slot, mul: { hp: s, atk: s }, ultLv: r.ultLv, extra: r.extra };
     });
   }
   // ───── 영웅 개체 (같은 영웅도 여러 명) ─────
