@@ -35,11 +35,11 @@ function ratio(h, pow) { const hh = D.heroes.find(x => x.id === h.id); hh.ultPow
 const L = heroes.filter(h => h.job === JOB_), mf = avg(L.map(h => GF[(h.grade || 1) - 1])), t0 = Date.now(), OUT = [];
 for (const h of L) { const tgt = TARGET[JOB_] * GF[(h.grade || 1) - 1] / mf, tries = [];
   const ev = p => { const r = ratio(h, p); tries.push([Math.round(p * 1000) / 1000, Math.round(r)]); process.stderr.write(JN[JOB_] + ' ' + h.name + ' 위력 ×' + p.toFixed(2) + ' → ' + Math.round(r) + '% (목표 ' + Math.round(tgt) + '%)\n'); return r; };
-  let p0 = 1, r0 = ev(p0), res;
+  let p0 = D.heroes.find(x => x.id === h.id).ultPow || 1, r0 = ev(p0), res; /* 지금 data.js 위력에서 시작 */
   if (r0 <= 0 || Math.abs(r0) === 999) res = { pow: null, note: r0 >= 999 ? '못 잼(너무 셈)' : '궁극기가 손해 — 스킬 내용 문제' };
-  else { let p1 = Math.max(0.2, Math.min(4, tgt / r0)), r1 = Math.abs(p1 - 1) < 0.03 ? r0 : ev(p1);
-    for (let i = 0; i < 3 && Math.abs(r1 - tgt) > tgt * 0.07; i++) { const p2 = r1 === r0 ? p1 * tgt / r1 : p1 + (tgt - r1) * (p1 - p0) / (r1 - r0); p0 = p1; r0 = r1; p1 = Math.max(0.2, Math.min(4, p2)); r1 = ev(p1); }
-    res = { pow: Math.round(p1 * 100) / 100, ratio: Math.round(r1) }; if (p1 >= 4 && r1 < tgt * 0.85) res.note = '위력 ×4로도 모자람 — 스킬 내용 문제'; if (p1 <= 0.2 && r1 > tgt * 1.15) res.note = '위력 ×0.2로도 셈 — 스킬 내용 문제'; }
+  else { let p1 = Math.max(0.1, Math.min(6, p0 * tgt / r0)), r1 = Math.abs(p1 - 1) < 0.03 ? r0 : ev(p1);
+    for (let i = 0; i < 3 && Math.abs(r1 - tgt) > tgt * 0.07 && !((p1 >= 6 && r1 < tgt) || (p1 <= 0.1 && r1 > tgt)); i++) { const p2 = r1 === r0 ? p1 * tgt / r1 : p1 + (tgt - r1) * (p1 - p0) / (r1 - r0); p0 = p1; r0 = r1; p1 = Math.max(0.1, Math.min(6, p2)); r1 = ev(p1); }
+    res = { pow: Math.round(p1 * 100) / 100, ratio: Math.round(r1) }; if (p1 >= 6 && r1 < tgt * 0.85) res.note = '위력 ×6으로도 모자람 — 스킬 내용 문제'; if (p1 <= 0.1 && r1 > tgt * 1.15) res.note = '위력 ×0.1로도 셈 — 스킬 내용 문제'; }
   delete D.heroes.find(x => x.id === h.id).ultPow;
   OUT.push({ id: h.id, name: h.name, grade: h.grade || 1, target: Math.round(tgt), tries, ...res }); }
 fs.mkdirSync('밸런스/궁극기_맞추기', { recursive: true });
