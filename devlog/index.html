@@ -862,15 +862,7 @@ const NOTES = [
 const view = document.getElementById('view');
 const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-// 전장 배경 위에 그림을 고르게 세운다. 아군은 왼쪽, 적은 오른쪽(좌우 뒤집음).
 const tags = t => `<ul class="tags">${t.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`;
-// t(해시태그)가 있으면 그림 바로 밑에 붙인다.
-const field = (cover, label, t) => {
-  const L = cover.filter(c => !c[1]), R = cover.filter(c => c[1]);
-  const at = (arr, side) => arr.map(([f], i) => `<img ${side==='right'?'class="foe" ':''}src="img/${f}.png" alt="" style="${side}:${5 + i * 14}%">`).join('');
-  const f = `<div class="field" role="img" aria-label="${label}">${at(L,'left')}${at(R,'right')}</div>`;
-  return t ? `<div>${f}${tags(t)}</div>` : f;
-};
 
 function about(){
   view.innerHTML = `
@@ -950,7 +942,7 @@ function devlog(){
   <p class="lede">해 본 것, 되돌린 것, 숫자로 확인한 것을 적는다.</p>
   <div class="sort" role="group" aria-label="글 정렬">${[['new','최신순'],['old','오래된순']].map(([k, t]) => `<button type="button" data-order="${k}" aria-pressed="${order === k}">${t}</button>`).join('')}</div>
   <ul class="cards">${shown.map(p => {
-    const inner = `${field(p.cover, p.ep + ' 대표 그림')}
+    const inner = `<img src="img/title_keyart.png" alt="" style="display:block;width:100%;image-rendering:pixelated;border-radius:4px">
       <div><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span><span class="px">${p.ep}</span> <small style="display:inline">· ${esc(p.kind)} · ${p.date}</small></span>${p.soon ? '' : '<span class="btn">읽어 보기</span>'}</div>
       <strong>${esc(p.title)}</strong><p>${esc(p.summary)}</p></div>`;
     return `<li>${p.soon ? `<div class="card big soon">${inner}</div>` : `<a class="card big" href="#${p.id}">${inner}</a>`}</li>`;
