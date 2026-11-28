@@ -210,7 +210,7 @@
 
     // 속성 효과는 스킬(궁극기)에 붙어요: 스킬이 맞힌 적마다 생기고, 아무도 안 맞히는 스킬이면 가장 가까운 적(불·얼음·어둠) 또는 자기 편(숲·빛)에 한 번 생겨요
     var ultSrc = null, ultEl = null, ultHit = false;
-    function ultimate(u, ult0, k0, el) { var ps = ultSrc, pe = ultEl, ph = ultHit; ultSrc = u; ultEl = el || u.el; ultHit = false;
+    function ultimate(u, ult0, k0, el) { var ps = ultSrc, pe = ultEl, ph = ultHit; ultSrc = u; ultEl = (ult0 || u.h.ult || {}).noElem ? null : el || u.el; /* 2026-11-28 noElem: 궁극기 피해에 속성 효과 없음(탬버, 사용자: "속성 기절 빼기") */ ultHit = false;
       ultimate0(u, ult0, k0);
       if (!ultHit && u.alive) { var e0 = ultEl; if (e0 === 'forest' || e0 === 'light') elemHit(u, null, atkOf(u), e0); else { var nt = pickTarget(u); if (nt) elemHit(u, nt, atkOf(u), e0); } }
       ultSrc = ps; ultEl = pe; ultHit = ph; }
