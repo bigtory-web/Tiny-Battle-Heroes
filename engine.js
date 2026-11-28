@@ -122,7 +122,7 @@
     // 공격 대상 고르기
     function pickTarget(u, skip) { // skip(2026-11-28): 도발한 적에게 막혔을 때 그 적을 빼고, 도발도 무시하고 다시 고르기
       var F0 = alive(foes(u)).filter(function (x) { return x !== skip; }); if (!F0.length) return null; var F = F0.filter(function (x) { return !(x.stealth > 0); }); if (!F.length) F = F0; // 숨은 적은 못 노려요
-      var tauntU = skip ? [] : F.filter(function (x) { return x.taunt > 0; }); if (tauntU.length) return tauntU[0];
+      var tauntU = skip ? [] : F.filter(function (x) { return tauntsMe(x, u); }); if (tauntU.length) return tauntU[0];
       var gob = nearGoblin(u, F); if (gob) return gob; // 돈고블린이 사거리 근처에 있으면 먼저 노려요
       var JT = B.jobTarget && B.jobTarget[u.h.job]; if (JT === 'far') return F.reduce(function (m, x) { return dist(u, x) > dist(u, m) ? x : m; }); if (JT === 'lowHp') return F.reduce(function (m, x) { return x.hp + (x.shield || 0) < m.hp + (m.shield || 0) ? x : m; }); // 2026-11-26 직업별 대상: 궁수 가장 먼 적, 암살자 체력 가장 낮은 적
       if (TG === 'near') { var CW = B.crowd || {}, cpen = u.range === 'melee' ? (CW.pen || 0) : 0, mates = cpen ? alive(team(u.side)).filter(function (y) { return y !== u && y.tgt; }) : []; /* 2026-11-26: 근접은 아군이 이미 붙어 때리는 적을 덜 골라요(사용자: "다른캐릭터가 또 그대상을때릴때 사이를비집으면 … 계속 밀고 들어오려고만해") */
@@ -214,6 +214,8 @@
       ultimate0(u, ult0, k0);
       if (!ultHit && u.alive) { var e0 = ultEl; if (e0 === 'forest' || e0 === 'light') elemHit(u, null, atkOf(u), e0); else { var nt = pickTarget(u); if (nt) elemHit(u, nt, atkOf(u), e0); } }
       ultSrc = ps; ultEl = pe; ultHit = ph; }
+    function tauntOn(u, dur) { var n = B.tauntN ? B.tauntN[(u.h.grade || 1) - 1] || 0 : 0; u.taunt = Math.max(u.taunt || 0, dur); u.tauntSet = n ? alive(foes(u)).sort(function (a, b) { return dist(a, u) - dist(b, u); }).slice(0, n) : null; } /* 2026-11-28 도발은 가까운 적 n명만(등급별 battle.tauntN, 0 = 전부. 사용자: "223") */
+    function tauntsMe(x, u) { return x.taunt > 0 && (!x.tauntSet || x.tauntSet.indexOf(u) >= 0); }
     function ultimate0(u, ult0, k0) {
       magic = true; var U0 = ult0 || u.h.ult, k = k0 || u.uk || 1, kr = k0 || u.ukLv || 1, U = {}; for (var q in U0) U[q] = U0[q]; /* 2026-11-28 위력(k: 레벨 × 직업 × 영웅)은 본 효과의 양(피해·회복·보호막)에만, 덤 효과(확률·비율·감소·나눠 받기)는 레벨(kr)만 (사용자: "피해에만 곱하기") */
       if (U.mul) U.mul *= k; if (U.shieldPct) U.shieldPct *= k; if (U.tick) U.tick *= k; if (U.blast) U.blast *= k; if (U.thorns) U.thorns *= k; if (U.hitMul) U.hitMul *= k; if (U.aoeMul) U.aoeMul *= k; if (U.follow) U.follow *= k; if (U.amount) U.amount *= U.kind === 'seeds' ? k : kr; if (U.dr) U.dr = Math.min(0.8, U.dr * kr); if (U.share) U.share = Math.min(1, U.share * kr); // 궁극기 레벨만큼 세져요
@@ -222,7 +224,7 @@
       if (U0.win) { u.win = U0.win; u.winT = U0.win.t || 0.5; u.pv = (U0.win.v || 0) * kr; u.evT = 0; u.atkC2 = 0; u.dStk = 0; }
       if (rec) log.push({ t: t, kind: 'ult', uid: u.uid, ult: U.kind });
       switch (U.kind) {
-        case 'taunt': u.taunt = U.dur; addShield(u, u.maxHp * U.shieldPct); break;
+        case 'taunt': tauntOn(u, U.dur); addShield(u, u.maxHp * U.shieldPct); break;
         case 'teamShield': T.forEach(function (x) { addShield(x, U.shieldPct ? x.maxHp * U.shieldPct : atkOf(u) * U.mul); }); /* 2026-11-28 shieldPct: 각 아군 최대 체력 비율(테티스) */ if (U.rally) u.stkAtk = (u.stkAtk || 0) + U.rally * T.length; break;
         case 'strike': { var tg = pickTarget(u); if (tg) { if (U.crit) u.forceCrit = true; hurt(u, tg, U.mul); for (var hi = 1; hi < (U.hits || 1) && tg.alive; hi++) hurt(u, tg, U.mul); /* 2026-11-26 hits: 같은 적을 여러 번(연타 연출) */ if (U.follow && tg.alive) hurt(u, tg, U.follow); if (U.root && tg.alive) tg.root = U.root; } if (U.boost) { u.boostN = U.boostN || 3; u.boostV = U.boost; } break; }
         case 'multi': { var mm = U.mul; if (U.scale === 'missing') mm *= 1 + (1 - u.hp / u.maxHp); if (U.scale === 'low' && u.hp / u.maxHp < 0.3) mm *= 2;
@@ -236,7 +238,8 @@
         case 'selfShield': addShield(u, u.maxHp * U.shieldPct); break;
         case 'revive1': { var d1 = team(u.side).filter(function (x) { return !x.alive && !x.escaped && !x.h.mob; })[0]; if (d1) reviveU(u, d1, U.pct); else T.forEach(function (x) { addShield(x, atkOf(u) * (U.mul || 1)); }); break; }
         case 'reviveAll': { var ds = team(u.side).filter(function (x) { return !x.alive && !x.escaped && !x.h.mob; }); if (ds.length) ds.forEach(function (x) { reviveU(u, x, U.pct); }); else T.forEach(function (x) { heal(u, x, atkOf(u) * (U.mul || 1.5)); }); break; }
-        case 'stone': u.stone = U.dur; u.taunt = U.dur; u.pv = U.heal * k; break; // 돌이 풀릴 때 u.pv만큼 회복
+        case 'stone': u.stone = U.dur; tauntOn(u, U.dur); u.pv = U.heal * k; break; // 돌이 풀릴 때 u.pv만큼 회복
+        case 'tide': T.forEach(function (x) { x.tideT = U.dur; x.tideV = U.amount; }); break; /* 2026-11-28 해일(테티스): 칠 때 에너지 더 */
         case 'buff': break; // 스킬 창만 켜요
         case 'selfHaste': u.haste = U.dur; u.hasteAmt = U.amount; break;
         case 'chillAll': F.forEach(function (x) { x.slow = U.dur; x.slowAmt = Math.min(0.8, U.amount); }); break;
@@ -259,7 +262,7 @@
         case 'ember': if (F.length) { var eb = F.reduce(function (m, x) { return x.hp / x.maxHp < m.hp / m.maxHp ? x : m; }); var ex0 = u.x, ey0 = u.y; var ef = eb.x >= u.x ? 1 : -1; u.x = eb.x + ef * 30; u.y = eb.y; u.face = -ef; hurt(u, eb, U.mul); var ec = U.cluster ? F.reduce(function (m, x) { var rr3 = U.r || 80, c1 = F.filter(function (y) { return dist(x, y) <= rr3; }).length, c0 = F.filter(function (y) { return dist(m, y) <= rr3; }).length; return c1 > c0 ? x : m; }) : eb; /* 2026-11-28 cluster: 불씨는 적이 가장 많이 모인 곳(스파키) */ fieldFx.push({ kind: 'ember', side: u.side, x: ec.x, y: ec.y, r: U.r || 80, t: U.delay || 2, mul: U.blast, burn: U.burn, src: u }); if (rec) log.push({ t: t, kind: 'jobBlink', uid: u.uid, to: eb.uid, fx: ex0, fy: ey0, ex: ec.x, ey: ec.y }); /* ex·ey: 불씨 자리(UI 요청) */ } break; // 2026-11-28 불씨 자국(스파키)
         case 'thorn': if (F.length) { var tf = U.cluster ? F.reduce(function (m, x) { var rr2 = U.r || 70, c1 = F.filter(function (y) { return dist(x, y) <= rr2; }).length, c0 = F.filter(function (y) { return dist(m, y) <= rr2; }).length; return c1 > c0 ? x : m; }) : F.reduce(function (m, x) { return dist(u, x) > dist(u, m) ? x : m; }); /* 2026-11-28 cluster: 적이 가장 많이 모인 곳 */ hurt(u, tf, U.mul); fieldFx.push({ kind: 'thorn', side: u.side, x: tf.x, y: tf.y, r: U.r || 70, t: U.dur || 3, mul: U.tick, slow: U.slow, src: u }); if (rec) log.push({ t: t, kind: 'thornZone', x: tf.x, y: tf.y, r: U.r || 70, dur: U.dur || 3, uid: u.uid }); } break; // 2026-11-28 가시덤불 화살(루나)
       }
-      if (U.hitMul) { var hmT = pickTarget(u); if (hmT) hurt(u, hmT, U.hitMul); } if (U.aoeMul) alive(foes(u)).forEach(function (x) { hurt(u, x, U.aoeMul); }); if (U.tauntDur) u.taunt = Math.max(u.taunt || 0, U.tauntDur); /* 2026-11-28 본 효과가 없던 궁극기에 더하는 피해·도발 */
+      if (U.hitMul) { var hmT = pickTarget(u); if (hmT) hurt(u, hmT, U.hitMul); } if (U.aoeMul) alive(foes(u)).forEach(function (x) { hurt(u, x, U.aoeMul); }); if (U.tauntDur) tauntOn(u, U.tauntDur); /* 2026-11-28 본 효과가 없던 궁극기에 더하는 피해·도발 */
       if (U.teamEnergy) T.forEach(function (x) { if (x !== u && (!U.race || x.h.race === U.race || x.race2 === U.race)) gainEnergy(x, U.teamEnergy); });
       if (U.energyPerSlow) gainEnergy(u, U.energyPerSlow * F.filter(function (x) { return x.alive && x.slow > 0; }).length);
       if (U.forestHaste) T.forEach(function (x) { if (x.alive && x.el === 'forest') elemHit(x, null, 0, 'forest'); });
@@ -422,7 +425,7 @@
         var u = all[k]; if (!u.alive) continue; shSrc = u;
         if (EN.perSec && !(u.trig && u.trig.kind === 'start')) u.energy = Math.min(u.enMax, u.energy + EN.perSec * B.dt * (u.enMul || 1));
         if (u.pas && u.pas.kind === 'auraRegen') alive(team(u.side)).forEach(function (x) { if (x.hp < x.maxHp) heal(u, x, x.maxHp * u.pv * B.dt); });
-        ['taunt', 'slow', 'haste', 'buffT', 'stun', 'stealth', 'root', 'blind', 'burnAmp', 'winT', 'markT', 'tbT', 'drumT', 'coralT', 'linkT'].forEach(function (f) { if (u[f] > 0) u[f] = Math.max(0, u[f] - B.dt); }); /* 2026-11-28 drumT 전투 북 · coralT 산호 갑옷 · linkT 영혼 사슬 */
+        ['taunt', 'slow', 'haste', 'buffT', 'stun', 'stealth', 'root', 'blind', 'burnAmp', 'winT', 'markT', 'tbT', 'drumT', 'coralT', 'linkT', 'tideT'].forEach(function (f) { if (u[f] > 0) u[f] = Math.max(0, u[f] - B.dt); }); /* 2026-11-28 drumT 전투 북 · coralT 산호 갑옷 · linkT 영혼 사슬 */
         if (u.seed) { u.seed.t -= B.dt; if (u.seed.t <= 0 || u.hp / u.maxHp < 0.5) { var sd0 = u.seed; u.seed = null; if (sd0.src) { heal(sd0.src, u, u.maxHp * sd0.heal); if (has(sd0.src, 'seedRoot')) alive(foes(u)).forEach(function (x) { if (dist(x, u) <= 90) x.root = Math.max(x.root || 0, sd0.src.pv || 1); }); if (rec) log.push({ t: t, kind: 'seedBloom', uid: u.uid, from: sd0.src.uid }); } } } /* 2026-11-28 블룸 새싹 씨앗: 5초 뒤 또는 체력이 반 아래로 떨어지면 핌 */
         if (u.stone > 0) { u.stone -= B.dt; if (u.stone <= 0) { u.stone = 0; heal(u, u, u.maxHp * u.pv); } u.moving = false; continue; } // 가고일: 돌이 된 동안 아무것도 안 해요
         if (u.bShT > 0) { u.bShT -= B.dt; if (u.bShT <= 0) { u.shield = Math.max(0, u.shield - (u.bSh || 0)); u.bSh = 0; } } // 바위곰: 1초 보호막이 사라져요
@@ -472,8 +475,8 @@
           u.x += gvx / gl * gv; u.y += gvy / gl * gv; u.face = gvx >= 0 ? 1 : -1; u.moving = true;
           continue; }
         // 대상: 없거나 죽었거나, 상대에 도발이 걸렸으면 다시 골라요
-        var taunting = alive(foes(u)).some(function (x) { return x.taunt > 0; });
-        if (!u.tgt || !u.tgt.alive || (taunting && !(u.tgt.taunt > 0) && !(u.tbT > 0)) || (!taunting && u.tgt.h.mob !== 'goblin' && nearGoblin(u))) u.tgt = pickTarget(u);
+        var taunting = alive(foes(u)).some(function (x) { return tauntsMe(x, u); });
+        if (!u.tgt || !u.tgt.alive || (taunting && !tauntsMe(u.tgt, u) && !(u.tbT > 0)) || (!taunting && u.tgt.h.mob !== 'goblin' && nearGoblin(u))) u.tgt = pickTarget(u);
         if (JP(u).blinkTo && u.tgt && !u.blinkDone && !(u.stats.dealt > 0) && !(u.tgt.taunt > 0) && !u.tgt.h.mob && !(u.root > 0) && dist(u, u.tgt) > u.reach) { /* 2026-11-27 암살자: 첫 공격 전에 한 번만, 체력 가장 낮은 적 등 뒤로 순간이동(도발·몹·묶임은 제외) (사용자: "첫 공격 시 체력이 가장 낮은 적에게로") */
           u.blinkDone = true; var jf = u.tgt.x >= u.x ? 1 : -1, jx = u.x, jy = u.y; u.x = u.tgt.x + jf * 30; u.y = u.tgt.y; u.face = -jf; if (rec) log.push({ t: t, kind: 'jobBlink', uid: u.uid, to: u.tgt.uid, fx: jx, fy: jy }); }
         var tg = u.tgt; if (tg && dist(u, tg) > u.reach) { /* 2026-11-26: 대상이 막혀 못 닿으면 사거리 안의 적부터 쳐요(같은 편이 안 비켜 주니 갇히지 않게) */ var nr = alive(foes(u)).filter(function (x) { return dist(u, x) <= u.reach && x.h.mob !== 'chest'; })[0]; if (nr && !(tg.taunt > 0) && !(B.jobTarget && B.jobTarget[u.h.job])) tg = u.tgt = nr; } /* 2026-11-27: 자기 대상 규칙이 있는 직업(궁수 먼 적·암살자 약한 적)은 걷다가 바꾸지 않음, 막히면 아래 stuck 규칙만 (사용자: "궁수·암살자만") */
@@ -500,7 +503,7 @@
           afterUlt(u, u.stats.healed - hb); }
         if (!ultReady || (u.h.ult && u.h.ult.onTop)) { /* 2026-11-28 onTop: 궁극기 + 평타(녹스) */ if (TG === 'lowest' || TG === 'random') { var nt = pickTarget(u); if (nt && dist(u, nt) <= u.reach) tg = u.tgt = nt; }
           magic = false; var am = 1; if (u.boostN > 0) { am *= 1 + u.boostV; u.boostN--; } if (has(u, 'secondHit')) { u.atkC = (u.atkC || 0) + 1; if (u.atkC % 2 === 0) am *= 1 + u.pv; }
-          hurt(u, tg, am); trig('attack', u); u.energy = Math.min(u.enMax, u.energy + (u.trig ? (u.trig.kind === 'hits' ? u.enMax / u.trig.n : 0) : EN.onAttack + (JP(u).attackEnergy || 0))); afterAttack(u, tg); /* 마법사: 평타 때 에너지 더 */ // 발동 타입: N번째 공격마다 에너지
+          hurt(u, tg, am); trig('attack', u); u.energy = Math.min(u.enMax, u.energy + (u.trig ? (u.trig.kind === 'hits' ? u.enMax / u.trig.n : 0) : EN.onAttack + (JP(u).attackEnergy || 0)) + (u.tideT > 0 ? u.tideV || 0 : 0)); afterAttack(u, tg); /* 마법사: 평타 때 에너지 더 */ // 발동 타입: N번째 공격마다 에너지
           if (u.pas && u.pas.kind === 'splash') alive(foes(u)).forEach(function (x) { if (x !== tg && dist(x, tg) <= 70) hurt(u, x, u.pv); }); }
         if (!alive(E).length) { result = 'win'; break; }
         if (!alive(A).length) { result = 'lose'; break; }
