@@ -386,7 +386,7 @@
       if (has(u, 'lowBurn') && tg.hp / tg.maxHp < u.pv) tg.burn = { src: u, left: (EFX.fire || {}).dur || 4, tick: 1 };
       if (u.nextBurn && has(u, 'killBurn')) { u.nextBurn = false; tg.burn = { src: u, left: u.pv, tick: 1 }; }
       if (has(u, 'comboN')) { u.atkC2 = (u.atkC2 || 0) + 1; if (u.atkC2 % (PP(u).n || 4) === 0) hurt(u, tg, u.pv); } }
-    var SELF_ULT = { coral: 1, seeds: 1, taunt: 1, teamShield: 1, healAll: 1, haste: 1, shieldOne: 1, selfShield: 1, revive1: 1, reviveAll: 1, stone: 1, buff: 1, selfHaste: 1, chillAll: 1, dash: 1 }; // 사거리와 상관없이 쓰는 궁극기
+    var SELF_ULT = { coral: 1, seeds: 1, taunt: 1, teamShield: 1, healAll: 1, haste: 1, shieldOne: 1, selfShield: 1, revive1: 1, reviveAll: 1, stone: 1, buff: 1, selfHaste: 1, chillAll: 1, dash: 1, tide: 1 }; // 사거리와 상관없이 쓰는 궁극기
     function dist(a, b) { var dx = a.x - b.x, dy = a.y - b.y; return Math.sqrt(dx * dx + dy * dy); }
     // 겹친 유닛끼리 살짝 밀어내요 (같은 편은 더 넓게)
     function separate(all) {
