@@ -175,7 +175,7 @@
       var hadSh = dst.shield > 0, absorbed = Math.min(dst.shield, dmg); dst.shield -= absorbed; dmg -= absorbed;
       dst.hp -= dmg; src.stats.dealt += dmg + absorbed; dst.stats.taken += dmg + absorbed;
       if (dst.trig) { if (dst.trig.kind === 'struck') dst.energy = Math.min(dst.enMax, dst.energy + dst.enMax / dst.trig.n); } // 발동 타입: 피격 N회마다
-      else if (EN.onHitScale) dst.energy = Math.min(dst.enMax, dst.energy + (dmg / dst.maxHp) * EN.onHitScale * (JP(dst).hitEnergy || 1) * (dst.enMul || 1)); // 기사: 맞으면 차는 에너지 배
+      else if (EN.onHitScale && JP(dst).hitEnergy) /* 2026-11-29 맞아서 차는 에너지는 기사만(사용자: "맞으면 피 차지마. 기사의 특권임.") */ dst.energy = Math.min(dst.enMax, dst.energy + (dmg / dst.maxHp) * EN.onHitScale * JP(dst).hitEnergy * (dst.enMul || 1)); // 기사: 맞으면 차는 에너지 배
       if (rec) log.push({ t: t, kind: 'hit', from: src.uid, to: dst.uid, amt: Math.round(dmg + absorbed), crit: crit || undefined, mag: magic || undefined, burn: burning || undefined });
       if (dst.linkT > 0 && dst.linkTo && dst.linkTo.alive && dst.linkTo.linkT > 0 && !inLink && dmg + absorbed > 0) { inLink = true; var lk = dst.linkTo, la = (dmg + absorbed) * (dst.linkV || 0); lk.hp -= la; (dst.linkSrc || src).stats.dealt += la; lk.stats.taken += la; if (rec) log.push({ t: t, kind: 'skillHit', to: lk.uid, amt: Math.round(la), link: true }); if (lk.hp <= 0) die(lk, dst.linkSrc || src); inLink = false; } /* 2026-11-28 영혼 사슬(헬가): 묶인 짝도 같이 받음 */
       if (dst.hp <= 0) die(dst, src);

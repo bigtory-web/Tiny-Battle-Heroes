@@ -141,3 +141,8 @@ console.log("ok · 영구 강화 모드(강화 0) 봇 클리어 판 합(5판)",c
 // 능력치만 옵션(2026-11-27 밸런스 측정): 궁극기·패시브 안 씀
 { const id = D.heroes.find(h => h.ult && h.passive).id, mk = o => { const b = E.createBattle(D, [{ id, slot: 0, level: 5, star: 3 }], [{ id: 'knight', slot: 0, level: 5, mul: { hp: 50, atk: 0 } }], Object.assign({ seed: 1 }, o)); while (!b.result && b.time < 40) b.step(); return b.A[0]; };
   const on = mk({}), off = mk({ statsOnly: true }); assert.ok(on.stats.ults > 0 && off.stats.ults === 0 && !off.pas); console.log("ok · 능력치만 옵션"); }
+// 맞아서 차는 에너지는 기사만(2026-11-29)
+{ const D2 = Object.assign({}, D, { modules: JSON.parse(JSON.stringify(D.modules)) }); Object.assign(D2.modules.energy.options.both, { onAttack: 0, perSec: 0 }); const of = j => D.heroes.find(h => !h.mob && h.job === j).id;
+  const b = E.createBattle(D2, [{ id: of("guardian"), slot: 0, level: 1 }, { id: of("warrior"), slot: 1, level: 1 }], [{ id: of("warrior"), slot: 0, level: 1 }, { id: of("warrior"), slot: 1, level: 1 }], { seed: 1 });
+  while (!b.result && b.time < 8) b.step(); const hit = b.A.concat(b.E).filter(u => u.stats.taken > 0), g = hit.filter(u => u.h.job === "guardian"), o = hit.filter(u => u.h.job !== "guardian");
+  assert.ok(g.length && o.length); assert.ok(g.every(u => u.energy > 0)); assert.ok(o.every(u => u.energy === 0)); console.log("ok · 피격 에너지 기사만"); }
