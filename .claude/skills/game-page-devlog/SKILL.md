@@ -1,5 +1,5 @@
 ---
-name: devlog-page
+name: game-page-devlog
 description: 개발일지 페이지에 글을 쓰거나 고쳐서 올릴 때 쓴다.
 ---
 
