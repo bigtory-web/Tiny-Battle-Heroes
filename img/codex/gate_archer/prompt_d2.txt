@@ -1,0 +1,5 @@
+Three images are attached, game pixel art enlarged 8 times (every 8x8 block is one sprite pixel on a 64 x 64 grid).
+Image 1 is the same character at the CORRECT SIZE (scale template). Image 2 is the design to keep but it came out TOO BIG. Image 3 is the APPROVED FACE.
+Use them as reference images for your image generation tool, generate ONE new image and save it as img/codex/gate_archer/d2_src.png (save it even if the size differs slightly).
+Redraw image 2 (both crossbows raised beside her shoulders, loose long hair, horns, red scarf and cape) SMALLER, at exactly the scale of image 1: the same head and face size as image 1, at most 45 pixels tall from boot soles to horn tips, at most 52 pixels wide including crossbows. Use the same pixel block size as the attached sprites: do not enlarge the blocks.
+Very dark brown outline everywhere, hard square pixels, no anti-aliasing, no mouth. Full body centered, 1024x1024 PNG, flat solid pure magenta background FF00FF, no text, no shadow. Python is not installed on this computer: do not use python. Use PowerShell Copy-Item to copy the generated file. Do not modify or create any other file.
