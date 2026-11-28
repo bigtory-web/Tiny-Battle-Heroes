@@ -85,7 +85,7 @@
       var nun = holders(dst.side, 'endure').filter(function (x) { return x.winT > 0 || !x.pUsed; })[0];
       if (nun) { if (!(nun.winT > 0)) nun.pUsed = true; dst.hp = 1; return; }
       if (dst.endureOnce) { dst.endureOnce = false; dst.hp = 1; return; } // 종 효과 불굴
-      if (on(dst, 'rebirth') && !dst.pUsed) { dst.pUsed = true; dst.hp = dst.maxHp * Math.min(1, PP(dst).hp || dst.pv); if (PP(dst).blast) alive(foes(dst)).forEach(function (x) { if (dist(x, dst) <= (PP(dst).r || 90)) hurt(dst, x, PP(dst).blast * dst.pv); }); /* blast: 되살아날 때 주변 피해(이그나), hp가 있으면 체력은 고정 */ alive(foes(dst)).forEach(function (x) { if (dist(x, dst) <= (PP(dst).r || 90)) x.burn = { src: dst, left: (EFX.fire || {}).dur || 4, tick: 1 }; }); return; }
+      if (on(dst, 'rebirth') && !dst.pUsed) { dst.pUsed = true; dst.hp = dst.maxHp * Math.min(1, PP(dst).hp || dst.pv); var rb = PP(dst), rpv = dst.pv; if (rb.blast) alive(foes(dst)).forEach(function (x) { if (dist(x, dst) <= (rb.r || 90)) hurt(dst, x, rb.teamAtk ? rb.blast : rb.blast * rpv); }); if (rb.teamAtk) alive(team(dst.side)).forEach(function (x) { x.stkAtk = (x.stkAtk || 0) + rpv; }); /* teamAtk: 아군 전체 공격력 +pv(이그나) */ /* blast: 되살아날 때 주변 피해(이그나), hp가 있으면 체력은 고정 */ alive(foes(dst)).forEach(function (x) { if (dist(x, dst) <= (PP(dst).r || 90)) x.burn = { src: dst, left: (EFX.fire || {}).dur || 4, tick: 1 }; }); return; }
       var sr = holders(dst.side, 'reviveAlly').filter(function (x) { return x !== dst && !x.pUsed; })[0];
       if (sr && !dst.h.mob) { sr.pUsed = true; dst.hp = dst.maxHp * sr.pv; if (rec) log.push({ t: t, kind: 'heal', from: sr.uid, to: dst.uid, amt: Math.round(dst.hp) }); return; }
       dst.hp = 0; dst.alive = false; if (rec) log.push({ t: t, kind: 'die', uid: dst.uid });
@@ -96,7 +96,8 @@
       if (src && src.side !== dst.side && src.pas && src.pas.kind === 'killAtkStack' && src.alive) src.kStk = Math.min(src.pas.max || 5, (src.kStk || 0) + 1); /* 처형자: 쓰러뜨릴 때마다 공격력 쌓기 */
       if (src && src.side !== dst.side) { if (EN.onKill) gainEnergy(src, EN.onKill);
         if (has(src, 'killRush')) src.timer = 0; if (has(src, 'killEnergy')) gainEnergy(src, src.pv); if (has(src, 'killStealth')) src.stealth = src.pv; if (has(src, 'killBurn')) src.nextBurn = true; }
-      holders(dst.side === 'A' ? 'E' : 'A', 'deathEnergy').forEach(function (n) { gainEnergy(n, n.pv); }); holders(dst.side, 'deathEnergy').forEach(function (n) { if (PP(n).ally) gainEnergy(n, n.pv); }); /* ally: 아군이 쓰러져도(모르티아) */
+      holders(dst.side === 'A' ? 'E' : 'A', 'deathEnergy').forEach(function (n) { gainEnergy(n, n.pv); }); holders(dst.side, 'deathEnergy').forEach(function (n) { if (PP(n).ally) gainEnergy(n, n.pv); }); [].concat(holders('A', 'deathEnergy'), holders('E', 'deathEnergy')).forEach(function (n) { var nv = n.pv; if (PP(n).team) alive(team(n.side)).forEach(function (x) { if (x !== n) gainEnergy(x, nv); }); }); /* team: 아군 전체에게도(모르티아) */
+      if (src && src.side !== dst.side && has(src, 'killTeamAtk') && (src.ktaN || 0) < (PP(src).max || 5)) { src.ktaN = (src.ktaN || 0) + 1; var kv = src.pv; alive(team(src.side)).forEach(function (x) { x.stkAtk = (x.stkAtk || 0) + kv; }); } /* 레이븐: 쓰러뜨리면 아군 전체 공격력 */ /* ally: 아군이 쓰러져도(모르티아) */
       if (dst.burn) holders(dst.side === 'A' ? 'E' : 'A', 'burnBlast').forEach(function (f) { alive(team(dst.side)).forEach(function (x) { if (dist(x, dst) <= (PP(f).r || 90)) skillHurt(x, atkOf(f) * f.pv, f); }); });
       if (!dst.h.mob) holders(dst.side, 'martyr').forEach(function (m) { m.atk *= 1 + m.pv; var add = m.maxHp * m.pv; m.maxHp += add; m.hp += add; });
     }
@@ -154,7 +155,7 @@
       if (basic && src.charged && has(src, 'chargeHit')) { src.charged = false; mul *= src.pv; }
       if (has(src, 'vsSlow') && (dst.slow > 0 || dst.chill > 0)) mul *= 1 + src.pv;
       if (has(src, 'vsBurn') && dst.burn) mul *= 1 + src.pv;
-      if (has(src, 'vsHighAtk') && alive(foes(src)).every(function (x) { return atkOf(x) <= atkOf(dst); })) mul *= 1 + src.pv; /* 2026-11-29 트레사: 공격력 가장 높은 적 */
+      var vha = has(src, 'vsHighAtk') ? src : holders(src.side, 'teamVsHighAtk')[0]; if (vha && alive(foes(src)).every(function (x) { return atkOf(x) <= atkOf(dst); })) mul *= 1 + vha.pv; /* 2026-11-29 트레사: 공격력 가장 높은 적(teamVsHighAtk면 아군 전체) */
       if (has(src, 'executeScale')) mul *= 1 + src.pv * (1 - dst.hp / dst.maxHp); /* 아이리스: 적 체력이 낮을수록 */
       if (has(src, 'vsBack') && !dst.front) mul *= 1 + src.pv; /* 와이엇: 뒤쪽 적 */
       if (has(src, 'atkChill') && (dst.slow > 0 || dst.chill > 0)) mul *= 1 + src.pv; /* 네베: 평타가 둔화(PP.slow), 느린 적 피해 +pv */
@@ -194,9 +195,10 @@
         if (has(dst, 'hitHeal')) heal(dst, dst, dst.maxHp * dst.pv);
         if (has(dst, 'hitSlow') && src.alive) { src.slow = Math.max(src.slow || 0, PP(dst).dur || 1); src.slowAmt = Math.max(src.slow > 0 ? src.slowAmt || 0 : 0, dst.pv); }
         if (has(dst, 'tauntDrain') && dst.taunt > 0 && src.alive) { var st = Math.min(src.energy, dst.pv); src.energy -= st; gainEnergy(dst, st); }
-        if (has(dst, 'hitShield')) { dst.hitC = (dst.hitC || 0) + 1; if (dst.hitC % (PP(dst).n || 10) === 0) addShield(dst, dst.maxHp * dst.pv); }
+        if (has(dst, 'hitShield')) { dst.hitC = (dst.hitC || 0) + 1; if (dst.hitC % (PP(dst).n || 10) === 0) { var hsv = dst.pv; (PP(dst).team ? alive(team(dst.side)) : [dst]).forEach(function (x) { addShield(x, x.maxHp * hsv); }); } } /* team: 아군 전체(버클리) */
+        if (has(dst, 'hitHealAlly')) { var hhv = dst.pv, lo2 = alive(team(dst.side)).reduce(function (m, x) { return x.hp / x.maxHp < m.hp / m.maxHp ? x : m; }); heal(dst, lo2, lo2.maxHp * hhv); } /* 모스 */
         if (has(dst, 'hitNova')) { dst.hitC = (dst.hitC || 0) + 1; if (dst.hitC % (PP(dst).n || 8) === 0) { var pm = magic; magic = true; alive(foes(dst)).forEach(function (x) { if (dist(x, dst) <= (PP(dst).r || 90)) hurt(dst, x, dst.pv); }); magic = pm; } }
-        if (has(dst, 'petrify') && !(dst.petCd > 0) && !dst.pUsed && dst.hp / dst.maxHp < 0.5) { if (PP(dst).cd) dst.petCd = PP(dst).cd; else dst.pUsed = true; dst.stone = PP(dst).dur || 3; dst.stoneHeal = dst.pv0; } /* cd: 여러 번(스톤) */ }
+        if (has(dst, 'petrify') && !(dst.petCd > 0) && !dst.pUsed && dst.hp / dst.maxHp < 0.5) { if (PP(dst).cd) dst.petCd = PP(dst).cd; else dst.pUsed = true; dst.stone = PP(dst).dur || 3; dst.stoneHeal = dst.pv0; if (PP(dst).taunt) tauntOn(dst, dst.stone); /* taunt: 돌이 되면 적을 끌어모음(스톤) */ } /* cd: 여러 번(스톤) */ }
       if (dst.lineTh && src.alive && dmg + absorbed > 0) { var rl = (dmg + absorbed) * dst.lineTh; src.hp -= rl; dst.stats.dealt += rl; src.stats.taken += rl; if (rec) log.push({ t: t, kind: 'skillHit', to: src.uid, amt: Math.round(rl), thorns: true }); if (src.hp <= 0) die(src, dst); } // 열 유물: 맞으면 되돌리기
       if (dst.coralT > 0 && src.alive && dmg + absorbed > 0 && !burning) { var cr2 = (dmg + absorbed) * (dst.coralTh || 0); src.hp -= cr2; dst.stats.dealt += cr2; src.stats.taken += cr2; if (rec) log.push({ t: t, kind: 'skillHit', to: src.uid, amt: Math.round(cr2), thorns: true }); if (src.hp <= 0) die(src, dst); } /* 산호 갑옷 반사 */
       if (src.alive && on(dst, 'thorns') && (src.range === 'melee' || PP(dst).all) && src.alive && dmg + absorbed > 0) { var rf = (dmg + absorbed) * dst.pv; src.hp -= rf; dst.stats.dealt += rf; src.stats.taken += rf;
@@ -332,7 +334,7 @@
       else if (el === 'light' && dmg > 0) { var lo = alive(team(u.side)).sort(function (a, b) { return a.hp / a.maxHp - b.hp / b.maxHp; })[0]; if (lo) { heal(u, lo, dmg * F.heal); trig('heal', u); } }
       else if (el === 'dark' && tg.alive && rand() < F.chance) { tg.stun = Math.max(tg.stun || 0, F.dur); if (rec) log.push({ t: t, kind: 'fx', fx: 'stun', uid: tg.uid }); trig('stun', u); } }
     function elemTick(x) { // 매 프레임: 화상 피해(1초마다), 숲 가속·얼음 둔화 시간
-      if (x.burn) { x.burn.left -= B.dt; x.burn.tick -= B.dt; if (x.burn.tick <= 0) { x.burn.tick += 1; var bs = x.burn.src; magic = burning = true; hurt(bs, x, EFX.fire.mul * (x.burnAmp > 0 ? x.burnAmpV || 1 : 1)); magic = burning = false; if (bs.alive) trig('burn', bs);
+      if (x.burn) { x.burn.left -= B.dt; x.burn.tick -= B.dt; if (x.burn.tick <= 0) { x.burn.tick += 1; var bs = x.burn.src; magic = burning = true; var bat = holders(bs.side, 'burnAmpTeam')[0]; hurt(bs, x, EFX.fire.mul * (x.burnAmp > 0 ? x.burnAmpV || 1 : 1) * (bat ? 1 + bat.pv : 1)); /* 2026-11-29 드라코·블레이즈: 아군 화상 피해 + */ magic = burning = false; if (bs.alive) trig('burn', bs);
           holders(bs.side, 'burnEnergy').forEach(function (h) { alive(team(bs.side)).forEach(function (y) { gainEnergy(y, h.pv); }); }); }
         if (x.burn.left <= 0 || !x.alive) x.burn = null; }
       if (x.fstT > 0) { x.fstT -= B.dt; if (x.fstT <= 0) x.fst = 0; }
@@ -394,10 +396,11 @@
       if (u.nextBurn && has(u, 'killBurn')) { u.nextBurn = false; tg.burn = { src: u, left: u.pv, tick: 1 }; }
       if (has(u, 'comboN')) { u.atkC2 = (u.atkC2 || 0) + 1; if (u.atkC2 % (PP(u).n || 4) === 0) hurt(u, tg, u.pv); }
       /* 2026-11-29 패시브 다시 설계: 평타 N번째마다(nthChain 옆 적 · nthBolt 무작위 적 · nthDouble 같은 적 · nthPierce 뒤 적), 평타 효과(atkBlind·atkHealAlly·atkVuln·atkStack·atkSlow) */
-      var NK = u.pas && { nthChain: 1, nthBolt: 1, nthDouble: 1, nthPierce: 1 }[u.pas.kind] ? u.pas.kind : null; if (NK) { u.nthC = (u.nthC || 0) + 1; if (u.nthC % (u.pas.n || 3) === 0) { var OF = alive(foes(u)).filter(function (x) { return x !== tg; }), nt2 = NK === 'nthDouble' ? tg : NK === 'nthBolt' ? (alive(foes(u))[Math.floor(rand() * alive(foes(u)).length)]) : OF.sort(function (a, b) { return dist(a, tg) - dist(b, tg); })[0]; if (nt2 && nt2.alive) hurt(u, nt2, u.pv); } }
+      var NK = u.pas && { nthChain: 1, nthBolt: 1, nthDouble: 1, nthPierce: 1, nthSplash: 1, nthAll: 1 }[u.pas.kind] ? u.pas.kind : null; if (NK) { u.nthC = (u.nthC || 0) + 1; if (u.nthC % (u.pas.n || 3) === 0) { if (NK === 'nthSplash') alive(foes(u)).forEach(function (x) { if (x !== tg && dist(x, tg) <= (u.pas.r || 80)) hurt(u, x, u.pv); }); else if (NK === 'nthAll') alive(foes(u)).forEach(function (x) { hurt(u, x, u.pv); }); else { var OF = alive(foes(u)).filter(function (x) { return x !== tg; }), nt2 = NK === 'nthDouble' ? tg : NK === 'nthBolt' ? (alive(foes(u))[Math.floor(rand() * alive(foes(u)).length)]) : OF.sort(function (a, b) { return dist(a, tg) - dist(b, tg); })[0]; if (nt2 && nt2.alive) hurt(u, nt2, u.pv); } } } /* 2026-11-29 nthSplash 주변 적 · nthAll 적 전체 */
       if (has(u, 'atkBlind') && tg.alive && rand() < u.pv) { tg.blind = Math.max(tg.blind || 0, PP(u).dur || 2); tg.blindAmt = Math.max(tg.blind > 0 ? tg.blindAmt || 0 : 0, PP(u).amt || 0.5); }
       if (has(u, 'atkHealAlly')) { var hl = alive(team(u.side)).reduce(function (m, x) { return x.hp / x.maxHp < m.hp / m.maxHp ? x : m; }); heal(u, hl, atkOf(u) * u.pv); }
-      if (has(u, 'atkVuln') && tg.alive) { tg.markT = Math.max(tg.markT || 0, PP(u).dur || 2); tg.markV = Math.max(tg.markT > 0 ? tg.markV || 0 : 0, u.pv); }
+      if (has(u, 'atkVuln') && tg.alive) { var vk = u.pv, vd = PP(u).dur || 2; [tg].concat(alive(foes(u)).filter(function (x) { return x !== tg; }).sort(function (a, b) { return dist(a, tg) - dist(b, tg); }).slice(0, (PP(u).n || 1) - 1)).forEach(function (x) { x.markT = Math.max(x.markT || 0, vd); x.markV = Math.max(x.markV || 0, vk); }); } /* n: 옆 적까지(헬가) */
+      if (has(u, 'atkDrain') && tg.alive) { var dr2 = Math.min(tg.energy || 0, u.pv); tg.energy -= dr2; gainEnergy(u, dr2); } /* 더크: 평타가 적 에너지를 빼앗음 */
       if (has(u, 'atkStack')) u.kStk = Math.min(u.pas.max || 10, (u.kStk || 0) + 1);
       if ((has(u, 'atkSlow') || has(u, 'atkChill')) && tg.alive) { tg.slow = Math.max(tg.slow || 0, PP(u).dur || 1); tg.slowAmt = Math.max(tg.slowAmt || 0, PP(u).slow || u.pv); }
       if (has(u, 'burnCrit') && tg.alive && !tg.burn) tg.burn = { src: u, left: PP(u).burn || 2, tick: 1 }; }
@@ -446,6 +449,9 @@
         if (u.bShT > 0) { u.bShT -= B.dt; if (u.bShT <= 0) { u.shield = Math.max(0, u.shield - (u.bSh || 0)); u.bSh = 0; } } // 바위곰: 1초 보호막이 사라져요
         if (PP(u).every) { var EP = PP(u); u.evT = (u.evT || 0) + B.dt; if (u.evT >= EP.every) { u.evT -= EP.every; var pk = EP.kind, mt = alive(team(u.side));
           if (pk === 'teamShieldEvery') mt.forEach(function (x) { addShield(x, x.maxHp * u.pv); });
+          else if (pk === 'burnAllEvery') alive(foes(u)).forEach(function (x) { x.burn = { src: u, left: Math.max(x.burn ? x.burn.left : 0, u.pv), tick: x.burn ? x.burn.tick : 1 }; }); /* 2026-11-29 볼란·칸델라 */
+          else if (pk === 'slowAllEvery') alive(foes(u)).forEach(function (x) { x.slow = Math.max(x.slow || 0, EP.dur || 2); x.slowAmt = Math.max(x.slow > 0 ? x.slowAmt || 0 : 0, Math.min(0.8, u.pv)); }); /* 네베 */
+          else if (pk === 'stealthCrit') u.stealth = Math.max(u.stealth || 0, EP.dur || 1); /* 셰이드: 잠깐 숨기 */
           else if (pk === 'teamEnergyEvery') mt.forEach(function (x) { if (x !== u) gainEnergy(x, u.pv); }); /* 2026-11-29 테티스 */
           else if (pk === 'teamHealEvery') mt.forEach(function (x) { heal(u, x, x.maxHp * u.pv); }); /* 윌로 */
           else if (pk === 'seedEvery') { var sl = mt.filter(function (x) { return !x.seed; }).sort(function (a, b) { return a.hp / a.maxHp - b.hp / b.maxHp; })[0]; if (sl) sl.seed = { t: EP.dur || 4, heal: u.pv, src: u }; } /* 블룸 */
@@ -456,7 +462,7 @@
         elemTick(u); if (!u.alive) { if (!alive(E).length) { result = 'win'; break; } if (!alive(A).length) { result = 'lose'; break; } continue; }
         var speed = (1 + (u.haste > 0 ? u.hasteAmt : 0) + (u.fst ? u.fst * EFX.forest.per : 0)) * (1 - (u.slow > 0 ? u.slowAmt : 0)) * (1 - (u.chill > 0 ? u.chillAmt : 0));
         if (has(u, 'bloodHaste')) speed *= 1 + u.pv * (1 - u.hp / u.maxHp);
-        if (u.dStk && on(u, 'hasteStack')) speed *= 1 + u.dStk * u.pv;
+        if (u.dStk && on(u, 'hasteStack')) speed *= 1 + Math.min(u.dStk, PP(u).max || 10) * u.pv; /* 2026-11-29 버그: 창이 끝나면 패시브 최대까지만 */
         holders(u.side, 'chillAura').forEach(function (f) { if (alive(foes(u)).filter(function (x) { return x.slow > 0 || x.chill > 0; }).length >= (PP(f).n || 3)) speed *= 1 + f.pv; });
         if (u.stun > 0 && u.h.mob !== 'mimic') { u.moving = false; continue; } /* 미믹은 기절해도 도망 시간은 봐요(아래에서 방해만 멈춤) */
         if (u.brgL && u.brgL.length) u.brgL = u.brgL.filter(function (bg) { bg.t -= B.dt; if (bg.t <= 0) { bg.t += bg.every; var BF2 = alive(foes(u)); if (BF2.length) { var ps2 = ultSrc, pe2 = ultEl; ultSrc = u; ultEl = bg.el || u.el; magic = true;
@@ -523,7 +529,7 @@
         if (!ultReady || (u.h.ult && u.h.ult.onTop)) { /* 2026-11-28 onTop: 궁극기 + 평타(녹스) */ if (TG === 'lowest' || TG === 'random') { var nt = pickTarget(u); if (nt && dist(u, nt) <= u.reach) tg = u.tgt = nt; }
           magic = false; var am = 1; if (u.boostN > 0) { am *= 1 + u.boostV; u.boostN--; } if (has(u, 'secondHit')) { u.atkC = (u.atkC || 0) + 1; if (u.atkC % 2 === 0) am *= 1 + u.pv; }
           hurt(u, tg, am); trig('attack', u); u.energy = Math.min(u.enMax, u.energy + (u.trig ? (u.trig.kind === 'hits' ? u.enMax / u.trig.n : 0) : EN.onAttack + (JP(u).attackEnergy || 0)) + (u.tideT > 0 ? u.tideV || 0 : 0)); afterAttack(u, tg); /* 마법사: 평타 때 에너지 더 */ // 발동 타입: N번째 공격마다 에너지
-          if (u.pas && u.pas.kind === 'splash') alive(foes(u)).forEach(function (x) { if (x !== tg && dist(x, tg) <= 70) hurt(u, x, u.pv); }); }
+          if (u.pas && u.pas.kind === 'splash') alive(foes(u)).forEach(function (x) { if (x !== tg && dist(x, tg) <= (u.pas.r || 70)) hurt(u, x, u.pv); }); }
         if (!alive(E).length) { result = 'win'; break; }
         if (!alive(A).length) { result = 'lose'; break; }
       }
