@@ -228,7 +228,7 @@
       if (U.mul) U.mul *= k; if (U.shieldPct) U.shieldPct *= k; if (U.tick) U.tick *= k; if (U.blast) U.blast *= k; if (U.thorns) U.thorns *= k; if (U.hitMul) U.hitMul *= k; if (U.aoeMul) U.aoeMul *= k; if (U.follow) U.follow *= k; if (U.amount) U.amount *= U.kind === 'seeds' ? k : kr; if (U.dr) U.dr = Math.min(0.8, U.dr * kr); if (U.share) U.share = Math.min(1, U.share * kr); // 궁극기 레벨만큼 세져요
       var F = alive(foes(u)), T = alive(team(u.side)); u.stats.ults++; if (JP(u).ultEnergy && !(u.trig && u.trig.kind === 'start')) T.forEach(/* 2026-11-28 전투 시작형 궁극기는 서포터 직업 에너지 없음(피프·클라렌, 사용자: A) */function (x) { if (x !== u) gainEnergy(x, JP(u).ultEnergy); }); // 서포터: 궁극기를 쓰면 다른 아군 에너지
       // shortcut: 초월 추가 스킬의 창도 같은 u.win을 써서 기본 스킬 창을 덮어써요, 둘 다 창이 있는 조합이 많아지면 창을 여러 개로 나눠요
-      if (U0.win) { u.win = U0.win; u.winT = U0.win.t || 0.5; u.pv = (U0.win.v || 0) * kr; u.pvWin = true; u.evT = 0; u.atkC2 = 0; u.dStk = 0; }
+      if (U0.win) { u.win = U0.win; u.winT = U0.win.t || 0.5; u.pv = (U0.win.v || 0) * kr; u.pvWin = true; if (U0.win.every) u.evT = 0; if (U0.win.kind === 'comboN') u.atkC2 = 0; if (U0.win.kind === 'hasteStack') u.dStk = 0; } /* 2026-11-29 버그: 궁극기를 쓸 때마다 패시브의 몇 초마다 타이머·평타 횟수·쌓인 공속이 0으로 돌아가던 것 — 창이 같은 종류일 때만 */
       if (rec) log.push({ t: t, kind: 'ult', uid: u.uid, ult: U.kind });
       switch (U.kind) {
         case 'taunt': tauntOn(u, U.dur); addShield(u, u.maxHp * U.shieldPct); break;
