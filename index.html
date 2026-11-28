@@ -4929,7 +4929,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     else if (C.k === 'ember') uxAdd('ustrike', x, y, { c: '#ff8a24' }, .6);
     else if (C.k === 'zigzag'){ if (C.prev) uxAdd('zig', C.prev[0], C.prev[1], { x2: x, y2: y, c: c }, .3); C.prev = [x, y]; } }
   /* 데미지 숫자 (2026-11-26 사용자: "팍 꽂히는"): hit=크게 나타나 0.1초에 박히고 흔들린 뒤 뜸, crit=더 크게·기울임·잠깐 멈춤, skill=옆으로 튕김, dot=작고 옅게 */
-  var ultAt = {}, skCol = '', combos = {}, seqHit = {};
+  var ultAt = {}, ultNth = {}, skCol = '', combos = {}, seqHit = {};
   /* 연타(2026-11-26 사용자): 숫자가 아래에서 하나씩 생기며 앞 숫자를 위로 밀어 올리고, 끝나면 합계. 얼음 스킬 피해는 좌우로 흔들리다 사라짐 */
   function comboPop(g, n, amt, x, y, o, frost){
     if (frost && o.fx === 'skill'){ o.fx = 'frost'; o.c = '#dff6ff'; o.c2 = '#6fc4ff'; o.max = .95; }
@@ -4969,7 +4969,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
     if (ev.kind === 'knock'){ var ku = unitByUid(ev.uid); if (ku){ knocks[ku.uid] = { dx: ev.dx, t: .15 }; var kp = posOf(ku), sx0 = kp[0] - ev.dx, sg = ev.dx > 0 ? 1 : -1;
       for (var q3 = 0; q3 < 8; q3++) fxs.push({ x: sx0, y: kp[1] + 22, vx: -sg * (40 + Math.random() * 70), vy: -10 - Math.random() * 30, t: .35, c: q3 % 2 ? '#b59c7a' : '#d8cdb8', dot: 1 });
       for (var ln = 0; ln < 4; ln++) for (var q4 = 0; q4 < 6; q4++) fxs.push({ x: sx0 - sg * q4 * 7, y: kp[1] - 26 + ln * 13, vx: sg * 300, vy: 0, t: .25 - q4 * .02, c: q4 < 2 ? '#ffffff' : '#cfe8ff', dot: 1 }); } }
-    if (ev.kind === 'ult') ultAt[ev.uid] = ev.t;
+    if (ev.kind === 'ult'){ ultNth[ev.uid] = ultAt[ev.uid] === ev.t ? ultNth[ev.uid] + 1 : 0; ultAt[ev.uid] = ev.t; }
     if (ev.kind === 'skill') skCol = skG(ev.id).col;
     if (ev.kind === 'hit'){
       var a = unitByUid(ev.from), b = unitByUid(ev.to); if (!a || !b) return;
@@ -4985,7 +4985,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
         if (UFX && isUlt){ fxs.push({ x: p[0], y: p[1], t: .24, c: '#ffffff', big: 1 }); hitStopOn(b.uid, .2, 1); } hitStopOn(b.uid, ev.crit ? .18 : .13, 1); if (a.range === 'melee') hitStopOn(a.uid, .07, 0); // 맞은 쪽 멈칫+번쩍, 근접 공격자도 짧게 멈칫
         if (HAS_FX && ev.mm !== 'spit') fxAt('hit', b, { scale: ev.crit ? 1 : .7 }); };
       /* 한 번에 여러 번 때리는 공격은 탁탁탁 하나씩(0.2초 간격) (2026-11-26 사용자). 범위 공격은 그대로 한꺼번에 */
-      var uk = a.h.ult && a.h.ult.kind, sq = seqHit[a.uid]; if (!sq || ev.t - sq.t > .01 || ev.t < sq.t) sq = seqHit[a.uid] = { t: ev.t, n: 0 }; var sn = sq.n++, idx = isUlt && /^(multi|strike|zigzag|chain|blink|snipe|backstab)$/.test(uk) ? sn : cn - 1;
+      var uk = UC[a.uid] && UC[a.uid].t === ev.t ? UC[a.uid].k : a.h.ult && a.h.ult.kind, sq = seqHit[a.uid]; if (!sq || ev.t - sq.t > .01 || ev.t < sq.t) sq = seqHit[a.uid] = { t: ev.t, n: 0 }; var sn = sq.n++, idx = isUlt && /^(multi|strike|zigzag|chain|blink|snipe|backstab)$/.test(uk) ? sn : cn - 1;
       var B0 = bt, go = function(){ atkT[a.uid] = ANIM_IDS.indexOf(a.id) >= 0 ? ANIM_ATK : .2; ultHitFx(a, b, ev);
       if (ev.mm === 'bite'){ lunges[a.uid] = .18; a._openT = performance.now(); var bp3 = posOf(b); fxs.push({ bite: 1, x: bp3[0], y: bp3[1] - 22, t: .36, uid: b.uid }); land(); } /* 갈색 미믹 = 콱 깨물기: 입 벌리기 그림과 같이 (2026-11-26 사용자: "좀더 화려하게") */
       else if (ev.mm === 'spit') shots.push({ from: posOf(a), to: posOf(b), t: 0, c: '#8fd8f0', kind: 'spit', land: land }); /* 파랑·왕관 = 침 */
@@ -5006,9 +5006,11 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
       var cu = unitByUid(ev.uid); if (cu){ var cp = posOf(cu); uxAdd('smoke', cp[0], cp[1] + 26, {}, .45); if (HAS_FX) fxAt('poof', cu, { scale: .9 }); pops.push({ x: cp[0], y: cp[1] - 46, s: '수정 꺼짐', c: '#b9b4c6', life: 1.1, max: 1.1, size: 15 }); }
     } else if (ev.kind === 'jobBlink'){
       /* 암살자 순간이동: 떠난 자리에 잔상+연기, 도착 자리에 연기 (궁극기 순간이동과 같은 연출, 2026-11-27 사용자) */
-      var ju = unitByUid(ev.uid); if (ju && ultAt[ev.uid] === ev.t && ju.h.ult && ju.h.ult.kind === 'ember'){ var et = unitByUid(ev.to); if (et) pzones.push({ k: 'ember', b: bt, src: ev.uid, x: zx(ev.ex != null ? ev.ex : et.x), y: zy(ev.ey != null ? ev.ey : et.y) + OFF + 26 /* ex·ey = 불씨 자리(적이 모인 곳) */, r: (ju.h.ult.r || 80) * CZ, t0: ev.t, dur: ju.h.ult.delay || 2 }); } if (ju){ var jx = zx(ev.fx), jy = zy(ev.fy) + OFF + 26, jp = posOf(ju); uxAdd('ghost', jx, jy, { id: ju.id, dir: -(ju.face || 1) }, .45); uxAdd('smoke', jx, jy, {}, .45); uxAdd('smoke', jp[0], jp[1] + 26, {}, .45); }
+      var ju = unitByUid(ev.uid), eu7 = ju && ev.ex != null && [ju.h.ult].concat((ju.extra || []).map(function(x){ return x.ult; })).filter(function(U){ return U && U.kind === 'ember'; })[0]; if (eu7){ var et = unitByUid(ev.to); if (et) pzones.push({ k: 'ember', b: bt, src: ev.uid, x: zx(ev.ex != null ? ev.ex : et.x), y: zy(ev.ey != null ? ev.ey : et.y) + OFF + 26 /* ex·ey = 불씨 자리(적이 모인 곳) */, r: (eu7.r || 80) * CZ, t0: ev.t, dur: eu7.delay || 2 }); } if (ju){ var jx = zx(ev.fx), jy = zy(ev.fy) + OFF + 26, jp = posOf(ju); uxAdd('ghost', jx, jy, { id: ju.id, dir: -(ju.face || 1) }, .45); uxAdd('smoke', jx, jy, {}, .45); uxAdd('smoke', jp[0], jp[1] + 26, {}, .45); }
     } else if (ev.kind === 'ult'){
-      var u = unitByUid(ev.uid); ultImpact(u); ultPops.push({ u: u, t: 0, max: .85 }); atkT[u.uid] = ANIM_IDS.indexOf(u.id) >= 0 ? ANIM_ATK : .25;
+      var u = unitByUid(ev.uid), nth = ultNth[ev.uid] || 0, xs = nth && u.extra && u.extra[nth - 1], ic = u.id;
+      if (xs){ /* 초월 스킬: 이름·아이콘·이펙트를 원래 영웅 것으로 (2026-11-28 사용자: "첫번째알럿만나오거나") */ var src = hero(xs.from), base = u; ic = xs.from; u = Object.create(base); u.h = Object.assign({}, base.h, { ult: xs.ult, ultName: ultName(src) }); u.el = xs.el || base.el; }
+      ultImpact(u); ultPops.push({ u: u, ic: ic, off: nth, t: 0, max: .85 }); atkT[u.uid] = ANIM_IDS.indexOf(u.id) >= 0 ? ANIM_ATK : .25;
       var uk = u.h.ult && u.h.ult.kind; if (uk === 'teamShield') fxTeam('shield', u.side, { scale: 1.2 }); else if (uk === 'healAll') fxTeam('heal', u.side, { scale: .9 }); else if (uk === 'chain') fxAt('chain', u, { scale: 1.2, flip: u.side === 'E' }); else if (uk === 'aoe' && u.h.ult.slow) fxTeam('frost', u.side === 'A' ? 'E' : 'A', { scale: 1 });
       fxs.push({ x: posOf(u)[0], y: posOf(u)[1], t: .5, c: ELC[u.el], big: 1 });
       var bkb = uk === 'blink' && u.h.ult.back; if (bkb){ blinks[u.uid] = { t: ev.t, f: u.face || (u.side === 'A' ? 1 : -1), pts: [], n: u.h.ult.chain || 1 }; var bp = posOf(u); uxAdd('ghost', bp[0], bp[1] + 26, { id: u.id, dir: u.face }, .45); uxAdd('smoke', bp[0], bp[1] + 26, {}, .45); }
@@ -5187,7 +5189,7 @@ button:not(#z#z#z#z#z#z#z#z):disabled:not(.trslot):not(.upn):not(.no):not(:has(b
       sc = k < .12 ? .3 + (k / .12) * 1.0 : k < .22 ? 1.3 - ((k - .12) / .1) * .3 : 1; // 튀어나옴 → 살짝 줄며 자리 잡음
       if (k > .55){ var q = (k - .55) / (p.max - .55); al = 1 - q; rise = q * 7; }
       // 24px 그림 1배(절반 크기). 네 변 모두 진영 색 2px 테두리
-      var cx = Math.round(pos[0]), cy = Math.round(pos[1] + 26 - S - 8 - rise), sz = Math.round(24 * sc), im = ULTIMG[u.id], x0 = Math.round(cx - sz / 2), y0 = Math.round(cy - sz / 2);
+      var cx = Math.round(pos[0] + (p.off || 0) * 34), cy = Math.round(pos[1] + 26 - S - 8 - rise), sz = Math.round(24 * sc), im = ULTIMG[p.ic || u.id], x0 = Math.round(cx - sz / 2), y0 = Math.round(cy - sz / 2);
       ctx.save(); ctx.globalAlpha = al;
       ctx.fillStyle = ELC[u.el] || '#f3e6c4'; ctx.fillRect(x0 - 4, y0 - 4, sz + 8, sz + 8);
       ctx.fillStyle = 'rgba(23,20,29,.92)'; ctx.fillRect(x0 - 2, y0 - 2, sz + 4, sz + 4);
