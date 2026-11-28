@@ -1,0 +1,5 @@
+Two images are attached, game pixel art enlarged 8 times (every 8x8 block is one sprite pixel on a 64 x 64 grid).
+Image 1 is a hooded assassin at the CORRECT SIZE (scale template). Image 2 is the design to keep, but it came out TOO BIG.
+Use them as reference images for your image generation tool, generate ONE new image and save it as img/codex/shadow_assassin/b2_src.png (save it even if the size differs slightly).
+Redraw image 2 (black hood and cape with muted purple trim, purple gem clasp, purple wraps, twin daggers) at exactly the scale of image 1: the same head, hood and face size, about 44 pixels tall from boot soles to hood tip, at most 50 pixels wide, same pixel block size (do not enlarge the blocks).
+Very dark brown outline everywhere, hard square pixels, no anti-aliasing. Full body centered, 1024x1024 PNG, flat solid pure magenta background FF00FF, no text, no shadow. Python is not installed on this computer: do not use python. Use PowerShell Copy-Item to copy the generated file. Do not modify or create any other file.
