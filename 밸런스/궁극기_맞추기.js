@@ -1,0 +1,47 @@
+// 영웅별 궁극기 위력(hero.ultPow) 찾기: node 밸런스/궁극기_맞추기.js --job=guardian [--seeds=30] → 밸런스/궁극기_맞추기/<job>.json (2026-11-28)
+// 목표(궁극기 점수 ÷ 1000, 1성): 직업 평균 기사 60 · 마법사 80 · 서포터 70 · 전사·궁수·암살자 30 (사용자), 등급 한 칸마다 +12% (사용자: "응"), 직업 평균은 그대로
+// 측정: 실제 게임 길이 전투(양쪽 체력 ×0.6, 약 14초) + 크게 섞기(판마다 팀원 무작위 + 자리별 체력·공격 ±25%) — 절벽이 생기지 않게(2026-11-28)
+// 그 영웅만 궁극기를 끈 쪽(engine spec.noUlt)을 몇 레벨 올려야 비기는지 = 궁극기 가치(레벨) → 능력치 가격표 점수 → ÷ 1000
+process.chdir(require('path').join(__dirname, '..'));
+const fs = require('fs'), path = require('path'), D = require(process.cwd() + '/data.js'), E = require(process.cwd() + '/engine.js'), REC = require('./기록.js');
+const arg = (k, d) => { const a = process.argv.find(x => x.startsWith('--' + k + '=')); return a ? a.split('=')[1] : d; };
+const JOB_ = arg('job'), SEEDS = +arg('seeds', 30); if (!JOB_) throw new Error('--job=guardian|warrior|archer|mage|bard|assassin');
+const JOBS = ['guardian', 'warrior', 'archer', 'mage', 'bard', 'assassin'], JN = { guardian: '기사', warrior: '전사', archer: '궁수', mage: '마법사', bard: '서포터', assassin: '암살자' };
+const TARGET = { guardian: 60, mage: 80, bard: 70, warrior: 30, archer: 30, assassin: 30 }, GF = [1, 1.12, 1.24, 1.36], HPK = 0.6, JIT = 0.25;
+const G = D.growth.perLevel, LV = 1, GL = 1 + G * (LV - 1);
+const heroes = D.heroes.filter(h => !h.mob && JOBS.includes(h.job)), byJob = {}; heroes.forEach(h => { (byJob[h.job] = byJob[h.job] || []).push(h.id); });
+const unit1 = id => E.createBattle(D, [{ id, slot: 0, level: LV, star: 1 }], [{ id, slot: 0, level: 1 }], { seed: 1 }).A[0];
+const avg = a => a.reduce((x, y) => x + y, 0) / a.length;
+const REP = {}; for (const j of JOBS) { const L = heroes.filter(h => h.job === j).map(h => ({ h, u: unit1(h.id) })), a = { hp: avg(L.map(x => x.u.maxHp)), atk: avg(L.map(x => x.u.atk)), iv: avg(L.map(x => x.u.interval)) };
+  REP[j] = L.map(x => ({ id: x.h.id, d: Math.abs(Math.log(x.u.maxHp / a.hp)) + Math.abs(Math.log(x.u.atk / a.atk)) + Math.abs(Math.log(x.u.interval / a.iv)) })).sort((p, q) => p.d - q.d)[0].id; }
+const teamFor = j => { const ids = ['guardian', 'warrior', 'archer', 'mage', j === 'assassin' ? 'assassin' : 'bard'].map(x => REP[x]), slots = [0, 1, 3, 6, 4]; return ids.map((id, i) => ({ id, slot: slots[i], level: LV, star: 1 })); };
+const allUp = (u, m) => { u.maxHp *= 1 + m; u.hp *= 1 + m; u.atk *= 1 + m; u.def *= 1 + m; };
+const rng = seed => () => { seed = (seed + 0x6D2B79F5) | 0; let x = Math.imul(seed ^ (seed >>> 15), 1 | seed); x = (x + Math.imul(x ^ (x >>> 7), 61 | x)) ^ x; return ((x ^ (x >>> 14)) >>> 0) / 4294967296; };
+const teamOf = (t, idx, s) => (r => t.map((x, i) => i === idx ? x : { ...x, id: (L => L[Math.floor(r() * L.length)])(byJob[D.heroes.find(h => h.id === x.id).job]) }))(rng(s * 131 + 7));
+function score(t0, idx, m) { let w = 0, n = 0; for (let s = 1; s <= SEEDS; s++) for (const sw of [0, 1]) {
+  const t = teamOf(t0, idx, s), tX = t.map(x => ({ ...x })), tY = t.map((x, i) => i === idx ? { ...x, noUlt: true } : { ...x }), o = { seed: s * 7 + 3 }, b = sw ? E.createBattle(D, tY, tX, o) : E.createBattle(D, tX, tY, o);
+  const r = rng(s * 977 + 11); b.A.forEach((u, i) => { const fh = 1 - JIT + 2 * JIT * r(), fa = 1 - JIT + 2 * JIT * r(); [u, b.E[i]].forEach(v => { v.maxHp *= fh * HPK; v.hp *= fh * HPK; v.atk *= fa; }); });
+  const X = sw ? b.E : b.A, Y = sw ? b.A : b.E, M0 = X.reduce((a, u) => a + u.maxHp, 0); allUp(Y[idx], m);
+  while (!b.result && b.time < 90) b.step(); const left = S => S.reduce((a, u) => a + Math.max(0, u.alive ? u.hp : 0), 0); w += (left(X) - left(Y)) / M0; n++; } return 0.5 + w / n; }
+const ITER = 10, MLO = -0.6, MHI = 6;
+function lvEquiv(t, idx) { const f = m => score(t, idx, m); let lo = MLO, hi = MHI; if (f(hi) > 0.5) return Infinity; if (f(lo) < 0.5) return -Infinity;
+  for (let i = 0; i < ITER; i++) { const m = (lo + hi) / 2; if (f(m) > 0.5) lo = m; else hi = m; } return GL * (lo + hi) / 2 / G; }
+// 능력치 가격표(최신 기록): 1레벨 = 그 영웅 체력·공격·방어 점수 × G/GL
+const pF = REC.list('능력치_가격').pop(), PR = JSON.parse(fs.readFileSync(path.join(REC.DIR, pF), 'utf8'));
+const ptsPerLv = h => { const p = PR.values['가격 ' + ({ guardian: '수호자', warrior: '전사', archer: '궁수', mage: '마법사', bard: '음유시인', assassin: '암살자' })[h.job]], u = unit1(h.id); return G / GL * (u.maxHp * p['체력 1'] + u.atk * p['공격력 1'] + u.def * p['방어 1']); };
+// 그 영웅의 궁극기 비율(%), 위력 pow
+function ratio(h, pow) { const hh = D.heroes.find(x => x.id === h.id); hh.ultPow = pow; const base = teamFor(h.job), idx = base.findIndex(x => x.id === REP[h.job]), t1 = base.map((x, i) => i === idx ? { ...x, id: h.id } : x);
+  const lv = lvEquiv(t1, idx); return lv === Infinity ? 999 : lv === -Infinity ? -999 : lv * ptsPerLv(hh) / 10; }
+const L = heroes.filter(h => h.job === JOB_), mf = avg(L.map(h => GF[(h.grade || 1) - 1])), t0 = Date.now(), OUT = [];
+for (const h of L) { const tgt = TARGET[JOB_] * GF[(h.grade || 1) - 1] / mf, tries = [];
+  const ev = p => { const r = ratio(h, p); tries.push([Math.round(p * 1000) / 1000, Math.round(r)]); process.stderr.write(JN[JOB_] + ' ' + h.name + ' 위력 ×' + p.toFixed(2) + ' → ' + Math.round(r) + '% (목표 ' + Math.round(tgt) + '%)\n'); return r; };
+  let p0 = 1, r0 = ev(p0), res;
+  if (r0 <= 0 || Math.abs(r0) === 999) res = { pow: null, note: r0 >= 999 ? '못 잼(너무 셈)' : '궁극기가 손해 — 스킬 내용 문제' };
+  else { let p1 = Math.max(0.2, Math.min(4, tgt / r0)), r1 = Math.abs(p1 - 1) < 0.03 ? r0 : ev(p1);
+    for (let i = 0; i < 3 && Math.abs(r1 - tgt) > tgt * 0.07; i++) { const p2 = r1 === r0 ? p1 * tgt / r1 : p1 + (tgt - r1) * (p1 - p0) / (r1 - r0); p0 = p1; r0 = r1; p1 = Math.max(0.2, Math.min(4, p2)); r1 = ev(p1); }
+    res = { pow: Math.round(p1 * 100) / 100, ratio: Math.round(r1) }; if (p1 >= 4 && r1 < tgt * 0.85) res.note = '위력 ×4로도 모자람 — 스킬 내용 문제'; if (p1 <= 0.2 && r1 > tgt * 1.15) res.note = '위력 ×0.2로도 셈 — 스킬 내용 문제'; }
+  delete D.heroes.find(x => x.id === h.id).ultPow;
+  OUT.push({ id: h.id, name: h.name, grade: h.grade || 1, target: Math.round(tgt), tries, ...res }); }
+fs.mkdirSync('밸런스/궁극기_맞추기', { recursive: true });
+fs.writeFileSync('밸런스/궁극기_맞추기/' + JOB_ + '.json', JSON.stringify({ job: JOB_, seeds: SEEDS, target: TARGET[JOB_], at: new Date().toISOString(), heroes: OUT }, null, 1));
+console.log(JN[JOB_] + ' 끝 ' + Math.round((Date.now() - t0) / 1000) + '초'); OUT.forEach(o => console.log(o.name, '등급', o.grade, '목표', o.target, '→ 위력', o.pow, o.ratio != null ? o.ratio + '%' : '', o.note || ''));
