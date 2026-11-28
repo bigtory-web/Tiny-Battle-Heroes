@@ -748,12 +748,14 @@ var IDLE_DATA = {
   recruit: {
     startHero: 'bear',          // 처음 가진 영웅 1명
     startExtra: 0, // 2026-11-22: 다시 1명으로 시작(사용자). 예전 1              // 2026-11-22: 시작할 때 모닥불 영웅 말고 1명 더 받아요(1레벨 등급 확률로). 1-1은 2:1로 시작
-    // pool: 프로토타입용 등장 영웅(2026-11-18, 등급마다 6명 = 24명). 종족 6명씩, 속성 4~5명씩, 직업·역할도 섞고 등급마다 앞줄 2명 이상
-    //   적·모닥불·용병·상인·전리품이 이 안에서만 나와요. 빈 배열이면 65명 전부 나와요
-    pool: ['bear', 'batling', 'rain', 'piper', 'frog', 'squire',
-           'dancer', 'knight', 'bat', 'song', 'owl', 'horn',
-           'thorn', 'monk', 'succubus', 'frost', 'cannon', 'shaman',
-           'tiger', 'kraken', 'windlord', 'valkyrie', 'necro', 'phoenix'],
+    // pool: 등장 영웅 48명(2026-11-28 사용자: "48명으로 할게"). 직업 6 × 등급 4 칸마다 2명("챕터별로 직업별로 등급별로 2개씩은 기본"), 특별 출현은 예외로 더해짐. 예전: 2026-11-18 프로토타입 24명
+    //   직업 순서(기사·전사·궁수·마법사·서포터·암살자), 칸마다 일반→전설. 적·모닥불·용병·상인·전리품이 이 안에서만 나와요. 빈 배열이면 65명 전부 나와요
+    pool: ['bear', 'mossguard', 'knight', 'shield', 'thorn', 'gargoyle', 'kraken', 'lion',
+           'wolf', 'drum', 'dancer', 'blades', 'monk', 'vine', 'tiger', 'wyvern',
+           'harpy', 'pup', 'owl', 'hawk', 'shaman', 'cannon', 'rain', 'windlord',
+           'frog', 'candle', 'bat', 'warlock', 'frost', 'flame', 'necro', 'phoenix',
+           'piper', 'sprout', 'song', 'horn', 'succubus', 'coral', 'worldtree', 'archmage',
+           'squire', 'batling', 'imp', 'spark', 'pegasus', 'assassin', 'valkyrie', 'shadow'],
     // 출전 코스트 상한 = start + floor(깬 스테이지 수 / every), 최대 max
     costCap: { enabled: false, start: 3, every: 3, max: 10 }, // 꺼짐: 출전 제한은 플레이어 레벨의 전장 칸 수(player.field)만 써요. 영웅 cost(1~3)는 등급(외곽선 색)·적 등장 시기·가격용으로 남아요
     fieldSlots: 5,               // 전장 칸
