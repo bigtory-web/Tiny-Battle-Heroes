@@ -8,7 +8,7 @@ D.campaign.enemyLv = D0.campaign.enemyLv.slice(0, 20).map(x => x); // 예전 3�
 const NEWMODE = process.argv.includes('--new'); /* --new: 제안 배율을 실제로 넣고 돌림(별 x1.4·x2.0, 등급은 영웅 체력·공격·방어를 등급별로 늘려 일반 100 · 고급 110 · 희귀 120 · 전설 130에 맞춤) */
 if (NEWMODE) { D.recruit.merge.mul = [1, 1.4, 2.0]; D.recruit.starMul = [1, 1.4, 2.0]; const GC = [1, 1.03, 1.12, 1.13], GN = [1, 1.1, 1.2, 1.3]; D.heroes.forEach(h => { if (h.mob || !h.job) return; const k = GN[(h.grade || 1) - 1] / GC[(h.grade || 1) - 1]; h.hp *= k; h.atk *= k; h.def *= k; }); }
 const TIER = process.argv.includes('--tier'); /* --tier: 등급마다 다른 별 배율(일반 x1.25·x1.6, 고급 x1.3·x1.75, 희귀 x1.4·x2.0, 전설 x1.5·x2.3) + 등급 한 칸 +12% (2026-11-28 예시) */
-const TS = { 1: [1, 1.25, 1.6], 2: [1, 1.3, 1.75], 3: [1, 1.4, 2.0], 4: [1, 1.5, 2.3] }, TG = [1, 1.12, 1.24, 1.36];
+const TS = { 1: [1, 1.25, 1.6], 2: [1, 1.3, 1.75], 3: [1, 1.4, 2.0], 4: [1, 1.5, 2.3] }; { const g2 = process.argv.find(x => /^--g2=/.test(x)); if (g2) TS[2][1] = +g2.split('=')[1]; const g3 = process.argv.find(x => /^--g3=/.test(x)); if (g3) TS[2][2] = +g3.split('=')[1]; } /* --g2=1.43: 고급 2성 배율만 바꿔 보기 (사용자: 고급 2성이 3성 일반 근처까지) */ const TG = [1, 1.12, 1.24, 1.36];
 if (TIER) { D.recruit.merge.mulByGrade = TS; const GC = [1, 1.03, 1.12, 1.13]; D.heroes.forEach(h => { if (h.mob || !h.job) return; const k = TG[(h.grade || 1) - 1] / GC[(h.grade || 1) - 1]; h.hp *= k; h.atk *= k; h.def *= k; }); }
 const N = +(process.argv.find(x => /^d+$/.test(x)) || 200), seg = s => s <= 6 ? '초반' : s <= 13 ? '중반' : '후반', A = {};
 let reach = [];
