@@ -1,0 +1,13 @@
+Look at the attached image: a pixel art game character (a 64x64 sprite shown 8 times larger on white), a goblin girl warrior with a big muted-purple ponytail, a drum on her back and ONE big two-handed battle axe.
+Draw a sprite sheet of ATTACK frames of exactly this character and save it as img/codex/drum_warrior/atk_src.png (if the size differs a little, save it anyway).
+
+Layout: ONE row of 4 equal cells, wide image (2048x512), the character in each cell drawn at the same size and same pixel size as the reference, feet at the same height in every cell. No borders, grid lines, text or numbers. Flat solid #FF00FF magenta background.
+
+The 4 frames, in order (a heavy two-handed chop):
+1. wind up: axe raised back up behind her right side, both hands on the haft.
+2. top of the swing: axe high above and in front, body leaning forward a little, the blade never covering the face.
+3. impact: axe slammed down to the right, blade near the ground in front, knees bent 2 pixels.
+4. return: lifting the axe back toward the reference pose.
+
+Rules (most important): same face, same eyes (same shape and position on the head, never closed), same hair and hair shading, ears, drum, clothes, colors and axe as the reference in all 4 frames. Same height, head size and body width. Each cell content at most 60 pixels wide. Facing right. Only the colors of the reference (muted purple, no neon pink), thick dark 1-pixel outline, hard square pixels, no anti-aliasing. No motion trails, flashes, dust or effects: the character only.
+Python is not installed on this computer: do not use python. Use PowerShell Copy-Item to copy the generated file. Do not modify or create any other file.
