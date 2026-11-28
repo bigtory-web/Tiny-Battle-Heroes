@@ -50,7 +50,7 @@
       u.ultLv = Math.min(lvCap, spec.ultLv || base.ult);
       // 초월 추가 스킬: spec.extra = [{ from: 영웅 id, lv }]. 그 영웅의 궁극기를 그 레벨 위력으로 함께 써요
       u.extra = (spec.extra || []).map(function (e) { var hh = heroById(data, e.from); return hh && hh.ult ? { from: e.from, ult: hh.ult, el: hh.el, lv: e.lv, k: 1 + (GE.ultPer || 0) * (Math.min(lvCap, e.lv) - 1) } : null; }).filter(Boolean); var PO = GE.passiveOn, pas0 = PO && (spec.star || 1) >= PO.star && u.grade >= PO.grade ? 1 : base.pas; /* 패시브: 등급 PO.grade 이상 영웅이 ★PO.star가 되면 켜져요 */ u.pasLv = u.h.passive ? Math.min(GE.maxLv || 5, spec.pasLv != null ? spec.pasLv : pas0) : 0;
-      u.uk = (1 + (GE.ultPer || 0) * (u.ultLv - 1)) * ((B.ultPower && B.ultPower[u.h.job]) || 1); /* 2026-11-28 직업별 궁극기 위력(data.battle.ultPower) */
+      u.uk = (1 + (GE.ultPer || 0) * (u.ultLv - 1)) * ((B.ultPower && B.ultPower[u.h.job]) || 1) * (u.h.ultPow || 1); /* 2026-11-28 직업별 궁극기 위력(data.battle.ultPower) × 영웅별(hero.ultPow) */
       u.noUlt = !!spec.noUlt; u.noPas = !!spec.noPas; /* 2026-11-28 밸런스 측정용: 이 영웅만 궁극기·초월 스킬(noUlt) / 패시브(noPas) 끔 */
       if (opts.statsOnly || u.noUlt) u.extra = []; /* 2026-11-27 밸런스 측정용: 능력치만(궁극기·패시브·초월 스킬 끔, 직업 효과는 남김) */
       if (u.pasLv > 0 && !opts.statsOnly && !u.noPas) { u.pas = u.h.passive; u.pv = u.pas.v * (1 + (GE.pasPer || 0) * (u.pasLv - 1)); } });
@@ -215,7 +215,7 @@
       if (!ultHit && u.alive) { var e0 = ultEl; if (e0 === 'forest' || e0 === 'light') elemHit(u, null, atkOf(u), e0); else { var nt = pickTarget(u); if (nt) elemHit(u, nt, atkOf(u), e0); } }
       ultSrc = ps; ultEl = pe; ultHit = ph; }
     function ultimate0(u, ult0, k0) {
-      magic = true; var U0 = ult0 || u.h.ult, k = k0 || u.uk || 1, U = {}; for (var q in U0) U[q] = U0[q]; if (U.mul) U.mul *= k; if (U.shieldPct) U.shieldPct *= k; if (U.amount) U.amount *= k; // 궁극기 레벨만큼 세져요
+      magic = true; var U0 = ult0 || u.h.ult, k = k0 || u.uk || 1, U = {}; for (var q in U0) U[q] = U0[q]; if (U.mul) U.mul *= k; if (U.shieldPct) U.shieldPct *= k; if (U.amount) U.amount *= k; if (U.dr) U.dr = Math.min(0.8, U.dr * k); if (U.share) U.share = Math.min(1, U.share * k); if (U.tick) U.tick *= k; if (U.blast) U.blast *= k; if (U.thorns) U.thorns *= k; /* 2026-11-28 새 궁극기 수치도 위력 배수를 받게 */ // 궁극기 레벨만큼 세져요
       var F = alive(foes(u)), T = alive(team(u.side)); u.stats.ults++; if (JP(u).ultEnergy) T.forEach(function (x) { if (x !== u) gainEnergy(x, JP(u).ultEnergy); }); // 서포터: 궁극기를 쓰면 다른 아군 에너지
       // shortcut: 초월 추가 스킬의 창도 같은 u.win을 써서 기본 스킬 창을 덮어써요, 둘 다 창이 있는 조합이 많아지면 창을 여러 개로 나눠요
       if (U0.win) { u.win = U0.win; u.winT = U0.win.t || 0.5; u.pv = (U0.win.v || 0) * k; u.evT = 0; u.atkC2 = 0; u.dStk = 0; }
