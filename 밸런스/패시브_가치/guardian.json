@@ -1,0 +1,92 @@
+{
+ "job": "guardian",
+ "seeds": 120,
+ "off": 0,
+ "at": "2026-11-28T14:12:34.389Z",
+ "heroes": [
+  {
+   "id": "bear",
+   "name": "록시",
+   "grade": 1,
+   "pas": "attackShield",
+   "pct": 8.5
+  },
+  {
+   "id": "knight",
+   "name": "안셀름",
+   "grade": 2,
+   "pas": "shieldGuard",
+   "pct": 1.5
+  },
+  {
+   "id": "thorn",
+   "name": "로즈",
+   "grade": 3,
+   "pas": "thorns",
+   "pct": 2.6
+  },
+  {
+   "id": "lion",
+   "name": "레오",
+   "grade": 4,
+   "pas": "shieldRally",
+   "pct": 7.9
+  },
+  {
+   "id": "mudgolem",
+   "name": "매디",
+   "grade": 1,
+   "pas": "hitSlow",
+   "pct": 150.3
+  },
+  {
+   "id": "mossguard",
+   "name": "모스",
+   "grade": 1,
+   "pas": "hitHeal",
+   "pct": 14.4
+  },
+  {
+   "id": "shield",
+   "name": "버클리",
+   "grade": 2,
+   "pas": "hitShield",
+   "pct": 5
+  },
+  {
+   "id": "turtle",
+   "name": "셸리",
+   "grade": 2,
+   "pas": "shieldBreakStun",
+   "pct": -18.3
+  },
+  {
+   "id": "gargoyle",
+   "name": "스톤",
+   "grade": 3,
+   "pas": "petrify",
+   "pct": 9.7
+  },
+  {
+   "id": "minotaur",
+   "name": "힐다",
+   "grade": 3,
+   "pas": "hitNova",
+   "pct": 7.3
+  },
+  {
+   "id": "seraph",
+   "name": "세라",
+   "grade": 4,
+   "pas": "reviveAlly",
+   "pct": 123.3
+  },
+  {
+   "id": "kraken",
+   "name": "애비",
+   "grade": 4,
+   "pas": "tauntDrain",
+   "pct": 0
+  }
+ ]
+}

@@ -1,0 +1,85 @@
+{
+ "job": "mage",
+ "seeds": 120,
+ "off": 0,
+ "at": "2026-11-28T14:11:54.966Z",
+ "heroes": [
+  {
+   "id": "frost",
+   "name": "네베",
+   "grade": 3,
+   "pas": "vsSlow",
+   "pct": 0.3
+  },
+  {
+   "id": "flame",
+   "name": "블레이즈",
+   "grade": 3,
+   "pas": "burnBlast",
+   "pct": 19.6
+  },
+  {
+   "id": "storm",
+   "name": "볼트",
+   "grade": 3,
+   "pas": "ultRefund",
+   "pct": 0
+  },
+  {
+   "id": "bat",
+   "name": "베스퍼",
+   "grade": 2,
+   "pas": "ultDrain",
+   "pct": 0.3
+  },
+  {
+   "id": "candle",
+   "name": "칸델라",
+   "grade": 1,
+   "pas": "burnHit",
+   "pct": 5.6
+  },
+  {
+   "id": "frog",
+   "name": "리비",
+   "grade": 1,
+   "pas": "energyStart",
+   "pct": 91.1
+  },
+  {
+   "id": "warlock",
+   "name": "헥사",
+   "grade": 2,
+   "pas": "bloodPact",
+   "pct": -3.3
+  },
+  {
+   "id": "icefairy",
+   "name": "크리스탈",
+   "grade": 2,
+   "pas": "chillAura",
+   "pct": 18.5
+  },
+  {
+   "id": "thunderbird",
+   "name": "토라",
+   "grade": 4,
+   "pas": "ultStack",
+   "pct": -1.2
+  },
+  {
+   "id": "necro",
+   "name": "모르티아",
+   "grade": 4,
+   "pas": "deathEnergy",
+   "pct": 8.5
+  },
+  {
+   "id": "phoenix",
+   "name": "이그나",
+   "grade": 4,
+   "pas": "rebirth",
+   "pct": 13.8
+  }
+ ]
+}

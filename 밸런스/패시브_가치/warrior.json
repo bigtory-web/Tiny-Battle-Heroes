@@ -1,0 +1,86 @@
+{
+ "job": "warrior",
+ "seeds": 120,
+ "off": 0,
+ "at": "2026-11-28T14:11:49.822Z",
+ "heroes": [
+  {
+   "id": "blades",
+   "name": "블레이크",
+   "grade": 2,
+   "pas": "secondHit",
+   "pct": -2.8
+  },
+  {
+   "id": "wolf",
+   "name": "팽",
+   "grade": 1,
+   "pas": "bloodHaste",
+   "pct": 9.7
+  },
+  {
+   "id": "drum",
+   "name": "탬버",
+   "grade": 1,
+   "pas": "allyUltPower",
+   "pct": 6.2
+  },
+  {
+   "id": "wyvern",
+   "name": "와이엇",
+   "grade": 4,
+   "pas": "dive",
+   "pct": null,
+   "note": "손해"
+  },
+  {
+   "id": "dancer",
+   "name": "마리나",
+   "grade": 2,
+   "pas": "hasteStack",
+   "pct": 58.3
+  },
+  {
+   "id": "boar",
+   "name": "러시",
+   "grade": 1,
+   "pas": "firstStrike",
+   "pct": 19
+  },
+  {
+   "id": "fox",
+   "name": "키츠",
+   "grade": 2,
+   "pas": "critFollow",
+   "pct": 37.2
+  },
+  {
+   "id": "monk",
+   "name": "젠",
+   "grade": 3,
+   "pas": "comboN",
+   "pct": -0.2
+  },
+  {
+   "id": "vine",
+   "name": "아이비",
+   "grade": 3,
+   "pas": "rootHit",
+   "pct": -18.7
+  },
+  {
+   "id": "tiger",
+   "name": "타이라",
+   "grade": 4,
+   "pas": "lowLifesteal",
+   "pct": 2.6
+  },
+  {
+   "id": "dragon",
+   "name": "드라코",
+   "grade": 4,
+   "pas": "ultBurnAmp",
+   "pct": -0.4
+  }
+ ]
+}

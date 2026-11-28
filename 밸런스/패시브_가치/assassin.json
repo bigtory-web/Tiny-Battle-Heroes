@@ -1,0 +1,71 @@
+{
+ "job": "assassin",
+ "seeds": 120,
+ "off": 0,
+ "at": "2026-11-28T14:11:22.372Z",
+ "heroes": [
+  {
+   "id": "shadow",
+   "name": "셰이드",
+   "grade": 4,
+   "pas": "ambush",
+   "pct": 16.1
+  },
+  {
+   "id": "pegasus",
+   "name": "트레사",
+   "grade": 3,
+   "pas": "markKillEnergy",
+   "pct": 1.5
+  },
+  {
+   "id": "imp",
+   "name": "스파키",
+   "grade": 2,
+   "pas": "burnCrit",
+   "pct": 0.9
+  },
+  {
+   "id": "squire",
+   "name": "섀도",
+   "grade": 1,
+   "pas": "none",
+   "pct": -2.3
+  },
+  {
+   "id": "batling",
+   "name": "녹스",
+   "grade": 1,
+   "pas": "lifesteal",
+   "pct": 12.6
+  },
+  {
+   "id": "spark",
+   "name": "지프",
+   "grade": 2,
+   "pas": "chargeHit",
+   "pct": 10.3
+  },
+  {
+   "id": "valkyrie",
+   "name": "레이븐",
+   "grade": 4,
+   "pas": "killAtkStack",
+   "pct": 5
+  },
+  {
+   "id": "assassin",
+   "name": "더크",
+   "grade": 3,
+   "pas": "killStealth",
+   "pct": 0
+  },
+  {
+   "id": "demonlord",
+   "name": "데미안",
+   "grade": 4,
+   "pas": "martyr",
+   "pct": 25.5
+  }
+ ]
+}

@@ -1,0 +1,92 @@
+{
+ "job": "archer",
+ "seeds": 120,
+ "off": 0,
+ "at": "2026-11-28T14:11:59.285Z",
+ "heroes": [
+  {
+   "id": "hawk",
+   "name": "아이리스",
+   "grade": 2,
+   "pas": "execute",
+   "pct": 0.3
+  },
+  {
+   "id": "rain",
+   "name": "볼란",
+   "grade": 4,
+   "pas": "burnRally",
+   "pct": 26.7
+  },
+  {
+   "id": "harpy",
+   "name": "페드라",
+   "grade": 1,
+   "pas": "openHaste",
+   "pct": 5.6
+  },
+  {
+   "id": "gate",
+   "name": "헬가",
+   "grade": 4,
+   "pas": "linkNoHeal",
+   "pct": 0.3
+  },
+  {
+   "id": "shaman",
+   "name": "루나",
+   "grade": 3,
+   "pas": "beastVolley",
+   "pct": 2.1
+  },
+  {
+   "id": "pup",
+   "name": "엠버",
+   "grade": 1,
+   "pas": "lowBurn",
+   "pct": 4.4
+  },
+  {
+   "id": "slinger",
+   "name": "슬린",
+   "grade": 1,
+   "pas": "pierceChance",
+   "pct": 0.3
+  },
+  {
+   "id": "ranger",
+   "name": "로빈",
+   "grade": 2,
+   "pas": "killRush",
+   "pct": 2.6
+  },
+  {
+   "id": "owl",
+   "name": "올리",
+   "grade": 2,
+   "pas": "ultBlind",
+   "pct": 0
+  },
+  {
+   "id": "cannon",
+   "name": "캐넌",
+   "grade": 3,
+   "pas": "splash",
+   "pct": -1
+  },
+  {
+   "id": "moonarcher",
+   "name": "셀레네",
+   "grade": 3,
+   "pas": "farShot",
+   "pct": 9.7
+  },
+  {
+   "id": "windlord",
+   "name": "게일",
+   "grade": 4,
+   "pas": "hasteDouble",
+   "pct": 0.3
+  }
+ ]
+}

@@ -1,0 +1,78 @@
+{
+ "job": "bard",
+ "seeds": 120,
+ "off": 0,
+ "at": "2026-11-28T14:11:58.318Z",
+ "heroes": [
+  {
+   "id": "song",
+   "name": "멜로디",
+   "grade": 2,
+   "pas": "healHaste",
+   "pct": -0.5
+  },
+  {
+   "id": "sprout",
+   "name": "블룸",
+   "grade": 1,
+   "pas": "seedRoot",
+   "pct": 0.3
+  },
+  {
+   "id": "piper",
+   "name": "피프",
+   "grade": 1,
+   "pas": "teamEnergyStart",
+   "pct": 171.4
+  },
+  {
+   "id": "nun",
+   "name": "그레이스",
+   "grade": 2,
+   "pas": "endure",
+   "pct": 100.5
+  },
+  {
+   "id": "horn",
+   "name": "클라렌",
+   "grade": 2,
+   "pas": "burnEnergy",
+   "pct": 48.3
+  },
+  {
+   "id": "druid",
+   "name": "윌로",
+   "grade": 3,
+   "pas": "forestHeal",
+   "pct": 3.2
+  },
+  {
+   "id": "succubus",
+   "name": "릴리스",
+   "grade": 3,
+   "pas": "healSteal",
+   "pct": -0.6
+  },
+  {
+   "id": "coral",
+   "name": "코라",
+   "grade": 3,
+   "pas": "shieldBreakHeal",
+   "pct": 3.2
+  },
+  {
+   "id": "archmage",
+   "name": "테티스",
+   "grade": 4,
+   "pas": "allyUltEnergy",
+   "pct": -0.3
+  },
+  {
+   "id": "worldtree",
+   "name": "이그드라",
+   "grade": 4,
+   "pas": "reviveEvery",
+   "pct": 12.6
+  }
+ ]
+}
