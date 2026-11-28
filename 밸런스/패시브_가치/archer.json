@@ -3,14 +3,14 @@
  "seeds": 120,
  "off": 0,
  "fit": true,
- "at": "2026-11-28T14:34:22.112Z",
+ "at": "2026-11-28T14:55:42.309Z",
  "heroes": [
   {
    "id": "hawk",
    "name": "아이리스",
    "grade": 2,
    "pas": "execute",
-   "target": 50,
+   "target": 20,
    "tries": [
     [
      1,
@@ -54,7 +54,7 @@
    "name": "볼란",
    "grade": 4,
    "pas": "burnRally",
-   "target": 150,
+   "target": 60,
    "tries": [
     [
      1,
@@ -98,7 +98,7 @@
    "name": "페드라",
    "grade": 1,
    "pas": "openHaste",
-   "target": 25,
+   "target": 10,
    "tries": [
     [
      1,
@@ -113,35 +113,35 @@
      13.8
     ],
     [
-     1.958,
-     22.6
+     1.251,
+     5
     ],
     [
-     2.19,
-     29
+     1.399,
+     9.1
     ],
     [
-     2.071,
-     22
+     1.48,
+     12.6
     ],
     [
-     2.13,
-     29
+     1.439,
+     13.2
     ],
     [
-     2.1,
-     29
+     1.419,
+     9.1
     ]
    ],
-   "pow": 1.96,
-   "pct": 22.6
+   "pow": 1.4,
+   "pct": 9.1
   },
   {
    "id": "gate",
    "name": "헬가",
    "grade": 4,
    "pas": "linkNoHeal",
-   "target": 150,
+   "target": 60,
    "tries": [
     [
      1,
@@ -185,7 +185,7 @@
    "name": "루나",
    "grade": 3,
    "pas": "beastVolley",
-   "target": 100,
+   "target": 40,
    "tries": [
     [
      1,
@@ -229,7 +229,7 @@
    "name": "엠버",
    "grade": 1,
    "pas": "lowBurn",
-   "target": 25,
+   "target": 10,
    "tries": [
     [
      1,
@@ -273,7 +273,7 @@
    "name": "슬린",
    "grade": 1,
    "pas": "pierceChance",
-   "target": 25,
+   "target": 10,
    "tries": [
     [
      1,
@@ -317,7 +317,7 @@
    "name": "로빈",
    "grade": 2,
    "pas": "killRush",
-   "target": 50,
+   "target": 20,
    "tries": [
     [
      1,
@@ -361,7 +361,7 @@
    "name": "올리",
    "grade": 2,
    "pas": "ultBlind",
-   "target": 50,
+   "target": 20,
    "tries": [
     [
      1,
@@ -377,7 +377,7 @@
    "name": "캐넌",
    "grade": 3,
    "pas": "splash",
-   "target": 100,
+   "target": 40,
    "tries": [
     [
      1,
@@ -393,7 +393,7 @@
    "name": "셀레네",
    "grade": 3,
    "pas": "farShot",
-   "target": 100,
+   "target": 40,
    "tries": [
     [
      1,
@@ -406,38 +406,17 @@
     [
      3.834,
      41.9
-    ],
-    [
-     4.796,
-     48.3
-    ],
-    [
-     5.364,
-     52.4
-    ],
-    [
-     5.673,
-     53
-    ],
-    [
-     5.834,
-     53
-    ],
-    [
-     5.917,
-     53.6
     ]
    ],
-   "pow": 5.92,
-   "pct": 53.6,
-   "note": "위력 ×6으로도 모자람 — 스킬 내용 문제"
+   "pow": 3.83,
+   "pct": 41.9
   },
   {
    "id": "windlord",
    "name": "게일",
    "grade": 4,
    "pas": "hasteDouble",
-   "target": 150,
+   "target": 60,
    "tries": [
     [
      1,

@@ -873,7 +873,7 @@
   function gradeMul(data, star, grade) { return starMul(data, star, grade); } // 예전 이름 (성급 배율)
   // 영웅 효과 레벨 (화면용): { ult, pas } — 등급 기본값
   function effectLevels(data, id) { var GE = data.gradeEffects || {}, b = GE[heroGrade(data, id)] || { ult: 1, pas: 0 }, h = heroById(data, id); return { ult: b.ult, pas: h && h.passive ? b.pas : 0 }; }
-  function passiveValue(data, id, lv) { var h = heroById(data, id), GE = data.gradeEffects || {}; return h && h.passive && lv > 0 ? h.passive.v * (1 + (GE.pasPer || 0) * (lv - 1)) : 0; }
+  function passiveValue(data, id, lv) { var h = heroById(data, id), GE = data.gradeEffects || {}; return h && h.passive && lv > 0 ? h.passive.v * (h.pasPow || 1) * (1 + (GE.pasPer || 0) * (lv - 1)) : 0; } /* 2026-11-28 pasPow 포함(설명 숫자도 따라감) */
   // 치명타 확률(기본 능력): 영웅 crit > 예전 치명타 패시브 수치 > 역할 기본값
   function critChance(data, h) { var C = data.crit; if (!C || !h) return 0; return h.crit != null ? h.crit : h.passive && h.passive.kind === 'crit' ? h.passive.v : (C.base[h.role] || 0); }
   function heroGrade(data, id) { var h = heroById(data, id); return (h && h.grade) || 1; } // 영웅 고유 등급 1~5

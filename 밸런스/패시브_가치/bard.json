@@ -3,14 +3,14 @@
  "seeds": 120,
  "off": 0,
  "fit": true,
- "at": "2026-11-28T14:33:27.044Z",
+ "at": "2026-11-28T14:54:50.362Z",
  "heroes": [
   {
    "id": "song",
    "name": "멜로디",
    "grade": 2,
    "pas": "healHaste",
-   "target": 50,
+   "target": 20,
    "tries": [
     [
      1,
@@ -26,7 +26,7 @@
    "name": "블룸",
    "grade": 1,
    "pas": "seedRoot",
-   "target": 25,
+   "target": 10,
    "tries": [
     [
      1,
@@ -70,7 +70,7 @@
    "name": "피프",
    "grade": 1,
    "pas": "teamEnergyStart",
-   "target": 25,
+   "target": 10,
    "tries": [
     [
      1,
@@ -89,31 +89,31 @@
      12.6
     ],
     [
-     0.154,
-     20.8
+     0.115,
+     1.5
     ],
     [
-     0.165,
-     30.8
+     0.124,
+     6.2
     ],
     [
-     0.16,
-     30.8
+     0.129,
+     6.2
     ],
     [
-     0.157,
-     20.8
+     0.131,
+     10.8
     ]
    ],
-   "pow": 0.15,
-   "pct": 20.8
+   "pow": 0.13,
+   "pct": 10.8
   },
   {
    "id": "nun",
    "name": "그레이스",
    "grade": 2,
    "pas": "endure",
-   "target": 50,
+   "target": 20,
    "tries": [
     [
      1,
@@ -157,38 +157,26 @@
    "name": "클라렌",
    "grade": 2,
    "pas": "burnEnergy",
-   "target": 50,
+   "target": 20,
    "tries": [
     [
      1,
      46
     ],
     [
-     2.449,
-     109.3
-    ],
-    [
-     1.565,
-     64.2
-    ],
-    [
-     1.251,
-     53.6
-    ],
-    [
-     1.118,
-     48.3
+     0.316,
+     20.8
     ]
    ],
-   "pow": 1.12,
-   "pct": 48.3
+   "pow": 0.32,
+   "pct": 20.8
   },
   {
    "id": "druid",
    "name": "윌로",
    "grade": 3,
    "pas": "forestHeal",
-   "target": 100,
+   "target": 40,
    "tries": [
     [
      1,
@@ -232,7 +220,7 @@
    "name": "릴리스",
    "grade": 3,
    "pas": "healSteal",
-   "target": 100,
+   "target": 40,
    "tries": [
     [
      1,
@@ -248,7 +236,7 @@
    "name": "코라",
    "grade": 3,
    "pas": "shieldBreakHeal",
-   "target": 100,
+   "target": 40,
    "tries": [
     [
      1,
@@ -292,7 +280,7 @@
    "name": "테티스",
    "grade": 4,
    "pas": "allyUltEnergy",
-   "target": 150,
+   "target": 60,
    "tries": [
     [
      1,
@@ -308,7 +296,7 @@
    "name": "이그드라",
    "grade": 4,
    "pas": "reviveEvery",
-   "target": 150,
+   "target": 60,
    "tries": [
     [
      1,

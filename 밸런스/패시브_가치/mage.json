@@ -3,14 +3,14 @@
  "seeds": 120,
  "off": 0,
  "fit": true,
- "at": "2026-11-28T14:31:54.772Z",
+ "at": "2026-11-28T14:53:55.371Z",
  "heroes": [
   {
    "id": "frost",
    "name": "네베",
    "grade": 3,
    "pas": "vsSlow",
-   "target": 100,
+   "target": 40,
    "tries": [
     [
      1,
@@ -26,7 +26,7 @@
    "name": "블레이즈",
    "grade": 3,
    "pas": "burnBlast",
-   "target": 100,
+   "target": 40,
    "tries": [
     [
      1,
@@ -70,7 +70,7 @@
    "name": "볼트",
    "grade": 3,
    "pas": "ultRefund",
-   "target": 100,
+   "target": 40,
    "tries": [
     [
      1,
@@ -86,7 +86,7 @@
    "name": "베스퍼",
    "grade": 2,
    "pas": "ultDrain",
-   "target": 50,
+   "target": 20,
    "tries": [
     [
      1,
@@ -130,7 +130,7 @@
    "name": "칸델라",
    "grade": 1,
    "pas": "burnHit",
-   "target": 25,
+   "target": 10,
    "tries": [
     [
      1,
@@ -174,7 +174,7 @@
    "name": "리비",
    "grade": 1,
    "pas": "energyStart",
-   "target": 25,
+   "target": 10,
    "tries": [
     [
      1,
@@ -218,7 +218,7 @@
    "name": "헥사",
    "grade": 2,
    "pas": "bloodPact",
-   "target": 50,
+   "target": 20,
    "tries": [
     [
      1,
@@ -234,7 +234,7 @@
    "name": "크리스탈",
    "grade": 2,
    "pas": "chillAura",
-   "target": 50,
+   "target": 20,
    "tries": [
     [
      1,
@@ -245,35 +245,39 @@
      43.7
     ],
     [
-     3.834,
-     64.2
+     1.565,
+     29
     ],
     [
-     3.064,
-     56.5
+     1.251,
+     29.6
     ],
     [
-     2.74,
-     55.4
+     1.118,
+     13.8
     ],
     [
-     2.591,
-     44.2
+     1.183,
+     25.5
     ],
     [
-     2.664,
-     51.9
+     1.15,
+     9.1
+    ],
+    [
+     1.166,
+     25.5
     ]
    ],
-   "pow": 2.66,
-   "pct": 51.9
+   "pow": 1.18,
+   "pct": 25.5
   },
   {
    "id": "thunderbird",
    "name": "토라",
    "grade": 4,
    "pas": "ultStack",
-   "target": 150,
+   "target": 60,
    "tries": [
     [
      1,
@@ -289,7 +293,7 @@
    "name": "모르티아",
    "grade": 4,
    "pas": "deathEnergy",
-   "target": 150,
+   "target": 60,
    "tries": [
     [
      1,
@@ -333,7 +337,7 @@
    "name": "이그나",
    "grade": 4,
    "pas": "rebirth",
-   "target": 150,
+   "target": 60,
    "tries": [
     [
      1,

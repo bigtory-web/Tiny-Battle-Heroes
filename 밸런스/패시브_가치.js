@@ -36,7 +36,7 @@ const ptsPerLv = h => { const p = PR.values['가격 ' + ({ guardian: '수호자'
 function ratio(h, pow) { const hh = D.heroes.find(x => x.id === h.id); hh.ultPow = pow; const base = teamFor(h.job), idx = base.findIndex(x => x.id === B_(REP[h.job])), t1 = base.map((x, i) => i === idx ? { ...x, id: h.id } : x);
   const lv = lvEquiv(t1, idx); return lv === Infinity ? 999 : lv === -Infinity ? -999 : lv * ptsPerLv(hh) / 10; }
 // --fit: 등급 목표(능력치 %)에 맞게 영웅별 패시브 위력(hero.pasPow, 패시브 v에 곱함)을 로그 이분 탐색으로 찾음. 목표: 일반 25 · 고급 50 · 희귀 100 · 전설 150 (2026-11-28 사용자: "25 50 100 150 정도?")
-const FIT = process.argv.includes('--fit'), PT = [25, 50, 100, 150], IDS = arg('names', '') ? arg('names').split(',') : null;
+const FIT = process.argv.includes('--fit'), PT = [10, 20, 40, 60] /* 2026-11-28 처음 25·50·100·150 → 65명 중 10명만 맞아 낮춤(사용자: "범위를 일단 낮춰야겠네 … a로") */, IDS = arg('names', '') ? arg('names').split(',') : null;
 const pctOf = h => { const base = teamFor(h.job), idx = base.findIndex(x => x.id === B_(REP[h.job])), t1 = base.map((x, i) => i === idx ? { ...x, id: h.id } : x); const lv = lvEquiv(t1, idx); return Math.abs(lv) === Infinity ? lv * 999 : Math.round(lv * G / GL * 1000) / 10; };
 const L = heroes.filter(h => h.job === JOB_ && (!IDS || IDS.includes(h.name))), t0 = Date.now(), OUT = [];
 for (const h of L) { const hh = D.heroes.find(x => x.id === h.id), p00 = hh.pasPow || 1, tgt = PT[(h.grade || 1) - 1], tries = [];
