@@ -38,7 +38,7 @@
         x: spec.x != null ? spec.x : (side === 'A' ? p0[0] : AR.w - p0[0]), y: spec.y != null ? spec.y : p0[1], face: side === 'A' ? 1 : -1, moving: false, tgt: null,
         reach: AR.reach[h.range], spd: AR.speed[h.range],
         maxHp: hp, hp: hp, atk: h.atk * g * (m.atk || 1) * (1 + hb('atk')), def: h.def * g * starMul(data, spec.star) * (1 + hb('def')), /* 2026-11-27 별(성급)이 방어도 올림(사용자: "일단 다 올리자") */ interval: h.interval / (spec.spd || 1), range: h.range, swampV: spec.swamp || 0, swampE: spec.swampE || 0, /* 2026-11-26 늪: 살아 있는 1초마다 공격력 +swampV. 2026-11-27: swampE가 있으면 swampE초마다 계단식(늪 칸) */ race2: spec.race2 && spec.race2 !== h.race ? spec.race2 : null, /* 단상으로 더해진 종족 */ el: spec.el || h.el, el2: spec.el2 && spec.el2 !== (spec.el || h.el) ? spec.el2 : null, // el2: 진영 발판으로 더해진 진영 // spec.el: 진영 발판 위면 그 진영
-        energy: h.ult && h.ult.trig ? (h.ult.trig.kind === 'start' ? B.energyMax : 0) : Math.min(B.energyMax, SE.value + (spec.energy || 0)), trig: h.ult && h.ult.trig || null, timer: rand() * B.startJitter, alive: true, shield: 0, taunt: 0, slow: 0, slowAmt: 0, haste: 0, hasteAmt: 0,
+        enMax: (B.energyCost && B.energyCost[h.job]) || B.energyMax, /* 2026-11-28 직업별 궁극기 필요 에너지 */ energy: h.ult && h.ult.trig ? (h.ult.trig.kind === 'start' ? ((B.energyCost && B.energyCost[h.job]) || B.energyMax) : 0) : Math.min((B.energyCost && B.energyCost[h.job]) || B.energyMax, SE.value + (spec.energy || 0)), trig: h.ult && h.ult.trig || null, timer: rand() * B.startJitter, alive: true, shield: 0, taunt: 0, slow: 0, slowAmt: 0, haste: 0, hasteAmt: 0,
         grade: h.grade || 1, ultLv: 0, pasLv: 0, uk: 1, pas: null, pv: 0, crit: critChance(data, h) + hb('crit'),
         boss: !!spec.boss, merc: !!spec.merc, blue: !!spec.blue, endureOnce: !!spec.endure, stats: { dealt: 0, taken: 0, healed: 0, ults: 0, shield: 0 } };
     }
@@ -50,7 +50,7 @@
       u.ultLv = Math.min(lvCap, spec.ultLv || base.ult);
       // 초월 추가 스킬: spec.extra = [{ from: 영웅 id, lv }]. 그 영웅의 궁극기를 그 레벨 위력으로 함께 써요
       u.extra = (spec.extra || []).map(function (e) { var hh = heroById(data, e.from); return hh && hh.ult ? { from: e.from, ult: hh.ult, el: hh.el, lv: e.lv, k: 1 + (GE.ultPer || 0) * (Math.min(lvCap, e.lv) - 1) } : null; }).filter(Boolean); var PO = GE.passiveOn, pas0 = PO && (spec.star || 1) >= PO.star && u.grade >= PO.grade ? 1 : base.pas; /* 패시브: 등급 PO.grade 이상 영웅이 ★PO.star가 되면 켜져요 */ u.pasLv = u.h.passive ? Math.min(GE.maxLv || 5, spec.pasLv != null ? spec.pasLv : pas0) : 0;
-      u.uk = 1 + (GE.ultPer || 0) * (u.ultLv - 1);
+      u.uk = (1 + (GE.ultPer || 0) * (u.ultLv - 1)) * ((B.ultPower && B.ultPower[u.h.job]) || 1); /* 2026-11-28 직업별 궁극기 위력(data.battle.ultPower) */
       u.noUlt = !!spec.noUlt; u.noPas = !!spec.noPas; /* 2026-11-28 밸런스 측정용: 이 영웅만 궁극기·초월 스킬(noUlt) / 패시브(noPas) 끔 */
       if (opts.statsOnly || u.noUlt) u.extra = []; /* 2026-11-27 밸런스 측정용: 능력치만(궁극기·패시브·초월 스킬 끔, 직업 효과는 남김) */
       if (u.pasLv > 0 && !opts.statsOnly && !u.noPas) { u.pas = u.h.passive; u.pv = u.pas.v * (1 + (GE.pasPer || 0) * (u.pasLv - 1)); } });
@@ -58,11 +58,11 @@
     A.concat(E).forEach(function (u) { if (!u.pas) return; var k = u.pas.kind, mine = u.side === 'A' ? A : E, opp = u.side === 'A' ? E : A;
       if (k === 'shieldAlly') { var na = mine.filter(function (x) { return x !== u; }).sort(function (a, b) { return dist(a, u) - dist(b, u); })[0] || u; na.shield += na.maxHp * u.pv; }
       else if (k === 'openHaste') { u.haste = PP(u).dur; u.hasteAmt = u.pv; }
-      else if (k === 'teamEnergyStart') mine.forEach(function (x) { x.energy = Math.min(B.energyMax, x.energy + u.pv); });
+      else if (k === 'teamEnergyStart') mine.forEach(function (x) { x.energy = Math.min(x.enMax, x.energy + u.pv); });
       else if (k === 'ambush') u.stealth = u.pv;
       else if (k === 'dive' && opp.length) { var bk = opp.reduce(function (m, x) { return Math.abs(x.x - u.x) > Math.abs(m.x - u.x) ? x : m; }); u.x = bk.x - u.face * 40; u.y = bk.y; }
       if (k === 'shieldStart') u.shield += u.maxHp * u.pv;
-      else if (k === 'energyStart') u.energy = Math.min(B.energyMax, u.energy + u.pv);
+      else if (k === 'energyStart') u.energy = Math.min(u.enMax, u.energy + u.pv);
       else if (k === 'haste') u.interval /= 1 + u.pv;
       else if (k === 'auraAtk') (u.side === 'A' ? A : E).forEach(function (x) { x.atk *= 1 + u.pv; }); });
     function team(side) { return side === 'A' ? A : E; }
@@ -77,7 +77,7 @@
     function reviveU(src, d, pct) { d.alive = true; d.hp = d.maxHp * pct; d.shield = 0; d.burn = null; d.stun = 0; if (rec) log.push({ t: t, kind: 'heal', from: src.uid, to: d.uid, amt: Math.round(d.hp) }); }
     var shSrc = null; // 지금 행동 중인 영웅: 그 사이에 생긴 보호막을 이 영웅이 준 것으로 세요 (DPS 창)
     function addShield(x, amt) { if (!x.alive || amt <= 0) return; if (x.lineCare) amt *= 1 + x.lineCare; if (x.side === 'A' && opts.curse) amt *= 1 - opts.curse; x.shield += amt; if (rec) log.push({ t: t, kind: 'shield', from: shSrc ? shSrc.uid : undefined, to: x.uid, amt: Math.round(amt) }); /* 2026-11-26: 방패 숫자 연출용 */ if (shSrc && shSrc.stats) shSrc.stats.shield += amt; holders(x.side, 'shieldRally').forEach(function (l) { if ((l.rallyN || 0) < (PP(l).max || 10)) { l.rallyN = (l.rallyN || 0) + 1; l.stkAtk = (l.stkAtk || 0) + l.pv; } }); }
-    function gainEnergy(x, n) { if (x.alive) x.energy = Math.min(B.energyMax, x.energy + n * (x.enMul || 1)); } // enMul: 번개 수정
+    function gainEnergy(x, n) { if (x.alive) x.energy = Math.min(x.enMax, x.energy + n * (x.enMul || 1)); } // enMul: 번개 수정
     function lifestealHeal(u, amt) { if (amt <= 0) return; heal(u, u, amt); holders(u.side, 'lifestealEnergy').forEach(function (d) { gainEnergy(d, d.pv); }); }
     // 쓰러짐 처리(모든 피해가 여기로): 버팀·환생·부활을 먼저 보고, 진짜 쓰러지면 처치·아군 쓰러짐 특성
     function die(dst, src) {
@@ -163,8 +163,8 @@
       var gd = guardOf(dst); if (gd) { var share = dmg * gd.pv; dmg -= share; var ga = Math.min(gd.shield, share); gd.shield -= ga; gd.hp -= share - ga; gd.stats.taken += share; if (gd.hp <= 0) die(gd, src); }
       var hadSh = dst.shield > 0, absorbed = Math.min(dst.shield, dmg); dst.shield -= absorbed; dmg -= absorbed;
       dst.hp -= dmg; src.stats.dealt += dmg + absorbed; dst.stats.taken += dmg + absorbed;
-      if (dst.trig) { if (dst.trig.kind === 'struck') dst.energy = Math.min(B.energyMax, dst.energy + B.energyMax / dst.trig.n); } // 발동 타입: 피격 N회마다
-      else if (EN.onHitScale) dst.energy = Math.min(B.energyMax, dst.energy + (dmg / dst.maxHp) * EN.onHitScale * (JP(dst).hitEnergy || 1) * (dst.enMul || 1)); // 기사: 맞으면 차는 에너지 배
+      if (dst.trig) { if (dst.trig.kind === 'struck') dst.energy = Math.min(dst.enMax, dst.energy + dst.enMax / dst.trig.n); } // 발동 타입: 피격 N회마다
+      else if (EN.onHitScale) dst.energy = Math.min(dst.enMax, dst.energy + (dmg / dst.maxHp) * EN.onHitScale * (JP(dst).hitEnergy || 1) * (dst.enMul || 1)); // 기사: 맞으면 차는 에너지 배
       if (rec) log.push({ t: t, kind: 'hit', from: src.uid, to: dst.uid, amt: Math.round(dmg + absorbed), crit: crit || undefined, mag: magic || undefined, burn: burning || undefined });
       if (dst.hp <= 0) die(dst, src);
       if (hadSh && dst.shield <= 0 && has(dst, 'shieldBreakStun')) alive(foes(dst)).forEach(function (x) { if (dist(x, dst) <= (PP(dst).r || 90)) x.stun = Math.max(x.stun || 0, dst.pv); });
@@ -271,14 +271,14 @@
     allSkills.forEach(function (sk) { var d = sk.def; if (d.trigger !== 'line') return; var T = team(sk.side), v = d.amount * sk.mul, hitU = [], cnt = {}, starSum = T.filter(function (x) { return !x.h.mob; }).reduce(function (a, x) { return a + (x.star || 1); }, 0);
       T.forEach(function (x) { cnt[x.line] = (cnt[x.line] || 0) + 1; });
       T.forEach(function (x) { if (d.line != null && x.line !== d.line) return; if (d.alone && cnt[x.line] !== 1) return; if (d.full && cnt[x.line] < d.full) return;
-        if (d.kind === 'lineGuard') x.lineDR = (x.lineDR || 0) + v; else if (d.kind === 'lineThorns') x.lineTh = (x.lineTh || 0) + v; else if (d.kind === 'lineEnergy') x.energy = Math.min(B.energyMax, x.energy + v);
+        if (d.kind === 'lineGuard') x.lineDR = (x.lineDR || 0) + v; else if (d.kind === 'lineThorns') x.lineTh = (x.lineTh || 0) + v; else if (d.kind === 'lineEnergy') x.energy = Math.min(x.enMax, x.energy + v);
         else if (d.kind === 'lineCare') x.lineCare = (x.lineCare || 0) + v; else if (d.kind === 'lineHaste') x.interval /= 1 + v; else if (d.kind === 'lineHide') x.stealth = Math.max(x.stealth || 0, v);
         else if (d.kind === 'lineAtk') x.atk *= 1 + v; else if (d.kind === 'starCrown') x.atk *= 1 + v * starSum; else if (d.kind === 'lineDef') x.def += v; hitU.push(x.uid); }); sk.fired++; if (rec && hitU.length) log.push({ t: t, kind: 'relicLine', id: d.id, side: sk.side, uids: hitU }); }); // 2026-11-27 열 유물이 걸린 영웅(화면 이펙트용)
     // ───── 물약(2026-11-26): opts.potions = [{ id, slot? }] 우리 편에 전투 시작 때 한 번. target 'rand'는 slot(마실 때 정한 영웅), 없으면 무작위 1명. 열 유물과 같은 효과 ─────
     A.concat(E).forEach(function (u) { u.b0 = { hp: u.maxHp, atk: u.atk, iv: u.interval }; }); // 2026-11-27 물약·수정·늪 등 전투 효과 전 값(전투력·상세 창 변화 비교용)
     var potionLog = []; (opts.potions || []).forEach(function (pt) { var P = potionById(data, pt.id); if (!P) return; var T = alive(A).filter(function (x) { return !x.h.mob; }); if (!T.length) return;
       if (P.target === 'rand') { var one = T.filter(function (x) { return x.slot === pt.slot; })[0] || T[Math.floor(rand() * T.length)]; T = [one]; }
-      T.forEach(function (x) { var v = P.amount, k = P.kind; if (k === 'swamp') { x.swampV = (x.swampV || 0) + v; if (P.every) x.swampE = P.every; } else if (k === 'lineGuard') x.lineDR = (x.lineDR || 0) + v; else if (k === 'lineThorns') x.lineTh = (x.lineTh || 0) + v; else if (k === 'lineEnergy') x.energy = Math.min(B.energyMax, x.energy + v);
+      T.forEach(function (x) { var v = P.amount, k = P.kind; if (k === 'swamp') { x.swampV = (x.swampV || 0) + v; if (P.every) x.swampE = P.every; } else if (k === 'lineGuard') x.lineDR = (x.lineDR || 0) + v; else if (k === 'lineThorns') x.lineTh = (x.lineTh || 0) + v; else if (k === 'lineEnergy') x.energy = Math.min(x.enMax, x.energy + v);
         else if (k === 'lineCare') x.lineCare = (x.lineCare || 0) + v; else if (k === 'lineHaste') x.interval /= 1 + v; else if (k === 'lineHide') x.stealth = Math.max(x.stealth || 0, v); else if (k === 'lineAtk') x.atk *= 1 + v; });
       potionLog.push({ id: P.id, uids: T.map(function (x) { return x.uid; }), slots: T.map(function (x) { return x.slot; }) }); });
     // ───── 2026-11-27 수정 칸(2장 수정 동굴): opts.crystal = { cells: [마이너스 칸, 플러스 칸], ids: 슬롯에 박힌 수정 id }. 슬롯이 비면 효과 없음. 수정마다 마이너스 칸 영웅은 minus, 플러스 칸 영웅은 plus(비율)
@@ -341,7 +341,7 @@
         case 'slowAll': F.forEach(function (x) { x.slow = d.dur; x.slowAmt = Math.min(0.8, d.amount * m); }); break;
         case 'hasteAll': T.forEach(function (x) { x.haste = d.dur; x.hasteAmt = d.amount * m; }); break;
         case 'execute': { var top = Math.max.apply(null, T.map(atkOf)), low = F.reduce(function (a, b) { return b.hp < a.hp ? b : a; }); skillHurt(low, top * d.amount * m); break; }
-        case 'energyAll': T.forEach(function (x) { x.energy = Math.min(B.energyMax, x.energy + d.amount * m); }); break;
+        case 'energyAll': T.forEach(function (x) { x.energy = Math.min(x.enMax, x.energy + d.amount * m); }); break;
         case 'knockback': F.forEach(function (x) { if (x.h.mob === 'chest') return; /* 보물상자는 자리 고정 */ var dir = sk.side === 'E' ? -1 : 1; // 상대 진영 쪽으로 밀어내요
           x.x += dir * d.amount * m; x.stun = Math.max(x.stun || 0, d.dur || 0); if (rec) log.push({ t: t, kind: 'knock', uid: x.uid, dx: dir * d.amount * m }); }); break;
         case 'volley': T.forEach(function (x) { var L2 = alive(sk.side === 'E' ? A : E); if (L2.length) skillHurt(L2[Math.floor(rand() * L2.length)], atkOf(x) * d.amount * m); }); break;
@@ -349,7 +349,7 @@
       relicNow = null;
     }
     function afterUlt(u, healed) { var T = alive(team(u.side));
-      if (has(u, 'ultRefund')) u.energy = Math.min(B.energyMax, u.pv);
+      if (has(u, 'ultRefund')) u.energy = Math.min(u.enMax, u.pv);
       if (has(u, 'ultStack')) u.ultStk = Math.min(PP(u).max || 5, (u.ultStk || 0) + 1);
       if (has(u, 'ultBeastEnergy')) T.forEach(function (x) { if (x !== u && (x.h.race === 'beast' || x.race2 === 'beast')) gainEnergy(x, u.pv); });
       if (has(u, 'ultHasteShielded')) T.forEach(function (x) { if (x.shield > 0) { x.haste = PP(u).dur || 3; x.hasteAmt = Math.max(x.hasteAmt || 0, u.pv); } });
@@ -398,7 +398,7 @@
       if (!alive(E).length) result = 'win'; else if (!alive(A).length) result = 'lose';
       for (var k = 0; k < all.length && !result; k++) {
         var u = all[k]; if (!u.alive) continue; shSrc = u;
-        if (EN.perSec && !(u.trig && u.trig.kind === 'start')) u.energy = Math.min(B.energyMax, u.energy + EN.perSec * B.dt * (u.enMul || 1));
+        if (EN.perSec && !(u.trig && u.trig.kind === 'start')) u.energy = Math.min(u.enMax, u.energy + EN.perSec * B.dt * (u.enMul || 1));
         if (u.pas && u.pas.kind === 'auraRegen') alive(team(u.side)).forEach(function (x) { if (x.hp < x.maxHp) heal(u, x, x.maxHp * u.pv * B.dt); });
         ['taunt', 'slow', 'haste', 'buffT', 'stun', 'stealth', 'root', 'blind', 'burnAmp', 'winT', 'markT', 'tbT'].forEach(function (f) { if (u[f] > 0) u[f] = Math.max(0, u[f] - B.dt); });
         if (u.stone > 0) { u.stone -= B.dt; if (u.stone <= 0) { u.stone = 0; heal(u, u, u.maxHp * u.pv); } u.moving = false; continue; } // 가고일: 돌이 된 동안 아무것도 안 해요
@@ -469,7 +469,7 @@
         else if (!inReach) { if (has(u, 'chargeHit')) u.charged = true; var mv = Math.min(d - u.reach * 0.9, u.spd * B.dt * (1 - (u.slow > 0 ? u.slowAmt : 0))); u.x += (tg.x - u.x) / d * mv; u.y += (tg.y - u.y) / d * mv; }
         u.timer = Math.max(0, u.timer - B.dt * speed);
         if (u.timer > 0) continue;
-        var ultReady = !opts.statsOnly && !u.noUlt && !!u.h.ult && u.energy >= B.energyMax && !u.trigDone; if (ultReady && u.trig && u.trig.kind === 'start') u.trigDone = true; // 전투 시작형은 한 번만 // 몹은 궁극기가 없어요
+        var ultReady = !opts.statsOnly && !u.noUlt && !!u.h.ult && u.energy >= u.enMax && !u.trigDone; if (ultReady && u.trig && u.trig.kind === 'start') u.trigDone = true; // 전투 시작형은 한 번만 // 몹은 궁극기가 없어요
         if (!inReach && !(ultReady && SELF_ULT[u.h.ult.kind])) continue; // 사거리 밖이면 다가가기만 해요
         u.timer += u.interval;
         if (ultReady && u.h.ult.cast) { u.energy = 0; u.castT = u.h.ult.cast; u.moving = false; if (rec) log.push({ t: t, kind: 'cast', uid: u.uid, dur: u.h.ult.cast }); continue; } // 마법사: 주문을 외우기 시작해요
@@ -477,7 +477,7 @@
           afterUlt(u, u.stats.healed - hb); }
         else { if (TG === 'lowest' || TG === 'random') { var nt = pickTarget(u); if (nt && dist(u, nt) <= u.reach) tg = u.tgt = nt; }
           magic = false; var am = 1; if (u.boostN > 0) { am *= 1 + u.boostV; u.boostN--; } if (has(u, 'secondHit')) { u.atkC = (u.atkC || 0) + 1; if (u.atkC % 2 === 0) am *= 1 + u.pv; }
-          hurt(u, tg, am); trig('attack', u); u.energy = Math.min(B.energyMax, u.energy + (u.trig ? (u.trig.kind === 'hits' ? B.energyMax / u.trig.n : 0) : EN.onAttack + (JP(u).attackEnergy || 0))); afterAttack(u, tg); /* 마법사: 평타 때 에너지 더 */ // 발동 타입: N번째 공격마다 에너지
+          hurt(u, tg, am); trig('attack', u); u.energy = Math.min(u.enMax, u.energy + (u.trig ? (u.trig.kind === 'hits' ? u.enMax / u.trig.n : 0) : EN.onAttack + (JP(u).attackEnergy || 0))); afterAttack(u, tg); /* 마법사: 평타 때 에너지 더 */ // 발동 타입: N번째 공격마다 에너지
           if (u.pas && u.pas.kind === 'splash') alive(foes(u)).forEach(function (x) { if (x !== tg && dist(x, tg) <= 70) hurt(u, x, u.pv); }); }
         if (!alive(E).length) { result = 'win'; break; }
         if (!alive(A).length) { result = 'lose'; break; }
