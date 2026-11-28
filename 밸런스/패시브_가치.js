@@ -1,4 +1,4 @@
-// 영웅별 패시브(3성 스킬) 가치: node 밸런스/패시브_가치.js --job=guardian [--seeds=120] [--off=0] → 밸런스/패시브_가치/<job>.json (2026-11-28)
+// 영웅별 패시브(3성 스킬) 가치: node 밸런스/패시브_가치.js --job=guardian [--seeds=120] [--off=0] → 밸런스/패시브_가치/<job>.json (2026-11-28) [--fit] 등급 목표에 패시브 위력 맞추기 [--names=]
 // 궁극기_맞추기.js와 같은 측정(실제 길이 전투 + 크게 섞기 + 기준 팀원 고정)을 전원 3성으로, 그 영웅만 패시브를 끈 쪽(engine spec.noPas)과 비교
 // 결과: 패시브 = 그 영웅 체력·공격·방어를 몇 % 올린 것과 같은지(사용자가 목표를 정하기 전 지금 값 보기)
 process.chdir(require('path').join(__dirname, '..'));
@@ -35,10 +35,17 @@ const ptsPerLv = h => { const p = PR.values['가격 ' + ({ guardian: '수호자'
 // 그 영웅의 궁극기 비율(%), 위력 pow
 function ratio(h, pow) { const hh = D.heroes.find(x => x.id === h.id); hh.ultPow = pow; const base = teamFor(h.job), idx = base.findIndex(x => x.id === B_(REP[h.job])), t1 = base.map((x, i) => i === idx ? { ...x, id: h.id } : x);
   const lv = lvEquiv(t1, idx); return lv === Infinity ? 999 : lv === -Infinity ? -999 : lv * ptsPerLv(hh) / 10; }
-const L = heroes.filter(h => h.job === JOB_), t0 = Date.now(), OUT = [];
-for (const h of L) { const base = teamFor(h.job), idx = base.findIndex(x => x.id === B_(REP[h.job])), t1 = base.map((x, i) => i === idx ? { ...x, id: h.id } : x);
-  const lv = lvEquiv(t1, idx), pct = Math.abs(lv) === Infinity ? null : Math.round(lv * G / GL * 1000) / 10;
-  OUT.push({ id: h.id, name: h.name, grade: h.grade || 1, pas: (h.passive || {}).kind, pct, note: lv === Infinity ? '못 잼(너무 셈)' : lv === -Infinity ? '손해' : undefined }); process.stderr.write(h.name + ' ' + pct + '%\n'); }
-fs.mkdirSync('밸런스/패시브_가치', { recursive: true });
-fs.writeFileSync('밸런스/패시브_가치/' + JOB_ + '.json', JSON.stringify({ job: JOB_, seeds: SEEDS, off: OFF, at: new Date().toISOString(), heroes: OUT }, null, 1));
-console.log(JN[JOB_] + ' 끝 ' + Math.round((Date.now() - t0) / 1000) + '초'); OUT.forEach(o => console.log(JN[JOB_], o.name, o.grade, o.pas, o.pct, o.note || ''));
+// --fit: 등급 목표(능력치 %)에 맞게 영웅별 패시브 위력(hero.pasPow, 패시브 v에 곱함)을 로그 이분 탐색으로 찾음. 목표: 일반 25 · 고급 50 · 희귀 100 · 전설 150 (2026-11-28 사용자: "25 50 100 150 정도?")
+const FIT = process.argv.includes('--fit'), PT = [25, 50, 100, 150], IDS = arg('names', '') ? arg('names').split(',') : null;
+const pctOf = h => { const base = teamFor(h.job), idx = base.findIndex(x => x.id === B_(REP[h.job])), t1 = base.map((x, i) => i === idx ? { ...x, id: h.id } : x); const lv = lvEquiv(t1, idx); return Math.abs(lv) === Infinity ? lv * 999 : Math.round(lv * G / GL * 1000) / 10; };
+const L = heroes.filter(h => h.job === JOB_ && (!IDS || IDS.includes(h.name))), t0 = Date.now(), OUT = [];
+for (const h of L) { const hh = D.heroes.find(x => x.id === h.id), p00 = hh.pasPow || 1, tgt = PT[(h.grade || 1) - 1], tries = [];
+  const ev = p => { hh.pasPow = p; const r = pctOf(h); tries.push([Math.round(p * 1000) / 1000, r]); process.stderr.write(h.name + ' ×' + p.toFixed(2) + ' → ' + r + '% (목표 ' + tgt + ')\n'); return r; };
+  let r0 = ev(p00), res = { pow: p00, pct: r0 };
+  if (FIT) { if (r0 <= 0) res.note = '패시브가 손해 — 스킬 내용 문제'; else { let lo = 0.1, hi = 6, best = [p00, r0]; if (r0 < tgt) lo = p00; else hi = p00;
+    for (let i = 0; i < 7 && Math.abs(best[1] - tgt) > tgt * 0.07; i++) { const p = Math.sqrt(lo * hi), r = ev(p); if (Math.abs(r - tgt) < Math.abs(best[1] - tgt)) best = [p, r]; if (r < tgt) lo = p; else hi = p; }
+    res = { pow: Math.round(best[0] * 100) / 100, pct: best[1] }; if (lo > 5 && best[1] < tgt * 0.85) res.note = '위력 ×6으로도 모자람 — 스킬 내용 문제'; if (hi < 0.12 && best[1] > tgt * 1.15) res.note = '위력 ×0.1로도 셈 — 스킬 내용 문제'; } }
+  hh.pasPow = p00 === 1 ? undefined : p00; OUT.push({ id: h.id, name: h.name, grade: h.grade || 1, pas: (h.passive || {}).kind, target: tgt, tries, ...res }); }
+fs.mkdirSync('밸런스/패시브_가치', { recursive: true }); const OF = '밸런스/패시브_가치/' + JOB_ + '.json', prev = IDS && fs.existsSync(OF) ? JSON.parse(fs.readFileSync(OF, 'utf8')).heroes.filter(o => !IDS.includes(o.name)) : [];
+fs.writeFileSync(OF, JSON.stringify({ job: JOB_, seeds: SEEDS, off: OFF, fit: FIT, at: new Date().toISOString(), heroes: prev.concat(OUT) }, null, 1));
+console.log(JN[JOB_] + ' 끝 ' + Math.round((Date.now() - t0) / 1000) + '초'); OUT.forEach(o => console.log(JN[JOB_], o.name, '등급', o.grade, o.pas, '목표', o.target, '→ 위력', o.pow, o.pct + '%', o.note || ''));

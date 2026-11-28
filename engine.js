@@ -53,7 +53,7 @@
       u.ukLv = 1 + (GE.ultPer || 0) * (u.ultLv - 1); /* 2026-11-28 덤 효과(확률·비율)는 궁극기 레벨만 받음 */ u.uk = (1 + (GE.ultPer || 0) * (u.ultLv - 1)) * ((B.ultPower && B.ultPower[u.h.job]) || 1) * (u.h.ultPow || 1); /* 2026-11-28 직업별 궁극기 위력(data.battle.ultPower) × 영웅별(hero.ultPow) */
       u.noUlt = !!spec.noUlt; u.noPas = !!spec.noPas; /* 2026-11-28 밸런스 측정용: 이 영웅만 궁극기·초월 스킬(noUlt) / 패시브(noPas) 끔 */
       if (opts.statsOnly || u.noUlt) u.extra = []; /* 2026-11-27 밸런스 측정용: 능력치만(궁극기·패시브·초월 스킬 끔, 직업 효과는 남김) */
-      if (u.pasLv > 0 && !opts.statsOnly && !u.noPas) { u.pas = u.h.passive; u.pv = u.pas.v * (1 + (GE.pasPer || 0) * (u.pasLv - 1)); } });
+      if (u.pasLv > 0 && !opts.statsOnly && !u.noPas) { u.pas = u.h.pasPow ? Object.assign({}, u.h.passive, { v: u.h.passive.v * u.h.pasPow }) : u.h.passive; u.pv = u.pv0 = u.pas.v * (1 + (GE.pasPer || 0) * (u.pasLv - 1)); } /* 2026-11-28 pasPow: 영웅별 패시브 위력(v에 곱함), pv0: 궁극기 창이 끝나면 되돌릴 패시브 값 */ });
     // 시작할 때 걸리는 패시브
     A.concat(E).forEach(function (u) { if (!u.pas) return; var k = u.pas.kind, mine = u.side === 'A' ? A : E, opp = u.side === 'A' ? E : A;
       if (k === 'shieldAlly') { var na = mine.filter(function (x) { return x !== u; }).sort(function (a, b) { return dist(a, u) - dist(b, u); })[0] || u; na.shield += na.maxHp * u.pv; }
@@ -221,7 +221,7 @@
       if (U.mul) U.mul *= k; if (U.shieldPct) U.shieldPct *= k; if (U.tick) U.tick *= k; if (U.blast) U.blast *= k; if (U.thorns) U.thorns *= k; if (U.hitMul) U.hitMul *= k; if (U.aoeMul) U.aoeMul *= k; if (U.follow) U.follow *= k; if (U.amount) U.amount *= U.kind === 'seeds' ? k : kr; if (U.dr) U.dr = Math.min(0.8, U.dr * kr); if (U.share) U.share = Math.min(1, U.share * kr); // 궁극기 레벨만큼 세져요
       var F = alive(foes(u)), T = alive(team(u.side)); u.stats.ults++; if (JP(u).ultEnergy && !(u.trig && u.trig.kind === 'start')) T.forEach(/* 2026-11-28 전투 시작형 궁극기는 서포터 직업 에너지 없음(피프·클라렌, 사용자: A) */function (x) { if (x !== u) gainEnergy(x, JP(u).ultEnergy); }); // 서포터: 궁극기를 쓰면 다른 아군 에너지
       // shortcut: 초월 추가 스킬의 창도 같은 u.win을 써서 기본 스킬 창을 덮어써요, 둘 다 창이 있는 조합이 많아지면 창을 여러 개로 나눠요
-      if (U0.win) { u.win = U0.win; u.winT = U0.win.t || 0.5; u.pv = (U0.win.v || 0) * kr; u.evT = 0; u.atkC2 = 0; u.dStk = 0; }
+      if (U0.win) { u.win = U0.win; u.winT = U0.win.t || 0.5; u.pv = (U0.win.v || 0) * kr; u.pvWin = true; u.evT = 0; u.atkC2 = 0; u.dStk = 0; }
       if (rec) log.push({ t: t, kind: 'ult', uid: u.uid, ult: U.kind });
       switch (U.kind) {
         case 'taunt': tauntOn(u, U.dur); addShield(u, u.maxHp * U.shieldPct); break;
@@ -425,7 +425,7 @@
         var u = all[k]; if (!u.alive) continue; shSrc = u;
         if (EN.perSec && !(u.trig && u.trig.kind === 'start')) u.energy = Math.min(u.enMax, u.energy + EN.perSec * B.dt * (u.enMul || 1));
         if (u.pas && u.pas.kind === 'auraRegen') alive(team(u.side)).forEach(function (x) { if (x.hp < x.maxHp) heal(u, x, x.maxHp * u.pv * B.dt); });
-        ['taunt', 'slow', 'haste', 'buffT', 'stun', 'stealth', 'root', 'blind', 'burnAmp', 'winT', 'markT', 'tbT', 'drumT', 'coralT', 'linkT', 'tideT'].forEach(function (f) { if (u[f] > 0) u[f] = Math.max(0, u[f] - B.dt); }); /* 2026-11-28 drumT 전투 북 · coralT 산호 갑옷 · linkT 영혼 사슬 */
+        ['taunt', 'slow', 'haste', 'buffT', 'stun', 'stealth', 'root', 'blind', 'burnAmp', 'winT', 'markT', 'tbT', 'drumT', 'coralT', 'linkT', 'tideT'].forEach(function (f) { if (u[f] > 0) u[f] = Math.max(0, u[f] - B.dt); }); if (u.pvWin && !(u.winT > 0)) { u.pvWin = false; u.pv = u.pv0 || 0; } /* 2026-11-28 버그: 궁극기 창 값이 패시브 값을 끝까지 덮어쓰던 것 — 창이 끝나면 되돌림. shortcut: 창이 켜진 동안 다른 종류 패시브도 창 값을 읽음, 겹치는 영웅이 문제되면 값을 나눔 */ /* 2026-11-28 drumT 전투 북 · coralT 산호 갑옷 · linkT 영혼 사슬 */
         if (u.seed) { u.seed.t -= B.dt; if (u.seed.t <= 0 || u.hp / u.maxHp < 0.5) { var sd0 = u.seed; u.seed = null; if (sd0.src) { heal(sd0.src, u, u.maxHp * sd0.heal); if (has(sd0.src, 'seedRoot')) alive(foes(u)).forEach(function (x) { if (dist(x, u) <= 90) x.root = Math.max(x.root || 0, sd0.src.pv || 1); }); if (rec) log.push({ t: t, kind: 'seedBloom', uid: u.uid, from: sd0.src.uid }); } } } /* 2026-11-28 블룸 새싹 씨앗: 5초 뒤 또는 체력이 반 아래로 떨어지면 핌 */
         if (u.stone > 0) { u.stone -= B.dt; if (u.stone <= 0) { u.stone = 0; heal(u, u, u.maxHp * u.pv); } u.moving = false; continue; } // 가고일: 돌이 된 동안 아무것도 안 해요
         if (u.bShT > 0) { u.bShT -= B.dt; if (u.bShT <= 0) { u.shield = Math.max(0, u.shield - (u.bSh || 0)); u.bSh = 0; } } // 바위곰: 1초 보호막이 사라져요
