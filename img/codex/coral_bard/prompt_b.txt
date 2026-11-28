@@ -1,0 +1,6 @@
+One image is attached, game pixel art enlarged 8 times (every 8x8 block is one sprite pixel).
+Use it as the reference image for your image generation tool, generate ONE new image and save it as img/codex/coral_bard/b_src.png (save it even if the size differs slightly).
+Redraw it changing ONLY two things:
+1. She is clearly BLOWING the conch trumpet: raise the conch so its narrow mouthpiece end touches her face just below the eyes (where the mouth would be), both hands holding it, the shell body and wide flared opening angled up and out to the right. The conch must not cover either eye; her chin and white outfit below become visible.
+2. Make her stand 2 sprite pixels taller (slightly longer legs and body); head size unchanged.
+Keep everything else exactly: face, blue eyes with the viewer-left eye 1 pixel lower, twin drill-curl hair, coral ornaments, ears, outfit colors, conch design, pixel block size (do not enlarge the blocks). Whole picture at most 50 pixels wide. Very dark brown outline, hard square pixels, no anti-aliasing, no mouth drawn, no notes or effects. Full body centered, 1024x1024 PNG, flat solid pure magenta background FF00FF, no text, no shadow. Python is not installed on this computer: do not use python. Use PowerShell Copy-Item to copy the generated file. Do not modify or create any other file.
